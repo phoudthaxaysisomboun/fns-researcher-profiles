@@ -15,7 +15,13 @@ app.use(cookieParser())
 
 // Models
 const { User } = require('./models/user')
+const { Gender } = require('./models/gender')
 const { ResearchArea } = require('./models/research_area')
+const { Province } = require('./models/province')
+const { District } = require('./models/district')
+const { Institution } = require('./models/institution')
+const { Desipline } = require('./models/desipline')
+const { Subdesipline } = require('./models/subdesipline')
 
 // Middlewares
 const { auth } = require('./middleware/auth')
@@ -44,6 +50,145 @@ app.get('/api/research/research_areas', (req,res)=>{
     })
 })
 
+//====================================
+//             DESIPLINE
+//====================================
+
+app.post('/api/research/desipline', auth, admin, (req,res)=>{
+    const desipline = new Desipline(req.body)
+
+    desipline.save((err, doc)=>{
+        if (err) return res.json({success: false, err})
+        res.status(200).json({
+            success: true,
+            desipline: doc
+        })
+    }) 
+})
+
+app.get('/api/research/desiplines', (req,res)=>{
+    Desipline.find({}, (err, desipline) => {
+        if (err) return res.status(400).send(err)
+        res.status(200).send(desipline)
+    })
+})
+
+//====================================
+//            SUBDESIPLINE
+//====================================
+
+app.post('/api/research/subdesipline', auth, admin, (req,res)=>{
+    const subdesipline = new Subdesipline(req.body)
+
+    subdesipline.save((err, doc)=>{
+        if (err) return res.json({success: false, err})
+        res.status(200).json({
+            success: true,
+            subdesipline: doc
+        })
+    }) 
+})
+
+app.get('/api/research/subdesiplines', (req,res)=>{
+    Subdesipline.find({}).
+    populate('desipline').
+    exec((err, subdesipline) => {
+        return res.status(200).send(subdesipline)
+    })
+})
+
+//====================================
+//             GENDER
+//====================================
+
+app.post('/api/users/gender', auth, admin, (req,res)=>{
+    const gender = new Gender(req.body)
+
+    gender.save((err, doc)=>{
+        if (err) return res.json({success: false, err})
+        res.status(200).json({
+            success: true,
+            gender: doc
+        })
+    }) 
+})
+
+app.get('/api/users/genders', (req,res)=>{
+    Gender.find({}, (err, gender) => {
+        if (err) return res.status(400).send(err)
+        res.status(200).send(gender)
+    })
+})
+
+//====================================
+//            INSTITUTION
+//====================================
+
+app.post('/api/users/institution', auth, admin, (req,res)=>{
+    const institution = new Institution(req.body)
+
+    institution.save((err, doc)=>{
+        if (err) return res.json({success: false, err})
+        res.status(200).json({
+            success: true,
+            institution: doc
+        })
+    }) 
+})
+
+app.get('/api/users/institutions', (req,res)=>{
+    Institution.find({}, (err, institution) => {
+        if (err) return res.status(400).send(err)
+        res.status(200).send(institution)
+    })
+})
+
+//====================================
+//             PROVINCE
+//====================================
+
+app.post('/api/users/province', auth, admin, (req,res)=>{
+    const province = new Province(req.body)
+
+    province.save((err, doc)=>{
+        if (err) return res.json({success: false, err})
+        res.status(200).json({
+            success: true,
+            province: doc
+        })
+    })
+})
+
+app.get('/api/users/provinces', (req,res)=>{
+    Province.find({}, (err, province) => {
+        if (err) return res.status(400).send(err)
+        res.status(200).send(province)
+    })
+})
+
+//====================================
+//             DISTRICT
+//====================================
+
+app.post('/api/users/district', auth, admin, (req,res)=>{
+    const district = new District(req.body)
+
+    district.save((err, doc)=>{
+        if (err) return res.json({success: false, err})
+        res.status(200).json({
+            success: true,
+            district: doc
+        })
+    })
+})
+
+app.get('/api/users/districts', (req,res)=>{
+    District.find({}).
+    populate('province').
+    exec((err, district) => {
+        return res.status(200).send(district)
+    })
+})
 
 
 //====================================
@@ -142,6 +287,50 @@ app.get('/api/users/logout',auth,(req,res)=>{
             })
         }
     )
+})
+
+//====================================
+//            RESEARCHERS
+//====================================
+
+// /api/researchers/profiles?id=asdasd,asdasdas,asdasd&type=single
+app.get('/api/researchers/profiles_by_id', (req,res)=>{
+    let type = req.query.type
+    let items = req.query.id
+
+    if (type === "array") {
+        let ids = req.query.id.split(',')
+        items = []
+        items = ids.map(item=>{
+            return mongoose.Types.ObjectId(item)
+        })
+    }
+
+    User.
+    find({ '_id' : {$in: items}}).
+    populate('gender').
+    populate({
+        path: 'address.district',
+        // model: 'District',
+    }).
+    populate({
+        path: 'address.province',
+        // model: 'Province',
+    }).
+    populate({
+        path: 'desipline.maindesipline',
+        // model: 'Province',
+    }).
+    populate({
+        path: 'desipline.subdesipline.item',
+        // model: 'Province',
+    }).
+    populate({
+        path: 'affiliation.institution',
+    }).
+    exec((err, docs)=>{
+        return res.status(200).send(docs)
+    })
 })
 
 const port = process.env.PORT || 3002

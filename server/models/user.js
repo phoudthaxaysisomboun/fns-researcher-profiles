@@ -85,12 +85,10 @@ const userSchema = mongoose.Schema({
     minor_ethnicity: {
         type: String
     },
-    desipline: {
-        desipline: [{
-            mainDesipline: {type: Schema.Types.ObjectId, ref: 'Desipline'},
-            subdesipline: [{type: Schema.Types.ObjectId, ref: 'SubDesipline'}]
-        }],
-    },
+    desipline: [{
+        maindesipline: {type: Schema.Types.ObjectId, ref: 'Desipline'},
+        subdesipline: [{ item: {type: Schema.Types.ObjectId, ref: 'Subdesipline'} }]
+    }],
     degree: {
         type: String,
         maxlength: 100
