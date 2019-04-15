@@ -1,4 +1,10 @@
 const mongoose = require('mongoose')
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+require('dotenv').config()
+
+const SALT_I = 10
+const Schema = mongoose.Schema;
 
 const userSchema = mongoose.Schema({
     email: {
@@ -45,24 +51,33 @@ const userSchema = mongoose.Schema({
         maxlength: 100
     },
     profileImage: {
-        type: Schema.Types.Mixed,
+        type: Array,
         default: {}
     },
     address: {
         village: {type: String, maxlength: 100},
-        district: {type: Schema.ObjectId, ref: 'District'},
-        province: {type: Schema.ObjectId, ref: 'Province'}
+        district: {type: Schema.Types.ObjectId, ref: 'District'},
+        province: {type: Schema.Types.ObjectId, ref: 'Province'}
+    },
+    profileDescription: {
+        type: String,
+        default: ''
     },
     affiliation: {
-        type: Schema.Types.Mixed,
-        default: {}
+        institution: {type: Schema.Types.ObjectId, default: '5c8fcd398b7ae6cfecf5796e', ref: 'Institution', required: true},
+        faculty: {type: Schema.Types.ObjectId, default: '5caed82590264f5c10201b4a',ref: 'Faculty', required: true},
+        department: {type: Schema.Types.ObjectId, ref: 'Department', required: true},
+        position: {type: String, maxlength: 100, required: true},
     },
     dateOfBirth: {
-        type: Date
+        type: Date,
+        required: true
     },
     placeOfBirth: {
-        type: Schema.Types.Mixed,
-        default: {}
+        vilage: {type: String, maxlength: 100},
+        district: {type: String, maxlength: 100},
+        province: {type: String, maxlength: 100},
+        country: {type: Schema.Types.ObjectId, ref: 'Country'},
     },
     nationality: {
         type: String
@@ -71,49 +86,66 @@ const userSchema = mongoose.Schema({
         type: String
     },
     desipline: {
-        type: Schema.Types.Mixed,
-        default: {}
+        desipline: [{
+            mainDesipline: {type: Schema.Types.ObjectId, ref: 'Desipline'},
+            subdesipline: [{type: Schema.Types.ObjectId, ref: 'SubDesipline'}]
+        }],
     },
     degree: {
         type: String,
         maxlength: 100
     },
     research_area: [{
-        type: Schema.ObjectId,
-        ref: 'User'
+        type: Schema.Types.ObjectId,
+        ref: 'ResearchArea'
     }],
-    education: {
-        type: Array,
-        default: []
-    },
+    education: [{
+        institution: {type: String},
+        fieldOfStudy: {type: String},
+        degree: {type: String},
+        start: {type: Date},
+        end: {type: Date},
+        city: {type: String},
+        country: {type: Schema.Types.ObjectId, ref: 'Country'},
+    }],
     researchArea: {
         type: Array,
         default: []
     },
-    teachingArea: {
-        type: Array,
-        default: []
-    },
-    award: {
-        type: Array,
-        default: []
-    },
+    teachingExperience: [{
+        institution: {type: String},
+        position: {type: String},
+        department: {type: String},
+        start: {type: Date},
+        end: {type: Date},
+        city: {type: String},
+        country: {type: Schema.Types.ObjectId, ref: 'Country'},
+        description: {type: String}
+    }],
+    award: [{
+        title: {type: String},
+        principleSubject: {type: String},
+        date: {type: Date},
+        description: {type: String}
+    }],
     following: [{
-        type: Schema.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'User'
     }],
     follower: [{
-        type: Schema.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'User'
     }],
     research: [{
-        type: Schema.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'Research'
     }],
-    language: {
-        type: Array,
-        default: []
-    },
+    language: [{
+        language: {type: String},
+        reading: {type: Number, min: 0, max: 10},
+        writing: {type: Number, min: 0, max: 10},
+        speaking: {type: Number, min: 0, max: 10},
+    }],
     phone: {
         type: Number,
         maxlength: 100
@@ -126,17 +158,28 @@ const userSchema = mongoose.Schema({
         type: Number,
         maxlength: 100
     },
+    facebook: {
+        name: {type: String, maxlength: 100},
+        url: {type: String}
+    },
+    website: {
+        type: String
+    },
     role: {
         type: Number,
-        maxlength: 0
+        default: 0
     },
     emailIsVerified: {
         type: Boolean,
-        default: false
+        default: false,
     },
     accountIsVerified: {
         type: Boolean,
-        default: false
+        default: false,
+    },
+    advisor: {
+        current: [{type: Schema.Types.Mixed, ref: 'User'}],
+        past: [{type: Schema.Types.Mixed, ref: 'User'}]
     },
     token:{
       type:String
@@ -147,8 +190,54 @@ const userSchema = mongoose.Schema({
     resetTokenExp:{
       type:Number
     }
+},{timestamps:true})
 
+userSchema.pre('save', function(next){
+    var user = this
+
+    if (user.isModified('password')){
+        bcrypt.genSalt(SALT_I, function(err, salt){
+            if (err) return next(err)
+    
+            bcrypt.hash(user.password, salt, function(err, hash){
+                if (err) return next(err)
+                user.password = hash
+                next()
+            })
+        })
+    } else {
+        next()
+    }
 })
+
+userSchema.methods.comparePassword = function(candidatePassword, cb){
+    bcrypt.compare(candidatePassword, this.password, function(err, isMatch){
+        if (err) return cb(err)
+        cb(null, isMatch)
+    })
+}
+
+userSchema.methods.generateToken = function(cb) {
+    var user = this
+    var token = jwt.sign(user._id.toHexString(), process.env.SECRET)
+
+    user.token = token
+    user.save(function(err,user){
+        if (err) return cb(err)
+        cb(null, user)
+    })
+}
+
+userSchema.statics.findByToken = function (token, cb) {
+    var user = this
+
+    jwt.verify(token, process.env.SECRET, function(err, decode){
+        user.findOne({"_id": decode, "token": token}, function(err, user){
+            if(err) return cb(err)
+            cb(null, user)
+        })
+    })
+}
 
 const User = mongoose.model('User', userSchema)
 
