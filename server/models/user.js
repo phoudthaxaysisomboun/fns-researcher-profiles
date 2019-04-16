@@ -120,6 +120,16 @@ const userSchema = mongoose.Schema({
         country: {type: Schema.Types.ObjectId, ref: 'Country'},
         description: {type: String}
     }],
+    researchExperience: [{
+        institution: {type: String},
+        position: {type: String},
+        department: {type: String},
+        start: {type: Date},
+        end: {type: Date},
+        city: {type: String},
+        country: {type: Schema.Types.ObjectId, ref: 'Country'},
+        description: {type: String}
+    }],
     award: [{
         title: {type: String},
         principleSubject: {type: String},
@@ -176,8 +186,8 @@ const userSchema = mongoose.Schema({
         default: false,
     },
     advisor: {
-        current: [{type: Schema.Types.Mixed, ref: 'User'}],
-        past: [{type: Schema.Types.Mixed, ref: 'User'}]
+        current: [{ item: {type: Schema.Types.Mixed, ref: 'User'} }],
+        past: [{ item: {type: Schema.Types.Mixed, ref: 'User'} }]
     },
     token:{
       type:String

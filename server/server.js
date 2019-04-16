@@ -22,10 +22,41 @@ const { District } = require('./models/district')
 const { Institution } = require('./models/institution')
 const { Desipline } = require('./models/desipline')
 const { Subdesipline } = require('./models/subdesipline')
+const { Country } = require('./models/country')
 
 // Middlewares
 const { auth } = require('./middleware/auth')
 const { admin } = require('./middleware/admin')
+
+//====================================
+//             COUNTRY
+//====================================
+
+app.post('/api/users/country', auth, admin, (req,res)=>{
+    const country = new Country(req.body)
+
+    country.save((err, doc)=>{
+        if (err) return res.json({success: false, err})
+        res.status(200).json({
+            success: true,
+            country: doc
+        })
+    }) 
+})
+
+app.get('/api/users/countries', (req,res)=>{
+    let order = req.query.order ? req.query.order : 'asc'
+    let sortBy = req.query.sortBy ? req.query.sortBy : '_id'
+    let limit = parseInt(req.query.limit)
+
+    Country.find().
+    sort([[sortBy, order]]).
+    limit(limit).
+    exec((err, countries)=>{
+        if (err) return res.status(400).send(err)
+        res.send(countries)
+    })
+})
 
 //====================================
 //             RESEARCH AREA
@@ -311,22 +342,30 @@ app.get('/api/researchers/profiles_by_id', (req,res)=>{
     populate('gender').
     populate({
         path: 'address.district',
-        // model: 'District',
     }).
     populate({
         path: 'address.province',
-        // model: 'Province',
     }).
     populate({
         path: 'desipline.maindesipline',
-        // model: 'Province',
     }).
     populate({
         path: 'desipline.subdesipline.item',
-        // model: 'Province',
     }).
     populate({
         path: 'affiliation.institution',
+    }).
+    populate({
+        path: 'placeOfBirth.country'
+    }).
+    populate({
+        path: 'education.country'
+    }).
+    populate({
+        path: 'teachingExperience.country'
+    }).
+    populate({
+        path: 'researchExperience.country'
     }).
     exec((err, docs)=>{
         return res.status(200).send(docs)
