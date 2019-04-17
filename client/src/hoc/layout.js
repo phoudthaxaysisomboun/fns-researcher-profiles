@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
-import PrimarySearchAppBar from '../components/Header_footer/Header/index'
+import Header from '../components/Header_footer/Header/index'
 
 class Layout extends Component {
     render() {
         return (
             <div>
-                <PrimarySearchAppBar/>
+                <Header/>
                 <div className="page_container">
                     {this.props.children}
                 </div>
+                Footer
             </div>
         );
     }

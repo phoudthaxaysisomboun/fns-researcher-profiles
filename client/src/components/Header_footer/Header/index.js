@@ -11,12 +11,12 @@ import {
 } from "@material-ui/core";
 import { fade } from "@material-ui/core/styles/colorManipulator";
 import { withStyles } from "@material-ui/core/styles";
-import MenuIcon from "@material-ui/icons/Menu";
-import SearchIcon from "@material-ui/icons/Search";
-import AccountCircle from "@material-ui/icons/AccountCircle";
-import MailIcon from "@material-ui/icons/Mail";
-import NotificationsIcon from "@material-ui/icons/Notifications";
-import MoreIcon from "@material-ui/icons/MoreVert";
+import MenuIcon from "@material-ui/icons/MenuOutlined";
+import SearchIcon from "@material-ui/icons/SearchOutlined";
+import AccountCircle from "@material-ui/icons/AccountCircleOutlined";
+import MailIcon from "@material-ui/icons/MailOutlined";
+import NotificationsIcon from "@material-ui/icons/NotificationsOutlined";
+import MoreIcon from "@material-ui/icons/MoreVertOutlined";
 
 const styles = theme => ({
   root: {
@@ -30,6 +30,7 @@ const styles = theme => ({
     marginRight: 20
   },
   title: {
+    fontWeight: '600',
     display: "none",
     [theme.breakpoints.up("sm")]: {
       display: "block"
@@ -125,7 +126,7 @@ class Header extends Component {
         open={isMenuOpen}
         onClose={this.handleMenuClose}
       >
-        <MenuItem style={{fontFamily: "'Noto Sans Lao UI', sans-serif"}} onClick={this.handleMenuClose}>ບັນຊີຂອງຂ້ອຍ</MenuItem>
+        <MenuItem style={{fontFamily: "'Noto Sans Lao UI', sans-serif"}} onClick={this.handleMenuClose}><AccountCircle style={{marginRight: "8px"}} />ບັນຊີຂອງຂ້ອຍ</MenuItem>
         <MenuItem style={{fontFamily: "'Noto Sans Lao UI', sans-serif"}} onClick={this.handleMenuClose}>ລົງຊື່ອອກ</MenuItem>
       </Menu>
     );
@@ -181,12 +182,12 @@ class Header extends Component {
             >
               FNS Researcher Profiles
             </Typography>
-            <div className={classes.search}>
+            <div className={classes.search} >
               <div className={classes.searchIcon}>
                 <SearchIcon />
               </div>
               <InputBase
-                placeholder="ຄົ້ນຫາ…"
+                placeholder="ຄົ້ນຫານັກຄົ້ນຄວ້າ, ຜົນງານ ຯລຯ"
                 classes={{
                   root: classes.inputRoot,
                   input: classes.inputInput
