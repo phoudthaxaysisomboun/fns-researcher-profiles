@@ -9,7 +9,6 @@ class Layout extends Component {
                 <div className="page_container">
                     {this.props.children}
                 </div>
-                Footer
             </div>
         );
     }

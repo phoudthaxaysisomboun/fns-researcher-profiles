@@ -165,7 +165,7 @@ class Header extends Component {
     );
     return (
       <div className={classes.root}>
-        <AppBar position="static" color="default" style={{boxShadow: '0px 2px 2px 0px rgba(0,0,0,0.1)'}}>
+        <AppBar position="static" color="white" style={{boxShadow: '0px 2px 2px 0px rgba(0,0,0,0.1)'}}>
           <Toolbar variant="dense">
             <IconButton
               className={classes.menuButton}
