@@ -23,10 +23,23 @@ const { Institution } = require('./models/institution')
 const { Desipline } = require('./models/desipline')
 const { Subdesipline } = require('./models/subdesipline')
 const { Country } = require('./models/country')
+const { Department } = require('./models/department')
 
 // Middlewares
 const { auth } = require('./middleware/auth')
 const { admin } = require('./middleware/admin')
+
+//====================================
+//             DEPARTMENTS
+//====================================
+
+app.get('/api/users/departments',(req,res)=>{
+    Department.find({}, (err, departments) => {
+        if (err) return res.status(400).send(err)
+        res.status(200).send(departments)
+    })
+})
+
 
 //====================================
 //             COUNTRY
@@ -323,6 +336,7 @@ app.get('/api/users/logout',auth,(req,res)=>{
 //====================================
 //            RESEARCHERS
 //====================================
+
 
 // /api/researchers/profiles?id=asdasd,asdasdas,asdasd&type=single
 app.get('/api/researchers/profiles_by_id', (req,res)=>{

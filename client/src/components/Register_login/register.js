@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import FormField from "../utils/Form/formfield";
-import { update, generateData, isFormValid } from "../utils/Form/formActions";
+import { update, generateData, isFormValid, populateOptionFields } from "../utils/Form/formActions";
 
 import {
   FormControl,
@@ -13,11 +13,11 @@ import {
   Paper,
   Button,
   FormHelperText,
-  Typography
+  Typography,
 } from "@material-ui/core";
 
 import { connect } from "react-redux";
-import { loginUser } from "../../actions/user_actions";
+import { getDepartments } from "../../actions/user_actions";
 
 const styles = {
   container: {
@@ -32,6 +32,7 @@ const styles = {
 
 class Register extends Component {
   state = {
+    
     formError: false,
     formErrorMessage: "",
     formSuccess: "",
@@ -114,15 +115,15 @@ class Register extends Component {
         validationMessage: ""
       },
       dateOfBirth: {
-        element: "input",
-        value: "1970-01-01",
+        element: "date",
+        value: "",
         config: {
           label: "ວ.ດ.ປ ເກີດ",
-          name: "email_input",
-          type: "date",
+          name: "date_of_birth_input",
+          type: "date"
         },
         validation: {
-          required: true,
+          required: true
         },
         valid: false,
         touched: false,
@@ -130,7 +131,7 @@ class Register extends Component {
       },
       gender: {
         element: "radio",
-        value: "",
+        value: "5cb2c97c1331746efcc3b1fb",
         config: {
           name: "gender_radio",
           options: [
@@ -139,15 +140,32 @@ class Register extends Component {
           ]
         },
         validation: {
-          required: true,
+          required: true
         },
         valid: false,
         touched: false,
         validationMessage: ""
+      },
+      department: {
+        element: "select",
+        value: "",
+        config: {
+          label: "ພາກວິຊາ",
+          name: "department_select",
+          options: [],
+          labelWidth: 50
+        },
+        validation: {
+          required: true
+        },
+        valid: false,
+        touched: false,
+        validationMessage: "",
+        showlabel: true
       }
-    },
-    
+    }
   };
+
 
   updateForm = element => {
     const newFormdata = update(element, this.state.formdata, "login");
@@ -160,42 +178,48 @@ class Register extends Component {
   submitForm = event => {
     event.preventDefault();
 
-    let dataToSubmit = generateData(this.state.formdata, "login");
-    let formIsValid = isFormValid(this.state.formdata, "login");
+    let dataToSubmit = generateData(this.state.formdata, "register");
+    let formIsValid = isFormValid(this.state.formdata, "register");
 
     if (formIsValid) {
-      this.props.dispatch(loginUser(dataToSubmit)).then(response => {
-        if (response.payload.loginSuccess) {
-          console.log(response.payload);
-          this.props.history.push("/");
-        } else {
-          this.setState({
-            formError: true,
-            formErrorMessage: response.payload.message
-          });
-        }
-      });
+      console.log(dataToSubmit)
     } else {
       this.setState({
         formError: true,
-        formErrorMessage: "ອີເມລ ຫລື ລະຫັດບໍ່ຖືກຕ້ອງ, ກະລຸນາກວດສອບຂໍ້ມູນຄືນ"
+        formErrorMessage: "ມີບາງຢ່າງກະລຸນາກວດສອບຂໍ້ມູນຄືນ"
       });
     }
   };
 
   handleChange = event => {
     const newFormdata = {
-        ...this.state.formdata
-      };
+      ...this.state.formdata
+    };
     const newElement = {
-        ...newFormdata["gender"]
-      };
-      newElement.value = event.target.value;
-      newFormdata["gender"] = newElement
+      ...newFormdata["gender"]
+    };
+    newElement.value = event.target.value;
+    newFormdata["gender"] = newElement;
 
-    this.setState({ newFormdata})
-    console.log(newFormdata)
+    this.setState({ formdata: newFormdata });
+    console.log(this.state.formdata.gender.value);
   };
+
+  updateFields = (newFormdata) => {
+    this.setState({
+      formdata: newFormdata
+    })
+  }
+
+  componentDidMount() {
+    const formdata = this.state.formdata
+
+    this.props.dispatch(getDepartments()).then(response=>{
+      const newFormdata = populateOptionFields(formdata, this.props.user.departments, 'department')
+
+      this.updateFields(newFormdata)
+    })
+  }
 
   render() {
     return (
@@ -211,85 +235,129 @@ class Register extends Component {
               <Typography style={styles.font} variant="h6" component="h3">
                 ລົງຊື່ເຂົ້າໃຊ້
               </Typography>
-              <Grid container>
-                <Grid item xs={12}>
-                  <FormControl>
-                    <Typography
-                      style={{
-                        fontFamily: "'Noto Sans Lao UI', sans-serif",
-                        fontWeight: "normal",
-                        fontSize: "1rem"
-                      }}
-                    >
-                      ເພດ
-                    </Typography>
-                    <FormField
-                      id={"gender"}
-                      formdata={this.state.formdata.gender}
-                      change={element => this.updateForm(element)}
+              <Grid item xs={12} style={{ marginTop: "14px" }}>
+                <FormControl margin="none">
+                  <Typography
+                    style={{
+                      fontFamily: "'Noto Sans Lao UI', sans-serif",
+                      fontWeight: "normal",
+                      fontSize: "1rem"
+                    }}
+                  >
+                    ເພດ
+                  </Typography>
+
+                  <RadioGroup
+                    aria-label="position"
+                    name="position"
+                    value={this.state.value}
+                    onChange={this.handleChange}
+                    row
+                  >
+                    <FormControlLabel
+                      value="5cb2c97c1331746efcc3b1fb"
+                      control={
+                        <Radio
+                          color="primary"
+                          checked={this.state.formdata.gender.value}
+                        />
+                      }
+                      label="ຊາຍ"
+                      labelPlacement="end"
                     />
-                    <RadioGroup
-                      aria-label="position"
-                      name="position"
-                      value={this.state.value}
-                      onChange={this.handleChange}
-                      row
-                    >
-                      <FormControlLabel
-                        value="5cb2c97c1331746efcc3b1fb"
-                        control={<Radio color="primary" />}
-                        label="ຊາຍ"
-                        labelPlacement="end"
-                        
-                      />
-                      <FormControlLabel
-                        value="5cb2c98e1331746efcc3b1fd"
-                        control={<Radio color="primary" />}
-                        label="ຍິງ"
-                        labelPlacement="end"
-                      />
-                    </RadioGroup>
-                  </FormControl>
-                </Grid>
-                <Grid container spacing={24}>
-                  <Grid item xs={6}>
-                    <FormField
-                      id={"name"}
-                      formdata={this.state.formdata.name}
-                      change={element => this.updateForm(element)}
+                    <FormControlLabel
+                      value="5cb2c98e1331746efcc3b1fd"
+                      control={<Radio color="primary" />}
+                      label="ຍິງ"
+                      labelPlacement="end"
                     />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <FormField
-                      id={"lastname"}
-                      formdata={this.state.formdata.lastname}
-                      change={element => this.updateForm(element)}
-                    />
-                  </Grid>
-                </Grid>
-                <Grid item xs={12}>
+                  </RadioGroup>
+                </FormControl>
+              </Grid>
+              <Grid container spacing={24}>
+                <Grid item xs={6}>
                   <FormField
-                    id={"email"}
-                    formdata={this.state.formdata.email}
+                    id={"name"}
+                    formdata={this.state.formdata.name}
                     change={element => this.updateForm(element)}
                   />
                 </Grid>
-                <Grid container spacing={24}>
-                  <Grid item xs={6}>
-                    <FormField
-                      id={"dateOfBirth"}
-                      formdata={this.state.formdata.dateOfBirth}
-                      change={element => this.updateForm(element)}
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <FormField
-                      id={"lastname"}
-                      formdata={this.state.formdata.lastname}
-                      change={element => this.updateForm(element)}
-                    />
-                  </Grid>
+                <Grid item xs={6}>
+                  <FormField
+                    id={"lastname"}
+                    formdata={this.state.formdata.lastname}
+                    change={element => this.updateForm(element)}
+                  />
                 </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <FormField
+                  id={"email"}
+                  formdata={this.state.formdata.email}
+                  change={element => this.updateForm(element)}
+                />
+              </Grid>
+              <Grid container spacing={24}>
+                <Grid item xs={6}>
+                  <FormField
+                    id={"dateOfBirth"}
+                    formdata={this.state.formdata.dateOfBirth}
+                    change={element => this.updateForm(element)}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <FormField
+                    labelWidth = {this.state.formdata.department.config.labelWidth}
+                    id={"department"}
+                    formdata={this.state.formdata.department}
+                    change={element => this.updateForm(element)}
+                  />
+                </Grid>
+              </Grid>
+              <Grid container spacing={24}>
+                      
+              </Grid>
+              {this.state.formError ? (
+                <FormHelperText
+                  style={{
+                    fontFamily: "'Noto Sans Lao UI', sans serif",
+                    fontWeight: "600",
+                    marginBottom: "8px",
+                    marginTop: "8px"
+                  }}
+                  error
+                  id="component-error-text"
+                >
+                  {this.state.formErrorMessage}
+                </FormHelperText>
+              ) : null}
+
+              <Grid container spacing={24}>
+              <Grid
+                item
+                xs={6}
+                align="left"
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                <Link
+                  href="/login"
+                  color="primary"
+                  style={{ fontWeight: "600" }}
+                >
+                  ລົງຊື່ເຂົ້າໃຊ້ແທນ
+                </Link>
+              </Grid>
+
+              <Grid item xs={6} align="right">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  href="/register"
+                  onClick={event => this.submitForm(event)}
+                >
+                  ຕໍ່ໄປ
+                </Button>
+              </Grid>
               </Grid>
             </Paper>
           </Grid>
@@ -300,4 +368,10 @@ class Register extends Component {
   }
 }
 
-export default connect()(Register);
+const mapStateToProps = (state) => {
+  return {
+    user: state.user
+  }
+}
+
+export default connect(mapStateToProps)(Register);
