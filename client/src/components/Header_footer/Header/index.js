@@ -50,6 +50,8 @@ const styles = theme => ({
       marginLeft: theme.spacing.unit * 3,
       width: "auto"
     },
+    flexGrow: '0.2',
+    height: '45px'
   },
   searchIcon: {
     width: theme.spacing.unit * 9,
@@ -64,6 +66,8 @@ const styles = theme => ({
   inputRoot: {
     color: "inherit",
     width: "100%", 
+    height: '45px',
+    
   },
   inputInput: {
     paddingTop: theme.spacing.unit,
@@ -73,8 +77,9 @@ const styles = theme => ({
     transition: theme.transitions.create("width"),
     width: "100%",
     [theme.breakpoints.up("md")]: {
-      width: 200
-    }
+      width: 200,
+    },
+    flexGrow: '1',
   },
   sectionDesktop: {
     display: "none",
@@ -165,8 +170,8 @@ class Header extends Component {
     );
     return (
       <div className={classes.root}>
-        <AppBar position="static" color="white" style={{boxShadow: '0px 2px 2px 0px rgba(0,0,0,0.1)'}}>
-          <Toolbar variant="dense">
+        <AppBar position="fixed" color="default" style={{boxShadow: '0px 2px 2px 0px rgba(0,0,0,0.1)', backgroundColor: 'white'}}>
+          <Toolbar variant="regular" style={{height: "64px"}}>
             <IconButton
               className={classes.menuButton}
               color="inherit"
@@ -182,7 +187,8 @@ class Header extends Component {
             >
               FNS Researcher Profiles
             </Typography>
-            <div className={classes.search} >
+            
+            <div className={classes.search}>
               <div className={classes.searchIcon}>
                 <SearchIcon />
               </div>
@@ -197,7 +203,7 @@ class Header extends Component {
                 }}
               />
             </div>
-            <div className={classes.grow} />
+            <div className={classes.grow}></div>
             <div className={classes.sectionDesktop}>
               <IconButton color="inherit">
                 <Badge badgeContent={4} color="secondary">
@@ -226,6 +232,7 @@ class Header extends Component {
               >
                 <MoreIcon />
               </IconButton>
+              
             </div>
           </Toolbar>
         </AppBar>

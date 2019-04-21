@@ -1,78 +1,89 @@
 @font-face {
-    font-family: "Noto Sans Lao UI";
-    src: url("../fonts/NotoSansLaoUI-Light.ttf");
-    font-weight: 300;
-    font-style: normal;
-  }
-  
-  @font-face {
-    font-family: "Noto Sans Lao UI";
-    src: url("../fonts/NotoSansLaoUI-ExtraLight.ttf");
-    font-weight: 200;
-    font-style: normal;
-  }
-  
-  @font-face {
-    font-family: "Noto Sans Lao UI";
-    src: url("../fonts/NotoSansLaoUI-Thin.ttf");
-    font-weight: 100;
-    font-style: normal;
-  }
-  
-  @font-face {
-    font-family: "Noto Sans Lao UI";
-    src: url("../fonts/NotoSansLaoUI-Regular.ttf");
-    font-weight: normal;
-    font-style: normal;
-  }
-  @font-face {
-    font-family: "Noto Sans Lao UI";
-    src: url("../fonts/NotoSansLaoUI-Medium.ttf");
-    font-weight: 500;
-    font-style: normal;
-  }
-  @font-face {
-    font-family: "Noto Sans Lao UI";
-    src: url("../fonts/NotoSansLaoUI-Bold.ttf");
-    font-weight: bold;
-    font-style: normal;
-  }
-  @font-face {
-    font-family: "Noto Sans Lao UI";
-    src: url("../fonts/NotoSansLaoUI-ExtraBold.ttf");
-    font-weight: 800;
-    font-style: normal;
-  }
-  
-  @font-face {
-    font-family: "Noto Sans Lao UI";
-    src: url("../fonts/NotoSansLaoUI-Black.ttf");
-    font-weight: 900;
-    font-style: normal;
-  }
-  
-  body {
-    margin: 0;
-    padding: 0;
-    font-family: "Noto Sans Lao UI", sans-serif;
-    color: #404040;
-    background-color: #f8f8f8
-  }
+  font-family: "Noto Sans Lao UI";
+  src: url("../fonts/NotoSansLaoUI-Light.ttf");
+  font-weight: 300;
+  font-style: normal;
+}
 
-  .page_container {
-    min-height: 75vh;
-    padding: 8px;
-   
-  }
+@font-face {
+  font-family: "Noto Sans Lao UI";
+  src: url("../fonts/NotoSansLaoUI-ExtraLight.ttf");
+  font-weight: 200;
+  font-style: normal;
+}
 
-  .center_vertical_and_horizontal {
-    /* position: absolute; */
-    /* left: 50%;
+@font-face {
+  font-family: "Noto Sans Lao UI";
+  src: url("../fonts/NotoSansLaoUI-Thin.ttf");
+  font-weight: 100;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Noto Sans Lao UI";
+  src: url("../fonts/NotoSansLaoUI-Regular.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Noto Sans Lao UI";
+  src: url("../fonts/NotoSansLaoUI-Medium.ttf");
+  font-weight: 500;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Noto Sans Lao UI";
+  src: url("../fonts/NotoSansLaoUI-Bold.ttf");
+  font-weight: bold;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Noto Sans Lao UI";
+  src: url("../fonts/NotoSansLaoUI-ExtraBold.ttf");
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Noto Sans Lao UI";
+  src: url("../fonts/NotoSansLaoUI-Black.ttf");
+  font-weight: 900;
+  font-style: normal;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Noto Sans Lao UI", sans-serif;
+  color: #404040;
+  background-color: #f8f8f8;
+}
+
+.page_container {
+  min-height: 75vh;
+  padding-top: 64px
+}
+
+.center_vertical_and_horizontal {
+  /* position: absolute; */
+  /* left: 50%;
      */
-     position: absolute;
+  position: absolute;
   left: 50%;
-  top: 20%;
+  top: 100px;
   transform: translate(-50%, 0%);
-    min-width: 350px;
-    
-  }
+  min-width: 350px;
+  margin-bottom: 60px
+}
+
+input {
+  font-family: "Noto Sans Lao UI", sans-serif !important;
+}
+
+label {
+  font-family: "Noto Sans Lao UI", sans-serif !important;
+}
+
+span {
+  font-family: "Noto Sans Lao UI", sans-serif !important;
+}

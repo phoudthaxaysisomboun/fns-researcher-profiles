@@ -1,28 +1,23 @@
 import React, { Component } from "react";
-
+import FormField from "../utils/Form/formfield";
+import { update, generateData, isFormValid } from "../utils/Form/formActions";
 import {
-  Paper,
-  Typography,
   FormControl,
-  InputLabel,
-  Input,
-  FormHelperText,
   Link,
-  TextField,
   Grid,
-  Button
+  Button,
+  FormHelperText
 } from "@material-ui/core";
 
-const styles = {
-  font: { fontFamily: "'Noto Sans Lao UI', sans-serif !importtant", fontWeight: "500" },
-  formControl: {
-    margin: "8px"
-  }
-};
+import { withRouter } from "react-router-dom";
+
+import { connect } from "react-redux";
+import { loginUser } from "../../actions/user_actions";
 
 class Login extends Component {
   state = {
     formError: false,
+    formErrorMessage: "ອີເມລ ຫລື ລະຫັດບໍ່ຖືກຕ້ອງ, ກະລຸນາກວດສອບຂໍ້ມູນຄືນ",
     formSuccess: "",
     formdata: {
       email: {
@@ -47,7 +42,7 @@ class Login extends Component {
         config: {
           label: "ລະຫັດຜ່ານ",
           name: "password_input",
-          type: "password",
+          type: "password"
         },
         validation: {
           required: true
@@ -59,61 +54,115 @@ class Login extends Component {
     }
   };
 
+  updateForm = element => {
+    const newFormdata = update(element, this.state.formdata, "login");
+    this.setState({
+      formError: false,
+      formdata: newFormdata
+    });
+  };
+
+  submitForm = event => {
+    event.preventDefault();
+
+    let dataToSubmit = generateData(this.state.formdata, "login");
+    let formIsValid = isFormValid(this.state.formdata, "login");
+
+    if (formIsValid) {
+      this.props.dispatch(loginUser(dataToSubmit)).then(response => {
+        if (response.payload.loginSuccess) {
+          console.log(response.payload);
+          this.props.history.push("/");
+        } else {
+          this.setState({
+            formError: true,
+            formErrorMessage: response.payload.message
+          });
+        }
+      });
+    } else {
+      this.setState({
+        formError: true,
+        formErrorMessage: "ອີເມລ ຫລື ລະຫັດບໍ່ຖືກຕ້ອງ, ກະລຸນາກວດສອບຂໍ້ມູນຄືນ"
+      });
+    }
+  };
+
+  componentDidMount() {
+    document.title = "ລົງຊື່ເຂົ້າໃຊ້ - FNS Researcher Profiles";
+  }
+
   render() {
     return (
       <div>
-        <FormControl fullWidth >
-          <TextField
-            id={"email"}
-            value={this.state.formdata.email.value}
-            {...this.state.formdata.email.config}
-            label={this.state.formdata.email.config.label}
-            style={styles.font}
-            margin="normal"
-            variant="outlined"
-            // onChange={(element) => this.updateForm(element)}
-          />
-          <TextField
-            id={"password"}
-            style={styles.font}
-            margin="normal"
-            variant="outlined"
-            {...this.state.formdata.password.config}
-            // onChange={(element) => this.updateForm(element)}
-          />
-        </FormControl>
-       
-        <Grid container spacing={0}>
-          <Grid item xs={3}>
-          <Link href="/register" color="primary" style={{paddingBottom: '0'}}>
-          {'color="inherit"'}
-            </Link>
-          </Grid>
-          <Grid item xs={3} justify="flex-end">
-            
-          </Grid>
-          <Grid item xs={3} justify="flex-end">
-           
-          </Grid>
-          <Grid item xs={3} justify="flex-end">
-            <Button variant="contained" color="primary" href="/register">
-              Link
-            </Button>
-          </Grid>
-         
-        </Grid>
-        <Grid container spacing={24}>
-        <Grid item xs={12}>
-        <Link
-      onClick={() => this.props.history.push('/reset_user')}>
-        Forgot my password
-      </Link>
-        </Grid>
-        </Grid>
-        
+        <form onSubmit={event => this.submitForm(event)}>
+          <FormControl fullWidth>
+            <FormField
+              id={"email"}
+              formdata={this.state.formdata.email}
+              change={element => this.updateForm(element)}
+            />
+            <FormField
+              id={"password"}
+              formdata={this.state.formdata.password}
+              change={element => this.updateForm(element)}
+            />
+            {this.state.formError ? (
+              <FormHelperText
+                style={{
+                  fontFamily: "'Noto Sans Lao UI', sans serif",
+                  fontWeight: "600",
+                  marginBottom: "8px",
+                  marginTop: "8px"
+                }}
+                error
+                id="component-error-text"
+              >
+                {this.state.formErrorMessage}
+              </FormHelperText>
+            ) : null}
+            <Grid container spacing={0} justify="center">
+              <Grid
+                item
+                xs={6}
+                align="left"
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                <Link
+                  href="/register"
+                  color="primary"
+                  style={{ fontWeight: "600" }}
+                >
+                  ສະຫມັກສະມາຊິກ
+                </Link>
+              </Grid>
+
+              <Grid item xs={6} align="right">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  href="/register"
+                  onClick={event => this.submitForm(event)}
+                >
+                  ຕໍ່ໄປ
+                </Button>
+              </Grid>
+            </Grid>
+            <Grid
+              container
+              spacing={24}
+              style={{ marginTop: "12px", fontSize: "14px" }}
+              align="right"
+            >
+              <Grid item xs={12}>
+                <Link href="/reset_user">ລືມລະຫັດຜ່ານ?</Link>
+              </Grid>
+            </Grid>
+          </FormControl>
+        </form>
       </div>
     );
   }
 }
 
-export default Login;
+export default connect()(withRouter(Login));

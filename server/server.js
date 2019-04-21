@@ -284,7 +284,7 @@ app.post('/api/users/pre-register',(req,res)=>{
 app.post('/api/users/login', (req, res)=>{
     // find the email
     User.findOne({'email': req.body.email}, (err, user)=>{
-        if(!user) return res.json({loginSuccess: false, message: 'ບໍ່ມີອີເມລນີ້ໃນລະບົບ, ກະລຸນາລົງທະບຽນກ່ອນ'})
+        if(!user) return res.json({loginSuccess: false, message: 'ອີເມລ ຫລື ລະຫັດບໍ່ຖືກຕ້ອງ, ກະລຸນາກວດສອບຂໍ້ມູນຄືນ'})
 
         if (!user.emailIsVerified) return res.json({loginSuccess: false, message: 'ອີເມລນີ້ຍັງບໍ່ໄດ້ຮັບການຢືນຢັນ, ກະລຸນາກວດສອບອີເມລຂອງທ່ານແລ້ວທໍາການຢືນຢັນ'})
 
