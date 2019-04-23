@@ -10,6 +10,11 @@ import {
 import {
   FormControl,
   FormLabel,
+  DialogActions,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
   IconButton,
   RadioGroup,
   Link,
@@ -43,7 +48,7 @@ class Register extends Component {
     type: "input",
     formError: false,
     formErrorMessage: "ມີບາງຂໍ້ມູນບໍ່ຖືກຕ້ອງກະລຸນາກວດສອບຂໍ້ມູນຄືນ",
-    formSuccess: "",
+    formSuccess: false,
     formdata: {
       name: {
         element: "input",
@@ -116,7 +121,7 @@ class Register extends Component {
         },
         validation: {
           required: true,
-          confirm: "password"
+          confirm: 'password'
         },
         valid: false,
         touched: false,
@@ -241,7 +246,7 @@ class Register extends Component {
 
     let dataToSubmit = generateData(this.state.formdata, "register");
     let formIsValid = isFormValid(this.state.formdata, "register");
-    if (formIsValid) {
+    if (formIsValid && this.state.formdata.password.value.trim() === this.state.formdata.confirmPassword.value.trim()) {
       const newDataToSubmit = {
         ...dataToSubmit,
         affiliation: {
@@ -261,22 +266,22 @@ class Register extends Component {
               formError: false,
               formSuccess: true
             });
-            setTimeout(() => {
-              this.props.history.push("/");
-            }, 3000);
+            // setTimeout(() => {
+            //   this.props.history.push("/");
+            // }, 6000);
           } else {
             console.log(response.payload);
             this.setState({
               formError: true,
               formErrorMessage:
-                "ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດສະຫມັກສະຫມັກສະມາຊິກໄດ້"
+                "ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດສະຫມັກສະມາຊິກໄດ້"
             });
           }
         })
         .catch(e => {
           this.setState({
             formError: true,
-            formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດສະຫມັກສະຫມັກສະມາຊິກໄດ້ (error: ${e})`
+            formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດສະຫມັກສະມາຊິກໄດ້ (error: ${e})`
           });
         });
     } else {
@@ -299,6 +304,10 @@ class Register extends Component {
 
     this.setState({ formdata: newFormdata });
   };
+
+  handleClose = event => {
+    this.props.history.push("/")
+  }
 
   updateFields = newFormdata => {
     this.setState({
@@ -545,6 +554,21 @@ class Register extends Component {
           </Grid>
           <Grid item lg md sm xs />
         </Grid>
+
+        <Dialog open={this.state.formSuccess} maxWidth="sm">
+          <DialogTitle style={{paddingBottom: "8px"}}><span style={{fontFamily: "'Noto Sans Lao UI', sans serif !important", fontWeight: 600}}>ຢືນຢັນອີເມລ</span></DialogTitle>
+          <DialogContent>
+            <DialogContentText style={{fontFamily: "'Noto Sans Lao UI', sans serif", fontWeight: 500}}>
+              ພວກເຮົາໄດ້ສົ່ງອີເມລໄປທີ່ <span style={{fontFamily: "'Noto Sans Lao UI', sans serif", fontWeight: "bold"}}>{this.state.formdata.email.value}</span> ກະລຸນາກວດສອບອີເມລຂອງທ່ານແລ້ວປະຕິບັດຕາມຂັ້ນຕອນເພື່ອທໍາການຢືນຢັນບັນຊີຂອງທ່ານ
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button style={{fontFamily: "'Noto Sans Lao UI', sans serif", fontWeight: 'bold'}} onClick={this.handleClose} color="primary">
+              ຕົກລົງ
+            </Button>
+            
+          </DialogActions>
+        </Dialog>
       </form>
     );
   }
