@@ -65,6 +65,8 @@ export const isFormValid = (formdata, formName) => {
 
   for (let key in formdata) {
     formIsValid = formdata[key].valid && formIsValid;
+    if (key === 'gender') {formIsValid = true}
+    console.log(`${key} = ${formIsValid} `)
   }
 
   return formIsValid;
