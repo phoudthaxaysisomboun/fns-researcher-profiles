@@ -62,6 +62,10 @@ class Login extends Component {
     });
   };
 
+  handleRegisterClick = () =>{
+    this.props.history.push("/register")
+  }
+
   submitForm = event => {
     event.preventDefault();
 
@@ -129,11 +133,12 @@ class Login extends Component {
                 style={{ display: "flex", alignItems: "center" }}
               >
                 <Link
-                  href="/register"
                   color="primary"
                   style={{ fontWeight: "600" }}
+                  onClick={this.handleRegisterClick}
                 >
-                  ສະຫມັກສະມາຊິກ
+                ສະຫມັກສະມາຊິກ
+                  
                 </Link>
               </Grid>
 

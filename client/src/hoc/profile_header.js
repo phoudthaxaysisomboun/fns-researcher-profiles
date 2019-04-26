@@ -32,7 +32,8 @@ import {
   PersonAddOutlined,
   CheckOutlined,
   AddOutlined,
-  EditOutlined
+  EditOutlined,
+  ReplyOutlined
 } from "@material-ui/icons";
 
 const iconStyles = {
@@ -44,7 +45,21 @@ const iconStyles = {
 };
 
 const ProfileHeader = props => {
-  const { width } = props;
+  const userData = {...props.user.userData}
+  const profile = {...props.user.userDetail}
+  const facebook = {...profile.facebook}
+  var isOwner = false
+  const isAuth = userData.isAuth
+
+  console.log(facebook)
+
+  if (isAuth) {
+    if (userData._id === profile._id){
+      isOwner = true
+    } else {
+      isOwner = false
+    }
+  }
   return (
     <Grid container>
       <Grid item xs={12}>
@@ -62,14 +77,15 @@ const ProfileHeader = props => {
                 </Grid>
                 <Grid item lg={5} md={5} sm={8} xs={12} style={{padding: "left"}}>
                   <Typography
+                  variant="inherit"
                     style={{
                       fontFamily: "'Noto Sans Lao UI', sans serif",
                       fontWeight: 700,
                       fontSize: "24px"
                     }}
                   >
-                    {"ທ່ານ"} {"ພຸດທະໄຊ"} {"ສີສົມບູນ"}
-                    {true ? (
+                    {profile.prefix} {profile.name} {profile.lastname}
+                    {isOwner ? (
                       <span>
                         <IconButton style={{ padding: "4px", margin: "4px" }}>
                           <EditOutlined style={{ fontSize: "16px" }} />
@@ -78,11 +94,11 @@ const ProfileHeader = props => {
                     ) : null}
                   </Typography>
 
-                  {true ? (
-                    <Typography variant="h7" style={{ marginBottom: "8px" }}>
-                      <span style={{ fontWeight: "bold" }}>ວຸດທິການສຶກສາ:</span>
-                      {" ປະລິນຍາເອກ"}
-                      {true ? (
+                  {profile.degree ? (
+                    <Typography variant="inherit">
+                      <span style={{ fontWeight: "bold" }}>ວຸດທິການສຶກສາ: </span>
+                      {profile.degree}
+                      {isOwner ? (
                         <span>
                           <IconButton style={{ padding: "4px", margin: "4px" }}>
                             <EditOutlined style={{ fontSize: "16px" }} />
@@ -91,15 +107,16 @@ const ProfileHeader = props => {
                       ) : null}
                     </Typography>
                   ) : null}
-                  {true ? (
+                  <div style={{height: "16px"}}></div>
+                  {profile.email ? (
                     <Link
-                      href="mailto:xigh1952@gmail.com"
-                      style={{ color: "#BA000D", marginTop: "8px" }}
+                      href={`mailto:${profile.email}`}
+                      style={{ color: "#BA000D"}}
                     >
-                      <Typography variant="body">
+                      <Typography variant="inherit">
                         <Mail style={iconStyles} />
-                        xigh1952@gmail.com
-                        {true ? (
+                        {profile.email}
+                        {isOwner ? (
                           <span>
                             <IconButton
                               style={{ padding: "4px", margin: "4px" }}
@@ -111,9 +128,9 @@ const ProfileHeader = props => {
                       </Typography>
                     </Link>
                   ) : null}
-                  {true ? (
-                    <Link style={{ color: "#1976D2" }}>
-                      <Typography variant="body">
+                  {facebook.name ? (
+                    <Link href={facebook.url} style={{ color: "#1976D2" }}>
+                      <Typography variant="inherit">
                         <svg
                           style={iconStyles}
                           aria-hidden="true"
@@ -123,16 +140,16 @@ const ProfileHeader = props => {
                           role="img"
                           xmlns="http://www.w3.org/2000/svg"
                           viewBox="0 0 448 512"
-                          class="svg-inline--fa fa-facebook fa-w-14 fa-2x"
+                          className="svg-inline--fa fa-facebook fa-w-14 fa-2x"
                         >
                           <path
                             fill="currentColor"
                             d="M448 56.7v398.5c0 13.7-11.1 24.7-24.7 24.7H309.1V306.5h58.2l8.7-67.6h-67v-43.2c0-19.6 5.4-32.9 33.5-32.9h35.8v-60.5c-6.2-.8-27.4-2.7-52.2-2.7-51.6 0-87 31.5-87 89.4v49.9h-58.4v67.6h58.4V480H24.7C11.1 480 0 468.9 0 455.3V56.7C0 43.1 11.1 32 24.7 32h398.5c13.7 0 24.8 11.1 24.8 24.7z"
-                            class=""
+                            className=""
                           />
                         </svg>
-                        Phoudthaxay Sisomboun
-                        {true ? (
+                        {facebook.name}
+                        {isOwner ? (
                           <span>
                             <IconButton
                               style={{ padding: "4px", margin: "4px" }}
@@ -144,10 +161,10 @@ const ProfileHeader = props => {
                       </Typography>
                     </Link>
                   ) : null}
-                  {true ? (<Link href="tel:02076697480" style={{ color: "#2E7D32" }}>
-                  <Typography variant="body">
+                  {profile.mobile ? (<Link href={`tel:{$profile.mobile}`} style={{ color: "#2E7D32" }}>
+                  <Typography variant="inherit">
                     <Phone style={iconStyles} />
-                    020 76697480{true ? (
+                    {profile.mobile}{isOwner ? (
                       <span>
                         <IconButton
                           style={{ padding: "4px", margin: "4px" }}
@@ -166,10 +183,10 @@ const ProfileHeader = props => {
                     color="primary"
                     style={{ margin: "8px" }}
                   >
-                    <ShareOutlined style={{ marginRight: "8px" }} />
+                    <ReplyOutlined style={{ marginRight: "8px", transform: "rotateY(180deg)" }} />
                     ແບ່ງປັນ
                   </Button>
-                  {true ? (
+                  {isOwner ? (
                     <Fab
                       size="medium"
                       variant="extended"
@@ -179,7 +196,7 @@ const ProfileHeader = props => {
                       <AddOutlined style={{ marginRight: "8px" }} />
                       ເພີ່ມຜົນງານ
                     </Fab>
-                  ) : (
+                  ) : 
                     <Button
                       size="medium"
                       variant="contained"
@@ -189,7 +206,7 @@ const ProfileHeader = props => {
                       <PersonAddOutlined style={{ marginRight: "8px" }} />
                       ຕິດຕາມ
                     </Button>
-                  )}
+                  }
                 </Grid>
               </Grid>
             </Grid>
@@ -216,10 +233,12 @@ const ProfileHeader = props => {
                   style={{ fontSize: "14px", fontWeight: 500 }}
                   label="ຜົນງານຄົ້ນຄວ້າ"
                 />
-                <Tab
+                {
+                  isOwner ? <Tab
                   style={{ fontSize: "14px", fontWeight: 500 }}
                   label="ສະຖິຕິ"
-                />
+                /> : null
+                }
               </Tabs>
             </Grid>
           </Grid>

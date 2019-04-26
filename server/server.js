@@ -24,6 +24,7 @@ const { Desipline } = require('./models/desipline')
 const { Subdesipline } = require('./models/subdesipline')
 const { Country } = require('./models/country')
 const { Department } = require('./models/department')
+const { Faculty } = require('./models/faculty')
 
 // Middlewares
 const { auth } = require('./middleware/auth')
@@ -243,6 +244,7 @@ app.get('/api/users/auth', auth, (req,res)=>{
     res.status(200).json({
         isAdmin: req.user.role === 0 ? false : true,
         isAuth: true,
+        _id: req.user._id,
         email: req.user.email,
         gender: req.user.gender,
         name: req.user.name,
@@ -368,6 +370,12 @@ app.get('/api/researchers/profiles_by_id', (req,res)=>{
     }).
     populate({
         path: 'affiliation.institution',
+    }).
+    populate({
+        path: 'affiliation.department',
+    }).
+    populate({
+        path: 'affiliation.faculty',
     }).
     populate({
         path: 'placeOfBirth.country'
