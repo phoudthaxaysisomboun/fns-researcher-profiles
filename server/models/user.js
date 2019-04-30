@@ -61,7 +61,8 @@ const userSchema = mongoose.Schema({
     },
     profileDescription: {
         type: String,
-        default: ''
+        default: '',
+        maxlength: 240
     },
     affiliation: {
         institution: {type: Schema.Types.ObjectId, default: '5c8fcd398b7ae6cfecf5796e', ref: 'Institution', required: true},

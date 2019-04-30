@@ -1,13 +1,33 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
+import { Fab } from "@material-ui/core";
+import { AddOutlined } from "@material-ui/icons";
+
+const fabStyle = {
+    margin: 0,
+    top: "auto",
+    right: 20,
+    bottom: 20,
+    left: "auto",
+    position: "fixed"
+}
 
 class Feed extends Component {
-    render() {
-        return (
-            <div>
-                Feed
-            </div>
-        );
-    }
+  render() {
+    return (
+      <div>
+
+        <Fab
+          size="large"
+          variant="extended"
+          color="primary"
+          style={fabStyle}
+        >
+          <AddOutlined style={{ marginRight: "8px" }} />
+          ເພີ່ມ
+        </Fab>
+      </div>
+    );
+  }
 }
 
 export default Feed;

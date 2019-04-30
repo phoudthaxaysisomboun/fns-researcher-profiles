@@ -3,6 +3,9 @@ import ProfileHeader from "../../hoc/profile_header";
 import { connect } from "react-redux";
 
 import AffiliationCard from "../User/Card/affiliation";
+import MiniStatsCard from "../User/Card/mini_stats";
+import IntroductionCard from "../User/Card/introduction";
+import ResearchaAreaCard from "../User/Card/research_area";
 
 import {
   FormControl,
@@ -54,16 +57,18 @@ class ProfileOverview extends Component {
           spaciing={24}
           style={{ margin: "16px", marginTop: "26px" }}
         >
-        <Grid item xs></Grid>
-          <Grid item xs={4} style = {{marginRight: "8px"}}>
-            <Paper>
-              <Typography variant="inherit">test</Typography>
-            </Paper>
+          <Grid item xs />
+          <Grid item xs={4} style={{ marginRight: "8px" }}>
+            <IntroductionCard {...this.props}/>
+            <div style={{ height: "16px" }} />
+            <ResearchaAreaCard {...this.props}  />
+            <div style={{ height: "16px" }} />
+            <MiniStatsCard />
           </Grid>
-          <Grid item xs={3} style = {{marginLeft: "8px"}}>
+          <Grid item xs={3} style={{ marginLeft: "8px" }}>
             <AffiliationCard {...this.props} />
           </Grid>
-          <Grid item xs></Grid>
+          <Grid item xs />
         </Grid>
       </ProfileHeader>
     );

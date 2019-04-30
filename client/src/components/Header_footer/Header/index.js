@@ -29,6 +29,7 @@ import AccountCircle from "@material-ui/icons/AccountCircleOutlined";
 import MailIcon from "@material-ui/icons/MailOutlined";
 import NotificationsIcon from "@material-ui/icons/NotificationsOutlined";
 import MoreIcon from "@material-ui/icons/MoreVertOutlined";
+import {ArrowDropDownOutlined} from "@material-ui/icons";
 import {
   SettingsOutlined,
   ExitToAppOutlined,
@@ -150,9 +151,9 @@ class Header extends Component {
       if (this.props.user.userData.isAuth) {
         return (
           <div>
+          <Link to={`/profile/${this.props.user.userData._id}`} style={{textDecoration: "none", outline: 0}}>
             <IconButton
               aria-haspopup="true"
-              onClick={this.handleProfileMenuOpen}
               color="inherit"
               style={{
                 padding: "8px",
@@ -165,16 +166,21 @@ class Header extends Component {
                 src="http://hespokestyle.com/wp-content/uploads/2017/04/navy-cotton-linen-blazer-tan-chinos-polo-shirt-mens-spring-fashion-trends-8-800x533.jpg"
               />
             </IconButton>
+            </Link>
 
-            <Fab
-              size="medium"
-              variant="extended"
-              color="primary"
-              style={{ margin: "8px" }}
+            <IconButton
+              aria-haspopup="true"
+              onClick={this.handleProfileMenuOpen}
+              color="inherit"
+              style={{
+                padding: "0px",
+                margin: 0
+              }}
             >
-              <AddOutlined style={{ marginRight: "8px" }} />
-              ເພີ່ມ
-            </Fab>
+              <ArrowDropDownOutlined />
+            </IconButton>
+
+            
           </div>
         );
       } else {
@@ -216,7 +222,7 @@ class Header extends Component {
               onClick={this.handleMenuClose}
             >
               <AccountCircle style={{ marginRight: "4px" }} />
-              ໂປຣຟາຍລ໌ຂອງຂ້ອຍ
+              {this.props.user.userData.name} {this.props.user.userData.lastname}
             </MenuItem>
           </Link>
         ) : null}

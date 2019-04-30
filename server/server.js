@@ -309,7 +309,7 @@ app.post('/api/users/login', (req, res)=>{
             if (!isMatch) return res.json({loginSuccess: false, message: 'ລະຫັດບໍ່ຖືກຕ້ອງ, ກະລຸນາກວດສອບຄືນໃຫມ່'})
 
             user.generateToken((err, user)=>{
-                if (err) return res.statusq(400).send(err)
+                if (err) return res.status(400).send(err)
                 res.cookie('w_auth', user.token).status(200).json({
                     loginSuccess: true
                 })

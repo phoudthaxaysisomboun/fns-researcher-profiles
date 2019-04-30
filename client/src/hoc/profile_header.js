@@ -63,7 +63,7 @@ const ProfileHeader = props => {
   return (
     <Grid container>
       <Grid item xs={12}>
-        <Paper style={{ paddingTop: "24px", borderRadius: 0 }}>
+        <Paper style={{ paddingTop: "24px", borderRadius: 0, boxShadow: "0px 2px 2px 0px rgba(0,0,0,0.1)", }}>
           <Grid container>
             <Grid item xs sm={1} lg={3} md={2} />
             <Grid item xs={10} sm={10} lg={6} md={8}>

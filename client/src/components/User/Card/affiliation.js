@@ -43,7 +43,7 @@ const AffiliationCard = props => {
             variant="inherit"
             style={{
               fontSize: "20px",
-              marginBottom: "12px",
+              marginBottom: "8px",
               fontWeight: "bold"
             }}
           >
@@ -56,7 +56,7 @@ const AffiliationCard = props => {
           </IconButton>
         </Grid>
       </Grid>
-      <Paper>
+      <Paper style={{boxShadow: "none", border:"1px solid #d8d8d8"}}>
         <Grid container spacing={8} style={{ padding: "16px" }}>
           <Grid item xs={8}>
             <Grid container>
