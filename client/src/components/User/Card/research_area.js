@@ -1,5 +1,5 @@
 import React from "react";
-import AutoLinkText from 'react-autolink-text2';
+import AutoLinkText from "react-autolink-text2";
 
 import {
   FormControl,
@@ -43,24 +43,20 @@ const iconStyles = {
 };
 
 const ResearchaAreaCard = props => {
+  const profile = { ...props.user.userDetail };
+  const user = { ...props.user.userData };
+  const researchArea = profile.researchArea;
 
-    const profile = { ...props.user.userDetail };
-    const researchArea = profile.researchArea
-    
+  var isOwner = false
+  const isAuth =  user.isAuth
 
-    
-    
-    const chipData = [
-      { key: 0, label: 'Angular' },
-      { key: 1, label: 'jQuery' },
-      { key: 2, label: 'Polymer' },
-      { key: 3, label: 'React' },
-      { key: 4, label: 'Vue.js' },
-    ]
-
-      console.log(chipData)
-      console.log(researchArea)
-      
+  if (isAuth) {
+    if (user._id === profile._id){
+      isOwner = true
+    } else {
+      isOwner = false
+    }
+  }
 
   return (
     <div>
@@ -78,24 +74,29 @@ const ResearchaAreaCard = props => {
           </Typography>
         </Grid>
         <Grid item xs={6} align="right">
-          <IconButton style={{ padding: "4px", margin: "4px" }}>
-            <EditOutlined fontSize="small" /> 
-          </IconButton>
+          {isOwner ? (
+            <IconButton style={{ padding: "4px", margin: "4px" }}>
+              <EditOutlined fontSize="small" />
+            </IconButton>
+          ) : null}
         </Grid>
       </Grid>
       <Paper style={{ boxShadow: "none", border: "1px solid #d8d8d8" }}>
-        <Grid container spacing={8} style={{ padding: "16px" }} >
-        { profile.researchArea ? profile.researchArea.map(data=>{
-          console.log(data)
-            return (<Chip style={{margin: "4px"}}
-                key={data.key}
-        
-                label={data.label}
-
-        variant="outlined"
-              />)
-        }) : null }
-        
+        <Grid container spacing={8} style={{ padding: "16px" }}>
+          {profile.researchArea
+            ? profile.researchArea.map((data, i) => {
+                console.log(data);
+                return (
+                  <Chip
+                    style={{ margin: "4px" }}
+                    key={i}
+                    label={data.label}
+                    variant="outlined"
+                    style={{ fontSize: "14px", margin: "4px" }}
+                  />
+                );
+              })
+            : null}
         </Grid>
       </Paper>
     </div>

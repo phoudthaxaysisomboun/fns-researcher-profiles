@@ -74,10 +74,13 @@ class Login extends Component {
 
     if (formIsValid) {
       this.props.dispatch(loginUser(dataToSubmit)).then(response => {
+        console.log(response)
         if (response.payload.loginSuccess) {
+          console.log(response)
           console.log(response.payload);
           this.props.history.push("/");
         } else {
+          console.log(response)
           this.setState({
             formError: true,
             formErrorMessage: response.payload.message
@@ -85,6 +88,7 @@ class Login extends Component {
         }
       });
     } else {
+      console.log(formIsValid)
       this.setState({
         formError: true,
         formErrorMessage: "ອີເມລ ຫລື ລະຫັດບໍ່ຖືກຕ້ອງ, ກະລຸນາກວດສອບຂໍ້ມູນຄືນ"

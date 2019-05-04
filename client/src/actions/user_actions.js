@@ -1,13 +1,16 @@
 import axios from "axios";
 
-import { LOGIN_USER, REGISTER_USER, GET_DEPARTMENTS, AUTH_USER, GET_USER_DETAIL, CLEAR_USER_DETAIL, LOGOUT_USER } from "./types";
+import { LOGIN_USER, REGISTER_USER, GET_DEPARTMENTS, AUTH_USER, GET_USER_DETAIL, CLEAR_USER_DETAIL, LOGOUT_USER, GET_FOLLOWING } from "./types";
 
 import { USER_SERVER, RESEARCHER } from "../components/utils/misc";
 
 export function loginUser(dataToSubmit) {
   const request = axios
     .post(`${USER_SERVER}/login`, dataToSubmit)
-    .then(response => response.data);
+    .then(response => response.data)
+    .catch(error => {
+      console.log(error.response)
+  })
 
   return {
     type: LOGIN_USER,
@@ -58,6 +61,15 @@ export function clearProfileDetail() {
   return {
     type: CLEAR_USER_DETAIL,
     payload: ''
+  }
+}
+
+export function getFollowing(id) {
+  const request = axios.get(`${RESEARCHER}/followings?id=${id}&type=array&sortBy=name&order=asc&limit=3`).then(response => response.data)
+
+  return {
+    type: GET_FOLLOWING,
+    payload: request
   }
 }
 

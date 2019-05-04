@@ -394,6 +394,78 @@ app.get('/api/researchers/profiles_by_id', (req,res)=>{
     })
 })
 
+app.get('/api/researchers/followings', (req,res)=>{
+    let order = req.query.order ? req.query.order : 'asc'
+    let sortBy = req.query.sortBy ? req.query.sortBy : 'name'
+    let limit = parseInt(req.query.limit)
+
+    let type = req.query.type
+    let items = req.query.id
+
+    if (type === "array") {
+        let ids = req.query.id.split(',')
+        items = []
+        items = ids.map(item=>{
+            return mongoose.Types.ObjectId(item)
+        })
+    }
+    User.
+    find({ '_id' : {$in: items}}).
+    sort([[sortBy, order]]).
+    limit(limit).
+    select('_id name lastname profileImage affiliation researchArea').
+    populate({
+        path: 'affiliation.institution',
+    }).
+    populate({
+        path: 'affiliation.department',
+    }).
+    populate({
+        path: 'affiliation.faculty',
+    }).
+    exec((err, following)=>{
+        if (err) return res.status(400).send(err)
+        res.status(200).send(following)
+    })
+    
+})
+
+app.get('/api/researchers/followers', (req,res)=>{
+    let order = req.query.order ? req.query.order : 'asc'
+    let sortBy = req.query.sortBy ? req.query.sortBy : 'name'
+    let limit = parseInt(req.query.limit)
+
+    let type = req.query.type
+    let items = req.query.id
+
+    if (type === "array") {
+        let ids = req.query.id.split(',')
+        items = []
+        items = ids.map(item=>{
+            return mongoose.Types.ObjectId(item)
+        })
+    }
+    User.
+    find({ '_id' : {$in: items}}).
+    sort([[sortBy, order]]).
+    limit(limit).
+    select('_id name lastname profileImage affiliation researchArea').
+    populate({
+        path: 'affiliation.institution',
+    }).
+    populate({
+        path: 'affiliation.department',
+    }).
+    populate({
+        path: 'affiliation.faculty',
+    }).
+    exec((err, follower)=>{
+        if (err) return res.status(400).send(err)
+        res.status(200).send(follower)
+    })
+    
+})
+
 const port = process.env.PORT || 3002
 
 app.listen(port,()=>{

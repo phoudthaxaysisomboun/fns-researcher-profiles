@@ -138,8 +138,8 @@ const userSchema = mongoose.Schema({
         description: {type: String}
     }],
     following: [{
-        type: Schema.Types.ObjectId,
-        ref: 'User'
+        _id: { type: Schema.Types.ObjectId, ref: 'User' },
+        createdAt: {type: Date}
     }],
     follower: [{
         type: Schema.Types.ObjectId,

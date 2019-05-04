@@ -6,9 +6,11 @@ import AffiliationCard from "../User/Card/affiliation";
 import MiniStatsCard from "../User/Card/mini_stats";
 import IntroductionCard from "../User/Card/introduction";
 import ResearchaAreaCard from "../User/Card/research_area";
+import FollowingCard from "../User/Card/following";
 
 import {
   FormControl,
+  Hidden,
   FormLabel,
   DialogActions,
   Dialog,
@@ -34,15 +36,30 @@ import {
 
 import {
   getProfileDetail,
-  clearProfileDetail
+  clearProfileDetail,
+  getFollowing
 } from "../../actions/user_actions";
 
 class ProfileOverview extends Component {
+
+
   componentDidMount() {
     const id = this.props.match.params.id;
+    var follower = []
+    var followerId = []
+
+
     console.log(id);
-    this.props.dispatch(getProfileDetail(id));
-    console.log(this.props);
+    this.props.dispatch(getProfileDetail(id)).then(response => {
+      follower = response.payload.following
+      for (var key in follower) {
+        followerId.push(follower[key]._id)
+      }
+      this.props.dispatch(getFollowing(followerId)).then(response => {
+        
+      })
+    })
+
   }
 
   componentWillUnmount() {
@@ -50,25 +67,43 @@ class ProfileOverview extends Component {
   }
 
   render() {
+
+    if (this.props.user.userDetail) {
+      document.title = `${this.props.user.userDetail.name} ${this.props.user.userDetail.lastname} - FNS Researcher Profiles`
+    }
     return (
       <ProfileHeader {...this.props}>
-        <Grid
-          container
-          spaciing={24}
-          style={{ margin: "16px", marginTop: "26px" }}
-        >
-          <Grid item xs />
-          <Grid item xs={4} style={{ marginRight: "8px" }}>
-            <IntroductionCard {...this.props}/>
-            <div style={{ height: "16px" }} />
-            <ResearchaAreaCard {...this.props}  />
-            <div style={{ height: "16px" }} />
-            <MiniStatsCard />
+        <Grid container spacing={24} style={{ margin: "8px" }}>
+          <Hidden only="sm">
+            <Grid item md={1} lg />
+          </Hidden>
+          <Grid item xs={12} lg={4} sm={6} md={5}>
+            <Grid container spacing={24}>
+              <Grid item xs={12}>
+                <IntroductionCard {...this.props} />
+              </Grid>
+
+              <Grid item xs={12}>
+                <ResearchaAreaCard {...this.props} />
+              </Grid>
+              <Grid item xs={12}>
+                <MiniStatsCard />
+              </Grid>
+            </Grid>
           </Grid>
-          <Grid item xs={3} style={{ marginLeft: "8px" }}>
-            <AffiliationCard {...this.props} />
+          <Grid item xs={12} lg={3} sm={6} md={5}>
+            <Grid container spacing={24}>
+              <Grid item xs={12}>
+                <AffiliationCard {...this.props} />
+              </Grid>
+              <Grid item xs={12}>
+                <FollowingCard userData = {this.props.user.userData} userDetail = {this.props.user.userDetail} userFollowing = {this.props.user.following} />
+              </Grid>
+            </Grid>
           </Grid>
-          <Grid item xs />
+          <Hidden only="sm">
+            <Grid item xs md={1} lg />
+          </Hidden>
         </Grid>
       </ProfileHeader>
     );
@@ -76,9 +111,11 @@ class ProfileOverview extends Component {
 }
 
 const mapStateToProps = state => {
+  
   return {
     userDetail: state.user
   };
+
 };
 
 export default connect(mapStateToProps)(ProfileOverview);

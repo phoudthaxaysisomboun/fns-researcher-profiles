@@ -72,8 +72,10 @@ const ProfileHeader = props => {
                   <Avatar
                     style={{ width: "96px", height: "96px" }}
                     alt="Remy Sharp"
-                    src="http://hespokestyle.com/wp-content/uploads/2017/04/navy-cotton-linen-blazer-tan-chinos-polo-shirt-mens-spring-fashion-trends-8-800x533.jpg"
-                  />
+                    srcSet="http://hespokestyle.com/wp-content/uploads/2017/04/navy-cotton-linen-blazer-tan-chinos-polo-shirt-mens-spring-fashion-trends-8-800x533.jpg"
+                  >
+                  <Button style={{zIndex: "100"}}> test</Button>
+                  </Avatar>
                 </Grid>
                 <Grid item lg={5} md={5} sm={8} xs={12} style={{padding: "left"}}>
                   <Typography
@@ -197,6 +199,10 @@ const ProfileHeader = props => {
                       ເພີ່ມຜົນງານ
                     </Fab>
                   ) : 
+                    null
+                  }
+                  {
+                    isAuth && !isOwner ?
                     <Button
                       size="medium"
                       variant="contained"
@@ -205,7 +211,7 @@ const ProfileHeader = props => {
                     >
                       <PersonAddOutlined style={{ marginRight: "8px" }} />
                       ຕິດຕາມ
-                    </Button>
+                    </Button> : null
                   }
                 </Grid>
               </Grid>
