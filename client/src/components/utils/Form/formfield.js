@@ -6,9 +6,6 @@ import {
   OutlinedInput,
   Select,
   InputLabel,
-  RadioGroup,
-  FormControlLabel,
-  Radio
 } from "@material-ui/core";
 
 const FormField = ({ formdata, change, id, labelWidth }) => {

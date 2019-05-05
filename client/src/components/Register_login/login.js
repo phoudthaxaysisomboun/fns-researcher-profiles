@@ -3,13 +3,13 @@ import FormField from "../utils/Form/formfield";
 import { update, generateData, isFormValid } from "../utils/Form/formActions";
 import {
   FormControl,
-  Link,
   Grid,
   Button,
-  FormHelperText
+  FormHelperText,
+  Typography
 } from "@material-ui/core";
 
-import { withRouter } from "react-router-dom";
+import { Link as ReactLink, withRouter } from "react-router-dom";
 
 import { connect } from "react-redux";
 import { loginUser } from "../../actions/user_actions";
@@ -62,10 +62,6 @@ class Login extends Component {
     });
   };
 
-  handleRegisterClick = () =>{
-    this.props.history.push("/register")
-  }
-
   submitForm = event => {
     event.preventDefault();
 
@@ -74,13 +70,9 @@ class Login extends Component {
 
     if (formIsValid) {
       this.props.dispatch(loginUser(dataToSubmit)).then(response => {
-        console.log(response)
         if (response.payload.loginSuccess) {
-          console.log(response)
-          console.log(response.payload);
           this.props.history.push("/");
         } else {
-          console.log(response)
           this.setState({
             formError: true,
             formErrorMessage: response.payload.message
@@ -88,7 +80,6 @@ class Login extends Component {
         }
       });
     } else {
-      console.log(formIsValid)
       this.setState({
         formError: true,
         formErrorMessage: "ອີເມລ ຫລື ລະຫັດບໍ່ຖືກຕ້ອງ, ກະລຸນາກວດສອບຂໍ້ມູນຄືນ"
@@ -129,28 +120,26 @@ class Login extends Component {
                 {this.state.formErrorMessage}
               </FormHelperText>
             ) : null}
+            <div style={{height: "16px"}}></div>
             <Grid container spacing={0} justify="center">
               <Grid
                 item
                 xs={6}
                 align="left"
-                style={{ display: "flex", alignItems: "center" }}
+                style={{ display: "flex", alignItems: "center"}}
               >
-                <Link
-                  color="primary"
-                  style={{ fontWeight: "600" }}
-                  onClick={this.handleRegisterClick}
-                >
-                ສະຫມັກສະມາຊິກ
+                
+                <ReactLink style={{textDecoration: "none"}} to="/register">
+                <Typography variant="inherit" color="primary" style={{fontWeight: "bold"}}>ສະຫມັກສະມາຊິກ</Typography> </ReactLink>
                   
-                </Link>
+                
               </Grid>
 
               <Grid item xs={6} align="right">
                 <Button
                   variant="contained"
                   color="primary"
-                  href="/register"
+      
                   onClick={event => this.submitForm(event)}
                 >
                   ຕໍ່ໄປ
@@ -164,7 +153,12 @@ class Login extends Component {
               align="right"
             >
               <Grid item xs={12}>
-                <Link href="/reset_user">ລືມລະຫັດຜ່ານ?</Link>
+                
+
+                <ReactLink style={{textDecoration: "none"}} to="/reset_user"><Typography variant="inherit" color="primary" style={{fontWeight: "normal"}}>ລືມລະຫັດຜ່ານ?</Typography></ReactLink>
+                  
+       
+                
               </Grid>
             </Grid>
           </FormControl>

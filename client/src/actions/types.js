@@ -5,5 +5,8 @@ export const LOGOUT_USER = 'logout_user'
 export const GET_USER_DETAIL = 'get_user_detail'
 export const CLEAR_USER_DETAIL = 'clear_user_detail'
 export const GET_FOLLOWING = 'get_following'
+export const GET_FOLLOWER = 'get_follower'
+export const FOLLOW = 'follow'
+export const ADD_FOLLOWER = 'add_follower'
 
 export const GET_DEPARTMENTS = 'get_departments'

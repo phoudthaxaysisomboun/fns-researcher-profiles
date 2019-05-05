@@ -7,37 +7,20 @@ import MiniStatsCard from "../User/Card/mini_stats";
 import IntroductionCard from "../User/Card/introduction";
 import ResearchaAreaCard from "../User/Card/research_area";
 import FollowingCard from "../User/Card/following";
+import FollowerCard from "../User/Card/follower";
 
 import {
-  FormControl,
   Hidden,
-  FormLabel,
-  DialogActions,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  IconButton,
-  RadioGroup,
-  Grid,
-  Fab,
-  Radio,
-  FormControlLabel,
-  Paper,
-  Avatar,
-  Button,
-  FormHelperText,
-  Tabs,
-  Tab,
-  Link,
-  Typography,
-  withWidth
+  Grid
 } from "@material-ui/core";
 
 import {
   getProfileDetail,
   clearProfileDetail,
-  getFollowing
+  getFollowing,
+  getFollower,
+  follow,
+  addFollower
 } from "../../actions/user_actions";
 
 class ProfileOverview extends Component {
@@ -45,18 +28,22 @@ class ProfileOverview extends Component {
 
   componentDidMount() {
     const id = this.props.match.params.id;
-    var follower = []
+    var following = []
+    var followingId = []
     var followerId = []
 
-
-    console.log(id);
     this.props.dispatch(getProfileDetail(id)).then(response => {
-      follower = response.payload.following
-      for (var key in follower) {
-        followerId.push(follower[key]._id)
+      following = response.payload.following
+      followerId = response.payload.follower
+      for (var key in following) {
+        followingId.push(following[key]._id)
       }
-      this.props.dispatch(getFollowing(followerId)).then(response => {
+      this.props.dispatch(getFollowing(followingId)).then(response => {
         
+      })
+
+      
+      this.props.dispatch(getFollower(followerId)).then(response => {
       })
     })
 
@@ -66,8 +53,23 @@ class ProfileOverview extends Component {
     this.props.dispatch(clearProfileDetail());
   }
 
-  render() {
+  followUser = (id) => {
+    if (this.props.user.userData.isAuth) {
+      this.props.dispatch(follow(id)).then(response => {
+        this.props.dispatch(addFollower(id)).then(response=>{
+          
+          this.props.dispatch(getFollower(this.props.user.userDetail.follower)).then(response => {
+            console.log(response)
+          })
+        })
+      })
+    } else {
+      console.log('You need to login')
+    }
+  }
 
+  render() {
+    console.log(this.state)
     if (this.props.user.userDetail) {
       document.title = `${this.props.user.userDetail.name} ${this.props.user.userDetail.lastname} - FNS Researcher Profiles`
     }
@@ -98,6 +100,9 @@ class ProfileOverview extends Component {
               </Grid>
               <Grid item xs={12}>
                 <FollowingCard userData = {this.props.user.userData} userDetail = {this.props.user.userDetail} userFollowing = {this.props.user.following} />
+              </Grid>
+              <Grid item xs={12}>
+                <FollowerCard userData = {this.props.user.userData} userDetail = {this.props.user.userDetail} userFollower = {this.props.user.follower} runFollow = {(id)=> this.followUser(id)}/>
               </Grid>
             </Grid>
           </Grid>

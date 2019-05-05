@@ -1,51 +1,20 @@
 import React from "react";
-import AutoLinkText from "react-autolink-text2";
 
 import {
-  FormControl,
-  FormLabel,
-  DialogActions,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
   IconButton,
-  RadioGroup,
   Grid,
-  Fab,
-  Radio,
-  FormControlLabel,
   Paper,
-  Avatar,
-  Button,
-  FormHelperText,
-  Tabs,
-  Tab,
-  Link,
   Chip,
   Typography,
-  withWidth
 } from "@material-ui/core";
 
 import {
   EditOutlined,
-  InsertDriveFileOutlined,
-  RemoveRedEyeOutlined,
-  ForwardOutlined
 } from "@material-ui/icons";
-
-const iconStyles = {
-  position: "relative",
-  top: "5px",
-  marginRight: "4px",
-  width: "20px",
-  width: "20px"
-};
 
 const ResearchaAreaCard = props => {
   const profile = { ...props.user.userDetail };
   const user = { ...props.user.userData };
-  const researchArea = profile.researchArea;
 
   var isOwner = false
   const isAuth =  user.isAuth
@@ -85,10 +54,8 @@ const ResearchaAreaCard = props => {
         <Grid container spacing={8} style={{ padding: "16px" }}>
           {profile.researchArea
             ? profile.researchArea.map((data, i) => {
-                console.log(data);
                 return (
                   <Chip
-                    style={{ margin: "4px" }}
                     key={i}
                     label={data.label}
                     variant="outlined"

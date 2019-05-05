@@ -1,32 +1,12 @@
 import React from "react";
 
 import {
-  FormControl,
-  FormLabel,
-  DialogActions,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  IconButton,
-  RadioGroup,
   Grid,
-  Fab,
-  Radio,
-  FormControlLabel,
   Paper,
-  Avatar,
-  Button,
-  FormHelperText,
-  Tabs,
-  Tab,
-  Link,
   Typography,
-  withWidth
 } from "@material-ui/core";
 
 import {
-  EditOutlined,
   InsertDriveFileOutlined,
   RemoveRedEyeOutlined,
   ForwardOutlined
@@ -37,7 +17,6 @@ const iconStyles = {
   top: "5px",
   marginRight: "4px",
   width: "20px",
-  width: "20px"
 };
 
 const MiniStatsCard = props => {

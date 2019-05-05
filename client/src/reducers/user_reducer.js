@@ -1,4 +1,4 @@
-import { LOGIN_USER, GET_DEPARTMENTS, REGISTER_USER, AUTH_USER, GET_USER_DETAIL, CLEAR_USER_DETAIL, LOGOUT_USER, GET_FOLLOWING} from "../actions/types";
+import { LOGIN_USER, GET_DEPARTMENTS, REGISTER_USER, AUTH_USER, GET_USER_DETAIL, CLEAR_USER_DETAIL, LOGOUT_USER, GET_FOLLOWING, GET_FOLLOWER, FOLLOW, ADD_FOLLOWER } from "../actions/types";
 
 export default function(state = {}, action) {
   switch (action.type) {
@@ -18,6 +18,16 @@ export default function(state = {}, action) {
       return { ...state }
     case GET_FOLLOWING:
       return {...state, following: action.payload }
+    case GET_FOLLOWER:
+      return {...state, follower: action.payload }
+    case FOLLOW:
+      return {...state, userData: {
+        ...state.userData,
+        following: action.payload
+      }
+    }
+    case ADD_FOLLOWER:
+      return {...state}
     default:
       return state;
   }

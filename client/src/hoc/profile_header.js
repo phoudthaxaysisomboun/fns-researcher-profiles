@@ -1,36 +1,22 @@
 import React from "react";
 
 import {
-  FormControl,
-  FormLabel,
-  DialogActions,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
   IconButton,
-  RadioGroup,
   Grid,
   Fab,
-  Radio,
-  FormControlLabel,
   Paper,
   Avatar,
   Button,
-  FormHelperText,
   Tabs,
   Tab,
   Link,
   Typography,
-  withWidth
 } from "@material-ui/core";
 
 import {
   Mail,
   Phone,
-  ShareOutlined,
   PersonAddOutlined,
-  CheckOutlined,
   AddOutlined,
   EditOutlined,
   ReplyOutlined
@@ -40,7 +26,6 @@ const iconStyles = {
   position: "relative",
   top: "6px",
   marginRight: "6px",
-  width: "20px",
   width: "20px"
 };
 
@@ -50,8 +35,6 @@ const ProfileHeader = props => {
   const facebook = {...profile.facebook}
   var isOwner = false
   const isAuth = userData.isAuth
-
-  console.log(facebook)
 
   if (isAuth) {
     if (userData._id === profile._id){
@@ -63,7 +46,7 @@ const ProfileHeader = props => {
   return (
     <Grid container>
       <Grid item xs={12}>
-        <Paper style={{ paddingTop: "24px", borderRadius: 0, boxShadow: "0px 2px 2px 0px rgba(0,0,0,0.1)", }}>
+        <Paper style={{ paddingTop: "24px", borderRadius: 0,boxShadow: "none", border:"1px solid #d8d8d8", borderTop: "0" }}>
           <Grid container>
             <Grid item xs sm={1} lg={3} md={2} />
             <Grid item xs={10} sm={10} lg={6} md={8}>

@@ -1,28 +1,10 @@
 import React from "react";
 
 import {
-  FormControl,
-  FormLabel,
-  DialogActions,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
   IconButton,
-  RadioGroup,
   Grid,
-  Fab,
-  Radio,
-  FormControlLabel,
   Paper,
-  Avatar,
-  Button,
-  FormHelperText,
-  Tabs,
-  Tab,
-  Link,
-  Typography,
-  withWidth
+  Typography
 } from "@material-ui/core";
 
 import { EditOutlined } from "@material-ui/icons";

@@ -8,8 +8,6 @@ import {
 } from "../utils/Form/formActions";
 
 import {
-  FormControl,
-  FormLabel,
   DialogActions,
   Dialog,
   DialogTitle,
@@ -17,7 +15,6 @@ import {
   DialogContentText,
   IconButton,
   RadioGroup,
-  Link,
   Grid,
   Radio,
   FormControlLabel,
@@ -27,9 +24,10 @@ import {
   Typography
 } from "@material-ui/core";
 
-import RemoveRedEyeOutlined from "@material-ui/icons/RemoveRedEyeOutlined";
-
 import { connect } from "react-redux";
+
+import { Link as ReactLink, withRouter } from "react-router-dom";
+
 import { getDepartments, registerUser } from "../../actions/user_actions";
 
 const styles = {
@@ -257,7 +255,6 @@ class Register extends Component {
       delete newDataToSubmit.department;
       delete newDataToSubmit.position;
 
-      console.log(newDataToSubmit);
       this.props
         .dispatch(registerUser(newDataToSubmit))
         .then(response => {
@@ -341,7 +338,6 @@ class Register extends Component {
           <Grid item lg={5} md={7} sm={9} xs={11}>
             <Paper style={styles.container} elevation={0}>
               <Typography
-                style={styles.font}
                 variant="h5"
                 component="h3"
                 style={{
@@ -530,13 +526,15 @@ class Register extends Component {
                   align="left"
                   style={{ display: "flex", alignItems: "center" }}
                 >
-                  <Link
-                    href="/login"
-                    color="primary"
-                    style={{ fontWeight: "600" }}
-                  >
-                    ລົງຊື່ເຂົ້າໃຊ້ແທນ
-                  </Link>
+                <ReactLink style={{textDecoration: "none"}} to="/login">
+                <Typography variant="inherit" color="primary" style={{fontWeight: "bold"}}>
+                ລົງຊື່ເຂົ້າໃຊ້ແທນ
+                </Typography>
+                
+                </ReactLink>
+                  
+                
+                  
                 </Grid>
 
                 <Grid item xs={6} align="right">
@@ -580,4 +578,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(Register);
+export default connect(mapStateToProps)(withRouter(Register));

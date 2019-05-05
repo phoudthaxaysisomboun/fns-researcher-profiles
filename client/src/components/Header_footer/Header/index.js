@@ -12,7 +12,6 @@ import {
   IconButton,
   Typography,
   InputBase,
-  Badge,
   MenuItem,
   Menu,
   Avatar,
@@ -26,8 +25,6 @@ import { withStyles } from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/MenuOutlined";
 import SearchIcon from "@material-ui/icons/SearchOutlined";
 import AccountCircle from "@material-ui/icons/AccountCircleOutlined";
-import MailIcon from "@material-ui/icons/MailOutlined";
-import NotificationsIcon from "@material-ui/icons/NotificationsOutlined";
 import MoreIcon from "@material-ui/icons/MoreVertOutlined";
 import {ArrowDropDownOutlined} from "@material-ui/icons";
 import {
@@ -434,9 +431,6 @@ class Header extends Component {
 }
 
 const mapStateToProps = state => {
-  if (state.user.userData) {
-    console.log(state.user.userData.isAuth);
-  }
   return {
     user: state.user
   };

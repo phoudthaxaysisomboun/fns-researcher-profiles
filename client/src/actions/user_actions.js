@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { LOGIN_USER, REGISTER_USER, GET_DEPARTMENTS, AUTH_USER, GET_USER_DETAIL, CLEAR_USER_DETAIL, LOGOUT_USER, GET_FOLLOWING } from "./types";
+import { LOGIN_USER, REGISTER_USER, GET_DEPARTMENTS, AUTH_USER, GET_USER_DETAIL, CLEAR_USER_DETAIL, LOGOUT_USER, GET_FOLLOWING, GET_FOLLOWER, FOLLOW, ADD_FOLLOWER } from "./types";
 
 import { USER_SERVER, RESEARCHER } from "../components/utils/misc";
 
@@ -69,6 +69,37 @@ export function getFollowing(id) {
 
   return {
     type: GET_FOLLOWING,
+    payload: request
+  }
+}
+
+export function getFollower(id) {
+  const request = axios.get(`${RESEARCHER}/followers?id=${id}&type=array&sortBy=name&order=asc&limit=3`).then(response => response.data)
+
+  return {
+    type: GET_FOLLOWER,
+    payload: request
+  }
+}
+
+export function follow(_id) {
+  
+  const request = axios.post(`${RESEARCHER}/follow?userId=${_id}`).
+  then(response => response.data)
+
+  return {
+    type: FOLLOW,
+    payload: request
+  }
+
+}
+export function addFollower(_id) {
+  
+  const request = axios.post(`${RESEARCHER}/addFollower?userId=${_id}`).
+  then(response => response.data)
+
+  return {
+    type: ADD_FOLLOWER,
     payload: request
   }
 }
