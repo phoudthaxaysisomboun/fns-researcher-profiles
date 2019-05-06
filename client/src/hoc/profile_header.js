@@ -19,7 +19,8 @@ import {
   PersonAddOutlined,
   AddOutlined,
   EditOutlined,
-  ReplyOutlined
+  ReplyOutlined,
+  CheckOutlined
 } from "@material-ui/icons";
 
 const iconStyles = {
@@ -29,7 +30,7 @@ const iconStyles = {
   width: "20px"
 };
 
-const ProfileHeader = props => {
+const ProfileHeader = ({props, runUnfollow, runFollow, children}) => {
   const userData = {...props.user.userData}
   const profile = {...props.user.userDetail}
   const facebook = {...profile.facebook}
@@ -43,6 +44,62 @@ const ProfileHeader = props => {
       isOwner = false
     }
   }
+
+  const renderFollowButton = (id = profile._id) => {
+    let duplicate = false;
+    userData.following.forEach(item => {
+      
+      if (item._id === id) {
+        duplicate = true
+      }
+    });
+
+    if (id === userData._id) {
+      return (
+        <Fab
+        size="medium"
+        variant="extended"
+        color="primary"
+        style={{ margin: "8px" }}
+      >
+        <AddOutlined style={{ marginRight: "8px" }} />
+        ເພີ່ມຜົນງານ
+      </Fab>
+      )
+    }
+
+    if (duplicate) {
+      return (
+        <Button
+            size="medium"
+            variant="outlined"
+            color="primary"
+            onClick={()=> {
+              runUnfollow(id)
+            }}
+          >
+            <CheckOutlined style={{ marginRight: "8px" }} />
+            ຕິດຕາມຢູ່
+          </Button>
+      );
+    }
+    else {
+      return (
+        <Button
+            size="medium"
+            variant="contained"
+            color="primary"
+            onClick={()=> {
+              runFollow(id)
+            }}
+          >
+            <PersonAddOutlined style={{ marginRight: "8px" }} />
+            ຕິດຕາມ
+          </Button>
+      );
+    }
+  };
+  
   return (
     <Grid container>
       <Grid item xs={12}>
@@ -171,30 +228,9 @@ const ProfileHeader = props => {
                     <ReplyOutlined style={{ marginRight: "8px", transform: "rotateY(180deg)" }} />
                     ແບ່ງປັນ
                   </Button>
-                  {isOwner ? (
-                    <Fab
-                      size="medium"
-                      variant="extended"
-                      color="primary"
-                      style={{ margin: "8px" }}
-                    >
-                      <AddOutlined style={{ marginRight: "8px" }} />
-                      ເພີ່ມຜົນງານ
-                    </Fab>
-                  ) : 
-                    null
-                  }
                   {
-                    isAuth && !isOwner ?
-                    <Button
-                      size="medium"
-                      variant="contained"
-                      color="primary"
-                      style={{ margin: "8px" }}
-                    >
-                      <PersonAddOutlined style={{ marginRight: "8px" }} />
-                      ຕິດຕາມ
-                    </Button> : null
+                    isAuth ?
+                    renderFollowButton() : null
                   }
                 </Grid>
               </Grid>
@@ -234,7 +270,7 @@ const ProfileHeader = props => {
         </Paper>
       </Grid>
 
-      {props.children}
+      {children}
     </Grid>
   );
 };

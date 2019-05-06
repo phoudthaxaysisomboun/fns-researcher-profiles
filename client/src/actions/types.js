@@ -10,5 +10,7 @@ export const FOLLOW = 'follow'
 export const ADD_FOLLOWER = 'add_follower'
 export const UNFOLLOW = 'unfollow'
 export const REMOVE_FOLLOWER = 'remove_follower'
+export const CLEAR_FOLLOWING = 'clear_following'
+export const CLEAR_FOLLOWER = 'clear_follower'
 
 export const GET_DEPARTMENTS = 'get_departments'

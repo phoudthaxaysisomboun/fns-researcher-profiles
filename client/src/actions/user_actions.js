@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { LOGIN_USER, REGISTER_USER, GET_DEPARTMENTS, AUTH_USER, GET_USER_DETAIL, CLEAR_USER_DETAIL, LOGOUT_USER, GET_FOLLOWING, GET_FOLLOWER, FOLLOW, ADD_FOLLOWER, UNFOLLOW, REMOVE_FOLLOWER } from "./types";
+import { LOGIN_USER, REGISTER_USER, GET_DEPARTMENTS, AUTH_USER, GET_USER_DETAIL, CLEAR_USER_DETAIL, LOGOUT_USER, GET_FOLLOWING, GET_FOLLOWER, FOLLOW, ADD_FOLLOWER, UNFOLLOW, REMOVE_FOLLOWER, CLEAR_FOLLOWING, CLEAR_FOLLOWER } from "./types";
 
 import { USER_SERVER, RESEARCHER } from "../components/utils/misc";
 
@@ -60,6 +60,20 @@ export function getProfileDetail(id) {
 export function clearProfileDetail() {
   return {
     type: CLEAR_USER_DETAIL,
+    payload: ''
+  }
+}
+
+export function clearFollowing() {
+  return {
+    type: CLEAR_FOLLOWING,
+    payload: ''
+  }
+}
+
+export function clearFollower() {
+  return {
+    type: CLEAR_FOLLOWER,
     payload: ''
   }
 }

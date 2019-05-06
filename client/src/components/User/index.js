@@ -19,7 +19,9 @@ import {
   follow,
   addFollower,
   unfollow,
-  removeFollower
+  removeFollower,
+  clearFollowing,
+  clearFollower
 } from "../../actions/user_actions";
 
 class ProfileOverview extends Component {
@@ -43,6 +45,8 @@ class ProfileOverview extends Component {
 
   componentWillUnmount() {
     this.props.dispatch(clearProfileDetail());
+    this.props.dispatch(clearFollower());
+    this.props.dispatch(clearFollowing());
   }
 
   followUser = id => {
@@ -93,7 +97,7 @@ class ProfileOverview extends Component {
     } else {
       console.log("You need to login");
     }
-  }
+  };
 
   render() {
     if (this.props.user.userDetail) {
@@ -102,7 +106,14 @@ class ProfileOverview extends Component {
       } - FNS Researcher Profiles`;
     }
     return (
-      <ProfileHeader {...this.props}>
+      <ProfileHeader
+     props = {this.props}
+     children = {this.props.children}
+     userData={this.props.user.userData}
+     userDetail={this.props.user.userDetail}
+     runFollow={id => this.followUser(id)}
+    runUnfollow={id => this.unfollowUser(id)}
+      >
         <Grid container spacing={24} style={{ margin: "8px" }}>
           <Hidden only="sm">
             <Grid item md={1} lg />

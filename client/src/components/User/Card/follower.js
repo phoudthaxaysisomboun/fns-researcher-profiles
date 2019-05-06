@@ -1,5 +1,7 @@
 import React from "react";
 
+import {Link, withRouter} from 'react-router-dom'
+
 import {
   Grid,
   Paper,
@@ -116,21 +118,26 @@ const FollowerCard = ({ userData, userDetail, userFollower, runFollow, runUnfoll
                         align="center"
                         style={{ marginRight: "8px", width: "54px" }}
                       >
+                        <Link to = {`/profile/${followings._id}`}>
                         <Avatar
-                          alt="Remy Sharp"
-                          style={{ width: "46px", height: "46px" }}
-                          src="http://hespokestyle.com/wp-content/uploads/2017/04/navy-cotton-linen-blazer-tan-chinos-polo-shirt-mens-spring-fashion-trends-8-800x533.jpg"
-                        />
+                        alt="Remy Sharp"
+                        style={{ width: "46px", height: "46px" }}
+                        src="http://hespokestyle.com/wp-content/uploads/2017/04/navy-cotton-linen-blazer-tan-chinos-polo-shirt-mens-spring-fashion-trends-8-800x533.jpg"
+                      />
+                        </Link>
                       </Grid>
                       <Grid item xs>
                         <Grid container>
                           <Grid item xs>
+                          <Link to = {`/profile/${followings._id}`} style={{textDecoration: "none"}}>
                             <Typography
-                              style={{ fontWeight: "bold" }}
+                              style={{ fontWeight: "bold", color: "#404040" }}
                               variant="inherit"
+                              
                             >
                               {followings.name} {followings.lastname}
                             </Typography>
+                            </Link>
                             <Typography
                               variant="inherit"
                               style={{ fontSize: "14px", fontWeight: "500" }}
@@ -172,4 +179,4 @@ const FollowerCard = ({ userData, userDetail, userFollower, runFollow, runUnfoll
   return <div>{renderItems()}</div>;
 };
 
-export default FollowerCard;
+export default withRouter(FollowerCard);
