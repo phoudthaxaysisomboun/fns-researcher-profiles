@@ -36,10 +36,15 @@ const FollowerCard = ({ userData, userDetail, userFollower, runFollow }) => {
       
       if (item._id == id) {
         duplicate = true
-      } 
-      
-     
+      }
     });
+
+    console.log(userData._id)
+    console.log(id)
+
+    if (id !== userData._id) {
+      
+    }
 
     if (duplicate) {
       return (

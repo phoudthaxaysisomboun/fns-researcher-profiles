@@ -9,10 +9,7 @@ import ResearchaAreaCard from "../User/Card/research_area";
 import FollowingCard from "../User/Card/following";
 import FollowerCard from "../User/Card/follower";
 
-import {
-  Hidden,
-  Grid
-} from "@material-ui/core";
+import { Hidden, Grid } from "@material-ui/core";
 
 import {
   getProfileDetail,
@@ -24,54 +21,59 @@ import {
 } from "../../actions/user_actions";
 
 class ProfileOverview extends Component {
-
-
   componentDidMount() {
     const id = this.props.match.params.id;
-    var following = []
-    var followingId = []
-    var followerId = []
+    var following = [];
+    var followingId = [];
+    var followerId = [];
 
     this.props.dispatch(getProfileDetail(id)).then(response => {
-      following = response.payload.following
-      followerId = response.payload.follower
+      following = response.payload.following;
+      followerId = response.payload.follower;
       for (var key in following) {
-        followingId.push(following[key]._id)
+        followingId.push(following[key]._id);
       }
-      this.props.dispatch(getFollowing(followingId)).then(response => {
-        
-      })
+      this.props.dispatch(getFollowing(followingId)).then(response => {});
 
-      
-      this.props.dispatch(getFollower(followerId)).then(response => {
-      })
-    })
-
+      this.props.dispatch(getFollower(followerId)).then(response => {});
+    });
   }
 
   componentWillUnmount() {
     this.props.dispatch(clearProfileDetail());
   }
 
-  followUser = (id) => {
+  followUser = id => {
     if (this.props.user.userData.isAuth) {
       this.props.dispatch(follow(id)).then(response => {
-        this.props.dispatch(addFollower(id)).then(response=>{
-          
-          this.props.dispatch(getFollower(this.props.user.userDetail.follower)).then(response => {
-            console.log(response)
-          })
-        })
-      })
+        this.props.dispatch(addFollower(id)).then(response => {
+          this.props
+            .dispatch(getProfileDetail(this.props.user.userDetail._id))
+            .then(response => {
+              var following = [];
+              var followingId = [];
+              following = response.payload.following;
+              for (var key in following) {
+                followingId.push(following[key]._id);
+              }
+              this.props.dispatch(getFollowing(followingId));
+            });
+        });
+      });
     } else {
-      console.log('You need to login')
+      console.log("You need to login");
     }
+  };
+
+  unfollowUser = id => {
+    console.log('unfollow')
   }
 
   render() {
-    console.log(this.state)
     if (this.props.user.userDetail) {
-      document.title = `${this.props.user.userDetail.name} ${this.props.user.userDetail.lastname} - FNS Researcher Profiles`
+      document.title = `${this.props.user.userDetail.name} ${
+        this.props.user.userDetail.lastname
+      } - FNS Researcher Profiles`;
     }
     return (
       <ProfileHeader {...this.props}>
@@ -99,10 +101,20 @@ class ProfileOverview extends Component {
                 <AffiliationCard {...this.props} />
               </Grid>
               <Grid item xs={12}>
-                <FollowingCard userData = {this.props.user.userData} userDetail = {this.props.user.userDetail} userFollowing = {this.props.user.following} />
+                <FollowingCard
+                  userData={this.props.user.userData}
+                  userDetail={this.props.user.userDetail}
+                  userFollowing={this.props.user.following}
+                />
               </Grid>
               <Grid item xs={12}>
-                <FollowerCard userData = {this.props.user.userData} userDetail = {this.props.user.userDetail} userFollower = {this.props.user.follower} runFollow = {(id)=> this.followUser(id)}/>
+                <FollowerCard
+                  userData={this.props.user.userData}
+                  userDetail={this.props.user.userDetail}
+                  userFollower={this.props.user.follower}
+                  runFollow={id => this.followUser(id)}
+                  runUnfollow={id => this.unfollowUser(id)}
+                />
               </Grid>
             </Grid>
           </Grid>
@@ -116,11 +128,9 @@ class ProfileOverview extends Component {
 }
 
 const mapStateToProps = state => {
-  
   return {
     userDetail: state.user
   };
-
 };
 
 export default connect(mapStateToProps)(ProfileOverview);

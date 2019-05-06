@@ -415,30 +415,36 @@ app.get("/api/researchers/followings", (req, res) => {
   let type = req.query.type;
   let items = req.query.id;
 
-  if (type === "array") {
-    let ids = req.query.id.split(",");
-    items = [];
-    items = ids.map(item => {
-      return mongoose.Types.ObjectId(item);
-    });
+  console.log(req.query.id)
+
+  if (req.query.id) {
+    if (type === "array") {
+      let ids = req.query.id.split(",");
+      items = [];
+      items = ids.map(item => {
+        return mongoose.Types.ObjectId(item);
+      });
+    }
+    User.find({ _id: { $in: items } })
+      .sort([[sortBy, order]])
+      .limit(limit)
+      .select("_id name lastname profileImage affiliation researchArea")
+      .populate({
+        path: "affiliation.institution"
+      })
+      .populate({
+        path: "affiliation.department"
+      })
+      .populate({
+        path: "affiliation.faculty"
+      })
+      .exec((err, following) => {
+        if (err) return res.status(400).send(err);
+        res.status(200).send(following);
+      });
   }
-  User.find({ _id: { $in: items } })
-    .sort([[sortBy, order]])
-    .limit(limit)
-    .select("_id name lastname profileImage affiliation researchArea")
-    .populate({
-      path: "affiliation.institution"
-    })
-    .populate({
-      path: "affiliation.department"
-    })
-    .populate({
-      path: "affiliation.faculty"
-    })
-    .exec((err, following) => {
-      if (err) return res.status(400).send(err);
-      res.status(200).send(following);
-    });
+
+  
 });
 
 app.get("/api/researchers/followers", (req, res) => {
@@ -449,30 +455,34 @@ app.get("/api/researchers/followers", (req, res) => {
   let type = req.query.type;
   let items = req.query.id;
 
-  if (type === "array") {
-    let ids = req.query.id.split(",");
-    items = [];
-    items = ids.map(item => {
-      return mongoose.Types.ObjectId(item);
-    });
+  if (req.query.id) {
+    if (type === "array") {
+      let ids = req.query.id.split(",");
+      items = [];
+      items = ids.map(item => {
+        return mongoose.Types.ObjectId(item);
+      });
+    }
+    User.find({ _id: { $in: items } })
+      .sort([[sortBy, order]])
+      .limit(limit)
+      .select("_id name lastname profileImage affiliation researchArea")
+      .populate({
+        path: "affiliation.institution"
+      })
+      .populate({
+        path: "affiliation.department"
+      })
+      .populate({
+        path: "affiliation.faculty"
+      })
+      .exec((err, follower) => {
+        if (err) return res.status(400).send(err);
+        res.status(200).send(follower);
+      });
   }
-  User.find({ _id: { $in: items } })
-    .sort([[sortBy, order]])
-    .limit(limit)
-    .select("_id name lastname profileImage affiliation researchArea")
-    .populate({
-      path: "affiliation.institution"
-    })
-    .populate({
-      path: "affiliation.department"
-    })
-    .populate({
-      path: "affiliation.faculty"
-    })
-    .exec((err, follower) => {
-      if (err) return res.status(400).send(err);
-      res.status(200).send(follower);
-    });
+
+  
 });
 
 app.post("/api/researchers/follow", auth, (req, res) => {
