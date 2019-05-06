@@ -9,9 +9,9 @@ import {
   Typography
 } from "@material-ui/core";
 
-import { CheckOutlined, ListOutlined } from "@material-ui/icons";
+import { CheckOutlined, ListOutlined, PersonAddOutlined } from "@material-ui/icons";
 
-const FollowingCard = ({ userData, userDetail, userFollowing }) => {
+const FollowingCard = ({ userData, userDetail, userFollowing, runUnfollow, runFollow}) => {
   const user = { ...userData };
   const profile = { ...userDetail };
 
@@ -26,14 +26,57 @@ const FollowingCard = ({ userData, userDetail, userFollowing }) => {
   //   }
   // }
 
-  const renderFollowButton = () => (
-    <Grid item style={{ width: "100px" }} align="right">
-      <Button size="small" variant="outlined" color="primary">
-        <CheckOutlined style={{ marginRight: "8px" }} />
-        ຕິດຕາມຢູ່
-      </Button>
-    </Grid>
-  );
+  const renderFollowButton = (id) => {
+    let duplicate = false;
+    userData.following.forEach(item => {
+      
+      if (item._id === id) {
+        duplicate = true
+      }
+    });
+
+    if (id === userData._id) {
+      return (
+        <div></div>
+      )
+    }
+
+    if (duplicate) {
+      return (
+        <Grid item style={{ width: "100px" }} align="right">
+          <Button
+            size="small"
+            variant="outlined"
+            color="primary"
+            onClick={()=> {
+              runUnfollow(id)
+            }}
+            
+          >
+            <CheckOutlined style={{ marginRight: "8px" }} />
+            ຕິດຕາມຢູ່
+          </Button>
+        </Grid>
+      );
+    }
+    else {
+      return (
+        <Grid item style={{ width: "100px" }} align="right">
+          <Button
+            size="small"
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              runFollow(id);
+            }}
+          >
+            <PersonAddOutlined style={{ marginRight: "8px" }} />
+            ຕິດຕາມ
+          </Button>
+        </Grid>
+      );
+    }
+  }
 
   const renderItems = () => (
     <div>
@@ -101,7 +144,7 @@ const FollowingCard = ({ userData, userDetail, userFollowing }) => {
                           </Grid>
                         </Grid>
                       </Grid>
-                      {isAuth ? renderFollowButton() : null}
+                      {isAuth ? renderFollowButton(followings._id) : null}
                     </Grid>
                     <Divider />
                   </div>

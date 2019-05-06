@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { LOGIN_USER, REGISTER_USER, GET_DEPARTMENTS, AUTH_USER, GET_USER_DETAIL, CLEAR_USER_DETAIL, LOGOUT_USER, GET_FOLLOWING, GET_FOLLOWER, FOLLOW, ADD_FOLLOWER } from "./types";
+import { LOGIN_USER, REGISTER_USER, GET_DEPARTMENTS, AUTH_USER, GET_USER_DETAIL, CLEAR_USER_DETAIL, LOGOUT_USER, GET_FOLLOWING, GET_FOLLOWER, FOLLOW, ADD_FOLLOWER, UNFOLLOW, REMOVE_FOLLOWER } from "./types";
 
 import { USER_SERVER, RESEARCHER } from "../components/utils/misc";
 
@@ -91,8 +91,8 @@ export function follow(_id) {
     type: FOLLOW,
     payload: request
   }
-
 }
+
 export function addFollower(_id) {
   
   const request = axios.post(`${RESEARCHER}/addFollower?userId=${_id}`).
@@ -100,6 +100,28 @@ export function addFollower(_id) {
 
   return {
     type: ADD_FOLLOWER,
+    payload: request
+  }
+}
+
+export function unfollow(_id) {
+  
+  const request = axios.post(`${RESEARCHER}/unfollow?userId=${_id}`).
+  then(response => response.data)
+
+  return {
+    type: UNFOLLOW,
+    payload: request
+  }
+}
+
+export function removeFollower(_id) {
+  
+  const request = axios.post(`${RESEARCHER}/removeFollower?userId=${_id}`).
+  then(response => response.data)
+
+  return {
+    type: REMOVE_FOLLOWER,
     payload: request
   }
 }

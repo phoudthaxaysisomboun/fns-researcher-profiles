@@ -415,8 +415,6 @@ app.get("/api/researchers/followings", (req, res) => {
   let type = req.query.type;
   let items = req.query.id;
 
-  console.log(req.query.id)
-
   if (req.query.id) {
     if (type === "array") {
       let ids = req.query.id.split(",");
@@ -443,8 +441,6 @@ app.get("/api/researchers/followings", (req, res) => {
         res.status(200).send(following);
       });
   }
-
-  
 });
 
 app.get("/api/researchers/followers", (req, res) => {
@@ -481,8 +477,6 @@ app.get("/api/researchers/followers", (req, res) => {
         res.status(200).send(follower);
       });
   }
-
-  
 });
 
 app.post("/api/researchers/follow", auth, (req, res) => {
@@ -496,7 +490,7 @@ app.post("/api/researchers/follow", auth, (req, res) => {
     });
 
     if (duplicate) {
-      res.status(200).json({message: "Already followed"});
+      res.status(200).json({ message: "Already followed" });
     } else {
       User.findOneAndUpdate(
         { _id: req.user._id },
@@ -515,7 +509,7 @@ app.post("/api/researchers/follow", auth, (req, res) => {
           if (err) return res.json({ success: false, err });
           res.status(200).json(doc.following);
         }
-      )
+      );
     }
   });
 });
@@ -531,13 +525,13 @@ app.post("/api/researchers/addFollower", auth, (req, res) => {
     });
 
     if (duplicate) {
-      res.status(200).json({message: "Already add follower"});
+      res.status(200).json({ message: "Already add follower" });
     } else {
       User.findOneAndUpdate(
         { _id: req.query.userId },
         {
           $push: {
-            follower: mongoose.Types.ObjectId(req.user._id),
+            follower: mongoose.Types.ObjectId(req.user._id)
           }
         },
         {
@@ -550,6 +544,44 @@ app.post("/api/researchers/addFollower", auth, (req, res) => {
       );
     }
   });
+});
+
+app.post("/api/researchers/unfollow", auth, (req, res) => {
+  User.findOneAndUpdate(
+    { _id: req.user._id },
+    {
+      $pull: {
+        following: {
+          _id: mongoose.Types.ObjectId(req.query.userId)
+        }
+      }
+    },
+    {
+      new: true
+    },
+    (err, doc) => {
+      if (err) return res.json({ success: false, err });
+      res.status(200).json(doc.following);
+    }
+  );
+});
+
+app.post("/api/researchers/removeFollower", auth, (req, res) => {
+  User.findOneAndUpdate(
+    { _id: req.query.userId },
+    {
+      $pull: {
+        follower: mongoose.Types.ObjectId(req.user._id)
+      }
+    },
+    {
+      new: true
+    },
+    (err, doc) => {
+      if (err) return res.json({ success: false, err });
+      res.status(200).json(doc.follower);
+    }
+  );
 });
 
 const port = process.env.PORT || 3002;

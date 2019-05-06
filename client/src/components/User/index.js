@@ -17,7 +17,9 @@ import {
   getFollowing,
   getFollower,
   follow,
-  addFollower
+  addFollower,
+  unfollow,
+  removeFollower
 } from "../../actions/user_actions";
 
 class ProfileOverview extends Component {
@@ -52,11 +54,14 @@ class ProfileOverview extends Component {
             .then(response => {
               var following = [];
               var followingId = [];
+              var followerId = [];
               following = response.payload.following;
+              followerId = response.payload.follower;
               for (var key in following) {
                 followingId.push(following[key]._id);
               }
               this.props.dispatch(getFollowing(followingId));
+              this.props.dispatch(getFollower(followerId)).then(response => {});
             });
         });
       });
@@ -66,7 +71,28 @@ class ProfileOverview extends Component {
   };
 
   unfollowUser = id => {
-    console.log('unfollow')
+    if (this.props.user.userData.isAuth) {
+      this.props.dispatch(unfollow(id)).then(response => {
+        this.props.dispatch(removeFollower(id)).then(response => {
+          this.props
+            .dispatch(getProfileDetail(this.props.user.userDetail._id))
+            .then(response => {
+              var following = [];
+              var followingId = [];
+              var followerId = [];
+              following = response.payload.following;
+              followerId = response.payload.follower;
+              for (var key in following) {
+                followingId.push(following[key]._id);
+              }
+              this.props.dispatch(getFollowing(followingId));
+              this.props.dispatch(getFollower(followerId)).then(response => {});
+            });
+        });
+      });
+    } else {
+      console.log("You need to login");
+    }
   }
 
   render() {
@@ -105,6 +131,8 @@ class ProfileOverview extends Component {
                   userData={this.props.user.userData}
                   userDetail={this.props.user.userDetail}
                   userFollowing={this.props.user.following}
+                  runFollow={id => this.followUser(id)}
+                  runUnfollow={id => this.unfollowUser(id)}
                 />
               </Grid>
               <Grid item xs={12}>

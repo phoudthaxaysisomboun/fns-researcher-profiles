@@ -8,5 +8,7 @@ export const GET_FOLLOWING = 'get_following'
 export const GET_FOLLOWER = 'get_follower'
 export const FOLLOW = 'follow'
 export const ADD_FOLLOWER = 'add_follower'
+export const UNFOLLOW = 'unfollow'
+export const REMOVE_FOLLOWER = 'remove_follower'
 
 export const GET_DEPARTMENTS = 'get_departments'

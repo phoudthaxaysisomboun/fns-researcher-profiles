@@ -15,7 +15,7 @@ import {
   PersonAddOutlined
 } from "@material-ui/icons";
 
-const FollowerCard = ({ userData, userDetail, userFollower, runFollow }) => {
+const FollowerCard = ({ userData, userDetail, userFollower, runFollow, runUnfollow }) => {
   const user = { ...userData };
   const profile = { ...userDetail };
 
@@ -34,16 +34,15 @@ const FollowerCard = ({ userData, userDetail, userFollower, runFollow }) => {
     let duplicate = false;
     userData.following.forEach(item => {
       
-      if (item._id == id) {
+      if (item._id === id) {
         duplicate = true
       }
     });
 
-    console.log(userData._id)
-    console.log(id)
-
-    if (id !== userData._id) {
-      
+    if (id === userData._id) {
+      return (
+        <div></div>
+      )
     }
 
     if (duplicate) {
@@ -53,6 +52,9 @@ const FollowerCard = ({ userData, userDetail, userFollower, runFollow }) => {
             size="small"
             variant="outlined"
             color="primary"
+            onClick={()=> {
+              runUnfollow(id)
+            }}
             
           >
             <CheckOutlined style={{ marginRight: "8px" }} />
