@@ -77,6 +77,7 @@ const ProfileHeader = ({props, runUnfollow, runFollow, children}) => {
             onClick={()=> {
               runUnfollow(id)
             }}
+            style={{ margin: "8px" }}
           >
             <CheckOutlined style={{ marginRight: "8px" }} />
             ຕິດຕາມຢູ່
@@ -92,6 +93,7 @@ const ProfileHeader = ({props, runUnfollow, runFollow, children}) => {
             onClick={()=> {
               runFollow(id)
             }}
+            style={{ margin: "8px" }}
           >
             <PersonAddOutlined style={{ marginRight: "8px" }} />
             ຕິດຕາມ

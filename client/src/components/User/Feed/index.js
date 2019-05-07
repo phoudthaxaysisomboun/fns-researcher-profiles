@@ -8,7 +8,9 @@ const fabStyle = {
     right: 20,
     bottom: 20,
     left: "auto",
-    position: "fixed"
+    position: "fixed",
+    fontWeight: "500",
+    fontSize: "18px",
 }
 
 class Feed extends Component {
@@ -22,7 +24,7 @@ class Feed extends Component {
           color="primary"
           style={fabStyle}
         >
-          <AddOutlined style={{ marginRight: "8px" }} />
+          <AddOutlined fontSize="large" style={{ marginRight: "8px", }} />
           ເພີ່ມ
         </Fab>
       </div>
