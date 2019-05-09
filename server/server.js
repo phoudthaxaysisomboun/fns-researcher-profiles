@@ -411,7 +411,7 @@ app.get("/api/researchers/followings", (req, res) => {
   let order = req.query.order ? req.query.order : "asc";
   let sortBy = req.query.sortBy ? req.query.sortBy : "name";
   let limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 3;
-  let skip = parseInt(req.body.skip) ? parseInt(req.body.skip) : 0
+  let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0
 
   let type = req.query.type;
   let items = req.query.id;

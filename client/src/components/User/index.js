@@ -8,7 +8,8 @@ import IntroductionCard from "../User/Card/introduction";
 import ResearchaAreaCard from "../User/Card/research_area";
 import FollowingCard from "../User/Card/following";
 import FollowerCard from "../User/Card/follower";
-import LoadMoreFollowerCard from "../User/Card/load_more_follower";
+import LoadMoreFollowerCard from "./Card/load_more_follower";
+import LoadMoreFollowingCard from "../User/Card/load_more_following";
 
 import {
   Hidden,
@@ -37,6 +38,7 @@ import {
 class ProfileOverview extends Component {
   state = {
     openFollowerDialog: false,
+    openFollowingDialog: false,
     fullWidth: true,
     maxWidth: "sm",
     followerLimit: 6,
@@ -57,9 +59,9 @@ class ProfileOverview extends Component {
       for (var key in following) {
         followingId.push(following[key]._id);
       }
-      this.props.dispatch(getFollowing(followingId)).then(response => {});
+      this.props.dispatch(getFollowing(followingId))
 
-      this.props.dispatch(getFollower(followerId)).then(response => {});
+      this.props.dispatch(getFollower(followerId))
 
       this.props
         .dispatch(
@@ -69,7 +71,6 @@ class ProfileOverview extends Component {
             this.state.followingSkip
           )
         )
-        .then(response => {});
 
       this.props
         .dispatch(
@@ -79,7 +80,7 @@ class ProfileOverview extends Component {
             this.state.followerSkip
           )
         )
-        .then(response => {});
+
     });
   }
 
@@ -91,8 +92,8 @@ class ProfileOverview extends Component {
 
   followUser = id => {
     if (this.props.user.userData.isAuth) {
-      this.props.dispatch(follow(id)).then(response => {
-        this.props.dispatch(addFollower(id)).then(response => {
+      this.props.dispatch(follow(id)).then(() => {
+        this.props.dispatch(addFollower(id)).then(() => {
           this.props
             .dispatch(getProfileDetail(this.props.user.userDetail._id))
             .then(response => {
@@ -105,7 +106,7 @@ class ProfileOverview extends Component {
                 followingId.push(following[key]._id);
               }
               this.props.dispatch(getFollowing(followingId));
-              this.props.dispatch(getFollower(followerId)).then(response => {});
+              this.props.dispatch(getFollower(followerId))
               this.props
                 .dispatch(
                   getFollowingInLoadMore(
@@ -114,7 +115,6 @@ class ProfileOverview extends Component {
                     0
                   )
                 )
-                .then(response => {});
 
               this.props
                 .dispatch(
@@ -124,7 +124,6 @@ class ProfileOverview extends Component {
                     0
                   )
                 )
-                .then(response => {});
             });
         });
       });
@@ -135,8 +134,8 @@ class ProfileOverview extends Component {
 
   unfollowUser = id => {
     if (this.props.user.userData.isAuth) {
-      this.props.dispatch(unfollow(id)).then(response => {
-        this.props.dispatch(removeFollower(id)).then(response => {
+      this.props.dispatch(unfollow(id)).then(() => {
+        this.props.dispatch(removeFollower(id)).then(() => {
           this.props
             .dispatch(getProfileDetail(this.props.user.userDetail._id))
             .then(response => {
@@ -149,7 +148,7 @@ class ProfileOverview extends Component {
                 followingId.push(following[key]._id);
               }
               this.props.dispatch(getFollowing(followingId));
-              this.props.dispatch(getFollower(followerId)).then(response => {});
+              this.props.dispatch(getFollower(followerId))
               this.props
                 .dispatch(
                   getFollowingInLoadMore(
@@ -158,7 +157,6 @@ class ProfileOverview extends Component {
                     0
                   )
                 )
-                .then(response => {});
 
               this.props
                 .dispatch(
@@ -168,7 +166,6 @@ class ProfileOverview extends Component {
                     0
                   )
                 )
-                .then(response => {});
             });
         });
       });
@@ -179,8 +176,8 @@ class ProfileOverview extends Component {
 
   followUserInLoadMore = id => {
     if (this.props.user.userData.isAuth) {
-      this.props.dispatch(follow(id)).then(response => {
-        this.props.dispatch(addFollower(id)).then(response => {
+      this.props.dispatch(follow(id)).then(() => {
+        this.props.dispatch(addFollower(id)).then(() => {
           this.props
             .dispatch(getProfileDetail(this.props.user.userDetail._id))
             .then(response => {
@@ -193,7 +190,7 @@ class ProfileOverview extends Component {
                 followingId.push(following[key]._id);
               }
               this.props.dispatch(getFollowing(followingId));
-              this.props.dispatch(getFollower(followerId)).then(response => {});
+              this.props.dispatch(getFollower(followerId))
               this.props
                 .dispatch(
                   getFollowingInLoadMore(
@@ -202,7 +199,6 @@ class ProfileOverview extends Component {
                     0
                   )
                 )
-                .then(response => {});
 
               this.props
                 .dispatch(
@@ -212,7 +208,6 @@ class ProfileOverview extends Component {
                     0
                   )
                 )
-                .then(response => {});
             });
         });
       });
@@ -223,8 +218,8 @@ class ProfileOverview extends Component {
 
   unfollowUserInLoadMore = id => {
     if (this.props.user.userData.isAuth) {
-      this.props.dispatch(unfollow(id)).then(response => {
-        this.props.dispatch(removeFollower(id)).then(response => {
+      this.props.dispatch(unfollow(id)).then(() => {
+        this.props.dispatch(removeFollower(id)).then(() => {
           this.props
             .dispatch(getProfileDetail(this.props.user.userDetail._id))
             .then(response => {
@@ -244,7 +239,6 @@ class ProfileOverview extends Component {
                     0
                   )
                 )
-                .then(response => {});
 
               this.props
                 .dispatch(
@@ -254,7 +248,6 @@ class ProfileOverview extends Component {
                     0
                   )
                 )
-                .then(response => {});
             });
         });
       });
@@ -267,31 +260,12 @@ class ProfileOverview extends Component {
     let followerSkip = this.state.followerSkip + this.state.followerLimit;
     console.log(followerSkip);
 
-    let followingSkip = this.state.followingSkip + this.state.followerLimit;
-
     const following = this.props.user.userDetail.following;
     let followerId = this.props.user.userDetail.follower;
     let followingId = [];
     for (var key in following) {
       followingId.push(following[key]._id);
     }
-
-    console.log(followerId);
-
-    this.props
-      .dispatch(
-        getFollowingInLoadMore(
-          followingId,
-          this.state.followingLimit,
-          followingSkip,
-          this.props.user.followingInLoadMore
-        )
-      )
-      .then(() => {
-        this.setState({
-          followingSkip
-        });
-      });
 
     this.props
       .dispatch(
@@ -309,17 +283,57 @@ class ProfileOverview extends Component {
       });
   };
 
-  seeAllFollower = id => {
+  loadMoreFollowingCards = () => {
+
+    let followingSkip = this.state.followingSkip + this.state.followingLimit;
+
+    const following = this.props.user.userDetail.following;
+    let followingId = [];
+    for (var key in following) {
+      followingId.push(following[key]._id);
+    }
+
+    this.props
+      .dispatch(
+        getFollowingInLoadMore(
+          followingId,
+          this.state.followingLimit,
+          followingSkip,
+          this.props.user.followingInLoadMore
+        )
+      )
+      .then(() => {
+        this.setState({
+          followingSkip
+        });
+      });
+  };
+
+  seeAllFollower = () => {
     this.setState({
       openFollowerDialog: true
     });
   };
 
-  handleShowMoreFollowerClose = id => {
+  seeAllFollowing = () => {
+    this.setState({
+      openFollowingDialog: true
+    });
+  };
+
+  handleShowMoreFollowerClose = () => {
     this.setState({
       openFollowerDialog: false,
       followerSkip: 0,
       followerLimit: 6
+    });
+  };
+
+  handleShowMoreFollowingClose = () => {
+    this.setState({
+      openFollowingDialog: false,
+      followingSkip: 0,
+      followingLimit: 6
     });
   };
 
@@ -368,6 +382,7 @@ class ProfileOverview extends Component {
                   userFollowing={this.props.user.following}
                   runFollow={id => this.followUser(id)}
                   runUnfollow={id => this.unfollowUser(id)}
+                  runSeeAllFollowing={id => this.seeAllFollowing(id)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -411,6 +426,34 @@ class ProfileOverview extends Component {
               runFollow={id => this.followUserInLoadMore(id)}
               runUnfollow={id => this.unfollowUserInLoadMore(id)}
               loadMore={() => this.loadMoreFollowerCards()}
+            />
+          </DialogContent>
+        </Dialog>
+
+        <Dialog
+          fullWidth={this.state.fullWidth}
+          maxWidth={this.state.maxWidth}
+          open={this.state.openFollowingDialog}
+          onClose={id => this.handleShowMoreFollowingClose(id)}
+          scroll="paper"
+          aria-labelledby="max-width-dialog-title"
+        >
+          <DialogTitle>
+            ກໍາລັງຕິດຕາມ{" "}
+            {this.props.user.userDetail && this.props.user.userDetail.following
+              ? `(${this.props.user.userDetail.following.length})`
+              : null}
+          </DialogTitle>
+          <Divider />
+          <DialogContent style={{ paddingTop: "24px" }}>
+            <LoadMoreFollowingCard
+              followingLimit={this.state.followingLimit}
+              userData={this.props.user.userData}
+              userDetail={this.props.user.userDetail}
+              userFollowing={this.props.user.followingInLoadMore}
+              runFollow={id => this.followUserInLoadMore(id)}
+              runUnfollow={id => this.unfollowUserInLoadMore(id)}
+              loadMore={() => this.loadMoreFollowingCards()}
             />
           </DialogContent>
         </Dialog>

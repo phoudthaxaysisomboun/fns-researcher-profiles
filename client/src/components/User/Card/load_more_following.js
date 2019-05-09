@@ -1,6 +1,6 @@
 import React from "react";
 
-import {Link, withRouter} from 'react-router-dom'
+import { Link, withRouter } from "react-router-dom";
 
 import {
   Grid,
@@ -11,9 +11,21 @@ import {
   Typography
 } from "@material-ui/core";
 
-import { CheckOutlined, ListOutlined, PersonAddOutlined } from "@material-ui/icons";
+import {
+  CheckOutlined,
+  PersonAddOutlined,
+  ExpandMoreOutlined
+} from "@material-ui/icons";
 
-const FollowingCard = ({ userData, userDetail, userFollowing, runUnfollow, runFollow, runSeeAllFollowing}) => {
+const LoadMoreFollowingCard = ({
+  userData,
+  userDetail,
+  userFollowing,
+  runFollow,
+  runUnfollow,
+  followingLimit,
+  loadMore
+}) => {
   const user = { ...userData };
   const profile = { ...userDetail };
 
@@ -28,19 +40,16 @@ const FollowingCard = ({ userData, userDetail, userFollowing, runUnfollow, runFo
   //   }
   // }
 
-  const renderFollowButton = (id) => {
+  const renderFollowButton = id => {
     let duplicate = false;
     userData.following.forEach(item => {
-      
       if (item._id === id) {
-        duplicate = true
+        duplicate = true;
       }
     });
 
     if (id === userData._id) {
-      return (
-        <div></div>
-      )
+      return <div />;
     }
 
     if (duplicate) {
@@ -50,18 +59,16 @@ const FollowingCard = ({ userData, userDetail, userFollowing, runUnfollow, runFo
             size="small"
             variant="outlined"
             color="primary"
-            onClick={()=> {
-              runUnfollow(id)
+            onClick={() => {
+              runUnfollow(id);
             }}
-            
           >
             <CheckOutlined style={{ marginRight: "8px" }} />
             ຕິດຕາມຢູ່
           </Button>
         </Grid>
       );
-    }
-    else {
+    } else {
       return (
         <Grid item style={{ width: "100px" }} align="right">
           <Button
@@ -78,30 +85,15 @@ const FollowingCard = ({ userData, userDetail, userFollowing, runUnfollow, runFo
         </Grid>
       );
     }
-  }
+  };
 
   const renderItems = () => (
     <div>
-      <Grid container>
-        <Grid item xs={6}>
-          <Typography
-            variant="inherit"
-            style={{
-              fontSize: "20px",
-              marginBottom: "8px",
-              fontWeight: "bold"
-            }}
-          >
-            ກໍາລັງຕິດຕາມ{" "}
-            {profile.following ? `(${profile.following.length})` : null}
-          </Typography>
-        </Grid>
-      </Grid>
       <Paper style={{ boxShadow: "none", border: "1px solid #d8d8d8" }}>
         {profile.following && profile.following.length === 0 ? (
           <div style={{ margin: "20px" }}>
             <Typography variant="inherit" align="center">
-              ຍັງບໍ່ມີຜູ້ທີ່ກຳລັງຕິດຕາມ
+              ຍັງບໍ່ມີຜູ້ຕິດຕາມ
             </Typography>
           </div>
         ) : (
@@ -115,24 +107,27 @@ const FollowingCard = ({ userData, userDetail, userFollowing, runUnfollow, runFo
                         align="center"
                         style={{ marginRight: "8px", width: "54px" }}
                       >
-                      <Link to = {`/profile/${followings._id}`}>
-                        <Avatar
-                          alt="Remy Sharp"
-                          style={{ width: "46px", height: "46px" }}
-                          src="http://hespokestyle.com/wp-content/uploads/2017/04/navy-cotton-linen-blazer-tan-chinos-polo-shirt-mens-spring-fashion-trends-8-800x533.jpg"
-                        />
+                        <Link to={`/profile/${followings._id}`}>
+                          <Avatar
+                            alt="Remy Sharp"
+                            style={{ width: "46px", height: "46px" }}
+                            src="http://hespokestyle.com/wp-content/uploads/2017/04/navy-cotton-linen-blazer-tan-chinos-polo-shirt-mens-spring-fashion-trends-8-800x533.jpg"
+                          />
                         </Link>
                       </Grid>
                       <Grid item xs>
                         <Grid container>
                           <Grid item xs>
-                          <Link to = {`/profile/${followings._id}`} style={{textDecoration: "none"}}>
-                            <Typography
-                            style={{ fontWeight: "bold", color: "#404040" }}
-                              variant="inherit"
+                            <Link
+                              to={`/profile/${followings._id}`}
+                              style={{ textDecoration: "none" }}
                             >
-                              {followings.name} {followings.lastname}
-                            </Typography>
+                              <Typography
+                                style={{ fontWeight: "bold", color: "#404040" }}
+                                variant="inherit"
+                              >
+                                {followings.name} {followings.lastname}
+                              </Typography>
                             </Link>
                             <Typography
                               variant="inherit"
@@ -159,11 +154,32 @@ const FollowingCard = ({ userData, userDetail, userFollowing, runUnfollow, runFo
 
             <Grid container>
               <Grid item xs={12} align="center">
-                <Button color="primary" style={{ width: "100%" }} onClick={()=>{runSeeAllFollowing()}}>
-                  {" "}
-                  <ListOutlined style={{ marginRight: "8px" }} />
-                  ເບິ່ງທັງຫມົດ
-                </Button>
+                {userDetail.following.length <= userFollowing.length ? (
+                  <Button
+                    disabled
+                    color="primary"
+                    style={{ width: "100%" }}
+                    onClick={() => {
+                      loadMore();
+                    }}
+                  >
+                    {" "}
+                    <ExpandMoreOutlined style={{ marginRight: "8px" }} />
+                    ໂຫລດຕື່ມ
+                  </Button>
+                ) : (
+                  <Button
+                    color="primary"
+                    style={{ width: "100%" }}
+                    onClick={() => {
+                      loadMore();
+                    }}
+                  >
+                    {" "}
+                    <ExpandMoreOutlined style={{ marginRight: "8px" }} />
+                    ໂຫລດຕື່ມ
+                  </Button>
+                )}
               </Grid>
             </Grid>
           </div>
@@ -175,4 +191,4 @@ const FollowingCard = ({ userData, userDetail, userFollowing, runUnfollow, runFo
   return <div>{renderItems()}</div>;
 };
 
-export default FollowingCard;
+export default withRouter(LoadMoreFollowingCard);

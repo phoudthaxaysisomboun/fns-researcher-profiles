@@ -97,7 +97,16 @@ export function getFollower(id, limit, skip) {
 }
 
 export function getFollowingInLoadMore(id, limit, skip, previousState = []) {
-  const request = axios.get(`${RESEARCHER}/followings?id=${id}&type=array&sortBy=name&order=asc&limit=${limit}&skip=${skip}`).then(response => response.data)
+  const request = axios.get(`${RESEARCHER}/followings?id=${id}&type=array&sortBy=name&order=asc&limit=${limit}&skip=${skip}`).then(response => {
+    let newState = [
+      ...previousState,
+      ...response.data
+    ]
+
+    return {
+      data: newState
+    }
+  })
 
   return {
     type: GET_FOLLOWING_IN_LOAD_MORE,
@@ -109,13 +118,11 @@ export function getFollowingInLoadMore(id, limit, skip, previousState = []) {
 export function getFollowerInLoadMore(id, limit, skip, previousState = []) {
   
   const request = axios.get(`${RESEARCHER}/followers?id=${id}&type=array&sortBy=name&order=asc&limit=${limit}&skip=${skip}`).then(response => {
-    console.log(`${RESEARCHER}/followers?id=${id}&type=array&sortBy=name&order=asc&limit=${limit}&skip=${skip}`)
     let newState = [
       ...previousState,
       ...response.data
     ]
     
-    console.log(response.data)
     return {
       data: newState
     }
