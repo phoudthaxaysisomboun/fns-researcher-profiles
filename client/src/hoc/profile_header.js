@@ -20,7 +20,7 @@ import {
   AddOutlined,
   EditOutlined,
   ReplyOutlined,
-  CheckOutlined
+  CheckOutlined,
 } from "@material-ui/icons";
 
 const iconStyles = {

@@ -35,7 +35,7 @@ const { admin } = require("./middleware/admin");
 //====================================
 
 app.get("/api/users/departments", (req, res) => {
-  Department.find({}, (err, departments) => {
+  Department.find({'faculty': mongoose.Types.ObjectId('5caed82590264f5c10201b4a')}, (err, departments) => {
     if (err) return res.status(400).send(err);
     res.status(200).send(departments);
   });
@@ -410,7 +410,8 @@ app.get("/api/researchers/profiles_by_id", (req, res) => {
 app.get("/api/researchers/followings", (req, res) => {
   let order = req.query.order ? req.query.order : "asc";
   let sortBy = req.query.sortBy ? req.query.sortBy : "name";
-  let limit = parseInt(req.query.limit);
+  let limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 3;
+  let skip = parseInt(req.body.skip) ? parseInt(req.body.skip) : 0
 
   let type = req.query.type;
   let items = req.query.id;
@@ -426,6 +427,7 @@ app.get("/api/researchers/followings", (req, res) => {
     User.find({ _id: { $in: items } })
       .sort([[sortBy, order]])
       .limit(limit)
+      .skip(skip)
       .select("_id name lastname profileImage affiliation researchArea")
       .populate({
         path: "affiliation.institution"
@@ -446,7 +448,8 @@ app.get("/api/researchers/followings", (req, res) => {
 app.get("/api/researchers/followers", (req, res) => {
   let order = req.query.order ? req.query.order : "asc";
   let sortBy = req.query.sortBy ? req.query.sortBy : "name";
-  let limit = parseInt(req.query.limit);
+  let limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 3;
+  let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0
 
   let type = req.query.type;
   let items = req.query.id;
@@ -462,8 +465,9 @@ app.get("/api/researchers/followers", (req, res) => {
     User.find({ _id: { $in: items } })
       .sort([[sortBy, order]])
       .limit(limit)
+      .skip(skip)
       .select("_id name lastname profileImage affiliation researchArea")
-      .populate({
+      .populate({ 
         path: "affiliation.institution"
       })
       .populate({

@@ -12,5 +12,7 @@ export const UNFOLLOW = 'unfollow'
 export const REMOVE_FOLLOWER = 'remove_follower'
 export const CLEAR_FOLLOWING = 'clear_following'
 export const CLEAR_FOLLOWER = 'clear_follower'
+export const GET_FOLLOWER_IN_LOAD_MORE = 'get_follower_in_load_more'
+export const GET_FOLLOWING_IN_LOAD_MORE = 'get_following_in_load_more'
 
 export const GET_DEPARTMENTS = 'get_departments'

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { LOGIN_USER, REGISTER_USER, GET_DEPARTMENTS, AUTH_USER, GET_USER_DETAIL, CLEAR_USER_DETAIL, LOGOUT_USER, GET_FOLLOWING, GET_FOLLOWER, FOLLOW, ADD_FOLLOWER, UNFOLLOW, REMOVE_FOLLOWER, CLEAR_FOLLOWING, CLEAR_FOLLOWER } from "./types";
+import { LOGIN_USER, REGISTER_USER, GET_DEPARTMENTS, AUTH_USER, GET_USER_DETAIL, CLEAR_USER_DETAIL, LOGOUT_USER, GET_FOLLOWING, GET_FOLLOWER, FOLLOW, ADD_FOLLOWER, UNFOLLOW, REMOVE_FOLLOWER, CLEAR_FOLLOWING, CLEAR_FOLLOWER, GET_FOLLOWER_IN_LOAD_MORE, GET_FOLLOWING_IN_LOAD_MORE } from "./types";
 
 import { USER_SERVER, RESEARCHER } from "../components/utils/misc";
 
@@ -78,8 +78,8 @@ export function clearFollower() {
   }
 }
 
-export function getFollowing(id) {
-  const request = axios.get(`${RESEARCHER}/followings?id=${id}&type=array&sortBy=name&order=asc&limit=3`).then(response => response.data)
+export function getFollowing(id, limit, skip) {
+  const request = axios.get(`${RESEARCHER}/followings?id=${id}&type=array&sortBy=name&order=asc&limit=${limit}&skip=${skip}`).then(response => response.data)
 
   return {
     type: GET_FOLLOWING,
@@ -87,11 +87,42 @@ export function getFollowing(id) {
   }
 }
 
-export function getFollower(id) {
-  const request = axios.get(`${RESEARCHER}/followers?id=${id}&type=array&sortBy=name&order=asc&limit=3`).then(response => response.data)
+export function getFollower(id, limit, skip) {
+  const request = axios.get(`${RESEARCHER}/followers?id=${id}&type=array&sortBy=name&order=asc&limit=${limit}&skip=${skip}`).then(response => response.data)
 
   return {
     type: GET_FOLLOWER,
+    payload: request
+  }
+}
+
+export function getFollowingInLoadMore(id, limit, skip, previousState = []) {
+  const request = axios.get(`${RESEARCHER}/followings?id=${id}&type=array&sortBy=name&order=asc&limit=${limit}&skip=${skip}`).then(response => response.data)
+
+  return {
+    type: GET_FOLLOWING_IN_LOAD_MORE,
+    payload: request
+  }
+}
+
+
+export function getFollowerInLoadMore(id, limit, skip, previousState = []) {
+  
+  const request = axios.get(`${RESEARCHER}/followers?id=${id}&type=array&sortBy=name&order=asc&limit=${limit}&skip=${skip}`).then(response => {
+    console.log(`${RESEARCHER}/followers?id=${id}&type=array&sortBy=name&order=asc&limit=${limit}&skip=${skip}`)
+    let newState = [
+      ...previousState,
+      ...response.data
+    ]
+    
+    console.log(response.data)
+    return {
+      data: newState
+    }
+  })
+
+  return {
+    type: GET_FOLLOWER_IN_LOAD_MORE,
     payload: request
   }
 }

@@ -17,7 +17,7 @@ import {
   PersonAddOutlined
 } from "@material-ui/icons";
 
-const FollowerCard = ({ userData, userDetail, userFollower, runFollow, runUnfollow }) => {
+const FollowerCard = ({ userData, userDetail, userFollower, runFollow, runUnfollow, runSeeAllFollower }) => {
   const user = { ...userData };
   const profile = { ...userDetail };
 
@@ -163,7 +163,7 @@ const FollowerCard = ({ userData, userDetail, userFollower, runFollow, runUnfoll
 
             <Grid container>
               <Grid item xs={12} align="center">
-                <Button color="primary" style={{ width: "100%" }}>
+                <Button color="primary" style={{ width: "100%" }} onClick={()=>{runSeeAllFollower()}}>
                   {" "}
                   <ListOutlined style={{ marginRight: "8px" }} />
                   ເບິ່ງທັງຫມົດ
