@@ -175,4 +175,4 @@ const FollowingCard = ({ userData, userDetail, userFollowing, runUnfollow, runFo
   return <div>{renderItems()}</div>;
 };
 
-export default FollowingCard;
+export default withRouter(FollowingCard);

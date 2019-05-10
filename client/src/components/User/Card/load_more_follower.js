@@ -4,7 +4,6 @@ import { Link, withRouter } from "react-router-dom";
 
 import {
   Grid,
-  Paper,
   Avatar,
   Divider,
   Button,
