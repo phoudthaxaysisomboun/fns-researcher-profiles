@@ -89,102 +89,89 @@ const LoadMoreFollowingCard = ({
 
   const renderItems = () => (
     <div>
-      <Paper style={{ boxShadow: "none", border: "1px solid #d8d8d8" }}>
-        {profile.following && profile.following.length === 0 ? (
-          <div style={{ margin: "20px" }}>
-            <Typography variant="inherit" align="center">
-              ຍັງບໍ່ມີຜູ້ຕິດຕາມ
-            </Typography>
-          </div>
-        ) : (
-          <div>
-            {userFollowing
-              ? userFollowing.map(followings => (
-                  <div key={followings._id}>
-                    <Grid container spacing={0} style={{ padding: "16px" }}>
-                      <Grid
-                        item
-                        align="center"
-                        style={{ marginRight: "8px", width: "54px" }}
-                      >
-                        <Link to={`/profile/${followings._id}`}>
-                          <Avatar
-                            alt="Remy Sharp"
-                            style={{ width: "46px", height: "46px" }}
-                            src="http://hespokestyle.com/wp-content/uploads/2017/04/navy-cotton-linen-blazer-tan-chinos-polo-shirt-mens-spring-fashion-trends-8-800x533.jpg"
-                          />
-                        </Link>
-                      </Grid>
+    {profile.following && profile.following.length === 0 ? (
+      <div style={{ margin: "20px" }}>
+        <Typography variant="inherit" align="center">
+          ຍັງບໍ່ມີຜູ້ຕິດຕາມ
+        </Typography>
+      </div>
+    ) : (
+      <div>
+        {userFollowing
+          ? userFollowing.map(followings => (
+              <div key={followings._id}>
+                <Grid container spacing={0} style={{ padding: "16px" }}>
+                  <Grid
+                    item
+                    align="center"
+                    style={{ marginRight: "8px", width: "54px" }}
+                  >
+                    <Link to={`/profile/${followings._id}`}>
+                      <Avatar
+                        alt="Remy Sharp"
+                        style={{ width: "46px", height: "46px" }}
+                        src="http://hespokestyle.com/wp-content/uploads/2017/04/navy-cotton-linen-blazer-tan-chinos-polo-shirt-mens-spring-fashion-trends-8-800x533.jpg"
+                      />
+                    </Link>
+                  </Grid>
+                  <Grid item xs>
+                    <Grid container>
                       <Grid item xs>
-                        <Grid container>
-                          <Grid item xs>
-                            <Link
-                              to={`/profile/${followings._id}`}
-                              style={{ textDecoration: "none" }}
-                            >
-                              <Typography
-                                style={{ fontWeight: "bold", color: "#404040" }}
-                                variant="inherit"
-                              >
-                                {followings.name} {followings.lastname}
-                              </Typography>
-                            </Link>
-                            <Typography
-                              variant="inherit"
-                              style={{ fontSize: "14px", fontWeight: "500" }}
-                            >
-                              {followings.affiliation.institution.name}
-                            </Typography>
-                            <Typography
-                              variant="inherit"
-                              style={{ fontSize: "13px", color: "#686868" }}
-                            >
-                              {followings.affiliation.faculty.name} •{" "}
-                              {followings.affiliation.department.name}
-                            </Typography>
-                          </Grid>
-                        </Grid>
+                        <Link
+                          to={`/profile/${followings._id}`}
+                          style={{ textDecoration: "none" }}
+                        >
+                          <Typography
+                            style={{ fontWeight: "bold", color: "#404040" }}
+                            variant="inherit"
+                          >
+                            {followings.name} {followings.lastname}
+                          </Typography>
+                        </Link>
+                        <Typography
+                          variant="inherit"
+                          style={{ fontSize: "14px", fontWeight: "500" }}
+                        >
+                          {followings.affiliation.institution.name}
+                        </Typography>
+                        <Typography
+                          variant="inherit"
+                          style={{ fontSize: "13px", color: "#686868" }}
+                        >
+                          {followings.affiliation.faculty.name} •{" "}
+                          {followings.affiliation.department.name}
+                        </Typography>
                       </Grid>
-                      {isAuth ? renderFollowButton(followings._id) : null}
                     </Grid>
-                    <Divider />
-                  </div>
-                ))
-              : null}
+                  </Grid>
+                  {isAuth ? renderFollowButton(followings._id) : null}
+                </Grid>
+                <Divider />
+              </div>
+            ))
+          : null}
 
-            <Grid container>
-              <Grid item xs={12} align="center">
-                {userDetail.following.length <= userFollowing.length ? (
-                  <Button
-                    disabled
-                    color="primary"
-                    style={{ width: "100%" }}
-                    onClick={() => {
-                      loadMore();
-                    }}
-                  >
-                    {" "}
-                    <ExpandMoreOutlined style={{ marginRight: "8px" }} />
-                    ໂຫລດຕື່ມ
-                  </Button>
-                ) : (
-                  <Button
-                    color="primary"
-                    style={{ width: "100%" }}
-                    onClick={() => {
-                      loadMore();
-                    }}
-                  >
-                    {" "}
-                    <ExpandMoreOutlined style={{ marginRight: "8px" }} />
-                    ໂຫລດຕື່ມ
-                  </Button>
-                )}
-              </Grid>
-            </Grid>
-          </div>
-        )}
-      </Paper>
+        <Grid container>
+          <Grid item xs={12} align="center">
+            {userDetail.following.length <= userFollowing.length ? (
+             null
+            ) : (
+              <Button
+                color="primary"
+                style={{ width: "100%" }}
+                onClick={() => {
+                  loadMore();
+                }}
+              >
+                {" "}
+                <ExpandMoreOutlined style={{ marginRight: "8px" }} />
+                ໂຫລດຕື່ມ
+              </Button>
+            )}
+          </Grid>
+        </Grid>
+      </div>
+    )}
     </div>
   );
 

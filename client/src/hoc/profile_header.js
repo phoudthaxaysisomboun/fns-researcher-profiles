@@ -110,7 +110,7 @@ const ProfileHeader = ({props, runUnfollow, runFollow, children}) => {
             <Grid item xs sm={1} lg={3} md={2} />
             <Grid item xs={10} sm={10} lg={6} md={8}>
               <Grid container spacing={24}>
-                <Grid item lg={2} md={2} sm={3} xs={12} align="left">
+                <Grid  align="left" style={{width: "96px", margin: "12px"}}>
                   <Avatar
                     style={{ width: "96px", height: "96px" }}
                     alt="Remy Sharp"
@@ -220,7 +220,7 @@ const ProfileHeader = ({props, runUnfollow, runFollow, children}) => {
                   </Typography>
                 </Link>): null}
                 </Grid>
-                <Grid item lg={4} md={4} sm={12} xs={12} align="right">
+                <Grid item lg={4  } md={4} sm={12} xs={12} align="right">
                   <Button
                     size="medium"
                     variant="outlined"

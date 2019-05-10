@@ -11,13 +11,16 @@ import FollowerCard from "../User/Card/follower";
 import LoadMoreFollowerCard from "./Card/load_more_follower";
 import LoadMoreFollowingCard from "../User/Card/load_more_following";
 
+import PropTypes from 'prop-types'
+
 import {
   Hidden,
   Grid,
   Dialog,
   DialogTitle,
   Divider,
-  DialogContent
+  DialogContent,
+  IconButton
 } from "@material-ui/core";
 
 import {
@@ -32,8 +35,10 @@ import {
   clearFollowing,
   clearFollower,
   getFollowerInLoadMore,
-  getFollowingInLoadMore
+  getFollowingInLoadMore,
 } from "../../actions/user_actions";
+
+import { CloseOutlined } from "@material-ui/icons";
 
 class ProfileOverview extends Component {
   state = {
@@ -338,6 +343,8 @@ class ProfileOverview extends Component {
   };
 
   render() {
+    const { fullScreen } = this.props;
+
     if (this.props.user.userDetail) {
       document.title = `${this.props.user.userDetail.name} ${
         this.props.user.userDetail.lastname
@@ -410,14 +417,24 @@ class ProfileOverview extends Component {
           scroll="paper"
           aria-labelledby="max-width-dialog-title"
         >
-          <DialogTitle>
+          <DialogTitle style={{padding: 0}}>
+          <Grid container >
+            <Grid item xs={6} style={{padding: '16px', fontWeight: 'bold'}}>
             ຜູ້ຕິດຕາມ{" "}
             {this.props.user.userDetail && this.props.user.userDetail.follower
               ? `(${this.props.user.userDetail.follower.length})`
               : null}
+            </Grid>
+            <Grid item xs={6} align="right" onClick={id => this.handleShowMoreFollowerClose(id)} style={{padding: "16px"}}>
+              <IconButton style={{padding: 0}}>
+                <CloseOutlined/>
+              </IconButton>
+            </Grid>
+          </Grid>
+            
           </DialogTitle>
           <Divider />
-          <DialogContent style={{ paddingTop: "24px" }}>
+          <DialogContent style={{ padding: 0}}>
             <LoadMoreFollowerCard
               followerLimit={this.state.followerLimit}
               userData={this.props.user.userData}
@@ -433,19 +450,31 @@ class ProfileOverview extends Component {
         <Dialog
           fullWidth={this.state.fullWidth}
           maxWidth={this.state.maxWidth}
+          fullScreen={fullScreen}
           open={this.state.openFollowingDialog}
           onClose={id => this.handleShowMoreFollowingClose(id)}
           scroll="paper"
           aria-labelledby="max-width-dialog-title"
         >
-          <DialogTitle>
+        <DialogTitle style={{padding: 0}}>
+
+          <Grid container >
+            <Grid item xs={6} style={{padding: '16px', fontWeight: 'bold'}}>
             ກໍາລັງຕິດຕາມ{" "}
             {this.props.user.userDetail && this.props.user.userDetail.following
               ? `(${this.props.user.userDetail.following.length})`
               : null}
+            </Grid>
+            <Grid item xs={6} align="right" onClick={id => this.handleShowMoreFollowingClose(id)} style={{padding: "16px"}}>
+              <IconButton style={{padding: 0}}>
+                <CloseOutlined/>
+              </IconButton>
+            </Grid>
+          </Grid>
+            
           </DialogTitle>
           <Divider />
-          <DialogContent style={{ paddingTop: "24px" }}>
+          <DialogContent style={{ padding: 0 }}>
             <LoadMoreFollowingCard
               followingLimit={this.state.followingLimit}
               userData={this.props.user.userData}
@@ -461,6 +490,10 @@ class ProfileOverview extends Component {
     );
   }
 }
+
+ProfileOverview.propTypes = {
+  fullScreen: PropTypes.bool.isRequired,
+};
 
 const mapStateToProps = state => {
   return {
