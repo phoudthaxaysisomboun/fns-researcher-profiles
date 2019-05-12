@@ -8,7 +8,8 @@ import {
   Avatar,
   Divider,
   Button,
-  Typography
+  Typography,
+  LinearProgress
 } from "@material-ui/core";
 
 import { CheckOutlined, ListOutlined, PersonAddOutlined } from "@material-ui/icons";
@@ -80,32 +81,19 @@ const FollowingCard = ({ userData, userDetail, userFollowing, runUnfollow, runFo
     }
   }
 
-  const renderItems = () => (
-    <div>
-      <Grid container>
-        <Grid item xs={6}>
-          <Typography
-            variant="inherit"
-            style={{
-              fontSize: "20px",
-              marginBottom: "8px",
-              fontWeight: "bold"
-            }}
-          >
-            ກໍາລັງຕິດຕາມ{" "}
-            {profile.following ? `(${profile.following.length})` : null}
-          </Typography>
-        </Grid>
-      </Grid>
-      <Paper style={{ boxShadow: "none", border: "1px solid #d8d8d8" }}>
-        {profile.following && profile.following.length === 0 ? (
-          <div style={{ margin: "20px" }}>
+  const renderNoFollowing = () => (
+    userFollowing ?
+    <div style={{ margin: "20px" }}>
             <Typography variant="inherit" align="center">
               ຍັງບໍ່ມີຜູ້ທີ່ກຳລັງຕິດຕາມ
             </Typography>
           </div>
-        ) : (
-          <div>
+          : <LinearProgress style={{ margin: "16px" }}/>
+  )
+
+  const renderFollowing = () => (
+    userFollowing ?
+    <div>
             {userFollowing
               ? userFollowing.map(followings => (
                   <div key={followings._id}>
@@ -167,12 +155,38 @@ const FollowingCard = ({ userData, userDetail, userFollowing, runUnfollow, runFo
               </Grid>
             </Grid>
           </div>
+          : 
+          <LinearProgress style={{ margin: "16px" }}/>
+  )
+
+  const renderItems = () => (
+    <div>
+      <Grid container>
+        <Grid item xs={6}>
+          <Typography
+            variant="inherit"
+            style={{
+              fontSize: "20px",
+              marginBottom: "8px",
+              fontWeight: "bold"
+            }}
+          >
+            ກໍາລັງຕິດຕາມ{" "}
+            <span variant="inherit" style={{fontWeight: "normal", fontFamily: "'Roboto', sans-serif", color: "#898989"}}>{profile.following ? `(${profile.following.length})` : null}</span>
+          </Typography>
+        </Grid>
+      </Grid>
+      <Paper style={{ boxShadow: "none", border: "1px solid #d8d8d8" }}>
+        {profile.following && profile.following.length === 0 ? (
+          renderNoFollowing()
+        ) : (
+          renderFollowing()
         )}
       </Paper>
     </div>
   );
 
-  return <div>{renderItems()}</div>;
+  return <div>{renderItems()}</div> ;
 };
 
 export default withRouter(FollowingCard);

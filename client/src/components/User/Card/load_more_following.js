@@ -7,7 +7,8 @@ import {
   Avatar,
   Divider,
   Button,
-  Typography
+  Typography,
+  CircularProgress
 } from "@material-ui/core";
 
 import {
@@ -23,7 +24,8 @@ const LoadMoreFollowingCard = ({
   runFollow,
   runUnfollow,
   followingLimit,
-  loadMore
+  loadMore,
+  loading
 }) => {
   const user = { ...userData };
   const profile = { ...userDetail };
@@ -38,6 +40,8 @@ const LoadMoreFollowingCard = ({
   //     isOwner = false;
   //   }
   // }
+
+  console.log(loading)
 
   const renderFollowButton = id => {
     let duplicate = false;
@@ -85,6 +89,24 @@ const LoadMoreFollowingCard = ({
       );
     }
   };
+
+  const renderButton = () => 
+    loading ? (
+      <CircularProgress size={24} style={{margin: "6px"}} />
+    ) : (
+      <Button
+                color="primary"
+                style={{ width: "100%" }}
+                onClick={() => {
+                  loadMore();
+                }}
+              >
+                {" "}
+                <ExpandMoreOutlined style={{ marginRight: "8px" }} />
+                ໂຫລດຕື່ມ
+              </Button>
+    )
+  
 
   const renderItems = () => (
     <div>
@@ -152,21 +174,9 @@ const LoadMoreFollowingCard = ({
 
         <Grid container>
           <Grid item xs={12} align="center">
-            {userDetail.following.length <= userFollowing.length ? (
+            {userDetail.following.length <= userFollowing.length || profile.following === 6 ? (
              null
-            ) : (
-              <Button
-                color="primary"
-                style={{ width: "100%" }}
-                onClick={() => {
-                  loadMore();
-                }}
-              >
-                {" "}
-                <ExpandMoreOutlined style={{ marginRight: "8px" }} />
-                ໂຫລດຕື່ມ
-              </Button>
-            )}
+            ) : renderButton()}
           </Grid>
         </Grid>
       </div>

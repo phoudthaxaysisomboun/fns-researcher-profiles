@@ -4,7 +4,8 @@ import {
   IconButton,
   Grid,
   Paper,
-  Typography
+  Typography,
+  LinearProgress
 } from "@material-ui/core";
 
 import { EditOutlined } from "@material-ui/icons";
@@ -56,7 +57,8 @@ const AffiliationCard = props => {
         </Grid>
       </Grid>
       <Paper style={{boxShadow: "none", border:"1px solid #d8d8d8"}}>
-        <Grid container spacing={8} style={{ padding: "16px" }}>
+        {profile.affiliation ?
+          <Grid container spacing={8} style={{ padding: "16px" }}>
           <Grid item xs={8}>
             <Grid container>
               <Grid item xs={12}>
@@ -121,7 +123,8 @@ const AffiliationCard = props => {
               src="/images/fns.svg"
             />
           </Grid>
-        </Grid>
+        </Grid> : <LinearProgress style={{margin: "16px"}} />
+        }
       </Paper>
     </div>
   );

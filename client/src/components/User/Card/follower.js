@@ -8,7 +8,8 @@ import {
   Avatar,
   Divider,
   Button,
-  Typography
+  Typography,
+  LinearProgress
 } from "@material-ui/core";
 
 import {
@@ -84,31 +85,19 @@ const FollowerCard = ({ userData, userDetail, userFollower, runFollow, runUnfoll
     }
   };
 
-  const renderItems = () => (
-    <div>
-      <Grid container>
-        <Grid item xs={6}>
-          <Typography
-            variant="inherit"
-            style={{
-              fontSize: "20px",
-              marginBottom: "8px",
-              fontWeight: "bold"
-            }}
-          >
-            ຜູ້ຕິດຕາມ {profile.follower ? `(${profile.follower.length})` : null}
-          </Typography>
-        </Grid>
-      </Grid>
-      <Paper style={{ boxShadow: "none", border: "1px solid #d8d8d8" }}>
-        {profile.follower && profile.follower.length === 0 ? (
-          <div style={{ margin: "20px" }}>
+  const renderNoFollower = () => (
+      userFollower ?
+      <div style={{ margin: "20px" }}>
             <Typography variant="inherit" align="center">
               ຍັງບໍ່ມີຜູ້ຕິດຕາມ
             </Typography>
           </div>
-        ) : (
-          <div>
+          : <LinearProgress style={{margin: "16px"}} />
+   )
+
+   const renderFollower = () => (
+     userFollower ?
+     <div>
             {userFollower
               ? userFollower.map(followings => (
                   <div key={followings._id}>
@@ -171,12 +160,42 @@ const FollowerCard = ({ userData, userDetail, userFollower, runFollow, runUnfoll
               </Grid>
             </Grid>
           </div>
+          : 
+          <LinearProgress style={{margin: "16px"}} />
+   )
+  const renderItems = () => (
+    <div>
+      <Grid container>
+        <Grid item xs={6}>
+        
+        <Typography
+          variant="inherit"
+          style={{
+            fontSize: "20px",
+            marginBottom: "8px",
+            fontWeight: "bold"
+          }}
+        >
+          ຜູ້ຕິດຕາມ  <span variant="inherit" style={{fontWeight: "normal", color: "#898989"}}>
+          {profile.follower ? `(${profile.follower.length})` : null}
+        </span>
+        </Typography>
+          
+            
+          
+        </Grid>
+      </Grid>
+      <Paper style={{ boxShadow: "none", border: "1px solid #d8d8d8" }}>
+        {profile.follower && profile.follower.length === 0 ? (
+          renderNoFollower()
+        ) : (
+          renderFollower()
         )}
       </Paper>
     </div>
   );
 
-  return <div>{renderItems()}</div>;
+  return  <div>{renderItems()}</div>;
 };
 
 export default withRouter(FollowerCard);

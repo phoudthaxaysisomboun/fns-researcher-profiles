@@ -367,7 +367,7 @@ app.get("/api/researchers/profiles_by_id", (req, res) => {
     });
   }
 
-  User.find({ _id: { $in: items } })
+  User.find({ _id: { $in: items }, emailIsVerified: true, accountIsVerified: true })
     .populate("gender")
     .populate({
       path: "address.district"
@@ -424,7 +424,7 @@ app.get("/api/researchers/followings", (req, res) => {
         return mongoose.Types.ObjectId(item);
       });
     }
-    User.find({ _id: { $in: items } })
+    User.find({ _id: { $in: items }, emailIsVerified: true, accountIsVerified: true })
       .sort([[sortBy, order]])
       .limit(limit)
       .skip(skip)
@@ -462,7 +462,7 @@ app.get("/api/researchers/followers", (req, res) => {
         return mongoose.Types.ObjectId(item);
       });
     }
-    User.find({ _id: { $in: items } })
+    User.find({ _id: { $in: items }, emailIsVerified: true, accountIsVerified: true })
       .sort([[sortBy, order]])
       .limit(limit)
       .skip(skip)

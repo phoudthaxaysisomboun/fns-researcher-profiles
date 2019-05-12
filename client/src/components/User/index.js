@@ -10,8 +10,9 @@ import FollowingCard from "../User/Card/following";
 import FollowerCard from "../User/Card/follower";
 import LoadMoreFollowerCard from "./Card/load_more_follower";
 import LoadMoreFollowingCard from "../User/Card/load_more_following";
+import ResearchCard from "../User/Card/research";
 
-import PropTypes from 'prop-types'
+import PropTypes from "prop-types";
 
 import {
   Hidden,
@@ -20,7 +21,8 @@ import {
   DialogTitle,
   Divider,
   DialogContent,
-  IconButton
+  IconButton,
+  Typography
 } from "@material-ui/core";
 
 import {
@@ -35,13 +37,16 @@ import {
   clearFollowing,
   clearFollower,
   getFollowerInLoadMore,
-  getFollowingInLoadMore,
+  getFollowingInLoadMore
 } from "../../actions/user_actions";
 
 import { CloseOutlined } from "@material-ui/icons";
-
 class ProfileOverview extends Component {
   state = {
+    loadingMoreFollower: false,
+    loadingMoreFollowing: false,
+    followLoading: false,
+    unfollowLoading: false,
     openFollowerDialog: false,
     openFollowingDialog: false,
     fullWidth: true,
@@ -64,28 +69,25 @@ class ProfileOverview extends Component {
       for (var key in following) {
         followingId.push(following[key]._id);
       }
-      this.props.dispatch(getFollowing(followingId))
+      this.props.dispatch(getFollowing(followingId));
 
-      this.props.dispatch(getFollower(followerId))
+      this.props.dispatch(getFollower(followerId));
 
-      this.props
-        .dispatch(
-          getFollowingInLoadMore(
-            followingId,
-            this.state.followingLimit,
-            this.state.followingSkip
-          )
+      this.props.dispatch(
+        getFollowingInLoadMore(
+          followingId,
+          this.state.followingLimit,
+          this.state.followingSkip
         )
+      );
 
-      this.props
-        .dispatch(
-          getFollowerInLoadMore(
-            followerId,
-            this.state.followerLimit,
-            this.state.followerSkip
-          )
+      this.props.dispatch(
+        getFollowerInLoadMore(
+          followerId,
+          this.state.followerLimit,
+          this.state.followerSkip
         )
-
+      );
     });
   }
 
@@ -97,6 +99,9 @@ class ProfileOverview extends Component {
 
   followUser = id => {
     if (this.props.user.userData.isAuth) {
+      this.setState({
+        followLoading: true
+      });
       this.props.dispatch(follow(id)).then(() => {
         this.props.dispatch(addFollower(id)).then(() => {
           this.props
@@ -111,24 +116,16 @@ class ProfileOverview extends Component {
                 followingId.push(following[key]._id);
               }
               this.props.dispatch(getFollowing(followingId));
-              this.props.dispatch(getFollower(followerId))
-              this.props
-                .dispatch(
-                  getFollowingInLoadMore(
-                    followingId,
-                    6,
-                    0
-                  )
-                )
+              this.props.dispatch(getFollower(followerId));
+              this.props.dispatch(getFollowingInLoadMore(followingId, 6, 0));
 
               this.props
-                .dispatch(
-                  getFollowerInLoadMore(
-                    followerId,
-                    6,
-                    0
-                  )
-                )
+                .dispatch(getFollowerInLoadMore(followerId, 6, 0))
+                .then(() => {
+                  this.setState({
+                    followLoading: false
+                  });
+                });
             });
         });
       });
@@ -153,24 +150,10 @@ class ProfileOverview extends Component {
                 followingId.push(following[key]._id);
               }
               this.props.dispatch(getFollowing(followingId));
-              this.props.dispatch(getFollower(followerId))
-              this.props
-                .dispatch(
-                  getFollowingInLoadMore(
-                    followingId,
-                    6,
-                    0
-                  )
-                )
+              this.props.dispatch(getFollower(followerId));
+              this.props.dispatch(getFollowingInLoadMore(followingId, 6, 0));
 
-              this.props
-                .dispatch(
-                  getFollowerInLoadMore(
-                    followerId,
-                    6,
-                    0
-                  )
-                )
+              this.props.dispatch(getFollowerInLoadMore(followerId, 6, 0));
             });
         });
       });
@@ -195,24 +178,10 @@ class ProfileOverview extends Component {
                 followingId.push(following[key]._id);
               }
               this.props.dispatch(getFollowing(followingId));
-              this.props.dispatch(getFollower(followerId))
-              this.props
-                .dispatch(
-                  getFollowingInLoadMore(
-                    followingId,
-                    6,
-                    0
-                  )
-                )
+              this.props.dispatch(getFollower(followerId));
+              this.props.dispatch(getFollowingInLoadMore(followingId, 6, 0));
 
-              this.props
-                .dispatch(
-                  getFollowerInLoadMore(
-                    followerId,
-                    6,
-                    0
-                  )
-                )
+              this.props.dispatch(getFollowerInLoadMore(followerId, 6, 0));
             });
         });
       });
@@ -236,23 +205,9 @@ class ProfileOverview extends Component {
               for (var key in following) {
                 followingId.push(following[key]._id);
               }
-              this.props
-                .dispatch(
-                  getFollowingInLoadMore(
-                    followingId,
-                    6,
-                    0
-                  )
-                )
+              this.props.dispatch(getFollowingInLoadMore(followingId, 6, 0));
 
-              this.props
-                .dispatch(
-                  getFollowerInLoadMore(
-                    followerId,
-                    6,
-                    0
-                  )
-                )
+              this.props.dispatch(getFollowerInLoadMore(followerId, 6, 0));
             });
         });
       });
@@ -263,7 +218,6 @@ class ProfileOverview extends Component {
 
   loadMoreFollowerCards = () => {
     let followerSkip = this.state.followerSkip + this.state.followerLimit;
-    console.log(followerSkip);
 
     const following = this.props.user.userDetail.following;
     let followerId = this.props.user.userDetail.follower;
@@ -271,6 +225,10 @@ class ProfileOverview extends Component {
     for (var key in following) {
       followingId.push(following[key]._id);
     }
+
+    this.setState({
+      loadingMoreFollower: true
+    });
 
     this.props
       .dispatch(
@@ -283,13 +241,13 @@ class ProfileOverview extends Component {
       )
       .then(() => {
         this.setState({
-          followerSkip
+          followerSkip,
+          loadingMoreFollower: false
         });
       });
   };
 
   loadMoreFollowingCards = () => {
-
     let followingSkip = this.state.followingSkip + this.state.followingLimit;
 
     const following = this.props.user.userDetail.following;
@@ -297,6 +255,10 @@ class ProfileOverview extends Component {
     for (var key in following) {
       followingId.push(following[key]._id);
     }
+
+    this.setState({
+      loadingMoreFollowing: true
+    });
 
     this.props
       .dispatch(
@@ -309,7 +271,8 @@ class ProfileOverview extends Component {
       )
       .then(() => {
         this.setState({
-          followingSkip
+          followingSkip,
+          loadingMoreFollowing: false
         });
       });
   };
@@ -358,6 +321,7 @@ class ProfileOverview extends Component {
         userDetail={this.props.user.userDetail}
         runFollow={id => this.followUser(id)}
         runUnfollow={id => this.unfollowUser(id)}
+        loading={this.state.followLoading}
       >
         <Grid container spacing={24} style={{ margin: "8px" }}>
           <Hidden only="sm">
@@ -365,15 +329,17 @@ class ProfileOverview extends Component {
           </Hidden>
           <Grid item xs={12} lg={4} sm={6} md={5}>
             <Grid container spacing={24}>
-              <Grid item xs={12}>
-                <IntroductionCard {...this.props} />
-              </Grid>
+              <IntroductionCard {...this.props} />
+
+              <ResearchaAreaCard {...this.props} />
+
+              <MiniStatsCard />
 
               <Grid item xs={12}>
-                <ResearchaAreaCard {...this.props} />
-              </Grid>
-              <Grid item xs={12}>
-                <MiniStatsCard />
+                <ResearchCard
+                  userData={this.props.user.userData}
+                  userDetail={this.props.user.userDetail}
+                />
               </Grid>
             </Grid>
           </Grid>
@@ -390,6 +356,7 @@ class ProfileOverview extends Component {
                   runFollow={id => this.followUser(id)}
                   runUnfollow={id => this.unfollowUser(id)}
                   runSeeAllFollowing={id => this.seeAllFollowing(id)}
+                  loading={this.state.followLoading}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -400,6 +367,7 @@ class ProfileOverview extends Component {
                   runFollow={id => this.followUser(id)}
                   runUnfollow={id => this.unfollowUser(id)}
                   runSeeAllFollower={id => this.seeAllFollower(id)}
+                  loading={this.state.followLoading}
                 />
               </Grid>
             </Grid>
@@ -417,24 +385,37 @@ class ProfileOverview extends Component {
           scroll="paper"
           aria-labelledby="max-width-dialog-title"
         >
-          <DialogTitle style={{padding: 0}}>
-          <Grid container >
-            <Grid item xs={6} style={{padding: '16px', fontWeight: 'bold'}}>
-            ຜູ້ຕິດຕາມ{" "}
-            {this.props.user.userDetail && this.props.user.userDetail.follower
-              ? `(${this.props.user.userDetail.follower.length})`
-              : null}
+          <DialogTitle style={{ padding: 0 }}>
+            <Grid container>
+              <Grid item xs={6} style={{ padding: "16px", fontWeight: "bold" }}>
+                <Typography variant="inherit">
+                  ຜູ້ຕິດຕາມ{" "}
+                  <span
+                    variant="inherit"
+                    style={{ fontWeight: "normal", color: "#898989" }}
+                  >
+                    {this.props.user.userDetail &&
+                    this.props.user.userDetail.follower
+                      ? `(${this.props.user.userDetail.follower.length})`
+                      : null}
+                  </span>
+                </Typography>
+              </Grid>
+              <Grid
+                item
+                xs={6}
+                align="right"
+                onClick={id => this.handleShowMoreFollowerClose(id)}
+                style={{ padding: "16px" }}
+              >
+                <IconButton style={{ padding: 0 }}>
+                  <CloseOutlined />
+                </IconButton>
+              </Grid>
             </Grid>
-            <Grid item xs={6} align="right" onClick={id => this.handleShowMoreFollowerClose(id)} style={{padding: "16px"}}>
-              <IconButton style={{padding: 0}}>
-                <CloseOutlined/>
-              </IconButton>
-            </Grid>
-          </Grid>
-            
           </DialogTitle>
           <Divider />
-          <DialogContent style={{ padding: 0}}>
+          <DialogContent style={{ padding: 0 }}>
             <LoadMoreFollowerCard
               followerLimit={this.state.followerLimit}
               userData={this.props.user.userData}
@@ -443,6 +424,7 @@ class ProfileOverview extends Component {
               runFollow={id => this.followUserInLoadMore(id)}
               runUnfollow={id => this.unfollowUserInLoadMore(id)}
               loadMore={() => this.loadMoreFollowerCards()}
+              loading={this.state.loadingMoreFollower}
             />
           </DialogContent>
         </Dialog>
@@ -456,22 +438,42 @@ class ProfileOverview extends Component {
           scroll="paper"
           aria-labelledby="max-width-dialog-title"
         >
-        <DialogTitle style={{padding: 0}}>
-
-          <Grid container >
-            <Grid item xs={6} style={{padding: '16px', fontWeight: 'bold'}}>
-            ກໍາລັງຕິດຕາມ{" "}
-            {this.props.user.userDetail && this.props.user.userDetail.following
-              ? `(${this.props.user.userDetail.following.length})`
-              : null}
+          <DialogTitle style={{ padding: 0 }}>
+            <Grid container>
+              <Grid
+                item
+                xs={6}
+                style={{
+                  padding: "16px",
+                  fontWeight: "bold",
+                  fontFamily: "'Noto Sans Lao UI', sans serif"
+                }}
+              >
+                <Typography variant="inherit">
+                  ກໍາລັງຕິດຕາມ{" "}
+                  <span
+                    variant="inherit"
+                    style={{ fontWeight: "normal", color: "#898989" }}
+                  >
+                    {this.props.user.userDetail &&
+                    this.props.user.userDetail.following
+                      ? `(${this.props.user.userDetail.following.length})`
+                      : null}
+                  </span>
+                </Typography>
+              </Grid>
+              <Grid
+                item
+                xs={6}
+                align="right"
+                onClick={id => this.handleShowMoreFollowingClose(id)}
+                style={{ padding: "16px" }}
+              >
+                <IconButton style={{ padding: 0 }}>
+                  <CloseOutlined />
+                </IconButton>
+              </Grid>
             </Grid>
-            <Grid item xs={6} align="right" onClick={id => this.handleShowMoreFollowingClose(id)} style={{padding: "16px"}}>
-              <IconButton style={{padding: 0}}>
-                <CloseOutlined/>
-              </IconButton>
-            </Grid>
-          </Grid>
-            
           </DialogTitle>
           <Divider />
           <DialogContent style={{ padding: 0 }}>
@@ -483,6 +485,7 @@ class ProfileOverview extends Component {
               runFollow={id => this.followUserInLoadMore(id)}
               runUnfollow={id => this.unfollowUserInLoadMore(id)}
               loadMore={() => this.loadMoreFollowingCards()}
+              loading={this.state.loadingMoreFollowing}
             />
           </DialogContent>
         </Dialog>
@@ -492,7 +495,7 @@ class ProfileOverview extends Component {
 }
 
 ProfileOverview.propTypes = {
-  fullScreen: PropTypes.bool.isRequired,
+  fullScreen: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = state => {

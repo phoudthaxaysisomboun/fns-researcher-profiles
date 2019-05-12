@@ -351,13 +351,14 @@ class Header extends Component {
         }
       }
     };
+
     return (
       <div className={classes.root}>
         <AppBar
           position="fixed"
           color="default"
           style={{
-            boxShadow: "0px 2px 2px 0px rgba(0,0,0,0.1)",
+            boxShadow: "0 2px 6px 0 rgba(0,0,0,0.12)",
             backgroundColor: "white"
           }}
         >
