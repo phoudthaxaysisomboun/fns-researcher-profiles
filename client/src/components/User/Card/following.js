@@ -168,12 +168,13 @@ const FollowingCard = ({ userData, userDetail, userFollowing, runUnfollow, runFo
             style={{
               fontSize: "20px",
               marginBottom: "8px",
-              fontWeight: "bold"
+              fontWeight: "bold",
+              
             }}
           >
             ກໍາລັງຕິດຕາມ{" "}
-            <span variant="inherit" style={{fontWeight: "normal", fontFamily: "'Roboto', sans-serif", color: "#898989"}}>{profile.following ? `(${profile.following.length})` : null}</span>
-          </Typography>
+            <div style={{fontWeight: "normal", display: "inline", fontFamily: "'Roboto', sans-serif", color: "#898989", }}>{profile.following ? `(${profile.following.length})` : null}</div>
+            </Typography>
         </Grid>
       </Grid>
       <Paper style={{ boxShadow: "none", border: "1px solid #d8d8d8" }}>

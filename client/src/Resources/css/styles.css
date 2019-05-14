@@ -95,3 +95,7 @@ label {
 span {
   font-family: "Noto Sans Lao UI", sans-serif !important;
 }
+
+.research-card-title {
+  max-lines: 2
+}

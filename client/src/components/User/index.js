@@ -332,15 +332,14 @@ class ProfileOverview extends Component {
               <IntroductionCard {...this.props} />
 
               <ResearchaAreaCard {...this.props} />
-
-              <MiniStatsCard />
-
               <Grid item xs={12}>
-                <ResearchCard
-                  userData={this.props.user.userData}
-                  userDetail={this.props.user.userDetail}
-                />
+                <MiniStatsCard {...this.props}/>
               </Grid>
+
+              <ResearchCard
+              userData={this.props.user.userData}
+              userDetail={this.props.user.userDetail}
+            />
             </Grid>
           </Grid>
           <Grid item xs={12} lg={3} sm={6} md={5}>

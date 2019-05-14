@@ -305,20 +305,20 @@ const ProfileHeader = ({ props, runUnfollow, runFollow, children, loading }) => 
                 style={{ marginTop: "16px" }}
               >
                 <Tab
-                  style={{ fontSize: "14px", fontWeight: 500 }}
+                  style={{ fontSize: "16px", fontWeight: 500 }}
                   label="ໂດຍລວມ"
                 />
                 <Tab
-                  style={{ fontSize: "14px", fontWeight: 500 }}
+                  style={{ fontSize: "16px", fontWeight: 500 }}
                   label="ປະຫວັດລະອຽດ"
                 />
                 <Tab
-                  style={{ fontSize: "14px", fontWeight: 500 }}
+                  style={{ fontSize: "16px", fontWeight: 500 }}
                   label="ຜົນງານຄົ້ນຄວ້າ"
                 />
                 {isOwner ? (
                   <Tab
-                    style={{ fontSize: "14px", fontWeight: 500 }}
+                    style={{ fontSize: "16px", fontWeight: 500 }}
                     label="ສະຖິຕິ"
                   />
                 ) : null}
