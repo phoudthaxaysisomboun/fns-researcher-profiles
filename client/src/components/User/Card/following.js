@@ -1,6 +1,6 @@
 import React from "react";
 
-import {Link, withRouter} from 'react-router-dom'
+import { Link, withRouter } from "react-router-dom";
 
 import {
   Grid,
@@ -12,9 +12,20 @@ import {
   LinearProgress
 } from "@material-ui/core";
 
-import { CheckOutlined, ListOutlined, PersonAddOutlined } from "@material-ui/icons";
+import {
+  CheckOutlined,
+  ListOutlined,
+  PersonAddOutlined
+} from "@material-ui/icons";
 
-const FollowingCard = ({ userData, userDetail, userFollowing, runUnfollow, runFollow, runSeeAllFollowing}) => {
+const FollowingCard = ({
+  userData,
+  userDetail,
+  userFollowing,
+  runUnfollow,
+  runFollow,
+  runSeeAllFollowing
+}) => {
   const user = { ...userData };
   const profile = { ...userDetail };
 
@@ -29,19 +40,16 @@ const FollowingCard = ({ userData, userDetail, userFollowing, runUnfollow, runFo
   //   }
   // }
 
-  const renderFollowButton = (id) => {
+  const renderFollowButton = id => {
     let duplicate = false;
     userData.following.forEach(item => {
-      
       if (item._id === id) {
-        duplicate = true
+        duplicate = true;
       }
     });
 
     if (id === userData._id) {
-      return (
-        <div></div>
-      )
+      return <div />;
     }
 
     if (duplicate) {
@@ -51,18 +59,16 @@ const FollowingCard = ({ userData, userDetail, userFollowing, runUnfollow, runFo
             size="small"
             variant="outlined"
             color="primary"
-            onClick={()=> {
-              runUnfollow(id)
+            onClick={() => {
+              runUnfollow(id);
             }}
-            
           >
             <CheckOutlined style={{ marginRight: "8px" }} />
             ຕິດຕາມຢູ່
           </Button>
         </Grid>
       );
-    }
-    else {
+    } else {
       return (
         <Grid item style={{ width: "100px" }} align="right">
           <Button
@@ -79,85 +85,95 @@ const FollowingCard = ({ userData, userDetail, userFollowing, runUnfollow, runFo
         </Grid>
       );
     }
-  }
+  };
 
-  const renderNoFollowing = () => (
-    userFollowing ?
-    <div style={{ margin: "20px" }}>
-            <Typography variant="inherit" align="center">
-              ຍັງບໍ່ມີຜູ້ທີ່ກຳລັງຕິດຕາມ
-            </Typography>
-          </div>
-          : <LinearProgress style={{ margin: "16px" }}/>
-  )
+  const renderNoFollowing = () =>
+    userFollowing ? (
+      <div style={{ margin: "20px" }}>
+        <Typography variant="inherit" align="center">
+          ຍັງບໍ່ມີຜູ້ທີ່ກຳລັງຕິດຕາມ
+        </Typography>
+      </div>
+    ) : (
+      <LinearProgress style={{ margin: "16px" }} />
+    );
 
-  const renderFollowing = () => (
-    userFollowing ?
-    <div>
-            {userFollowing
-              ? userFollowing.map(followings => (
-                  <div key={followings._id}>
-                    <Grid container spacing={0} style={{ padding: "16px" }}>
-                      <Grid
-                        item
-                        align="center"
-                        style={{ marginRight: "8px", width: "54px" }}
-                      >
-                      <Link to = {`/profile/${followings._id}`}>
-                        <Avatar
-                          alt="Remy Sharp"
-                          style={{ width: "46px", height: "46px" }}
-                          src="http://hespokestyle.com/wp-content/uploads/2017/04/navy-cotton-linen-blazer-tan-chinos-polo-shirt-mens-spring-fashion-trends-8-800x533.jpg"
-                        />
-                        </Link>
-                      </Grid>
+  const renderFollowing = () =>
+    userFollowing ? (
+      <div>
+        {userFollowing
+          ? userFollowing.map(followings => (
+              <div key={followings._id}>
+                <Grid container spacing={0} style={{ padding: "16px" }}>
+                  <Grid
+                    item
+                    align="center"
+                    style={{ marginRight: "8px", width: "54px" }}
+                  >
+                    <Link to={`/profile/${followings._id}`}>
+                      <Avatar
+                        alt="Remy Sharp"
+                        style={{ width: "46px", height: "46px" }}
+                        src="http://hespokestyle.com/wp-content/uploads/2017/04/navy-cotton-linen-blazer-tan-chinos-polo-shirt-mens-spring-fashion-trends-8-800x533.jpg"
+                      />
+                    </Link>
+                  </Grid>
+                  <Grid item xs>
+                    <Grid container>
                       <Grid item xs>
-                        <Grid container>
-                          <Grid item xs>
-                          <Link to = {`/profile/${followings._id}`} style={{textDecoration: "none"}}>
-                            <Typography
+                        <Link
+                          to={`/profile/${followings._id}`}
+                          style={{ textDecoration: "none" }}
+                        >
+                          <Typography
                             style={{ fontWeight: "bold", color: "#404040" }}
-                              variant="inherit"
-                            >
-                              {followings.name} {followings.lastname}
-                            </Typography>
-                            </Link>
-                            <Typography
-                              variant="inherit"
-                              style={{ fontSize: "14px", fontWeight: "500" }}
-                            >
-                              {followings.affiliation.institution.name}
-                            </Typography>
-                            <Typography
-                              variant="inherit"
-                              style={{ fontSize: "13px", color: "#686868" }}
-                            >
-                              {followings.affiliation.faculty.name} •{" "}
-                              {followings.affiliation.department.name}
-                            </Typography>
-                          </Grid>
-                        </Grid>
+                            variant="inherit"
+                          >
+                            {followings.name} {followings.lastname}
+                          </Typography>
+                        </Link>
+                        <Typography
+                          variant="inherit"
+                          style={{ fontSize: "14px", fontWeight: "500" }}
+                        >
+                          {followings.affiliation.institution.name}
+                        </Typography>
+                        <Typography
+                          variant="inherit"
+                          style={{ fontSize: "13px", color: "#686868" }}
+                        >
+                          {followings.affiliation.faculty.name} •{" "}
+                          {followings.affiliation.department.name}
+                        </Typography>
                       </Grid>
-                      {isAuth ? renderFollowButton(followings._id) : null}
                     </Grid>
-                    <Divider />
-                  </div>
-                ))
-              : null}
+                  </Grid>
+                  {isAuth ? renderFollowButton(followings._id) : null}
+                </Grid>
+                <Divider />
+              </div>
+            ))
+          : null}
 
-            <Grid container>
-              <Grid item xs={12} align="center">
-                <Button color="primary" style={{ width: "100%" }} onClick={()=>{runSeeAllFollowing()}}>
-                  {" "}
-                  <ListOutlined style={{ marginRight: "8px" }} />
-                  ເບິ່ງທັງຫມົດ
-                </Button>
-              </Grid>
-            </Grid>
-          </div>
-          : 
-          <LinearProgress style={{ margin: "16px" }}/>
-  )
+        <Grid container>
+          <Grid item xs={12} align="center">
+            <Button
+              color="primary"
+              style={{ width: "100%" }}
+              onClick={() => {
+                runSeeAllFollowing();
+              }}
+            >
+              {" "}
+              <ListOutlined style={{ marginRight: "8px" }} />
+              ເບິ່ງທັງຫມົດ
+            </Button>
+          </Grid>
+        </Grid>
+      </div>
+    ) : (
+      <LinearProgress style={{ margin: "16px" }} />
+    );
 
   const renderItems = () => (
     <div>
@@ -168,26 +184,32 @@ const FollowingCard = ({ userData, userDetail, userFollowing, runUnfollow, runFo
             style={{
               fontSize: "20px",
               marginBottom: "8px",
-              fontWeight: "bold",
-              
+              fontWeight: "bold"
             }}
           >
             ກໍາລັງຕິດຕາມ{" "}
-            <div style={{fontWeight: "normal", display: "inline", fontFamily: "'Roboto', sans-serif", color: "#898989", }}>{profile.following ? `(${profile.following.length})` : null}</div>
-            </Typography>
+            <div
+              style={{
+                fontWeight: "normal",
+                display: "inline",
+                fontFamily: "'Roboto', sans-serif",
+                color: "#898989"
+              }}
+            >
+              {profile.following ? `(${profile.following.length})` : null}
+            </div>
+          </Typography>
         </Grid>
       </Grid>
       <Paper style={{ boxShadow: "none", border: "1px solid #d8d8d8" }}>
-        {profile.following && profile.following.length === 0 ? (
-          renderNoFollowing()
-        ) : (
-          renderFollowing()
-        )}
+        {profile.following && profile.following.length === 0
+          ? renderNoFollowing()
+          : renderFollowing()}
       </Paper>
     </div>
   );
 
-  return <div>{renderItems()}</div> ;
+  return <div>{renderItems()}</div>;
 };
 
 export default withRouter(FollowingCard);

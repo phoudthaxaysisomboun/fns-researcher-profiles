@@ -190,6 +190,22 @@ const userSchema = mongoose.Schema({
         current: [{ item: {type: Schema.Types.Mixed, ref: 'User'} }],
         past: [{ item: {type: Schema.Types.Mixed, ref: 'User'} }]
     },
+    outstanding: {
+        isOutstanding: {type: Boolean},
+        date: {type: Date}
+    },
+    newResearcher: {
+        isNewResearcher: {type: Boolean},
+        date: {type: Date}
+    },
+    canceledRegisteration: {
+        type: Boolean,
+        default: false
+    },
+    active: {
+        type: Boolean,
+        default: true
+    },
     token:{
       type:String
     },

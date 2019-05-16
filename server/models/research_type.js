@@ -9,6 +9,6 @@ const researchTypeSchema = mongoose.Schema({
     }
 })
 
-const ResearchType = mongoose.model('Gender', researchTypeSchema)
+const ResearchType = mongoose.model('ResearchType', researchTypeSchema)
 
 module.exports = { ResearchType }

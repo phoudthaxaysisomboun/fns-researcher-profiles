@@ -111,7 +111,7 @@ const ResearchCard = ({ userData, userDetail }) => {
                 <Grid container />
                 <Grid
                   container
-                  style={{ marginTop: "4px", marginBottom: "4px" }}
+                  style={{ marginTop: "4px", marginBottom: "8px" }}
                 >
                   <div
                     style={{
@@ -179,7 +179,7 @@ const ResearchCard = ({ userData, userDetail }) => {
                   height={80}
                 />
               </Grid>
-              <Grid container style={{ marginBottom: "4px" }}>
+              <Grid container style={{ marginBottom: "8px" }}>
                 <Grid item style={{ marginRight: "4px" }}>
                   <Avatar
                     style={{ width: "18px", height: "18px" }}
@@ -192,7 +192,7 @@ const ResearchCard = ({ userData, userDetail }) => {
                     style={{
                       height: "18px",
                       lineHeight: "18px",
-                      fontSize: "14px",
+                     
                       fontWeight: "500"
                     }}
                   >
@@ -212,7 +212,7 @@ const ResearchCard = ({ userData, userDetail }) => {
                     style={{
                       height: "18px",
                       lineHeight: "18px",
-                      fontSize: "14px",
+                      
                       fontWeight: "500"
                     }}
                   >
@@ -233,9 +233,9 @@ const ResearchCard = ({ userData, userDetail }) => {
                     trimRight
                     basedOn="words"
                     style={{
-                      fontSize: "14px",
+                      fontSize: "16px",
                       color: "#666666",
-                      fontWeight: "400"
+                      fontWeight: "normal"
                     }}
                   />
                 </Grid>
@@ -290,8 +290,7 @@ const ResearchCard = ({ userData, userDetail }) => {
                       fontSize: "13.5px",
                       color: "#757575",
                       fontFamily: "'Roboto', sans serif",
-                      display: "inline",
-                     
+                      display: "inline"
                     }}
                   >
                     &nbsp;{`100,326`}&nbsp;
@@ -313,8 +312,7 @@ const ResearchCard = ({ userData, userDetail }) => {
                       fontSize: "13.5px",
                       color: "#757575",
                       fontFamily: "'Roboto', sans serif",
-                      display: "inline",
-                     
+                      display: "inline"
                     }}
                   >
                     &nbsp;{`100,326`}&nbsp;
@@ -336,8 +334,7 @@ const ResearchCard = ({ userData, userDetail }) => {
                       fontSize: "13.5px",
                       color: "#757575",
                       fontFamily: "'Roboto', sans serif",
-                      display: "inline",
-                     
+                      display: "inline"
                     }}
                   >
                     &nbsp;{`100,326`}&nbsp;

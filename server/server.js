@@ -26,6 +26,9 @@ const { Country } = require("./models/country");
 const { Department } = require("./models/department");
 const { Faculty } = require("./models/faculty");
 
+const { ResearchType } = require("./models/research_type");
+const { PublicationType } = require("./models/publication_type");
+
 // Middlewares
 const { auth } = require("./middleware/auth");
 const { admin } = require("./middleware/admin");
@@ -587,6 +590,52 @@ app.post("/api/researchers/removeFollower", auth, (req, res) => {
     }
   );
 });
+
+//====================================
+//             RESEARCH AREA
+//====================================
+
+/*  RESEARCH TYPES  */
+app.get("/api/research/research_types", (req, res) => {
+  ResearchType.find({}, (err, researchTypes) => {
+    if (err) return res.status(400).send(err);
+    res.status(200).send(researchTypes);
+  });
+});
+
+app.post("/api/research/research_type", auth, admin, (req, res) => {
+  const researchTypes = new ResearchType(req.body);
+
+  researchTypes.save((err, doc) => {
+    if (err) return res.json({ success: false, err });
+    res.status(200).json({
+      success: true,
+      researchType: doc
+    });
+  });
+});
+
+/*  PUBLICATION TYPES  */
+
+app.get("/api/research/publication_types", (req, res) => {
+  PublicationType.find({}, (err, publicationTypes) => {
+    if (err) return res.status(400).send(err);
+    res.status(200).send(publicationTypes);
+  });
+});
+
+app.post("/api/research/publication_type", auth, admin, (req, res) => {
+  const publicationTypes = new PublicationType(req.body);
+
+  publicationTypes.save((err, doc) => {
+    if (err) return res.json({ success: false, err });
+    res.status(200).json({
+      success: true,
+      publicationType: doc
+    });
+  });
+});
+
 
 const port = process.env.PORT || 3002;
 
