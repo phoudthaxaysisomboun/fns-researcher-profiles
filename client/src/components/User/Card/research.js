@@ -272,7 +272,7 @@ const ResearchCard = ({ userData, userDetail }) => {
               </Grid>
               <Grid
                 container
-                style={{ marginTop: "4px", marginBottom: "16px" }}
+                style={{ marginTop: "4px", marginBottom: "8px" }}
               >
                 <Button
                   size="small"

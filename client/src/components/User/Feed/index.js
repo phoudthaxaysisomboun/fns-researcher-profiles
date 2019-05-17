@@ -10,7 +10,6 @@ const fabStyle = {
     left: "auto",
     position: "fixed",
     fontWeight: "500",
-    fontSize: "18px",
 }
 
 class Feed extends Component {

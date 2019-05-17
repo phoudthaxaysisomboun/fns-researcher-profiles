@@ -28,6 +28,7 @@ const { Faculty } = require("./models/faculty");
 
 const { ResearchType } = require("./models/research_type");
 const { PublicationType } = require("./models/publication_type");
+const { Research } = require("./models/research");
 
 // Middlewares
 const { auth } = require("./middleware/auth");
@@ -636,6 +637,65 @@ app.post("/api/research/publication_type", auth, admin, (req, res) => {
   });
 });
 
+/*  Researches  */
+
+app.post('/api/research/researches', (req, res)=> {
+  let order = req.body.order ? req.body.order : 'desc'
+  let sortBy = req.body.sortBy ? req.body.sortBy : 'createdAt'
+  let limit = req.body.limit ? parseInt(req.body.limit) : 6
+  let skip = req.body.skip ? parseInt(req.body.skip) : 0
+  let findArgs = {}
+
+  for (let key in req.body.filters) {
+    if (req.body.filters[key].length > 0) {
+      findArgs[key] = req.body.filters[key]
+    }
+  }
+
+  console.log(findArgs)
+
+  res.status(200)
+})
+
+app.get('/api/research/researches_by_id', (req, res)=> {
+  let order = req.query.order ? req.query.order : "asc";
+  let sortBy = req.query.sortBy ? req.query.sortBy : "name";
+  let limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 3;
+  let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0
+
+  let type = req.query.type;
+  let items = req.query.id;
+})
+
+app.post('/api/research/research', auth, (req,res)=>{
+  const research = new Research(req.body);
+
+  research.save((err, doc) => {
+    if (err) return res.json({ success: false, err });
+    res.status(200).json({
+      success: true,
+      doc
+    });
+
+    console.log(req.user._id)
+
+    User.findOneAndUpdate(
+      { _id: req.user._id },
+      {
+        $push: {
+          research: mongoose.Types.ObjectId(doc._id)
+        }
+      },
+      {
+        new: true
+      },
+      (err, research) => {
+        if (err) return res.json({ success: false, err });
+      }
+    );
+
+  });
+})
 
 const port = process.env.PORT || 3002;
 

@@ -347,17 +347,7 @@ class ProfileOverview extends Component {
               <Grid item xs={12}>
                 <AffiliationCard {...this.props} />
               </Grid>
-              <Grid item xs={12}>
-                <FollowingCard
-                  userData={this.props.user.userData}
-                  userDetail={this.props.user.userDetail}
-                  userFollowing={this.props.user.following}
-                  runFollow={id => this.followUser(id)}
-                  runUnfollow={id => this.unfollowUser(id)}
-                  runSeeAllFollowing={id => this.seeAllFollowing(id)}
-                  loading={this.state.followLoading}
-                />
-              </Grid>
+              
               <Grid item xs={12}>
                 <FollowerCard
                   userData={this.props.user.userData}
@@ -366,6 +356,18 @@ class ProfileOverview extends Component {
                   runFollow={id => this.followUser(id)}
                   runUnfollow={id => this.unfollowUser(id)}
                   runSeeAllFollower={id => this.seeAllFollower(id)}
+                  loading={this.state.followLoading}
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <FollowingCard
+                  userData={this.props.user.userData}
+                  userDetail={this.props.user.userDetail}
+                  userFollowing={this.props.user.following}
+                  runFollow={id => this.followUser(id)}
+                  runUnfollow={id => this.unfollowUser(id)}
+                  runSeeAllFollowing={id => this.seeAllFollowing(id)}
                   loading={this.state.followLoading}
                 />
               </Grid>

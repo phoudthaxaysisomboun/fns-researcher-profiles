@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const Schema = mongoose.Schema;
 
 const researchSchema = mongoose.Schema({
     title: {
@@ -70,7 +71,7 @@ const researchSchema = mongoose.Schema({
     },
     supervisor :{
         type: Array,
-        default: 500
+        default: []
     },
 
 
@@ -125,7 +126,15 @@ const researchSchema = mongoose.Schema({
         amount: {type: Number},
     }],
     project: {
-        type: Schema.Types.ObjectId, ref: 'project'
+        type: Schema.Types.ObjectId, ref: 'Project'
+    },
+    researchType: {
+        type: Schema.Types.ObjectId, ref: 'ResearchType',
+        required: true
+    },
+    publicationType: {
+        type: Schema.Types.ObjectId, ref: 'PublicationType',
+        required: true
     }
 },{timestamps:true})
 
