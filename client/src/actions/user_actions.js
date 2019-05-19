@@ -20,7 +20,7 @@ import {
   GET_FOLLOWING_IN_LOAD_MORE
 } from "./types";
 
-import { USER_SERVER, RESEARCHER } from "../components/utils/misc";
+import { USER_SERVER, RESEARCHER_SERVER } from "../components/utils/misc";
 
 export function loginUser(dataToSubmit) {
   const request = axios
@@ -71,7 +71,7 @@ export function logoutUser() {
 
 export function getProfileDetail(id) {
   const request = axios
-    .get(`${RESEARCHER}/profiles_by_id?id=${id}&type=single`)
+    .get(`${RESEARCHER_SERVER}/profiles_by_id?id=${id}&type=single`)
     .then(response => response.data[0]);
 
   return {
@@ -104,7 +104,7 @@ export function clearFollower() {
 export function getFollowing(id, limit, skip) {
   const request = axios
     .get(
-      `${RESEARCHER}/followings?id=${id}&type=array&sortBy=name&order=asc&limit=${limit}&skip=${skip}`
+      `${RESEARCHER_SERVER}/followings?id=${id}&type=array&sortBy=name&order=asc&limit=${limit}&skip=${skip}`
     )
     .then(response => response.data);
 
@@ -117,7 +117,7 @@ export function getFollowing(id, limit, skip) {
 export function getFollower(id, limit, skip) {
   const request = axios
     .get(
-      `${RESEARCHER}/followers?id=${id}&type=array&sortBy=name&order=asc&limit=${limit}&skip=${skip}`
+      `${RESEARCHER_SERVER}/followers?id=${id}&type=array&sortBy=name&order=asc&limit=${limit}&skip=${skip}`
     )
     .then(response => response.data);
 
@@ -130,7 +130,7 @@ export function getFollower(id, limit, skip) {
 export function getFollowingInLoadMore(id, limit, skip, previousState = []) {
   const request = axios
     .get(
-      `${RESEARCHER}/followings?id=${id}&type=array&sortBy=name&order=asc&limit=${limit}&skip=${skip}`
+      `${RESEARCHER_SERVER}/followings?id=${id}&type=array&sortBy=name&order=asc&limit=${limit}&skip=${skip}`
     )
     .then(response => {
       let newState = [...previousState, ...response.data];
@@ -149,7 +149,7 @@ export function getFollowingInLoadMore(id, limit, skip, previousState = []) {
 export function getFollowerInLoadMore(id, limit, skip, previousState = []) {
   const request = axios
     .get(
-      `${RESEARCHER}/followers?id=${id}&type=array&sortBy=name&order=asc&limit=${limit}&skip=${skip}`
+      `${RESEARCHER_SERVER}/followers?id=${id}&type=array&sortBy=name&order=asc&limit=${limit}&skip=${skip}`
     )
     .then(response => {
       let newState = [...previousState, ...response.data];
@@ -167,7 +167,7 @@ export function getFollowerInLoadMore(id, limit, skip, previousState = []) {
 
 export function follow(_id) {
   const request = axios
-    .post(`${RESEARCHER}/follow?userId=${_id}`)
+    .post(`${RESEARCHER_SERVER}/follow?userId=${_id}`)
     .then(response => response.data);
 
   return {
@@ -178,7 +178,7 @@ export function follow(_id) {
 
 export function addFollower(_id) {
   const request = axios
-    .post(`${RESEARCHER}/addFollower?userId=${_id}`)
+    .post(`${RESEARCHER_SERVER}/addFollower?userId=${_id}`)
     .then(response => response.data);
 
   return {
@@ -189,7 +189,7 @@ export function addFollower(_id) {
 
 export function unfollow(_id) {
   const request = axios
-    .post(`${RESEARCHER}/unfollow?userId=${_id}`)
+    .post(`${RESEARCHER_SERVER}/unfollow?userId=${_id}`)
     .then(response => response.data);
 
   return {
@@ -200,7 +200,7 @@ export function unfollow(_id) {
 
 export function removeFollower(_id) {
   const request = axios
-    .post(`${RESEARCHER}/removeFollower?userId=${_id}`)
+    .post(`${RESEARCHER_SERVER}/removeFollower?userId=${_id}`)
     .then(response => response.data);
 
   return {

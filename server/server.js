@@ -665,6 +665,61 @@ app.get('/api/research/researches_by_id', (req, res)=> {
 
   let type = req.query.type;
   let items = req.query.id;
+
+  if (req.query.id) {
+    if (type === "array") {
+      let ids = req.query.id.split(",");
+      items = [];
+      items = ids.map(item => {
+        return mongoose.Types.ObjectId(item);
+      });
+    }
+
+    // const myObjectId = (rnd = r16 => Math.floor(r16).toString(16)) =>
+    // rnd(Date.now()/1000) + ' '.repeat(16).replace(/./g, () => rnd(Math.random()*16));
+
+    // console.log(myObjectId().toString())
+
+    Research.find({ _id: { $in: items } })
+      .sort([[sortBy, order]])
+      .limit(limit)
+      .skip(skip)
+      // .select("_id name lastname profileImage affiliation researchArea")
+      .populate({
+        path: "author",
+        model: 'User',
+        select: ['name', 'lastname', 'profileImage']
+      })
+      .populate({
+        path: "supervisor",
+        model: 'User',
+        select: ['name', 'lastname', 'profileImage']
+      })
+      .populate({ 
+        path: "uploader",
+        select: ['name', 'lastname', 'profileImage']
+      })
+      .populate({ 
+        path: "researchType"
+      })
+      .populate({ 
+        path: "publicationType"
+      })
+      .populate({ 
+        path: "files.uploader",
+        select: ['name', 'lastname', 'profileImage']
+      })
+      // .populate({
+      //   path: "affiliation.department"
+      // })
+      // .populate({
+      //   path: "affiliation.faculty"
+      // })
+      .exec((err, researches) => {
+        if (err) return res.status(400).send(err);
+        res.status(200).send(researches);
+      });
+  }
 })
 
 app.post('/api/research/research', auth, (req,res)=>{
@@ -677,8 +732,8 @@ app.post('/api/research/research', auth, (req,res)=>{
       doc
     });
 
-    console.log(req.user._id)
-
+    // REMINDER: add researches id to other authors
+    
     User.findOneAndUpdate(
       { _id: req.user._id },
       {
