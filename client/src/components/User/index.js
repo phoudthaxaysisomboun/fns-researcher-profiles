@@ -40,7 +40,11 @@ import {
   getFollowingInLoadMore
 } from "../../actions/user_actions";
 
+import {getResearchForCard} from "../../actions/research_actions"
+
 import { CloseOutlined } from "@material-ui/icons";
+
+let userAuthor = []
 class ProfileOverview extends Component {
   state = {
     loadingMoreFollower: false,
@@ -57,21 +61,34 @@ class ProfileOverview extends Component {
     followingSkip: 0
   };
 
+  
+
   componentDidMount() {
     const id = this.props.match.params.id;
     var following = [];
     var followingId = [];
     var followerId = [];
+    var researchId = [];
 
     this.props.dispatch(getProfileDetail(id)).then(response => {
       following = response.payload.following;
       followerId = response.payload.follower;
+      researchId = response.payload.research;
       for (var key in following) {
         followingId.push(following[key]._id);
       }
       this.props.dispatch(getFollowing(followingId));
 
       this.props.dispatch(getFollower(followerId));
+
+      this.props.dispatch(getResearchForCard(researchId)).then(response=>{
+        let research = response.payload
+        for (var key in research) {
+          userAuthor.push(research[key].author);
+        }
+        console.log(userAuthor)
+      });
+
 
       this.props.dispatch(
         getFollowingInLoadMore(
@@ -305,6 +322,8 @@ class ProfileOverview extends Component {
     });
   };
 
+
+
   render() {
     const { fullScreen } = this.props;
 
@@ -323,6 +342,7 @@ class ProfileOverview extends Component {
         runUnfollow={id => this.unfollowUser(id)}
         loading={this.state.followLoading}
       >
+      
         <Grid container spacing={24} style={{ margin: "8px" }}>
           <Hidden only="sm">
             <Grid item md={1} lg />
@@ -339,6 +359,8 @@ class ProfileOverview extends Component {
               <ResearchCard
               userData={this.props.user.userData}
               userDetail={this.props.user.userDetail}
+              userResearch = {this.props.research.userResearch}
+              props = {this.props }
             />
             </Grid>
           </Grid>
@@ -500,8 +522,10 @@ ProfileOverview.propTypes = {
 };
 
 const mapStateToProps = state => {
+  console.log(state)
   return {
-    userDetail: state.user
+    userDetail: state.user,
+    research: state.research
   };
 };
 

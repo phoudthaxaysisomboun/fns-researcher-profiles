@@ -15,4 +15,6 @@ export const CLEAR_FOLLOWER = 'clear_follower'
 export const GET_FOLLOWER_IN_LOAD_MORE = 'get_follower_in_load_more'
 export const GET_FOLLOWING_IN_LOAD_MORE = 'get_following_in_load_more'
 
+export const GET_RESEARCH_FOR_CARD = 'get_research_for_card'
+
 export const GET_DEPARTMENTS = 'get_departments'
