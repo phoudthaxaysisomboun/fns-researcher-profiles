@@ -30,7 +30,7 @@ const PersonalInfoCard = props => {
       
       <Grid container spacing={8} style={{ padding: "16px" }}>
       <Typography variant="inherit">
-        {profile.profileDescription}
+        
       </Typography>
     </Grid>
     )
