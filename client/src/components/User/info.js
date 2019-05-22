@@ -3,7 +3,6 @@ import ProfileHeader from "../../hoc/profile_header";
 import { connect } from "react-redux";
 
 import AffiliationCard from "../User/Card/affiliation";
-import MiniStatsCard from "../User/Card/mini_stats";
 import IntroductionCard from "../User/Card/introduction";
 import ResearchaAreaCard from "../User/Card/research_area";
 import FollowingCard from "../User/Card/following";
@@ -381,13 +380,11 @@ class ProfileInfo extends Component {
           <Grid item xs={12} lg={4} sm={6} md={5}>
             <Grid container spacing={24}>
               <IntroductionCard {...this.props} />
-
+              <ResearchaAreaCard {...this.props} />
+              
               <PersonalInfoCard {...this.props} />
 
-              <ResearchaAreaCard {...this.props} />
-              <Grid item xs={12}>
-                <MiniStatsCard {...this.props} />
-              </Grid>
+              
 
               
             </Grid>
