@@ -10,6 +10,7 @@ import RegisterLogin from './components/Register_login'
 import Register from './components/Register_login/register'
 
 import ProfileOverview from './components/User'
+import ProfileInfo from './components/User/info'
 import Feed from "./components/User/Feed";
 
 const Routes = () => {
@@ -17,6 +18,7 @@ const Routes = () => {
     <Layout>
       <Switch>
         <Route path="/profile/:id" exact component={Auth(ProfileOverview, null)} />
+        <Route path="/profile/:id/info" exact component={Auth(ProfileInfo, null)} />
 
         <Route path="/register" exact component={Auth(Register, false)} />
         <Route path="/login" exact component={Auth(RegisterLogin, false)} />

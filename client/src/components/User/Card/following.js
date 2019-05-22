@@ -24,7 +24,8 @@ const FollowingCard = ({
   userFollowing,
   runUnfollow,
   runFollow,
-  runSeeAllFollowing
+  runSeeAllFollowing,
+  loading
 }) => {
   const user = { ...userData };
   const profile = { ...userDetail };
@@ -87,124 +88,120 @@ const FollowingCard = ({
     }
   };
 
-  const renderNoFollowing = () =>
-    userFollowing ? (
-      <div style={{ margin: "20px" }}>
-        <Typography variant="inherit" align="center">
-          ຍັງບໍ່ມີຜູ້ທີ່ກຳລັງຕິດຕາມ
-        </Typography>
-      </div>
-    ) : (
-      <LinearProgress style={{ margin: "16px" }} />
-    );
-
-  const renderFollowing = () =>
-    userFollowing ? (
-      <div>
-        {userFollowing
-          ? userFollowing.map(followings => (
-              <div key={followings._id}>
-                <Grid container spacing={0} style={{ padding: "16px" }}>
-                  <Grid
-                    item
-                    align="center"
-                    style={{ marginRight: "8px", width: "54px" }}
-                  >
-                    <Link to={`/profile/${followings._id}`}>
-                      <Avatar
-                        alt="Remy Sharp"
-                        style={{ width: "46px", height: "46px" }}
-                        src="http://hespokestyle.com/wp-content/uploads/2017/04/navy-cotton-linen-blazer-tan-chinos-polo-shirt-mens-spring-fashion-trends-8-800x533.jpg"
-                      />
-                    </Link>
-                  </Grid>
-                  <Grid item xs>
-                    <Grid container>
-                      <Grid item xs>
-                        <Link
-                          to={`/profile/${followings._id}`}
-                          style={{ textDecoration: "none" }}
-                        >
-                          <Typography
-                            style={{ fontWeight: "bold", color: "#404040" }}
-                            variant="inherit"
-                          >
-                            {followings.name} {followings.lastname}
-                          </Typography>
-                        </Link>
+  const renderFollowing = () => (
+    <div>
+      {userFollowing ? (
+        <div>
+          {userFollowing.map(followings => (
+            <div key={followings._id}>
+              <Grid container spacing={0} style={{ padding: "16px" }}>
+                <Grid
+                  item
+                  align="center"
+                  style={{ marginRight: "8px", width: "54px" }}
+                >
+                  <Link to={`/profile/${followings._id}`}>
+                    <Avatar
+                      alt="Remy Sharp"
+                      style={{ width: "46px", height: "46px" }}
+                      src="http://hespokestyle.com/wp-content/uploads/2017/04/navy-cotton-linen-blazer-tan-chinos-polo-shirt-mens-spring-fashion-trends-8-800x533.jpg"
+                    />
+                  </Link>
+                </Grid>
+                <Grid item xs>
+                  <Grid container>
+                    <Grid item xs>
+                      <Link
+                        to={`/profile/${followings._id}`}
+                        style={{ textDecoration: "none" }}
+                      >
                         <Typography
+                          style={{ fontWeight: "bold", color: "#404040" }}
                           variant="inherit"
-                          style={{ fontSize: "14px", fontWeight: "500" }}
                         >
-                          {followings.affiliation.institution.name}
+                          {followings.name} {followings.lastname}
                         </Typography>
-                        <Typography
-                          variant="inherit"
-                          style={{ fontSize: "13px", color: "#686868" }}
-                        >
-                          {followings.affiliation.faculty.name} •{" "}
-                          {followings.affiliation.department.name}
-                        </Typography>
-                      </Grid>
+                      </Link>
+                      <Typography
+                        variant="inherit"
+                        style={{ fontSize: "14px", fontWeight: "500" }}
+                      >
+                        {followings.affiliation.institution.name}
+                      </Typography>
+                      <Typography
+                        variant="inherit"
+                        style={{ fontSize: "13px", color: "#686868" }}
+                      >
+                        {followings.affiliation.faculty.name} •{" "}
+                        {followings.affiliation.department.name}
+                      </Typography>
                     </Grid>
                   </Grid>
-                  {isAuth ? renderFollowButton(followings._id) : null}
                 </Grid>
-                <Divider />
-              </div>
-            ))
-          : null}
+                {isAuth ? renderFollowButton(followings._id) : null}
+              </Grid>
+              <Divider />
+            </div>
+          ))}
 
-        <Grid container>
-          <Grid item xs={12} align="center">
-            <Button
-              color="primary"
-              style={{ width: "100%" }}
-              onClick={() => {
-                runSeeAllFollowing();
-              }}
-            >
-              {" "}
-              <ListOutlined style={{ marginRight: "8px" }} />
-              ເບິ່ງທັງຫມົດ
-            </Button>
+          <Grid container>
+            <Grid item xs={12} align="center">
+              <Button
+                color="primary"
+                style={{ width: "100%" }}
+                onClick={() => {
+                  runSeeAllFollowing();
+                }}
+              >
+                {" "}
+                <ListOutlined style={{ marginRight: "8px" }} />
+                ເບິ່ງທັງຫມົດ
+              </Button>
+            </Grid>
           </Grid>
-        </Grid>
-      </div>
-    ) : (
-      <LinearProgress style={{ margin: "16px" }} />
-    );
+        </div>
+      ) : (
+        <div style={{ margin: "20px" }}>
+          <Typography variant="inherit" align="center">
+            ຍັງບໍ່ມີຜູ້ທີ່ກຳລັງຕິດຕາມ
+          </Typography>
+        </div>
+      )}
+    </div>
+  );
 
   const renderItems = () => (
     <div>
-      <Grid container>
-        <Grid item xs={6}>
-          <Typography
-            variant="inherit"
-            style={{
-              fontSize: "20px",
-              marginBottom: "8px",
-              fontWeight: "bold"
-            }}
-          >
-            ກໍາລັງຕິດຕາມ{" "}
-            <div
+      <Paper style={{ boxShadow: "none", border: "1px solid #d8d8d8" }}>
+        <Grid container style={{ padding: "16px", paddingBottom: 0 }}>
+          <Grid item xs={6}>
+            <Typography
+              variant="inherit"
               style={{
-                fontWeight: "normal",
-                display: "inline",
-                fontFamily: "'Roboto', sans-serif",
-                color: "#898989"
+                fontSize: "20px",
+                marginBottom: "8px",
+                fontWeight: "bold"
               }}
             >
-              {profile.following ? `(${profile.following.length})` : null}
-            </div>
-          </Typography>
+              ກໍາລັງຕິດຕາມ{" "}
+              <div
+                style={{
+                  fontWeight: "normal",
+                  display: "inline",
+                  fontFamily: "'Roboto', sans-serif",
+                  color: "#898989"
+                }}
+              >
+                {profile.following ? `(${profile.following.length})` : null}
+              </div>
+            </Typography>
+          </Grid>
         </Grid>
-      </Grid>
-      <Paper style={{ boxShadow: "none", border: "1px solid #d8d8d8" }}>
-        {profile.following && profile.following.length === 0
-          ? renderNoFollowing()
-          : renderFollowing()}
+        {!loading ? (
+          <div>{renderFollowing()}</div>
+        ) : (
+          <LinearProgress style={{ margin: "16px" }} />
+        )}
       </Paper>
     </div>
   );

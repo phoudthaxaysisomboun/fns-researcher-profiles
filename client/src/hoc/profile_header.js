@@ -25,6 +25,8 @@ import {
   CheckOutlined
 } from "@material-ui/icons";
 
+import { Link as ReactLink, withRouter } from "react-router-dom";
+
 const iconStyles = {
   position: "relative",
   top: "6px",
@@ -32,7 +34,14 @@ const iconStyles = {
   width: "20px"
 };
 
-const ProfileHeader = ({ props, runUnfollow, runFollow, children, loading }) => {
+const ProfileHeader = ({
+  props,
+  runUnfollow,
+  runFollow,
+  children,
+  loading,
+  tab,
+}) => {
   const userData = { ...props.user.userData };
   const profile = { ...props.user.userDetail };
   const facebook = { ...profile.facebook };
@@ -86,30 +95,30 @@ const ProfileHeader = ({ props, runUnfollow, runFollow, children, loading }) => 
       );
     } else {
       return props.user.userDetail ? (
-        
-          loading ? <Button
-          size="medium"
-          variant="outlined"
-          color="primary"
-          style={{ margin: "8px" }}
-        >
-          <CircularProgress size={24}/>
-        </Button> : <Button
-          size="medium"
-          variant="contained"
-          color="primary"
-          onClick={() => {
-            runFollow(id);
-          }}
-          style={{ margin: "8px" }}
-        >
-          <PersonAddOutlined style={{ marginRight: "8px" }} />
-          ຕິດຕາມ
-        </Button>
-        
-      ) : (
-        null
-      );
+        loading ? (
+          <Button
+            size="medium"
+            variant="outlined"
+            color="primary"
+            style={{ margin: "8px" }}
+          >
+            <CircularProgress size={24} />
+          </Button>
+        ) : (
+          <Button
+            size="medium"
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              runFollow(id);
+            }}
+            style={{ margin: "8px" }}
+          >
+            <PersonAddOutlined style={{ marginRight: "8px" }} />
+            ຕິດຕາມ
+          </Button>
+        )
+      ) : null;
     }
   };
 
@@ -264,31 +273,31 @@ const ProfileHeader = ({ props, runUnfollow, runFollow, children, loading }) => 
                   {renderItems()}
                 </Grid>
                 <Grid item lg={4} md={4} sm={12} xs={12} align="right">
-                  {
-                    props.user.userDetail ?
+                  {props.user.userDetail ? (
                     <Button
-                    size="medium"
-                    variant="outlined"
-                    color="primary"
-                    style={{ margin: "8px" }}
-                  >
-                    <ReplyOutlined
-                      style={{
-                        marginRight: "8px",
-                        transform: "rotateY(180deg)"
-                      }}
-                    />
-                    ແບ່ງປັນ
-                  </Button>
-                  : <Button
-                  size="medium"
-                  variant="outlined"
-                  color="primary"
-                  style={{ margin: "8px" }}
-                >
-                  <CircularProgress size={24} />
-                </Button>
-                  }
+                      size="medium"
+                      variant="outlined"
+                      color="primary"
+                      style={{ margin: "8px" }}
+                    >
+                      <ReplyOutlined
+                        style={{
+                          marginRight: "8px",
+                          transform: "rotateY(180deg)"
+                        }}
+                      />
+                      ແບ່ງປັນ
+                    </Button>
+                  ) : (
+                    <Button
+                      size="medium"
+                      variant="outlined"
+                      color="primary"
+                      style={{ margin: "8px" }}
+                    >
+                      <CircularProgress size={24} />
+                    </Button>
+                  )}
                   {isAuth ? renderFollowButton() : null}
                 </Grid>
               </Grid>
@@ -298,7 +307,7 @@ const ProfileHeader = ({ props, runUnfollow, runFollow, children, loading }) => 
           <Grid container>
             <Grid item xs={12}>
               <Tabs
-                value={0}
+                value={tab}
                 indicatorColor="primary"
                 textColor="primary"
                 centered
@@ -307,14 +316,24 @@ const ProfileHeader = ({ props, runUnfollow, runFollow, children, loading }) => 
                 <Tab
                   style={{ fontSize: "16px", fontWeight: 500 }}
                   label="ໂດຍລວມ"
+                  
+                  to={`/profile/${profile._id}`} component={ReactLink}
                 />
-                <Tab
-                  style={{ fontSize: "16px", fontWeight: 500 }}
-                  label="ປະຫວັດລະອຽດ"
-                />
+
+                
+                  <Tab
+                    style={{ fontSize: "16px", fontWeight: 500, textDecoration: "none" }}
+                    label="ປະຫວັດລະອຽດ"
+
+                    to={`/profile/${profile._id}/info`} component={ReactLink}
+                    
+                  />
+                
+
                 <Tab
                   style={{ fontSize: "16px", fontWeight: 500 }}
                   label="ຜົນງານຄົ້ນຄວ້າ"
+                 
                 />
                 {isOwner ? (
                   <Tab
@@ -333,4 +352,4 @@ const ProfileHeader = ({ props, runUnfollow, runFollow, children, loading }) => 
   );
 };
 
-export default ProfileHeader;
+export default withRouter(ProfileHeader);

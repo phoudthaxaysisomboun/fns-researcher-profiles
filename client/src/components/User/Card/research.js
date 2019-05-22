@@ -66,12 +66,11 @@ const styles = {
   }
 };
 
-const ResearchCard = ({ userData, userDetail, userResearch }) => {
+const ResearchCard = ({ userData, userDetail, userResearch, loading }) => {
   const user = { ...userData };
   const profile = { ...userDetail };
   const research = { ...userResearch };
   const profileResearch = { ...research.userResearch };
-  console.log(profileResearch);
 
   let author = [];
 
@@ -79,7 +78,7 @@ const ResearchCard = ({ userData, userDetail, userResearch }) => {
     author.push(profileResearch[key].author);
   }
 
-  console.log(author);
+
 
   const isAuth = user.isAuth;
   let isOwner = false;
@@ -96,12 +95,14 @@ const ResearchCard = ({ userData, userDetail, userResearch }) => {
     <Grid item xs={12}>
       {userResearch ? (
         <div>
-          <Grid container>
+          
+          <Paper style={{ boxShadow: "none", border: "1px solid #d8d8d8" }}>
+          <Grid container style={{padding: "16px", paddingBottom: 0}}>
             <Grid item xs={6}>
               <Typography
                 variant="inherit"
                 style={{
-                  fontSize: "20px",
+                  fontSize: "1.375rem",
                   marginBottom: "8px",
                   fontWeight: "bold"
                 }}
@@ -110,7 +111,6 @@ const ResearchCard = ({ userData, userDetail, userResearch }) => {
               </Typography>
             </Grid>
           </Grid>
-          <Paper style={{ boxShadow: "none", border: "1px solid #d8d8d8" }}>
             {userResearch ? (
               <div>
                 {userResearch.map(researches => (
@@ -422,12 +422,14 @@ const ResearchCard = ({ userData, userDetail, userResearch }) => {
         </div>
       ) : (
         <Grid item xs={12}>
-          <Grid container>
+          
+          <Paper style={{ boxShadow: "none", border: "1px solid #d8d8d8" }}>
+          <Grid container style={{padding: "16px", paddingBottom: 0}}>
             <Grid item xs={6}>
               <Typography
                 variant="inherit"
                 style={{
-                  fontSize: "20px",
+                  fontSize: "1.375rem",
                   marginBottom: "8px",
                   fontWeight: "bold"
                 }}
@@ -436,10 +438,9 @@ const ResearchCard = ({ userData, userDetail, userResearch }) => {
               </Typography>
             </Grid>
           </Grid>
-          <Paper style={{ boxShadow: "none", border: "1px solid #d8d8d8" }}>
           <div style={{ margin: "20px" }}>
           <Typography variant="inherit" align="center">
-            ຍັງບໍ່ມີຜົນງານການຄົ້ນຄວ້າເທື່ອasdasdasdasdas
+            ຍັງບໍ່ມີຜົນງານການຄົ້ນຄວ້າເທື່ອ
           </Typography>
         </div>
           </Paper>
@@ -451,28 +452,29 @@ const ResearchCard = ({ userData, userDetail, userResearch }) => {
   const renderNoData = () => {
     return (
       <Grid item xs={12}>
-        <Grid container>
-          <Grid item xs={6}>
-            <Typography
-              variant="inherit"
-              style={{
-                fontSize: "20px",
-                marginBottom: "8px",
-                fontWeight: "bold"
-              }}
-            >
-              ຜົນງານການຄົ້ນຄວ້າ
-            </Typography>
-          </Grid>
-        </Grid>
+        
         <Paper style={{ boxShadow: "none", border: "1px solid #d8d8d8" }}>
+        <Grid container style={{padding: "16px", paddingBottom: 0}}>
+            <Grid item xs={6}>
+              <Typography
+                variant="inherit"
+                style={{
+                  fontSize: "1.375rem",
+                  marginBottom: "8px",
+                  fontWeight: "bold"
+                }}
+              >
+                ຜົນງານການຄົ້ນຄວ້າ
+              </Typography>
+            </Grid>
+          </Grid>
         <LinearProgress style={{ margin: "16px" }} />
         </Paper>
       </Grid>
     );
   };
 
-  return userDetail ? renderItems() : renderNoData();
+  return loading ? renderNoData() : renderItems();
 };
 
 export default withRouter(ResearchCard);

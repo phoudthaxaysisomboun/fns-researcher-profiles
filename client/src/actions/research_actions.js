@@ -1,7 +1,8 @@
 import axios from "axios";
 
 import {
-    GET_RESEARCH_FOR_CARD
+    GET_RESEARCH_FOR_CARD,
+    CLEAR_RESEARCH_CARD
   } from "./types";
 
 import { RESEARCH_SERVER } from "../components/utils/misc";
@@ -16,5 +17,12 @@ export function getResearchForCard(id, limit, skip) {
     return {
       type: GET_RESEARCH_FOR_CARD,
       payload: request
+    };
+  }
+
+  export function clearResearchCard() {
+    return {
+      type: CLEAR_RESEARCH_CARD,
+      payload: ""
     };
   }

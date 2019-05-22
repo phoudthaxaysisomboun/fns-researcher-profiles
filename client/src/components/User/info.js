@@ -10,9 +10,8 @@ import FollowingCard from "../User/Card/following";
 import FollowerCard from "../User/Card/follower";
 import LoadMoreFollowerCard from "./Card/load_more_follower";
 import LoadMoreFollowingCard from "../User/Card/load_more_following";
-import ResearchCard from "../User/Card/research";
+import PersonalInfoCard from "../User/Card/personal_info";
 
-import PropTypes from "prop-types";
 
 import {
   Hidden,
@@ -40,15 +39,11 @@ import {
   getFollowingInLoadMore
 } from "../../actions/user_actions";
 
-import {
-  getResearchForCard,
-  clearResearchCard
-} from "../../actions/research_actions";
 
 import { CloseOutlined } from "@material-ui/icons";
 
-let userAuthor = [];
-class ProfileOverview extends Component {
+
+class ProfileInfo extends Component {
   state = {
     loadingMoreFollower: false,
     loadingMoreFollowing: false,
@@ -62,10 +57,9 @@ class ProfileOverview extends Component {
     followerSkip: 0,
     followingLimit: 6,
     followingSkip: 0,
-    loadingResearchCard: true,
     loadingFollower: true,
     loadingFollowing: true,
-    tabNumber: 0
+    tabNumber: 1
   };
   
   componentWillMount() {
@@ -73,12 +67,10 @@ class ProfileOverview extends Component {
     var following = [];
     var followingId = [];
     var followerId = [];
-    var researchId = [];
 
     this.props.dispatch(getProfileDetail(id)).then(response => {
       following = response.payload.following;
       followerId = response.payload.follower;
-      researchId = response.payload.research;
       for (var key in following) {
         followingId.push(following[key]._id);
       }
@@ -127,17 +119,7 @@ class ProfileOverview extends Component {
       }
       
 
-      if (response.payload.research.length > 0) {
-        this.props.dispatch(getResearchForCard(researchId)).then(response => {
-          this.setState({
-            loadingResearchCard: false
-          });
-        });
-      } else {
-        this.setState({
-          loadingResearchCard: false
-        });
-      }
+      
 
       
       
@@ -150,10 +132,9 @@ class ProfileOverview extends Component {
     this.props.dispatch(clearProfileDetail());
     this.props.dispatch(clearFollower());
     this.props.dispatch(clearFollowing());
-    this.props.dispatch(clearResearchCard());
+
 
     this.setState({
-      loadingResearchCard: true,
       loadingFollower: true,
       loadingFollowing: true
     });
@@ -377,7 +358,7 @@ class ProfileOverview extends Component {
     const { fullScreen } = this.props;
 
     if (this.props.user.userDetail) {
-      document.title = `${this.props.user.userDetail.name} ${
+      document.title = ` ປະຫວັດ: ${this.props.user.userDetail.name} ${
         this.props.user.userDetail.lastname
       } - FNS Researcher Profiles`;
     }
@@ -391,7 +372,7 @@ class ProfileOverview extends Component {
         runUnfollow={id => this.unfollowUser(id)}
         loading={this.state.followLoading}
         tab = {this.state.tabNumber}
-        changeTab={tabNumber => this.changeTab(tabNumber)}
+        
       >
         <Grid container spacing={24} style={{ margin: "8px" }}>
           <Hidden only="sm">
@@ -401,18 +382,14 @@ class ProfileOverview extends Component {
             <Grid container spacing={24}>
               <IntroductionCard {...this.props} />
 
+              <PersonalInfoCard {...this.props} />
+
               <ResearchaAreaCard {...this.props} />
               <Grid item xs={12}>
                 <MiniStatsCard {...this.props} />
               </Grid>
 
-              <ResearchCard
-                userData={this.props.user.userData}
-                userDetail={this.props.user.userDetail}
-                userResearch={this.props.research.userResearch}
-                props={this.props}
-                loading={this.state.loadingResearchCard}
-              />
+              
             </Grid>
           </Grid>
 
@@ -569,15 +546,10 @@ class ProfileOverview extends Component {
   }
 }
 
-ProfileOverview.propTypes = {
-  fullScreen: PropTypes.bool.isRequired
-};
-
 const mapStateToProps = state => {
   return {
     userDetail: state.user,
-    research: state.research
   };
 };
 
-export default connect(mapStateToProps)(ProfileOverview);
+export default connect(mapStateToProps)(ProfileInfo);
