@@ -62,7 +62,6 @@ const userSchema = mongoose.Schema({
     profileDescription: {
         type: String,
         default: '',
-        maxlength: 240
     },
     affiliation: {
         institution: {type: Schema.Types.ObjectId, default: '5c8fcd398b7ae6cfecf5796e', ref: 'Institution', required: true},
@@ -156,15 +155,15 @@ const userSchema = mongoose.Schema({
         speaking: {type: Number, min: 0, max: 10},
     }],
     phone: {
-        type: Number,
+        type: String,
         maxlength: 100
     },
     mobile: {
-        type: Number,
+        type: String,
         maxlength: 100
     },
     fax: {
-        type: Number,
+        type: String,
         maxlength: 100
     },
     facebook: {

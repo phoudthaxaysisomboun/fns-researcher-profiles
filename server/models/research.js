@@ -51,7 +51,7 @@ const researchSchema = mongoose.Schema({
         type: String,
         
     },
-    instiution :{
+    institution :{
         type: String,
         maxlength: 500
     },

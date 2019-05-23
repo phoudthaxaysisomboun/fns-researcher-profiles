@@ -6,6 +6,8 @@ const app = express();
 const mongoose = require("mongoose");
 require("dotenv").config();
 
+const normalizeUrl = require('normalize-url');
+
 mongoose.Promise = global.Promise;
 mongoose.connect(process.env.DATABASE);
 
@@ -588,6 +590,45 @@ app.post("/api/researchers/removeFollower", auth, (req, res) => {
     (err, doc) => {
       if (err) return res.json({ success: false, err });
       res.status(200).json(doc.follower);
+    }
+  );
+});
+
+
+app.post("/api/researchers/updateMobilePhoneNumber", auth, (req, res) => {
+  let test = normalizeUrl('www.test.com')
+  console.log(test)
+  User.findOneAndUpdate(
+    { _id: req.query.userId },
+    {
+      $set: {
+        mobile: req.query.mobile
+      }
+    },
+    {
+      new: true
+    },
+    (err, doc) => {
+      if (err) return res.json({ success: false, err });
+      res.status(200).json(doc.mobile);
+    }
+  );
+});
+
+app.post("/api/researchers/updatePhoneNumber", auth, (req, res) => {
+  User.findOneAndUpdate(
+    { _id: req.query.userId },
+    {
+      $set: {
+        mobile: req.query.mobile
+      }
+    },
+    {
+      new: true
+    },
+    (err, doc) => {
+      if (err) return res.json({ success: false, err });
+      res.status(200).json(doc.mobile);
     }
   );
 });

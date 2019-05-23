@@ -22,7 +22,8 @@ import {
   AddOutlined,
   EditOutlined,
   ReplyOutlined,
-  CheckOutlined
+  CheckOutlined,
+  Web
 } from "@material-ui/icons";
 
 import { Link as ReactLink, withRouter } from "react-router-dom";
@@ -177,6 +178,22 @@ const ProfileHeader = ({
               <Typography variant="inherit">
                 <Phone style={iconStyles} />
                 {profile.mobile}
+                {isOwner ? (
+                  <span>
+                    <IconButton style={{ padding: "4px", margin: "4px" }}>
+                      <EditOutlined style={{ fontSize: "16px" }} />
+                    </IconButton>
+                  </span>
+                ) : null}
+              </Typography>
+            </Link>
+          ) : null}
+
+          {profile.website ? (
+            <Link href={`https://${profile.website}`}>
+              <Typography variant="inherit">
+                <Web style={iconStyles} />
+                {profile.website}
                 {isOwner ? (
                   <span>
                     <IconButton style={{ padding: "4px", margin: "4px" }}>
