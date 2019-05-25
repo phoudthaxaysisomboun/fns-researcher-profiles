@@ -8,7 +8,7 @@ import {
   InputLabel,
 } from "@material-ui/core";
 
-const FormField = ({ formdata, change, id, labelWidth }) => {
+const FormField = ({ formdata, change, id, labelWidth, maxlength = null }) => {
   const showError = () => {
     let errorMessage = null;
 
@@ -48,6 +48,9 @@ const FormField = ({ formdata, change, id, labelWidth }) => {
                   onChange={event => change({ event, id })}
                   margin="normal"
                   variant="outlined"
+                  inputProps={{
+                    maxLength: maxlength,
+                  }}
                 />
               ) : (
                 <TextField
@@ -57,6 +60,9 @@ const FormField = ({ formdata, change, id, labelWidth }) => {
                   onChange={event => change({ event, id })}
                   margin="normal"
                   variant="outlined"
+                  inputProps={{
+                    maxLength: maxlength,
+                  }}
                 />
               )}
 

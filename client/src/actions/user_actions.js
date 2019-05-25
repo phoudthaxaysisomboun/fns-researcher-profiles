@@ -17,7 +17,9 @@ import {
   CLEAR_FOLLOWING,
   CLEAR_FOLLOWER,
   GET_FOLLOWER_IN_LOAD_MORE,
-  GET_FOLLOWING_IN_LOAD_MORE
+  GET_FOLLOWING_IN_LOAD_MORE,
+  UPDATE_USER_MOBILE,
+  UPDATE_USER_PHONE
 } from "./types";
 
 import { USER_SERVER, RESEARCHER_SERVER } from "../components/utils/misc";
@@ -223,3 +225,30 @@ export function getDepartments() {
     payload: request
   };
 }
+
+export function updateMobile(_id, mobile) {
+  const request = axios
+    .post(`${RESEARCHER_SERVER}/update_mobile?userId=${_id}&mobile=${mobile}`)
+    .then(response => response.data);
+
+    console.log(`${RESEARCHER_SERVER}/update_mobile?userId=${_id}&mobile=${mobile}`)
+
+  return {
+    type: UPDATE_USER_MOBILE,
+    payload: request
+  };
+}
+
+export function updatePhone(_id, phone) {
+  const request = axios
+    .post(`${RESEARCHER_SERVER}/update_phone?userId=${_id}&phone=${phone}`)
+    .then(response => response.data);
+
+    console.log(`${RESEARCHER_SERVER}/update_phone?userId=${_id}&phone=${phone}`)
+
+  return {
+    type: UPDATE_USER_PHONE,
+    payload: request
+  };
+}
+

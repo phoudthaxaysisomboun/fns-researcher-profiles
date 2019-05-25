@@ -14,6 +14,8 @@ export const CLEAR_FOLLOWING = 'clear_following'
 export const CLEAR_FOLLOWER = 'clear_follower'
 export const GET_FOLLOWER_IN_LOAD_MORE = 'get_follower_in_load_more'
 export const GET_FOLLOWING_IN_LOAD_MORE = 'get_following_in_load_more'
+export const UPDATE_USER_MOBILE = 'update_user_mobile'
+export const UPDATE_USER_PHONE = 'update_user_phone'
 
 export const GET_RESEARCH_FOR_CARD = 'get_research_for_card'
 export const CLEAR_RESEARCH_CARD = 'clear_research_card'

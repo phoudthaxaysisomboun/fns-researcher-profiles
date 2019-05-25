@@ -148,7 +148,8 @@ class Register extends Component {
           options: [
             { label: "ຊາຍ", value: "5cb2c97c1331746efcc3b1fb" },
             { label: "ຍິງ", value: "5cb2c98e1331746efcc3b1fd" }
-          ]
+          ],
+          autoFocus: true
         },
         validation: {
           required: true

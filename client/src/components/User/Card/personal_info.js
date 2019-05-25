@@ -14,7 +14,7 @@ import { EditOutlined } from "@material-ui/icons";
 
 import moment from "moment";
 
-const PersonalInfoCard = props => {
+const PersonalInfoCard = ({props, runEditMobile, runEditPhone}) => {
   const profile = { ...props.user.userDetail };
   const user = { ...props.user.userData };
 
@@ -125,13 +125,15 @@ const PersonalInfoCard = props => {
             >
               ມືຖື
             </Grid>
-            <Grid item xs={8} style={{ fontSize: "1rem", color: "#202124" }}>
+            <Grid item xs={8} style={{ fontSize: "1rem", color: "#202124", wordWrap: "break-word" }}>
             <Link href={profile.mobile ? `tel:{$profile.mobile}` : null}>
               {profile.mobile ? profile.mobile : null}
             </Link>
             </Grid>
             <Grid item xs={1} align="right">
-              <IconButton style={{ padding: "4px" }}>
+              <IconButton onClick={() => {
+                runEditMobile();
+              }} style={{ padding: "4px" }}>
                 <EditOutlined fontSize="small" />
               </IconButton>
             </Grid>
@@ -152,13 +154,17 @@ const PersonalInfoCard = props => {
             >
               ໂທລະສັບ
             </Grid>
-            <Grid item xs={8} style={{ fontSize: "1rem", color: "#202124" }}>
+            <Grid item xs={8} style={{ fontSize: "1rem", color: "#202124", wordWrap: "break-word" }}>
             <Link href={profile.phone ? `tel:{$profile.phone}` : null}>
               {profile.phone ? profile.phone : null}
             </Link>
             </Grid>
             <Grid item xs={1} align="right">
-              <IconButton style={{ padding: "4px" }}>
+              <IconButton style={{ padding: "4px" }}
+              onClick={() => {
+                runEditPhone();
+              }}
+              >
                 <EditOutlined fontSize="small" />
               </IconButton>
             </Grid>
@@ -179,7 +185,7 @@ const PersonalInfoCard = props => {
             >
               ແຟັກ
             </Grid>
-            <Grid item xs={8} style={{ fontSize: "1rem", color: "#202124" }}>
+            <Grid item xs={8} style={{ fontSize: "1rem", color: "#202124", wordWrap: "break-word" }}>
             <Link href={profile.fax ? `fax:{$profile.fax}` : null}>
               {profile.fax ? profile.fax : null}
             </Link>
@@ -205,7 +211,7 @@ const PersonalInfoCard = props => {
             >
               facebook
             </Grid>
-            <Grid item xs={8} style={{ fontSize: "1rem", color: "#202124" }}>
+            <Grid item xs={8} style={{ fontSize: "1rem", color: "#202124", wordWrap: "break-word" }}>
             {
               profile.facebook ?
               <>
@@ -255,11 +261,11 @@ const PersonalInfoCard = props => {
             >
               website
             </Grid>
-            <Grid item xs={8} style={{ fontSize: "1rem", color: "#202124" }}>
+            <Grid item xs={8} style={{ fontSize: "1rem", color: "#202124", wordWrap: "break-word" }}>
             {profile.website ?
               <><Grid item xs={12}>
-                <Link href={`https://${profile.website}`}>
-                {`https://${profile.website}`}
+                <Link href={`${profile.website}`}>
+                {`${profile.website}`}
                 </Link>
               </Grid></> : null
             }

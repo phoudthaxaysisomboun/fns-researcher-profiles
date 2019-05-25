@@ -26,7 +26,8 @@ class Login extends Component {
         config: {
           label: "ອີເມລ",
           name: "email_input",
-          type: "email"
+          type: "email",
+          autoFocus: true
         },
         validation: {
           required: true,

@@ -11,6 +11,9 @@ import LoadMoreFollowerCard from "./Card/load_more_follower";
 import LoadMoreFollowingCard from "../User/Card/load_more_following";
 import PersonalInfoCard from "../User/Card/personal_info";
 
+import UpdateMobilePhoneNumber from "./Dialog/update_mobile_number";
+import UpdatePhoneNumber from "./Dialog/update_phone";
+
 
 import {
   Hidden,
@@ -50,6 +53,9 @@ class ProfileInfo extends Component {
     unfollowLoading: false,
     openFollowerDialog: false,
     openFollowingDialog: false,
+    openEditMobileDialog: false,
+    openEditPhoneDialog: false,
+    openEditWebsiteDialog: false,
     fullWidth: true,
     maxWidth: "sm",
     followerLimit: 6,
@@ -58,7 +64,7 @@ class ProfileInfo extends Component {
     followingSkip: 0,
     loadingFollower: true,
     loadingFollowing: true,
-    tabNumber: 1
+    tabNumber: 1,
   };
   
   componentWillMount() {
@@ -124,8 +130,6 @@ class ProfileInfo extends Component {
       
     });
   }
-
-  componentDidMount() {}
 
   componentWillUnmount() {
     this.props.dispatch(clearProfileDetail());
@@ -347,6 +351,30 @@ class ProfileInfo extends Component {
     });
   };
 
+  handleUpdateMobileClose = () => {
+    this.setState({
+      openEditMobileDialog: false
+    });
+  }
+
+  handleUpdatePhoneClose = () => {
+    this.setState({
+      openEditPhoneDialog: false
+    });
+  }
+
+  handleOpenUpdateMobileDialog = () => {
+    this.setState({
+      openEditMobileDialog: true
+    });
+  }
+
+  handleOpenUpdatePhoneDialog = () => {
+    this.setState({
+      openEditPhoneDialog: true
+    });
+  }
+
   changeTab = tabNumber => {
     this.setState({
       tabNumber
@@ -382,7 +410,11 @@ class ProfileInfo extends Component {
               <IntroductionCard {...this.props} />
               <ResearchaAreaCard {...this.props} />
               
-              <PersonalInfoCard {...this.props} />
+              <PersonalInfoCard props = {this.props} 
+              runEditMobile={() => this.handleOpenUpdateMobileDialog()} close={()=> this.handleUpdateMobileClose()}
+              
+              runEditPhone={() => this.handleOpenUpdatePhoneDialog()} close={()=> this.handleUpdatePhoneClose()}
+              />
 
               
 
@@ -538,6 +570,16 @@ class ProfileInfo extends Component {
             />
           </DialogContent>
         </Dialog>
+
+        <UpdateMobilePhoneNumber 
+          open={this.state.openEditMobileDialog} 
+          close={() => this.handleUpdateMobileClose()}
+        />
+
+        <UpdatePhoneNumber 
+          open={this.state.openEditPhoneDialog} 
+          close={() => this.handleUpdatePhoneClose()}
+        />
       </ProfileHeader>
     );
   }

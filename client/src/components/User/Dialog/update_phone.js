@@ -25,23 +25,23 @@ import { CloseOutlined } from "@material-ui/icons";
 
 import { Link as ReactLink, withRouter } from "react-router-dom";
 
-import { updateMobile } from "../../../actions/user_actions";
+import { updatePhone } from "../../../actions/user_actions";
 
 import { connect } from "react-redux";
 
-class UpdateMobilePhoneNumber extends Component {
+class UpdatePhoneNumber extends Component {
   state = {
     formError: false,
     formErrorMessage: "ມີບາງຂໍ້ມູນບໍ່ຖືກຕ້ອງກະລຸນາກວດສອບຂໍ້ມູນຄືນ",
     formSuccess: false,
     formdata: {
-      mobile: {
+      phone: {
         element: "input",
         value: "",
         config: {
-          name: "mobile_input",
+          name: "phone_input",
           type: "tel",
-          label: "ມືຖື",
+          label: "ໂທລະສັບ",
           autoFocus: true,
          
         },
@@ -61,7 +61,7 @@ class UpdateMobilePhoneNumber extends Component {
       ...this.state.formdata
     };
 
-    newFormdata["mobile"].value = this.props.profile && this.props.profile.mobile ? this.props.profile.mobile : ""
+    newFormdata["phone"].value = this.props.profile && this.props.profile.phone ? this.props.profile.phone : ""
 
     
   }
@@ -71,7 +71,7 @@ class UpdateMobilePhoneNumber extends Component {
       ...this.state.formdata
     };
 
-    newFormdata["mobile"].value = this.props.profile && this.props.profile.mobile ? this.props.profile.mobile : ""
+    newFormdata["phone"].value = this.props.profile && this.props.profile.phone ? this.props.profile.phone : ""
     this.setState({ formdata: newFormdata });
   }
 
@@ -83,7 +83,7 @@ class UpdateMobilePhoneNumber extends Component {
     const newFormdata = update(
       element,
       this.state.formdata,
-      "updateMobileNumber"
+      "updatePhoneNumber"
     );
     this.setState({
       formError: false,
@@ -101,7 +101,7 @@ class UpdateMobilePhoneNumber extends Component {
     event.preventDefault();
 
     this.props
-        .dispatch(updateMobile(this.props.profile._id, this.state.formdata.mobile.value))
+        .dispatch(updatePhone(this.props.profile._id, this.state.formdata.phone.value))
         .then(response => {
           if (response.payload.success) {
             this.setState({
@@ -145,7 +145,7 @@ class UpdateMobilePhoneNumber extends Component {
                 fontFamily: "'Noto Sans Lao UI', sans serif"
               }}
             >
-              <Typography variant="inherit">ແກ້ໄຂມືຖື</Typography>
+              <Typography variant="inherit">ແກ້ໄຂໂທລະສັບ</Typography>
             </Grid>
             <Grid item xs={6} align="right" style={{ padding: "16px" }}>
               <IconButton
@@ -160,8 +160,8 @@ class UpdateMobilePhoneNumber extends Component {
         <DialogContent style={{ padding: "24px", paddingTop: 0 }}>
         <form onSubmit={event => this.submitForm(event)}>
             <FormField
-              id={"mobile"}
-              formdata={this.state.formdata.mobile}
+              id={"phone"}
+              formdata={this.state.formdata.phone}
               change={element => this.updateForm(element)}
               maxlength ={40}
             />
@@ -189,4 +189,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(UpdateMobilePhoneNumber);
+export default connect(mapStateToProps)(UpdatePhoneNumber);

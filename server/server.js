@@ -14,6 +14,7 @@ mongoose.connect(process.env.DATABASE);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
+app.use('/uploads', express.static('uploads'))
 
 // Models
 const { User } = require("./models/user");
@@ -595,9 +596,8 @@ app.post("/api/researchers/removeFollower", auth, (req, res) => {
 });
 
 
-app.post("/api/researchers/updateMobilePhoneNumber", auth, (req, res) => {
-  let test = normalizeUrl('www.test.com')
-  console.log(test)
+app.post("/api/researchers/update_mobile", auth, (req, res) => {
+  
   User.findOneAndUpdate(
     { _id: req.query.userId },
     {
@@ -610,17 +610,20 @@ app.post("/api/researchers/updateMobilePhoneNumber", auth, (req, res) => {
     },
     (err, doc) => {
       if (err) return res.json({ success: false, err });
-      res.status(200).json(doc.mobile);
+      res.status(200).json({
+        success: true,
+        mobile: doc.mobile
+      });
     }
   );
 });
 
-app.post("/api/researchers/updatePhoneNumber", auth, (req, res) => {
+app.post("/api/researchers/update_phone", auth, (req, res) => {
   User.findOneAndUpdate(
     { _id: req.query.userId },
     {
       $set: {
-        mobile: req.query.mobile
+        phone: req.query.phone
       }
     },
     {
@@ -628,9 +631,318 @@ app.post("/api/researchers/updatePhoneNumber", auth, (req, res) => {
     },
     (err, doc) => {
       if (err) return res.json({ success: false, err });
-      res.status(200).json(doc.mobile);
+      res.status(200).json({
+        success: true,
+        phone: doc.phone
+      });
     }
   );
+});
+
+app.post("/api/researchers/update_fax", auth, (req, res) => {
+  User.findOneAndUpdate(
+    { _id: req.query.userId },
+    {
+      $set: {
+        fax: req.query.fax
+      }
+    },
+    {
+      new: true
+    },
+    (err, doc) => {
+      if (err) return res.json({ success: false, err });
+      res.status(200).json({
+        success: true,
+        phone: doc.fax
+      });
+    }
+  );
+});
+
+app.post("/api/researchers/update_nationality", auth, (req, res) => {
+  User.findOneAndUpdate(
+    { _id: req.query.userId },
+    {
+      $set: {
+        nationality: req.query.nationality
+      }
+    },
+    {
+      new: true
+    },
+    (err, doc) => {
+      if (err) return res.json({ success: false, err });
+      res.status(200).json({
+        success: true,
+        phone: doc.nationality
+      });
+    }
+  );
+});
+
+app.post("/api/researchers/update_minor_ethnicity", auth, (req, res) => {
+  User.findOneAndUpdate(
+    { _id: req.query.userId },
+    {
+      $set: {
+        minor_ethnicity: req.query.minor_ethnicity
+      }
+    },
+    {
+      new: true
+    },
+    (err, doc) => {
+      if (err) return res.json({ success: false, err });
+      res.status(200).json({
+        success: true,
+        phone: doc.minor_ethnicity
+      });
+    }
+  );
+});
+
+app.post("/api/researchers/update_date_of_birth", auth, (req, res) => {
+  User.findOneAndUpdate(
+    { _id: req.query.userId },
+    {
+      $set: {
+        dateOfBirth: req.query.dateOfBirth
+      }
+    },
+    {
+      new: true
+    },
+    (err, doc) => {
+      if (err) return res.json({ success: false, err });
+      res.status(200).json({
+        success: true,
+        dateOfBirth: doc.dateOfBirth
+      });
+    }
+  );
+});
+
+app.post("/api/researchers/update_degree", auth, (req, res) => {
+  User.findOneAndUpdate(
+    { _id: req.query.userId },
+    {
+      $set: {
+        degree: req.query.degree
+      }
+    },
+    {
+      new: true
+    },
+    (err, doc) => {
+      if (err) return res.json({ success: false, err });
+      res.status(200).json({
+        success: true,
+        degree: doc.degree
+      });
+    }
+  );
+});
+
+app.post("/api/researchers/update_profile_description", auth, (req, res) => {
+  User.findOneAndUpdate(
+    { _id: req.query.userId },
+    {
+      $set: {
+        profileDescription: req.query.profileDescription
+      }
+    },
+    {
+      new: true
+    },
+    (err, doc) => {
+      if (err) return res.json({ success: false, err });
+      res.status(200).json({
+        success: true,
+        profileDescription: doc.profileDescription
+      });
+    }
+  );
+});
+
+app.post("/api/researchers/update_name", auth, (req, res) => {
+  User.findOneAndUpdate(
+    { _id: req.query.userId },
+    {
+      $set: {
+        prefix: req.query.prefix,
+        name: req.query.prefix,
+        lastname: req.query.prefix,
+      }
+    },
+    {
+      new: true
+    },
+    (err, doc) => {
+      if (err) return res.json({ success: false, err });
+      res.status(200).json({
+        success: true,
+        prefix: doc.dateOfBirth,
+        name: doc.name,
+        lastname: doc.lastname,
+      });
+    }
+  );
+});
+
+app.post("/api/researchers/update_website", auth, (req, res) => {
+  User.findOneAndUpdate(
+    { _id: req.query.userId },
+    {
+      $set: {
+        website: normalizeUrl(req.query.website)
+      }
+    },
+    {
+      new: true
+    },
+    (err, doc) => {
+      if (err) return res.json({ success: false, err });
+      res.status(200).json({
+        success: true,
+        website: doc.website
+      });
+    }
+  );
+});
+
+app.post("/api/researchers/update_facebook", auth, (req, res) => {
+  User.findOneAndUpdate(
+    { _id: req.query.userId },
+    {
+      $set: {
+        facebook: {
+          name: req.query.name,
+          url: normalizeUrl(req.query.url)
+        }
+      }
+    },
+    {
+      new: true
+    },
+    (err, doc) => {
+      if (err) return res.json({ success: false, err });
+      res.status(200).json({
+        success: true,
+        facebook: doc.facebook
+      });
+    }
+  );
+});
+
+app.post("/api/researchers/update_address", auth, (req, res) => {
+  User.findOneAndUpdate(
+    { _id: req.query.userId },
+    {
+      $set: {
+        address: {
+          village: req.query.village,
+          district: mongoose.Types.ObjectId(req.query.district),
+          province: mongoose.Types.ObjectId(req.query.province),
+        }
+      }
+    },
+    {
+      new: true
+    }
+  )
+  .populate({path:'address.district', model: 'District' })
+  .populate({path:'address.province', model: 'Province' })
+  .exec((err, doc) => {
+    if (err) return res.json({ success: false, err });
+    res.status(200).json({
+      success: true,
+      address: doc.address
+    })
+  })
+});
+
+app.post("/api/researchers/update_affiliation", auth, (req, res) => {
+  User.findOneAndUpdate(
+    { _id: req.query.userId },
+    {
+      $set: {
+        affiliation: {
+          institution: mongoose.Types.ObjectId(req.query.institution),
+          faculty: mongoose.Types.ObjectId(req.query.faculty),
+          department: mongoose.Types.ObjectId(req.query.department),
+          position: req.query.position,
+        }
+      }
+    },
+    {
+      new: true
+    }
+  )
+  .populate({path:'affiliation.institution', model: 'Institution' })
+  .populate({path:'affiliation.faculty', model: 'Faculty' })
+  .populate({path:'affiliation.department', model: 'Department' })
+  .exec((err, doc) => {
+    if (err) return res.json({ success: false, err });
+    res.status(200).json({
+      success: true,
+      affiliation: {
+        institution: doc.institution,
+        faculty: doc.faculty,
+        department: doc.department,
+        position: doc.position,
+      },
+    })
+  })
+});
+
+app.post("/api/researchers/update_place_of_birth", auth, (req, res) => {
+  User.findOneAndUpdate(
+    { _id: req.query.userId },
+    {
+      $set: {
+        placeOfBirth: {
+          village: req.query.village,
+          district: req.query.district,
+          province: req.query.province,
+          country: mongoose.Types.ObjectId(req.query.country),
+        }
+      }
+    },
+    {
+      new: true
+    }
+  )
+  .populate({path:'placeOfBirth.country', model: 'Country' })
+  .exec((err, doc) => {
+    if (err) return res.json({ success: false, err });
+    res.status(200).json({
+      success: true,
+      placeOfBirth: doc.placeOfBirth
+    })
+  })
+});
+
+app.post("/api/researchers/update_gender", auth, (req, res) => {
+  User.findOneAndUpdate(
+    { _id: req.query.userId },
+    {
+      $set: {
+        gender: mongoose.Types.ObjectId(req.query.gender)
+      }
+    },
+    {
+      new: true
+    }
+  )
+  .populate({path:'gender', model: 'Gender' })
+  .exec((err, doc) => {
+    if (err) return res.json({ success: false, err });
+    res.status(200).json({
+      success: true,
+      gender: doc.gender
+    })
+  })
 });
 
 //====================================

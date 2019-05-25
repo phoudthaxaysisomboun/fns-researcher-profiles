@@ -13,7 +13,11 @@ import {
   UNFOLLOW,
   REMOVE_FOLLOWER,
   CLEAR_FOLLOWING,
-  CLEAR_FOLLOWER,GET_FOLLOWER_IN_LOAD_MORE, GET_FOLLOWING_IN_LOAD_MORE
+  CLEAR_FOLLOWER,
+  GET_FOLLOWER_IN_LOAD_MORE,
+  GET_FOLLOWING_IN_LOAD_MORE,
+  UPDATE_USER_MOBILE,
+  UPDATE_USER_PHONE
 } from "../actions/types";
 
 export default function(state = {}, action) {
@@ -64,6 +68,18 @@ export default function(state = {}, action) {
       };
     case REMOVE_FOLLOWER:
       return { ...state };
+    case UPDATE_USER_MOBILE:
+      
+      return { ...state, userDetail: {
+        ...state.userDetail,
+        mobile: action.payload.mobile
+      } };
+    case UPDATE_USER_PHONE:
+      
+      return { ...state, userDetail: {
+        ...state.userDetail,
+        phone: action.payload.phone
+      } };
     default:
       return state;
   }

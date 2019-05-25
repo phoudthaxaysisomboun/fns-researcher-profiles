@@ -74,7 +74,7 @@ const userSchema = mongoose.Schema({
         required: true
     },
     placeOfBirth: {
-        vilage: {type: String, maxlength: 100},
+        village: {type: String, maxlength: 100},
         district: {type: String, maxlength: 100},
         province: {type: String, maxlength: 100},
         country: {type: Schema.Types.ObjectId, ref: 'Country'},
