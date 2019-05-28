@@ -119,7 +119,7 @@ class Register extends Component {
         },
         validation: {
           required: true,
-          confirm: 'password'
+          confirm: "password"
         },
         valid: false,
         touched: false,
@@ -142,7 +142,7 @@ class Register extends Component {
       },
       gender: {
         element: "radio",
-        value: "5cb2c97c1331746efcc3b1fb",
+        value: "",
         config: {
           name: "gender_radio",
           options: [
@@ -156,7 +156,8 @@ class Register extends Component {
         },
         valid: true,
         touched: false,
-        validationMessage: ""
+        validationMessage: "",
+        error: false
       },
       department: {
         element: "select",
@@ -245,7 +246,38 @@ class Register extends Component {
 
     let dataToSubmit = generateData(this.state.formdata, "register");
     let formIsValid = isFormValid(this.state.formdata, "register");
-    if (formIsValid && this.state.formdata.password.value.trim() === this.state.formdata.confirmPassword.value.trim()) {
+
+    if (this.state.formdata.gender.value.trim() === "") {
+      const newFormdata = {
+        ...this.state.formdata
+      };
+      const newElement = {
+        ...newFormdata["gender"]
+      };
+      newElement.error = true;
+      newFormdata["gender"] = newElement;
+  
+      this.setState({ formdata: newFormdata });
+    }
+    else {
+      const newFormdata = {
+        ...this.state.formdata
+      };
+      const newElement = {
+        ...newFormdata["gender"]
+      };
+      newElement.error = false;
+      newFormdata["gender"] = newElement;
+  
+      this.setState({ formdata: newFormdata });
+      
+    }
+    
+    if (
+      formIsValid &&
+      this.state.formdata.password.value.trim() ===
+        this.state.formdata.confirmPassword.value.trim() && !this.state.formdata.gender.error
+    ) {
       const newDataToSubmit = {
         ...dataToSubmit,
         affiliation: {
@@ -271,8 +303,7 @@ class Register extends Component {
             console.log(response.payload);
             this.setState({
               formError: true,
-              formErrorMessage:
-                "ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດສະຫມັກສະມາຊິກໄດ້"
+              formErrorMessage: "ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດສະຫມັກສະມາຊິກໄດ້"
             });
           }
         })
@@ -298,14 +329,15 @@ class Register extends Component {
       ...newFormdata["gender"]
     };
     newElement.value = event.target.value;
+    newElement.error = false;
     newFormdata["gender"] = newElement;
 
     this.setState({ formdata: newFormdata });
   };
 
   handleClose = event => {
-    this.props.history.push("/")
-  }
+    this.props.history.push("/");
+  };
 
   updateFields = newFormdata => {
     this.setState({
@@ -342,31 +374,37 @@ class Register extends Component {
                 variant="h5"
                 component="h3"
                 style={{
-                  fontWeight: 500,
-                  fontFamily: "'Noto Sans Lao UI', sans-serif"
+                  fontSize: "1.75rem",
+                  fontWeight: "500",
+                  fontFamily: "'Noto Sans Lao UI', sans-serif",
+                  textAlign: "center"
                 }}
               >
                 ສະຫມັກສະມາຊິກ
               </Typography>
 
-              <Grid container spacing={24} style={{ marginTop: "0px" }}>
+              <Grid container spacing={24} style={{ marginTop: "16px" }}>
                 <Grid item xs={6}>
-                  <Typography
+                  
+ <Typography variant="inherit"
                     style={{
                       fontFamily: "'Noto Sans Lao UI', sans-serif",
                       fontWeight: "normal",
-                      fontSize: "1rem"
+                      fontSize: "1rem",
+                      color: 'rgba(0, 0, 0, 0.54)'
                     }}
                   >
                     ເພດ
                   </Typography>
-
                   <RadioGroup
                     aria-label="position"
                     value={this.state.formdata.gender.value}
                     onChange={this.handleChange}
                     row
                   >
+                 
+                  
+                    
                     <FormControlLabel
                       value="5cb2c97c1331746efcc3b1fb"
                       control={<Radio color="primary" />}
@@ -380,6 +418,21 @@ class Register extends Component {
                       labelPlacement="end"
                     />
                   </RadioGroup>
+                  {
+                    this.state.formdata.gender.error ?
+                    <FormHelperText
+                    style={{
+                      fontFamily: "'Noto Sans Lao UI', sans serif",
+                      fontWeight: "bold",
+                      marginTop: "0"
+                    }}
+                    error
+                    id="component-error-text"
+                  >
+                    ກະລຸນາເລືອກເພດກ່ອນ
+                  </FormHelperText>
+                  : null
+                  }
                 </Grid>
               </Grid>
               <Grid container spacing={24}>
@@ -527,15 +580,15 @@ class Register extends Component {
                   align="left"
                   style={{ display: "flex", alignItems: "center" }}
                 >
-                <ReactLink style={{textDecoration: "none"}} to="/login">
-                <Typography variant="inherit" color="primary" style={{fontWeight: "bold"}}>
-                ລົງຊື່ເຂົ້າໃຊ້ແທນ
-                </Typography>
-                
-                </ReactLink>
-                  
-                
-                  
+                  <ReactLink style={{ textDecoration: "none" }} to="/login">
+                    <Typography
+                      variant="inherit"
+                      color="primary"
+                      style={{ fontWeight: "bold" }}
+                    >
+                      ລົງຊື່ເຂົ້າໃຊ້ແທນ
+                    </Typography>
+                  </ReactLink>
                 </Grid>
 
                 <Grid item xs={6} align="right">
@@ -555,17 +608,46 @@ class Register extends Component {
         </Grid>
 
         <Dialog open={this.state.formSuccess} maxWidth="sm">
-          <DialogTitle style={{paddingBottom: "8px"}}><span style={{fontFamily: "'Noto Sans Lao UI', sans serif !important", fontWeight: 600}}>ຢືນຢັນອີເມລ</span></DialogTitle>
+          <DialogTitle style={{ paddingBottom: "8px" }}>
+            <span
+              style={{
+                fontFamily: "'Noto Sans Lao UI', sans serif !important",
+                fontWeight: 600
+              }}
+            >
+              ຢືນຢັນອີເມລ
+            </span>
+          </DialogTitle>
           <DialogContent>
-            <DialogContentText style={{fontFamily: "'Noto Sans Lao UI', sans serif", fontWeight: 500}}>
-              ພວກເຮົາໄດ້ສົ່ງອີເມລໄປທີ່ <span style={{fontFamily: "'Noto Sans Lao UI', sans serif", fontWeight: "bold"}}>{this.state.formdata.email.value}</span> ກະລຸນາກວດສອບອີເມລຂອງທ່ານແລ້ວປະຕິບັດຕາມຂັ້ນຕອນເພື່ອທໍາການຢືນຢັນບັນຊີຂອງທ່ານ
+            <DialogContentText
+              style={{
+                fontFamily: "'Noto Sans Lao UI', sans serif",
+                fontWeight: 500
+              }}
+            >
+              ພວກເຮົາໄດ້ສົ່ງອີເມລໄປທີ່{" "}
+              <span
+                style={{
+                  fontFamily: "'Noto Sans Lao UI', sans serif",
+                  fontWeight: "bold"
+                }}
+              >
+                {this.state.formdata.email.value}
+              </span>{" "}
+              ກະລຸນາກວດສອບອີເມລຂອງທ່ານແລ້ວປະຕິບັດຕາມຂັ້ນຕອນເພື່ອທໍາການຢືນຢັນບັນຊີຂອງທ່ານ
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button style={{fontFamily: "'Noto Sans Lao UI', sans serif", fontWeight: 'bold'}} onClick={this.handleClose} color="primary">
+            <Button
+              style={{
+                fontFamily: "'Noto Sans Lao UI', sans serif",
+                fontWeight: "bold"
+              }}
+              onClick={this.handleClose}
+              color="primary"
+            >
               ຕົກລົງ
             </Button>
-            
           </DialogActions>
         </Dialog>
       </form>

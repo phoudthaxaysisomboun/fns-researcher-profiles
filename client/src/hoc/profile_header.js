@@ -15,6 +15,8 @@ import {
   CircularProgress
 } from "@material-ui/core";
 
+import LinesEllipsis from "react-lines-ellipsis";
+
 import {
   Mail,
   Phone,
@@ -41,7 +43,7 @@ const ProfileHeader = ({
   runFollow,
   children,
   loading,
-  tab,
+  tab
 }) => {
   const userData = { ...props.user.userData };
   const profile = { ...props.user.userDetail };
@@ -128,82 +130,119 @@ const ProfileHeader = ({
       return (
         <div>
           {profile.email ? (
-            <Link href={`mailto:${profile.email}`} style={{ color: "#BA000D" }}>
-              <Typography variant="inherit">
-                <Mail style={iconStyles} />
-                {profile.email}
-                {isOwner ? (
-                  <span>
-                    <IconButton style={{ padding: "4px", margin: "4px" }}>
-                      <EditOutlined style={{ fontSize: "16px" }} />
-                    </IconButton>
-                  </span>
-                ) : null}
-              </Typography>
-            </Link>
-          ) : null}
-          {facebook.name ? (
-            <Link href={facebook.url} style={{ color: "#1976D2" }}>
-              <Typography variant="inherit">
-                <svg
-                  style={iconStyles}
-                  aria-hidden="true"
-                  focusable="false"
-                  data-prefix="fab"
-                  data-icon="facebook"
-                  role="img"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 448 512"
-                  className="svg-inline--fa fa-facebook fa-w-14 fa-2x"
+            <Grid container spacing={8} alignItems="flex-start">
+              <Grid item style={{ width: "24px" }}>
+                <Mail
+                  style={{
+                    position: "relative",
+                    
+                    width: "20px",
+                    color: "#BA000D"
+                  }}
+                />
+              </Grid>
+              <Grid item xs>
+                <Link
+                  href={`mailto:${profile.email}`}
+                  style={{ color: "#BA000D", wordWrap: "break-word" }}
                 >
-                  <path
-                    fill="currentColor"
-                    d="M448 56.7v398.5c0 13.7-11.1 24.7-24.7 24.7H309.1V306.5h58.2l8.7-67.6h-67v-43.2c0-19.6 5.4-32.9 33.5-32.9h35.8v-60.5c-6.2-.8-27.4-2.7-52.2-2.7-51.6 0-87 31.5-87 89.4v49.9h-58.4v67.6h58.4V480H24.7C11.1 480 0 468.9 0 455.3V56.7C0 43.1 11.1 32 24.7 32h398.5c13.7 0 24.8 11.1 24.8 24.7z"
-                    className=""
-                  />
-                </svg>
-                {facebook.name}
-                {isOwner ? (
-                  <span>
-                    <IconButton style={{ padding: "4px", margin: "4px" }}>
-                      <EditOutlined style={{ fontSize: "16px" }} />
-                    </IconButton>
-                  </span>
-                ) : null}
-              </Typography>
-            </Link>
-          ) : null}
-          {profile.mobile ? (
-            <Link href={`tel:{$profile.mobile}`} style={{ color: "#2E7D32" }}>
-              <Typography variant="inherit">
-                <Phone style={iconStyles} />
-                {profile.mobile}
-                {isOwner ? (
-                  <span>
-                    <IconButton style={{ padding: "4px", margin: "4px" }}>
-                      <EditOutlined style={{ fontSize: "16px" }} />
-                    </IconButton>
-                  </span>
-                ) : null}
-              </Typography>
-            </Link>
+                  <Typography variant="inherit">
+                    
+                    <LinesEllipsis
+                            text={profile.email} 
+                            maxLine="1"
+                            ellipsis="..."
+                            trimRight
+                            basedOn="letters"
+                          />
+                  </Typography>
+                </Link>
+              </Grid>
+            </Grid>
           ) : null}
 
-          {profile.website ? (
-            <Link href={`https://${profile.website}`}>
-              <Typography variant="inherit">
-                <Web style={iconStyles} />
-                {profile.website}
-                {isOwner ? (
-                  <span>
-                    <IconButton style={{ padding: "4px", margin: "4px" }}>
-                      <EditOutlined style={{ fontSize: "16px" }} />
-                    </IconButton>
-                  </span>
-                ) : null}
-              </Typography>
-            </Link>
+          
+          {facebook.name ? (
+            <Grid container spacing={8} alignItems="flex-start">
+              <Grid item style={{ width: "24px" }}>
+              <svg
+              style={{
+                position: "relative",
+                top: "2px",
+                width: "20px",
+                color: "#1976D2"
+              }}
+              aria-hidden="true"
+              focusable="false"
+              data-prefix="fab"
+              data-icon="facebook"
+              role="img"
+              width="20px"
+              height="20px"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 448 512"
+              className="svg-inline--fa fa-facebook fa-w-14 fa-2x"
+            >
+              <path
+                fill="currentColor"
+                d="M448 56.7v398.5c0 13.7-11.1 24.7-24.7 24.7H309.1V306.5h58.2l8.7-67.6h-67v-43.2c0-19.6 5.4-32.9 33.5-32.9h35.8v-60.5c-6.2-.8-27.4-2.7-52.2-2.7-51.6 0-87 31.5-87 89.4v49.9h-58.4v67.6h58.4V480H24.7C11.1 480 0 468.9 0 455.3V56.7C0 43.1 11.1 32 24.7 32h398.5c13.7 0 24.8 11.1 24.8 24.7z"
+                className=""
+              />
+            </svg>
+              </Grid>
+              <Grid item xs>
+                <Link
+                href={facebook.url}
+                  style={{ color: "#1976D2", wordWrap: "break-word" }}
+                >
+                  <Typography variant="inherit">
+                  {facebook.name}
+                    {isOwner || userData.isAdmin ? (
+                      <IconButton style={{ padding: "4px", margin: "4px" }}>
+                        <EditOutlined style={{ fontSize: "16px" }} />
+                      </IconButton>
+                    ) : null}
+                  </Typography>
+                </Link>
+              </Grid>
+            </Grid>
+            
+            
           ) : null}
+          {profile.mobile ? (
+            <Grid container spacing={8} alignItems="flex-start">
+              <Grid item style={{ width: "24px" }}>
+                <Phone
+                  style={{
+                    position: "relative",
+                    top: "2px",
+                    width: "20px",
+                    color: "#2E7D32"
+                  }}
+                />
+              </Grid>
+              <Grid item xs>
+                <Link
+                href={`tel:{$profile.mobile}`}
+                  style={{ color: "#2E7D32", wordWrap: "break-word" }}
+                >
+                  <Typography variant="inherit">
+                  {profile.mobile}
+                    {isOwner || userData.isAdmin ? (
+                      <IconButton style={{ padding: "4px", margin: "4px" }}>
+                        <EditOutlined style={{ fontSize: "16px" }} />
+                      </IconButton>
+                    ) : null}
+                  </Typography>
+                </Link>
+              </Grid>
+            </Grid>
+
+
+            
+          ) : null}
+
+          
         </div>
       );
     } else {
@@ -214,33 +253,39 @@ const ProfileHeader = ({
   const renderItems = () => {
     return (
       <div>
-        <Typography
-          variant="inherit"
-          style={{
-            fontFamily: "'Noto Sans Lao UI', sans serif",
-            fontWeight: 700,
-            fontSize: "24px"
-          }}
-        >
-          {props.user.userDetail ? (
-            `${profile.prefix} ${profile.name} ${profile.lastname}`
-          ) : (
-            <LinearProgress style={{ margin: "16px" }} />
-          )}
-          {isOwner ? (
-            <span>
-              <IconButton style={{ padding: "4px", margin: "4px" }}>
-                <EditOutlined style={{ fontSize: "16px" }} />
-              </IconButton>
-            </span>
-          ) : null}
-        </Typography>
+        {props.user.userDetail ? (
+          <>
+            <Typography
+              variant="inherit"
+              style={{
+                fontFamily: "'Noto Sans Lao UI', sans serif",
+                fontWeight: 700,
+                fontSize: "24px"
+              }}
+            >
+              {profile.prefix} {profile.name} {profile.lastname}
+              {isOwner || userData.isAdmin ? (
+                <IconButton
+                  style={{
+                    padding: "4px",
+                    margin: "4px",
+                    position: "relative"
+                  }}
+                >
+                  <EditOutlined fontSize="small" />
+                </IconButton>
+              ) : null}
+            </Typography>
+          </>
+        ) : (
+          <LinearProgress style={{ margin: "16px" }} />
+        )}
 
         {profile.degree ? (
           <Typography variant="inherit">
             <span style={{ fontWeight: "bold" }}>ວຸດທິການສຶກສາ: </span>
             {profile.degree}
-            {isOwner ? (
+            {isOwner || userData.isAdmin ? (
               <span>
                 <IconButton style={{ padding: "4px", margin: "4px" }}>
                   <EditOutlined style={{ fontSize: "16px" }} />
@@ -333,26 +378,26 @@ const ProfileHeader = ({
                 <Tab
                   style={{ fontSize: "16px", fontWeight: 500 }}
                   label="ໂດຍລວມ"
-                  
-                  to={`/profile/${profile._id}`} component={ReactLink}
+                  to={`/profile/${profile._id}`}
+                  component={ReactLink}
                 />
 
-                
-                  <Tab
-                    style={{ fontSize: "16px", fontWeight: 500, textDecoration: "none" }}
-                    label="ປະຫວັດລະອຽດ"
-
-                    to={`/profile/${profile._id}/info`} component={ReactLink}
-                    
-                  />
-                
+                <Tab
+                  style={{
+                    fontSize: "16px",
+                    fontWeight: 500,
+                    textDecoration: "none"
+                  }}
+                  label="ປະຫວັດລະອຽດ"
+                  to={`/profile/${profile._id}/info`}
+                  component={ReactLink}
+                />
 
                 <Tab
                   style={{ fontSize: "16px", fontWeight: 500 }}
                   label="ຜົນງານຄົ້ນຄວ້າ"
-                 
                 />
-                {isOwner ? (
+                {isOwner || userData.isAdmin ? (
                   <Tab
                     style={{ fontSize: "16px", fontWeight: 500 }}
                     label="ສະຖິຕິ"

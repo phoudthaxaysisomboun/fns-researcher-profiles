@@ -171,12 +171,14 @@ const FollowerCard = ({
   );
   const renderItems = () => (
     <div>
-      <Grid container>
+      
+      <Paper style={{ boxShadow: "none", border: "1px solid #d8d8d8" }}>
+      <Grid container style={{padding: "16px", paddingBottom: 0}}>
         <Grid item xs={6}>
           <Typography
             variant="inherit"
             style={{
-              fontSize: "20px",
+              fontSize: "1.375rem",
               marginBottom: "8px",
               fontWeight: "bold"
             }}
@@ -191,7 +193,6 @@ const FollowerCard = ({
           </Typography>
         </Grid>
       </Grid>
-      <Paper style={{ boxShadow: "none", border: "1px solid #d8d8d8" }}>
         {!loading ? (
           <div>{renderFollower()}</div>
         ) : (

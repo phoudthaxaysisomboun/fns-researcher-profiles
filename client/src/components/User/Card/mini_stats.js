@@ -21,12 +21,14 @@ const MiniStatsCard = props => {
   const renderItems = () => {
     return (
       <div>
-        <Grid container>
+        
+        <Paper style={{ boxShadow: "none", border: "1px solid #d8d8d8" }}>
+        <Grid container style={{padding: "16px", paddingBottom: 0}}>
           <Grid item xs={6}>
             <Typography
               variant="inherit"
               style={{
-                fontSize: "20px",
+                fontSize: "1.375rem",
                 marginBottom: "8px",
                 fontWeight: "bold"
               }}
@@ -35,7 +37,6 @@ const MiniStatsCard = props => {
             </Typography>
           </Grid>
         </Grid>
-        <Paper style={{ boxShadow: "none", border: "1px solid #d8d8d8" }}>
           <Grid container spacing={8} style={{ padding: "12px" }}>
             <Grid item xs={4}>
               <Grid container>

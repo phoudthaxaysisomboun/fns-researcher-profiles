@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
 import FormField from "../../utils/Form/formfield";
+import moment from "moment";
 import {
   update,
   generateData,
@@ -18,71 +19,77 @@ import {
   FormControlLabel,
   FormHelperText,
   IconButton,
-  TextField
+  TextField, RadioGroup, Radio
 } from "@material-ui/core";
 
 import { CloseOutlined } from "@material-ui/icons";
 
 import { Link as ReactLink, withRouter } from "react-router-dom";
 
-import { updatePhone } from "../../../actions/user_actions";
+import { updateGender } from "../../../actions/user_actions";
 
 import { connect } from "react-redux";
 
-class UpdatePhoneNumber extends Component {
+class UpdateGenderDialogue extends Component {
   state = {
     formError: false,
     formErrorMessage: "ມີບາງຂໍ້ມູນບໍ່ຖືກຕ້ອງກະລຸນາກວດສອບຂໍ້ມູນຄືນ",
     formSuccess: false,
     formdata: {
-      phone: {
-        element: "input",
-        value: "",
-        config: {
-          name: "phone_input",
-          type: "tel",
-          label: "ໂທລະສັບ",
-          autoFocus: true
-        },
-        validation: {
-          required: false
-        },
-        valid: false,
-        touched: false,
-        validationMessage: ""
-      }
+        gender: {
+            element: "radio",
+            value: "",
+            config: {
+              name: "gender_radio",
+              options: [
+                { label: "ຊາຍ", value: "5cb2c97c1331746efcc3b1fb" },
+                { label: "ຍິງ", value: "5cb2c98e1331746efcc3b1fd" }
+              ],
+              autoFocus: true
+            },
+            validation: {
+              required: true
+            },
+            valid: true,
+            touched: false,
+            validationMessage: ""
+          },
     }
   };
 
-  componentDidMount() {
+  handleChange = event => {
     const newFormdata = {
       ...this.state.formdata
     };
+    const newElement = {
+      ...newFormdata["gender"]
+    };
+    newElement.value = event.target.value;
+    newFormdata["gender"] = newElement;
 
-    newFormdata["phone"].value =
-      this.props.profile && this.props.profile.phone
-        ? this.props.profile.phone
-        : "";
-  }
+    this.setState({ formdata: newFormdata });
+
+    console.log(this.state.formdata.gender.value)
+  };
+
 
   componentWillReceiveProps() {
     const newFormdata = {
-      ...this.state.formdata
-    };
-
-    newFormdata["phone"].value =
-      this.props.profile && this.props.profile.phone
-        ? this.props.profile.phone
-        : "";
-    this.setState({ formdata: newFormdata });
+        ...this.state.formdata
+      };
+      const newElement = {
+        ...newFormdata["gender"]
+      };
+      newElement.value =  this.props.profile && this.props.profile.gender && this.props.profile.gender._id
+      ? this.props.profile.gender._id
+      : "";
+      newFormdata["gender"] = newElement;
+  
+      this.setState({ formdata: newFormdata });
   }
 
   updateForm = element => {
-    const newFormdata = update(
-      element,
-      this.state.formdata,
-      "updatePhoneNumber"
-    );
+    const newFormdata = update(element, this.state.formdata, "updateGender");
     this.setState({
       formError: false,
       formdata: newFormdata
@@ -97,13 +104,15 @@ class UpdatePhoneNumber extends Component {
 
   submitForm = event => {
     event.preventDefault();
-
-    let formIsValid = isFormValid(this.state.formdata, "updatePhoneNumber");
+    let formIsValid = isFormValid(this.state.formdata, "updateGender");
 
     if (formIsValid) {
       this.props
         .dispatch(
-          updatePhone(this.props.profile._id, this.state.formdata.phone.value)
+            updateGender(
+            this.props.profile._id,
+            this.state.formdata.gender.value,
+          )
         )
         .then(response => {
           if (response.payload.success) {
@@ -115,15 +124,14 @@ class UpdatePhoneNumber extends Component {
           } else {
             this.setState({
               formError: true,
-              formErrorMessage:
-                "ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນໂທລະສັບໄດ້"
+              formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນເພດໄດ້`
             });
           }
         })
         .catch(e => {
           this.setState({
             formError: true,
-            formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນໂທລະສັບໄດ້ (error: ${e})`
+            formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນເພດໄດ້ (error: ${e})`
           });
         });
     } else {
@@ -147,16 +155,16 @@ class UpdatePhoneNumber extends Component {
           <Grid container>
             <Grid
               item
-              xs={6}
+              xs={10}
               style={{
                 padding: "24px",
                 fontWeight: "bold",
                 fontFamily: "'Noto Sans Lao UI', sans serif"
               }}
             >
-              <Typography variant="inherit">ແກ້ໄຂໂທລະສັບ</Typography>
+              <Typography variant="inherit">{`ແກ້ໄຂເພດ`}</Typography>
             </Grid>
-            <Grid item xs={6} align="right" style={{ padding: "16px" }}>
+            <Grid item xs={2} align="right" style={{ padding: "16px" }}>
               <IconButton
                 onClick={() => this.props.close()}
                 style={{ padding: 0 }}
@@ -168,12 +176,24 @@ class UpdatePhoneNumber extends Component {
         </DialogTitle>
         <DialogContent style={{ padding: "24px", paddingTop: 0 }}>
           <form onSubmit={event => this.submitForm(event)}>
-            <FormField
-              id={"phone"}
-              formdata={this.state.formdata.phone}
-              change={element => this.updateForm(element)}
-              maxlength={40}
-            />
+          <RadioGroup
+          value={this.state.formdata.gender.value}
+          onChange={this.handleChange}
+        >
+          <FormControlLabel
+            value="5cb2c97c1331746efcc3b1fb"
+            control={<Radio  color="primary" />}
+            label="ຊາຍ"
+            labelPlacement="end"
+            
+          />
+          <FormControlLabel
+            value="5cb2c98e1331746efcc3b1fd"
+            control={<Radio color="primary" />}
+            label="ຍິງ"
+            labelPlacement="end"
+          />
+        </RadioGroup>
             <Grid item align="right" style={{ marginTop: "24px" }}>
               <Button onClick={() => this.props.close()}>ຍົກເລີກ</Button>
               <Button
@@ -198,4 +218,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(UpdatePhoneNumber);
+export default connect(mapStateToProps)(UpdateGenderDialogue);

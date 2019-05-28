@@ -99,3 +99,11 @@ span {
 .research-card-title {
   max-lines: 2
 }
+
+.MuiTypography-body1-78 {
+  font-size: 1rem !important;
+}
+
+.genderLabel .MuiTypography-body1-78 {
+  color: rgba(0, 0, 0, 0.54) !important
+}

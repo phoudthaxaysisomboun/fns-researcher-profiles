@@ -13,7 +13,13 @@ import PersonalInfoCard from "../User/Card/personal_info";
 
 import UpdateMobilePhoneNumber from "./Dialog/update_mobile_number";
 import UpdatePhoneNumber from "./Dialog/update_phone";
-
+import UpdateFax from "./Dialog/update_fax";
+import UpdateWebite from "./Dialog/update_website";
+import UpdateDateOfBirthDialogue from "./Dialog/update_date_of_birth";
+import UpdateFacebookDialogue from "./Dialog/update_facebook"
+import UpdateGenderDialogue from "./Dialog/update_gender"
+import UpdateMinorEthnicityDialogue from "./Dialog/update_minor_ethnicity"
+import UpdateNationalityDialogue from "./Dialog/update_nationality"
 
 import {
   Hidden,
@@ -41,9 +47,7 @@ import {
   getFollowingInLoadMore
 } from "../../actions/user_actions";
 
-
 import { CloseOutlined } from "@material-ui/icons";
-
 
 class ProfileInfo extends Component {
   state = {
@@ -53,9 +57,6 @@ class ProfileInfo extends Component {
     unfollowLoading: false,
     openFollowerDialog: false,
     openFollowingDialog: false,
-    openEditMobileDialog: false,
-    openEditPhoneDialog: false,
-    openEditWebsiteDialog: false,
     fullWidth: true,
     maxWidth: "sm",
     followerLimit: 6,
@@ -65,8 +66,20 @@ class ProfileInfo extends Component {
     loadingFollower: true,
     loadingFollowing: true,
     tabNumber: 1,
+    openEditMobileDialog: false,
+    openEditPhoneDialog: false,
+    openEditFaxDialog: false,
+    openEditWebsiteDialog: false,
+
+    openEditGenderDialog: false,
+    openEditAddressDialog: false,
+    openEditFacebookDialog: false,
+    openEditDateOfBirthDialog: false,
+    openEditPlaceOfBirthDialog: false,
+    openEditNationalityDialog: false,
+    openEditMinorEthnicityDialog: false,
   };
-  
+
   componentWillMount() {
     const id = this.props.match.params.id;
     var following = [];
@@ -94,21 +107,18 @@ class ProfileInfo extends Component {
             this.state.followingSkip
           )
         );
-  
       } else {
         this.setState({
           loadingFollowing: false
         });
       }
 
-      
-
       if (response.payload.follower.length > 0) {
-        this.props.dispatch(getFollower(followerId)).then(()=>{
+        this.props.dispatch(getFollower(followerId)).then(() => {
           this.setState({
             loadingFollower: false
           });
-        })
+        });
 
         this.props.dispatch(
           getFollowerInLoadMore(
@@ -122,12 +132,6 @@ class ProfileInfo extends Component {
           loadingFollower: false
         });
       }
-      
-
-      
-
-      
-      
     });
   }
 
@@ -135,7 +139,6 @@ class ProfileInfo extends Component {
     this.props.dispatch(clearProfileDetail());
     this.props.dispatch(clearFollower());
     this.props.dispatch(clearFollowing());
-
 
     this.setState({
       loadingFollower: true,
@@ -355,31 +358,143 @@ class ProfileInfo extends Component {
     this.setState({
       openEditMobileDialog: false
     });
-  }
+  };
 
   handleUpdatePhoneClose = () => {
     this.setState({
       openEditPhoneDialog: false
     });
-  }
+  };
+
+  handleUpdateFaxClose = () => {
+    this.setState({
+      openEditFaxDialog: false
+    });
+  };
 
   handleOpenUpdateMobileDialog = () => {
     this.setState({
       openEditMobileDialog: true
     });
-  }
+  };
+
+  handleOpenUpdateFaxDialog = () => {
+    this.setState({
+      openEditFaxDialog: true
+    });
+  };
 
   handleOpenUpdatePhoneDialog = () => {
     this.setState({
       openEditPhoneDialog: true
     });
-  }
-
-  changeTab = tabNumber => {
-    this.setState({
-      tabNumber
-    })
   };
+  
+  /*  Website edit dialogue actions */
+
+  handleOpenUpdateWebsiteDialog = () => {
+    this.setState({
+      openEditWebsiteDialog: true
+    });
+  };
+
+  handleUpdateWebsiteClose = () => {
+    this.setState({
+      openEditWebsiteDialog: false
+    });
+  };
+
+  /*  Gender edit dialogue actions */
+
+  handleOpenUpdateGenderDialog = () => {
+    this.setState({
+      openEditGenderDialog: true
+    });
+  };
+
+  handleUpdateGenderClose = () => {
+    this.setState({
+      openEditGenderDialog: false
+    });
+  };
+
+  /*  Address edit dialogue actions */
+  handleOpenUpdateAddressDialog = () => {
+    this.setState({
+      openEditAddressDialog: true
+    });
+  };
+
+  handleUpdateAddressClose = () => {
+    this.setState({
+      openEditAddressDialog: false
+    });
+  };
+
+  /*  Facebook edit dialogue actions */
+  handleOpenUpdateFacebookDialog = () => {
+    this.setState({
+      openEditFacebookDialog: true
+    });
+  };
+
+  handleUpdateFacebookClose = () => {
+    this.setState({
+      openEditFacebookDialog: false
+    });
+  };
+
+  /*  Date of birth edit dialogue actions */
+  handleOpenUpdateDateOfBirthDialog = () => {
+    this.setState({
+      openEditDateOfBirthDialog: true
+    });
+  };
+
+  handleUpdateDateOfBirthClose = () => {
+    this.setState({
+      openEditDateOfBirthDialog: false
+    });
+  };
+
+  /*  Place of birth edit dialogue actions */
+  handleOpenUpdatePlaceOfBirthDialog = () => {
+    this.setState({
+      openEditPlaceOfBirthDialog: true
+    });
+  };
+
+  handleUpdatePlaceOfBirthClose = () => {
+    this.setState({
+      openEditPlaceOfBirthDialog: false
+    });
+  };
+
+    /*  Nationality edit dialogue actions */
+    handleOpenUpdateNationalityDialog = () => {
+      this.setState({
+        openEditNationalityDialog: true
+      });
+    };
+  
+    handleUpdateNationalityClose = () => {
+      this.setState({
+        openEditNationalityDialog: false
+      });
+    };
+
+    /*  Minor-ethinicity edit dialogue actions */
+    handleOpenUpdateMinorEthinicityDialog = () => {
+      this.setState({
+        openEditMinorEthnicityDialog: true
+      });
+    };
+  
+    handleUpdateMinorEthnicityClose = () => {
+      this.setState({
+        openEditMinorEthnicityDialog: false
+      });
+    };
 
   render() {
     const { fullScreen } = this.props;
@@ -398,8 +513,7 @@ class ProfileInfo extends Component {
         runFollow={id => this.followUser(id)}
         runUnfollow={id => this.unfollowUser(id)}
         loading={this.state.followLoading}
-        tab = {this.state.tabNumber}
-        
+        tab={this.state.tabNumber}
       >
         <Grid container spacing={24} style={{ margin: "8px" }}>
           <Hidden only="sm">
@@ -407,18 +521,27 @@ class ProfileInfo extends Component {
           </Hidden>
           <Grid item xs={12} lg={4} sm={6} md={5}>
             <Grid container spacing={24}>
+           
               <IntroductionCard {...this.props} />
               <ResearchaAreaCard {...this.props} />
-              
-              <PersonalInfoCard props = {this.props} 
-              runEditMobile={() => this.handleOpenUpdateMobileDialog()} close={()=> this.handleUpdateMobileClose()}
-              
-              runEditPhone={() => this.handleOpenUpdatePhoneDialog()} close={()=> this.handleUpdatePhoneClose()}
+
+              <PersonalInfoCard
+                props={this.props}
+                runEditMobile={() => this.handleOpenUpdateMobileDialog()}
+                runEditPhone={() => this.handleOpenUpdatePhoneDialog()}
+                runEditFax={() => this.handleOpenUpdateFaxDialog()}
+                runEditWebsite={() => this.handleOpenUpdateWebsiteDialog()}
+
+                runEditDateOfBirth={() => this.handleOpenUpdateDateOfBirthDialog()}
+
+                runEditFacebook={() => this.handleOpenUpdateFacebookDialog()}
+
+                runEditGender={() => this.handleOpenUpdateGenderDialog()}
+
+                runEditMinorEthnicity ={() => this.handleOpenUpdateMinorEthinicityDialog()}
+
+                runEditNationality ={() => this.handleOpenUpdateNationalityDialog()}
               />
-
-              
-
-              
             </Grid>
           </Grid>
 
@@ -571,14 +694,49 @@ class ProfileInfo extends Component {
           </DialogContent>
         </Dialog>
 
-        <UpdateMobilePhoneNumber 
-          open={this.state.openEditMobileDialog} 
+        <UpdateMobilePhoneNumber
+          open={this.state.openEditMobileDialog}
           close={() => this.handleUpdateMobileClose()}
         />
 
-        <UpdatePhoneNumber 
-          open={this.state.openEditPhoneDialog} 
+        <UpdatePhoneNumber
+          open={this.state.openEditPhoneDialog}
           close={() => this.handleUpdatePhoneClose()}
+        />
+
+        <UpdateFax
+          open={this.state.openEditFaxDialog}
+          close={() => this.handleUpdateFaxClose()}
+        />
+
+        <UpdateWebite
+          open={this.state.openEditWebsiteDialog}
+          close={() => this.handleUpdateWebsiteClose()}
+        />
+
+        <UpdateDateOfBirthDialogue
+          open={this.state.openEditDateOfBirthDialog}
+          close={() => this.handleUpdateDateOfBirthClose()}
+        />
+
+        <UpdateFacebookDialogue
+          open={this.state.openEditFacebookDialog}
+          close={() => this.handleUpdateFacebookClose()}
+        />
+
+        <UpdateGenderDialogue
+          open={this.state.openEditGenderDialog}
+          close={() => this.handleUpdateGenderClose()}
+        />
+
+        <UpdateMinorEthnicityDialogue
+          open={this.state.openEditMinorEthnicityDialog}
+          close={() => this.handleUpdateMinorEthnicityClose()}
+        />
+
+        <UpdateNationalityDialogue
+          open={this.state.openEditNationalityDialog}
+          close={() => this.handleUpdateNationalityClose()}
         />
       </ProfileHeader>
     );
@@ -587,7 +745,7 @@ class ProfileInfo extends Component {
 
 const mapStateToProps = state => {
   return {
-    userDetail: state.user,
+    userDetail: state.user
   };
 };
 

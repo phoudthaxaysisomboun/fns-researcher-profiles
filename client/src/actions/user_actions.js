@@ -19,7 +19,16 @@ import {
   GET_FOLLOWER_IN_LOAD_MORE,
   GET_FOLLOWING_IN_LOAD_MORE,
   UPDATE_USER_MOBILE,
-  UPDATE_USER_PHONE
+  UPDATE_USER_PHONE,
+  UPDATE_USER_FAX,
+  UPDATE_USER_WEBSITE,
+  UPDATE_USER_GENDER,
+  UPDATE_USER_ADDRESS,
+  UPDATE_USER_FACEBOOK,
+  UPDATE_USER_DATE_OF_BIRTH,
+  UPDATE_USER_PLACE_OF_BIRTH,
+  UPDATE_USER_NATIONALITY,
+  UPDATE_USER_MINOR_ETHNICITY
 } from "./types";
 
 import { USER_SERVER, RESEARCHER_SERVER } from "../components/utils/misc";
@@ -231,8 +240,6 @@ export function updateMobile(_id, mobile) {
     .post(`${RESEARCHER_SERVER}/update_mobile?userId=${_id}&mobile=${mobile}`)
     .then(response => response.data);
 
-    console.log(`${RESEARCHER_SERVER}/update_mobile?userId=${_id}&mobile=${mobile}`)
-
   return {
     type: UPDATE_USER_MOBILE,
     payload: request
@@ -244,11 +251,125 @@ export function updatePhone(_id, phone) {
     .post(`${RESEARCHER_SERVER}/update_phone?userId=${_id}&phone=${phone}`)
     .then(response => response.data);
 
-    console.log(`${RESEARCHER_SERVER}/update_phone?userId=${_id}&phone=${phone}`)
-
   return {
     type: UPDATE_USER_PHONE,
     payload: request
   };
 }
 
+export function updateFax(_id, fax) {
+  const request = axios
+    .post(`${RESEARCHER_SERVER}/update_fax?userId=${_id}&fax=${fax}`)
+    .then(response => response.data);
+
+  return {
+    type: UPDATE_USER_FAX,
+    payload: request
+  };
+}
+
+export function updateWebsite(_id, website) {
+  const request = axios
+    .post(
+      `${RESEARCHER_SERVER}/update_website?userId=${_id}&website=${website}`
+    )
+    .then(response => response.data);
+
+  return {
+    type: UPDATE_USER_WEBSITE,
+    payload: request
+  };
+}
+
+export function updateGender(_id, gender) {
+  const request = axios
+    .post(
+      `${RESEARCHER_SERVER}/update_gender?userId=${_id}&gender=${gender}`
+    )
+    .then(response => response.data);
+
+  return {
+    type: UPDATE_USER_GENDER,
+    payload: request
+  };
+}
+
+export function updateAddress(_id, village, district, province) {
+  const request = axios
+    .post(
+      `${RESEARCHER_SERVER}/update_address?userId=${_id}&village=${village}&district=${district}&province=${province}`
+    )
+    .then(response => response.data);
+
+  return {
+    type: UPDATE_USER_ADDRESS,
+    payload: request
+  };
+}
+
+export function updateFacebook(_id, name, url) {
+  const request = axios
+    .post(
+      `${RESEARCHER_SERVER}/update_facebook?userId=${_id}&name=${name}&url=${url}`
+    )
+    .then(response => response.data);
+
+  return {
+    type: UPDATE_USER_FACEBOOK,
+    payload: request
+  };
+}
+
+export function updateDateOfBirth(_id, dateOfBirth) {
+  const request = axios
+    .post(
+      `${RESEARCHER_SERVER}/update_date_of_birth?userId=${_id}&dateOfBirth=${dateOfBirth}`
+    )
+    .then(response => response.data);
+
+  return {
+    type: UPDATE_USER_DATE_OF_BIRTH,
+    payload: request
+  };
+}
+
+export function updatePlaceOfBirth(_id, village, district, province, country) {
+  const request = axios
+    .post(
+      `${RESEARCHER_SERVER}/update_place_of_birth?userId=${_id}&village=${village}&district=${district}&province=${province}&country=${country}`
+    )
+    .then(response => response.data);
+
+  return {
+    type: UPDATE_USER_PLACE_OF_BIRTH,
+    payload: request
+  };
+
+}
+export function updateNationality(_id, nationality) {
+  console.log(`${RESEARCHER_SERVER}/update_nationality?userId=${_id}&nationality=${nationality}`)
+  const request = axios
+    .post(
+      `${RESEARCHER_SERVER}/update_nationality?userId=${_id}&nationality=${nationality}`
+    )
+    .then(response => response.data);
+
+  return {
+    type: UPDATE_USER_NATIONALITY,
+    payload: request
+  };
+}
+
+export function updateMinorEthnicity(_id, minor_ethnicity) {
+  console.log(`${RESEARCHER_SERVER}/update_minor_ethnicity?userId=${_id}&minor_ethnicity=${minor_ethnicity}`)
+  const request = axios
+    .post(
+      `${RESEARCHER_SERVER}/update_minor_ethnicity?userId=${_id}&minor_ethnicity=${minor_ethnicity}`
+    )
+    .then(response => response.data);
+
+  return {
+    type: UPDATE_USER_MINOR_ETHNICITY,
+    payload: request
+  };
+}

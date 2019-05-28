@@ -178,7 +178,7 @@ const FollowingCard = ({
             <Typography
               variant="inherit"
               style={{
-                fontSize: "20px",
+                fontSize: "1.375rem",
                 marginBottom: "8px",
                 fontWeight: "bold"
               }}

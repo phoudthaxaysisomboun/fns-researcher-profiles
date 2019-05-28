@@ -42,8 +42,7 @@ class UpdateMobilePhoneNumber extends Component {
           name: "mobile_input",
           type: "tel",
           label: "ມືຖື",
-          autoFocus: true,
-         
+          autoFocus: true
         },
         validation: {
           required: false
@@ -56,14 +55,14 @@ class UpdateMobilePhoneNumber extends Component {
   };
 
   componentDidMount() {
-
     const newFormdata = {
       ...this.state.formdata
     };
 
-    newFormdata["mobile"].value = this.props.profile && this.props.profile.mobile ? this.props.profile.mobile : ""
-
-    
+    newFormdata["mobile"].value =
+      this.props.profile && this.props.profile.mobile
+        ? this.props.profile.mobile
+        : "";
   }
 
   componentWillReceiveProps() {
@@ -71,12 +70,11 @@ class UpdateMobilePhoneNumber extends Component {
       ...this.state.formdata
     };
 
-    newFormdata["mobile"].value = this.props.profile && this.props.profile.mobile ? this.props.profile.mobile : ""
+    newFormdata["mobile"].value =
+      this.props.profile && this.props.profile.mobile
+        ? this.props.profile.mobile
+        : "";
     this.setState({ formdata: newFormdata });
-  }
-
-  constructor(props) {
-    super(props);
   }
 
   updateForm = element => {
@@ -99,30 +97,40 @@ class UpdateMobilePhoneNumber extends Component {
 
   submitForm = event => {
     event.preventDefault();
+    let formIsValid = isFormValid(this.state.formdata, "updatePhoneNumber");
 
-    this.props
-        .dispatch(updateMobile(this.props.profile._id, this.state.formdata.mobile.value))
+    if (formIsValid) {
+      this.props
+        .dispatch(
+          updateMobile(this.props.profile._id, this.state.formdata.mobile.value)
+        )
         .then(response => {
           if (response.payload.success) {
             this.setState({
               formError: false,
               formSuccess: true
             });
-            this.props.close()
+            this.props.close();
           } else {
             this.setState({
               formError: true,
               formErrorMessage:
-                "ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດສະຫມັກສະມາຊິກໄດ້"
+                "ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນມືຖືໄດ້"
             });
           }
         })
         .catch(e => {
           this.setState({
             formError: true,
-            formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດສະຫມັກສະມາຊິກໄດ້ (error: ${e})`
+            formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນມືຖືໄດ້ (error: ${e})`
           });
         });
+    } else {
+      this.setState({
+        formError: true,
+        formErrorMessage: "ມີບາງຂໍ້ມູນບໍ່ຖືກຕ້ອງກະລຸນາກວດສອບຂໍ້ມູນຄືນ"
+      });
+    }
   };
 
   render() {
@@ -158,12 +166,12 @@ class UpdateMobilePhoneNumber extends Component {
           </Grid>
         </DialogTitle>
         <DialogContent style={{ padding: "24px", paddingTop: 0 }}>
-        <form onSubmit={event => this.submitForm(event)}>
+          <form onSubmit={event => this.submitForm(event)}>
             <FormField
               id={"mobile"}
               formdata={this.state.formdata.mobile}
               change={element => this.updateForm(element)}
-              maxlength ={40}
+              maxlength={40}
             />
             <Grid item align="right" style={{ marginTop: "24px" }}>
               <Button onClick={() => this.props.close()}>ຍົກເລີກ</Button>
@@ -185,7 +193,7 @@ class UpdateMobilePhoneNumber extends Component {
 
 const mapStateToProps = state => {
   return {
-    profile: state.user.userDetail,
+    profile: state.user.userDetail
   };
 };
 

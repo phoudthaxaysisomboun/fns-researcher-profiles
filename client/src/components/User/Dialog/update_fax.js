@@ -25,23 +25,23 @@ import { CloseOutlined } from "@material-ui/icons";
 
 import { Link as ReactLink, withRouter } from "react-router-dom";
 
-import { updatePhone } from "../../../actions/user_actions";
+import { updateFax } from "../../../actions/user_actions";
 
 import { connect } from "react-redux";
 
-class UpdatePhoneNumber extends Component {
+class UpdateFax extends Component {
   state = {
     formError: false,
     formErrorMessage: "ມີບາງຂໍ້ມູນບໍ່ຖືກຕ້ອງກະລຸນາກວດສອບຂໍ້ມູນຄືນ",
     formSuccess: false,
     formdata: {
-      phone: {
+      fax: {
         element: "input",
         value: "",
         config: {
-          name: "phone_input",
+          name: "fax_input",
           type: "tel",
-          label: "ໂທລະສັບ",
+          label: "ແຟັກ",
           autoFocus: true
         },
         validation: {
@@ -59,9 +59,9 @@ class UpdatePhoneNumber extends Component {
       ...this.state.formdata
     };
 
-    newFormdata["phone"].value =
-      this.props.profile && this.props.profile.phone
-        ? this.props.profile.phone
+    newFormdata["fax"].value =
+      this.props.profile && this.props.profile.fax
+        ? this.props.profile.fax
         : "";
   }
 
@@ -70,19 +70,15 @@ class UpdatePhoneNumber extends Component {
       ...this.state.formdata
     };
 
-    newFormdata["phone"].value =
-      this.props.profile && this.props.profile.phone
-        ? this.props.profile.phone
+    newFormdata["fax"].value =
+      this.props.profile && this.props.profile.fax
+        ? this.props.profile.fax
         : "";
     this.setState({ formdata: newFormdata });
   }
 
   updateForm = element => {
-    const newFormdata = update(
-      element,
-      this.state.formdata,
-      "updatePhoneNumber"
-    );
+    const newFormdata = update(element, this.state.formdata, "updateFax");
     this.setState({
       formError: false,
       formdata: newFormdata
@@ -97,13 +93,12 @@ class UpdatePhoneNumber extends Component {
 
   submitForm = event => {
     event.preventDefault();
-
-    let formIsValid = isFormValid(this.state.formdata, "updatePhoneNumber");
+    let formIsValid = isFormValid(this.state.formdata, "updateFax");
 
     if (formIsValid) {
       this.props
         .dispatch(
-          updatePhone(this.props.profile._id, this.state.formdata.phone.value)
+          updateFax(this.props.profile._id, this.state.formdata.fax.value)
         )
         .then(response => {
           if (response.payload.success) {
@@ -116,14 +111,14 @@ class UpdatePhoneNumber extends Component {
             this.setState({
               formError: true,
               formErrorMessage:
-                "ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນໂທລະສັບໄດ້"
+                `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນ${this.state.formdata.fax.config.label}ໄດ້`
             });
           }
         })
         .catch(e => {
           this.setState({
             formError: true,
-            formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນໂທລະສັບໄດ້ (error: ${e})`
+            formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນ${this.state.formdata.fax.config.label}ໄດ້ (error: ${e})`
           });
         });
     } else {
@@ -154,7 +149,7 @@ class UpdatePhoneNumber extends Component {
                 fontFamily: "'Noto Sans Lao UI', sans serif"
               }}
             >
-              <Typography variant="inherit">ແກ້ໄຂໂທລະສັບ</Typography>
+              <Typography variant="inherit">{`ແກ້ໄຂ${this.state.formdata.fax.config.label}`}</Typography>
             </Grid>
             <Grid item xs={6} align="right" style={{ padding: "16px" }}>
               <IconButton
@@ -169,8 +164,8 @@ class UpdatePhoneNumber extends Component {
         <DialogContent style={{ padding: "24px", paddingTop: 0 }}>
           <form onSubmit={event => this.submitForm(event)}>
             <FormField
-              id={"phone"}
-              formdata={this.state.formdata.phone}
+              id={"fax"}
+              formdata={this.state.formdata.fax}
               change={element => this.updateForm(element)}
               maxlength={40}
             />
@@ -198,4 +193,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(UpdatePhoneNumber);
+export default connect(mapStateToProps)(UpdateFax);

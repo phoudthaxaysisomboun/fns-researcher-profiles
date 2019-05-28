@@ -1,0 +1,1 @@
+mongodump --host Cluster0-shard-0/cluster0-shard-00-00-yskqf.mongodb.net:27017,cluster0-shard-00-01-yskqf.mongodb.net:27017,cluster0-shard-00-02-yskqf.mongodb.net:27017 --ssl --username loungnapha --password <PASSWORD> --authenticationDatabase admin --db fns-researcher-profiles -o "C:\Users\bobby\Desktop\dump"

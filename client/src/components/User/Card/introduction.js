@@ -19,7 +19,7 @@ const IntroductionCard = props => {
   var isOwner = false;
 
   if (isAuth) {
-    if (user._id === profile._id) {
+    if ((user._id === profile._id) || user.isAdmin) {
       isOwner = true;
     } else {
       isOwner = false;
@@ -46,12 +46,14 @@ const IntroductionCard = props => {
   return (
     
     <Grid item xs={12}>
-    <Grid container>
+    
+    <Paper style={{ boxShadow: "none", border: "1px solid #d8d8d8" }}>
+    <Grid container style={{padding: "16px", paddingBottom: 0}}>
       <Grid item xs={6}>
         <Typography
           variant="inherit"
           style={{
-            fontSize: "20px",
+            fontSize: "1.375rem",
             marginBottom: "8px",
             fontWeight: "bold"
           }}
@@ -61,13 +63,12 @@ const IntroductionCard = props => {
       </Grid>
       <Grid item xs={6} align="right">
         {isOwner ? (
-          <IconButton style={{ padding: "4px", margin: "4px" }}>
+          <IconButton style={{ padding: "4px" }}>
             <EditOutlined fontSize="small" />
           </IconButton>
         ) : null}
       </Grid>
     </Grid>
-    <Paper style={{ boxShadow: "none", border: "1px solid #d8d8d8" }}>
     {props.user.userDetail ? renderItems() : renderNoData()}
       
     </Paper>

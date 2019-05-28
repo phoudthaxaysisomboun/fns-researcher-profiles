@@ -12,6 +12,7 @@
     "http-proxy-middleware": "^0.19.1",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
+    "react-autocomplete": "^1.8.1",
     "react-autolink": "^0.2.1",
     "react-autolink-text2": "^3.2.0",
     "react-dom": "^16.8.6",

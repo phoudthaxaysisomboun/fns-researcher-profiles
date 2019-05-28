@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
 import FormField from "../../utils/Form/formfield";
+import moment from "moment";
 import {
   update,
   generateData,
@@ -25,27 +26,27 @@ import { CloseOutlined } from "@material-ui/icons";
 
 import { Link as ReactLink, withRouter } from "react-router-dom";
 
-import { updatePhone } from "../../../actions/user_actions";
+import { updateDateOfBirth } from "../../../actions/user_actions";
 
 import { connect } from "react-redux";
 
-class UpdatePhoneNumber extends Component {
+class UpdateDateOfBirthDialogue extends Component {
   state = {
     formError: false,
     formErrorMessage: "ມີບາງຂໍ້ມູນບໍ່ຖືກຕ້ອງກະລຸນາກວດສອບຂໍ້ມູນຄືນ",
     formSuccess: false,
     formdata: {
-      phone: {
-        element: "input",
+        dateOfBirth: {
+        element: "date",
         value: "",
         config: {
-          name: "phone_input",
-          type: "tel",
-          label: "ໂທລະສັບ",
+          name: "date_of_birth_input",
+          type: "date",
+          label: "ວັນ-ເດືອນ-ປີ ເກີດ",
           autoFocus: true
         },
         validation: {
-          required: false
+          required: true
         },
         valid: false,
         touched: false,
@@ -59,9 +60,9 @@ class UpdatePhoneNumber extends Component {
       ...this.state.formdata
     };
 
-    newFormdata["phone"].value =
-      this.props.profile && this.props.profile.phone
-        ? this.props.profile.phone
+    newFormdata["dateOfBirth"].value =
+      this.props.profile && this.props.profile.dateOfBirth
+        ?  moment(this.props.profile.dateOfBirth).format("YYYY-MM-DD")
         : "";
   }
 
@@ -70,19 +71,15 @@ class UpdatePhoneNumber extends Component {
       ...this.state.formdata
     };
 
-    newFormdata["phone"].value =
-      this.props.profile && this.props.profile.phone
-        ? this.props.profile.phone
+    newFormdata["dateOfBirth"].value =
+      this.props.profile && this.props.profile.dateOfBirth
+        ? moment(this.props.profile.dateOfBirth).format("YYYY-MM-DD")
         : "";
     this.setState({ formdata: newFormdata });
   }
 
   updateForm = element => {
-    const newFormdata = update(
-      element,
-      this.state.formdata,
-      "updatePhoneNumber"
-    );
+    const newFormdata = update(element, this.state.formdata, "updateFax");
     this.setState({
       formError: false,
       formdata: newFormdata
@@ -97,13 +94,12 @@ class UpdatePhoneNumber extends Component {
 
   submitForm = event => {
     event.preventDefault();
-
-    let formIsValid = isFormValid(this.state.formdata, "updatePhoneNumber");
+    let formIsValid = isFormValid(this.state.formdata, "updateFax");
 
     if (formIsValid) {
       this.props
         .dispatch(
-          updatePhone(this.props.profile._id, this.state.formdata.phone.value)
+          updateDateOfBirth(this.props.profile._id, this.state.formdata.dateOfBirth.value)
         )
         .then(response => {
           if (response.payload.success) {
@@ -116,14 +112,14 @@ class UpdatePhoneNumber extends Component {
             this.setState({
               formError: true,
               formErrorMessage:
-                "ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນໂທລະສັບໄດ້"
+                `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນ${this.state.formdata.dateOfBirth.config.label}ໄດ້`
             });
           }
         })
         .catch(e => {
           this.setState({
             formError: true,
-            formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນໂທລະສັບໄດ້ (error: ${e})`
+            formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນ${this.state.formdata.dateOfBirth.config.label}ໄດ້ (error: ${e})`
           });
         });
     } else {
@@ -147,16 +143,16 @@ class UpdatePhoneNumber extends Component {
           <Grid container>
             <Grid
               item
-              xs={6}
+              xs={10}
               style={{
                 padding: "24px",
                 fontWeight: "bold",
                 fontFamily: "'Noto Sans Lao UI', sans serif"
               }}
             >
-              <Typography variant="inherit">ແກ້ໄຂໂທລະສັບ</Typography>
+              <Typography variant="inherit">{`ແກ້ໄຂ${this.state.formdata.dateOfBirth.config.label}`}</Typography>
             </Grid>
-            <Grid item xs={6} align="right" style={{ padding: "16px" }}>
+            <Grid item xs={2} align="right" style={{ padding: "16px" }}>
               <IconButton
                 onClick={() => this.props.close()}
                 style={{ padding: 0 }}
@@ -169,8 +165,8 @@ class UpdatePhoneNumber extends Component {
         <DialogContent style={{ padding: "24px", paddingTop: 0 }}>
           <form onSubmit={event => this.submitForm(event)}>
             <FormField
-              id={"phone"}
-              formdata={this.state.formdata.phone}
+              id={"dateOfBirth"}
+              formdata={this.state.formdata.dateOfBirth}
               change={element => this.updateForm(element)}
               maxlength={40}
             />
@@ -198,4 +194,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(UpdatePhoneNumber);
+export default connect(mapStateToProps)(UpdateDateOfBirthDialogue);

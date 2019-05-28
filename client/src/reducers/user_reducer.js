@@ -17,7 +17,16 @@ import {
   GET_FOLLOWER_IN_LOAD_MORE,
   GET_FOLLOWING_IN_LOAD_MORE,
   UPDATE_USER_MOBILE,
-  UPDATE_USER_PHONE
+  UPDATE_USER_PHONE,
+  UPDATE_USER_FAX,
+  UPDATE_USER_WEBSITE,
+  UPDATE_USER_GENDER,
+  UPDATE_USER_ADDRESS,
+  UPDATE_USER_FACEBOOK,
+  UPDATE_USER_DATE_OF_BIRTH,
+  UPDATE_USER_PLACE_OF_BIRTH,
+  UPDATE_USER_NATIONALITY,
+  UPDATE_USER_MINOR_ETHNICITY
 } from "../actions/types";
 
 export default function(state = {}, action) {
@@ -69,17 +78,93 @@ export default function(state = {}, action) {
     case REMOVE_FOLLOWER:
       return { ...state };
     case UPDATE_USER_MOBILE:
-      
-      return { ...state, userDetail: {
-        ...state.userDetail,
-        mobile: action.payload.mobile
-      } };
+      return {
+        ...state,
+        userDetail: {
+          ...state.userDetail,
+          mobile: action.payload.mobile
+        }
+      };
     case UPDATE_USER_PHONE:
-      
-      return { ...state, userDetail: {
-        ...state.userDetail,
-        phone: action.payload.phone
-      } };
+      return {
+        ...state,
+        userDetail: {
+          ...state.userDetail,
+          phone: action.payload.phone
+        }
+      };
+    case UPDATE_USER_FAX:
+      return {
+        ...state,
+        userDetail: {
+          ...state.userDetail,
+          fax: action.payload.fax
+        }
+      };
+    case UPDATE_USER_WEBSITE:
+      return {
+        ...state,
+        userDetail: {
+          ...state.userDetail,
+          website: action.payload.website
+        }
+      };
+    case UPDATE_USER_DATE_OF_BIRTH:
+      return {
+        ...state,
+        userDetail: {
+          ...state.userDetail,
+          dateOfBirth: action.payload.dateOfBirth
+        }
+      };
+    case UPDATE_USER_GENDER:
+      return {
+        ...state,
+        userDetail: {
+          ...state.userDetail,
+          gender: action.payload.gender
+        }
+      };
+    case UPDATE_USER_ADDRESS:
+      return {
+        ...state,
+        userDetail: {
+          ...state.userDetail,
+          address: action.payload.address
+        }
+      };
+    case UPDATE_USER_FACEBOOK:
+      return {
+        ...state,
+        userDetail: {
+          ...state.userDetail,
+          facebook: action.payload.facebook
+        }
+      };
+    case UPDATE_USER_PLACE_OF_BIRTH:
+      return {
+        ...state,
+        userDetail: {
+          ...state.userDetail,
+          placeOfBirth: action.payload.placeOfBirth
+        }
+      };
+    case UPDATE_USER_NATIONALITY:
+      return {
+        ...state,
+        userDetail: {
+          ...state.userDetail,
+          nationality: action.payload.nationality
+        }
+      };
+    case UPDATE_USER_MINOR_ETHNICITY:
+      return {
+        ...state,
+        userDetail: {
+          ...state.userDetail,
+          minor_ethnicity: action.payload.minor_ethnicity
+        }
+      };
     default:
       return state;
   }

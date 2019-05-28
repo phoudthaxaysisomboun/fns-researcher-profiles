@@ -654,7 +654,7 @@ app.post("/api/researchers/update_fax", auth, (req, res) => {
       if (err) return res.json({ success: false, err });
       res.status(200).json({
         success: true,
-        phone: doc.fax
+        fax: doc.fax
       });
     }
   );
@@ -675,7 +675,7 @@ app.post("/api/researchers/update_nationality", auth, (req, res) => {
       if (err) return res.json({ success: false, err });
       res.status(200).json({
         success: true,
-        phone: doc.nationality
+        nationality: doc.nationality
       });
     }
   );
@@ -696,7 +696,7 @@ app.post("/api/researchers/update_minor_ethnicity", auth, (req, res) => {
       if (err) return res.json({ success: false, err });
       res.status(200).json({
         success: true,
-        phone: doc.minor_ethnicity
+        minor_ethnicity: doc.minor_ethnicity
       });
     }
   );
