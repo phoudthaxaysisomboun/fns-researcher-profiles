@@ -26,7 +26,8 @@ const PersonalInfoCard = ({
   runEditFacebook,
   runEditGender,
   runEditMinorEthnicity,
-  runEditNationality
+  runEditNationality,
+  runEditAddress
 }) => {
   const profile = { ...props.user.userDetail };
   const user = { ...props.user.userData };
@@ -104,7 +105,7 @@ const PersonalInfoCard = ({
               ) : null}
             </Grid>
             <Grid item xs={1} align="right">
-              <IconButton style={{ padding: "4px" }}>
+              <IconButton style={{ padding: "4px" }} onClick={()=>{runEditAddress()}}>
                 <EditOutlined fontSize="small" />
               </IconButton>
             </Grid>
@@ -430,8 +431,391 @@ const PersonalInfoCard = ({
           </Grid>
         </>
       );
-    } else if (isAuth) {
-    } else {
+    } 
+    
+    else {
+      return (
+        <>
+        {
+          profile.gender.name  ? 
+          
+          <Grid
+            container
+            alignItems="center"
+            spacing={8}
+            style={{ padding: "16px" }}
+          >
+            <Grid item xs={3} style={styles.label}>
+              ເພດ
+            </Grid>
+            <Grid item xs={9} style={{ fontSize: "1rem", color: "#202124" }}>
+              {profile.gender.name ? profile.gender.name : null}
+            </Grid>
+            
+          </Grid>
+          
+          : null
+        }
+          
+
+          {
+            profile.address ?
+            <>
+            <Divider style={{ marginLeft: "16px", marginRight: "16px" }} />
+            <Grid
+              container
+              alignItems="center"
+              spacing={8}
+              style={{ padding: "16px" }}
+            >
+              <Grid item xs={3} style={styles.label}>
+                ທີ່ຢູ່
+              </Grid>
+              <Grid item xs={9} style={{ fontSize: "1rem", color: "#202124" }}>
+                {profile.address ? (
+                  <>
+                    {profile.address.village
+                      ? `ບ້ານ${profile.address.village}`
+                      : null}
+                    {profile.address.district.name
+                      ? `, ເມືອງ${profile.address.district.name}`
+                      : null}
+                    {profile.address.province.name ? (
+                      <>
+                        {profile.address.province.name === "ນະຄອນຫຼວງວຽງຈັນ" ||
+                        profile.address.province.name === "ນະຄອນຫລວງວຽງຈັນ"
+                          ? `, ${profile.address.province.name} `
+                          : `, ແຂວງ${profile.address.province.name} `}
+                      </>
+                    ) : null}
+                  </>
+                ) : null}
+              </Grid>
+            
+            </Grid>
+            </> : null
+          }
+
+          <Divider style={{ marginLeft: "16px", marginRight: "16px" }} />
+          <Grid
+            container
+            alignItems="center"
+            spacing={8}
+            style={{ padding: "16px" }}
+          >
+            <Grid item xs={3} style={styles.label}>
+              ມືຖື
+            </Grid>
+            <Grid
+              item
+              xs={8}
+              style={{
+                fontSize: "1rem",
+                color: "#202124",
+                wordWrap: "break-word"
+              }}
+            >
+              <Link href={profile.mobile ? `tel:{$profile.mobile}` : null}>
+                {profile.mobile ? profile.mobile : null}
+              </Link>
+            </Grid>
+            <Grid item xs={1} align="right">
+              <IconButton
+                onClick={() => {
+                  runEditMobile();
+                }}
+                style={{ padding: "4px" }}
+              >
+                <EditOutlined fontSize="small" />
+              </IconButton>
+            </Grid>
+          </Grid>
+
+          <Divider style={{ marginLeft: "16px", marginRight: "16px" }} />
+          <Grid
+            container
+            alignItems="center"
+            spacing={8}
+            style={{ padding: "16px" }}
+          >
+            <Grid item xs={3} style={styles.label}>
+              ໂທລະສັບ
+            </Grid>
+            <Grid
+              item
+              xs={8}
+              style={{
+                fontSize: "1rem",
+                color: "#202124",
+                wordWrap: "break-word"
+              }}
+            >
+              <Link href={profile.phone ? `tel:{$profile.phone}` : null}>
+                {profile.phone ? profile.phone : null}
+              </Link>
+            </Grid>
+            <Grid item xs={1} align="right">
+              <IconButton
+                style={{ padding: "4px" }}
+                onClick={() => {
+                  runEditPhone();
+                }}
+              >
+                <EditOutlined fontSize="small" />
+              </IconButton>
+            </Grid>
+          </Grid>
+
+          <Divider style={{ marginLeft: "16px", marginRight: "16px" }} />
+          <Grid
+            container
+            alignItems="center"
+            spacing={8}
+            style={{ padding: "16px" }}
+          >
+            <Grid item xs={3} style={styles.label}>
+              ແຟັກ
+            </Grid>
+            <Grid
+              item
+              xs={8}
+              style={{
+                fontSize: "1rem",
+                color: "#202124",
+                wordWrap: "break-word"
+              }}
+            >
+              <Link href={profile.fax ? `fax:{$profile.fax}` : null}>
+                {profile.fax ? profile.fax : null}
+              </Link>
+            </Grid>
+            <Grid item xs={1} align="right">
+              <IconButton
+                style={{ padding: "4px" }}
+                onClick={() => {
+                  runEditFax();
+                }}
+              >
+                <EditOutlined fontSize="small" />
+              </IconButton>
+            </Grid>
+          </Grid>
+
+          <Divider style={{ marginLeft: "16px", marginRight: "16px" }} />
+          <Grid
+            container
+            alignItems="center"
+            spacing={8}
+            style={{ padding: "16px" }}
+          >
+            <Grid item xs={3} style={styles.label}>
+              facebook
+            </Grid>
+            <Grid
+              item
+              xs={8}
+              style={{
+                fontSize: "1rem",
+                color: "#202124",
+                wordWrap: "break-word"
+              }}
+            >
+              {profile.facebook ? (
+                <>
+                  {profile.facebook.name ? (
+                    <>
+                      <Grid item xs={12}>
+                        <Typography variant="inherit">
+                          {profile.facebook.name}
+                        </Typography>
+                      </Grid>
+                    </>
+                  ) : null}
+
+                  {profile.facebook.url ? (
+                    <>
+                      <Grid item xs={12}>
+                        <Link href={`${profile.facebook.url}`}>
+                          <LinesEllipsis
+                            text={profile.facebook.url}
+                            maxLine="1"
+                            ellipsis="..."
+                            trimRight
+                            basedOn="letters"
+                          />
+                        </Link>
+                      </Grid>
+                    </>
+                  ) : null}
+                </>
+              ) : null}
+            </Grid>
+            <Grid item xs={1} align="right">
+              <IconButton style={{ padding: "4px" }} onClick={()=>{runEditFacebook()}}>
+                <EditOutlined fontSize="small" />
+              </IconButton>
+            </Grid>
+          </Grid>
+
+          <Divider style={{ marginLeft: "16px", marginRight: "16px" }} />
+          <Grid
+            container
+            alignItems="center"
+            spacing={8}
+            style={{ padding: "16px" }}
+          >
+            <Grid item xs={3} style={styles.label}>
+              website
+            </Grid>
+            <Grid
+              item
+              xs={8}
+              style={{
+                fontSize: "1rem",
+                color: "#202124",
+                wordWrap: "break-word"
+              }}
+            >
+              {profile.website ? (
+                <>
+                  <Grid item xs={12}>
+                    <Link href={`${profile.website}`}>
+                      <LinesEllipsis
+                        text={`${profile.website}`}
+                        maxLine="1"
+                        ellipsis="..."
+                        trimRight
+                        basedOn="letters"
+                      />
+                    </Link>
+                  </Grid>
+                </>
+              ) : null}
+            </Grid>
+            <Grid item xs={1} align="right">
+              <IconButton
+                style={{ padding: "4px" }}
+                onClick={() => {
+                  runEditWebsite();
+                }}
+              >
+                <EditOutlined fontSize="small" />
+              </IconButton>
+            </Grid>
+          </Grid>
+
+          <Divider style={{ marginLeft: "16px", marginRight: "16px" }} />
+          <Grid
+            container
+            alignItems="center"
+            spacing={8}
+            style={{ padding: "16px" }}
+          >
+            <Grid item xs={3} style={styles.label}>
+              ວັນ-ເດືອນ-ປີ ເກີດ
+            </Grid>
+            <Grid item xs={8} style={{ fontSize: "1rem", color: "#202124" }}>
+              {profile.dateOfBirth
+                ? moment(profile.dateOfBirth).format("DD/MM/YYYY")
+                : null}
+            </Grid>
+            <Grid item xs={1} align="right">
+              <IconButton
+                style={{ padding: "4px" }}
+                onClick={() => {
+                  runEditDateOfBirth();
+                }}
+              >
+                <EditOutlined fontSize="small" />
+              </IconButton>
+            </Grid>
+          </Grid>
+
+          <Divider style={{ marginLeft: "16px", marginRight: "16px" }} />
+          <Grid
+            container
+            alignItems="center"
+            spacing={8}
+            style={{ padding: "16px" }}
+          >
+            <Grid item xs={3} style={styles.label}>
+              ທີ່ເກີດ
+            </Grid>
+            <Grid item xs={8} style={{ fontSize: "1rem", color: "#202124" }}>
+              {profile.placeOfBirth ? (
+                <>
+                  {profile.placeOfBirth.village
+                    ? `ບ້ານ${profile.placeOfBirth.village}`
+                    : null}
+                  {profile.placeOfBirth.district
+                    ? ` , ເມືອງ${profile.placeOfBirth.district}`
+                    : null}
+                  {profile.placeOfBirth.province ? (
+                    <>
+                      {profile.placeOfBirth.province === "ນະຄອນຫຼວງວຽງຈັນ" ||
+                      profile.placeOfBirth.province === "ນະຄອນຫລວງວຽງຈັນ"
+                        ? `, ${profile.placeOfBirth.province} `
+                        : `, ແຂວງ${profile.placeOfBirth.province} `}
+                    </>
+                  ) : null}
+                  {profile.placeOfBirth.country.name ? (
+                    <>
+                      {profile.placeOfBirth.country.englishName === "Laos"
+                        ? null
+                        : `, ປະເທດ${profile.placeOfBirth.country.laoName}`}
+                    </>
+                  ) : null}
+                </>
+              ) : null}
+            </Grid>
+            <Grid item xs={1} align="right">
+              <IconButton style={{ padding: "4px" }}>
+                <EditOutlined fontSize="small" />
+              </IconButton>
+            </Grid>
+          </Grid>
+
+          <Divider style={{ marginLeft: "16px", marginRight: "16px" }} />
+          <Grid
+            container
+            alignItems="center"
+            spacing={8}
+            style={{ padding: "16px" }}
+          >
+            <Grid item xs={3} style={styles.label}>
+              ສັນຊາດ
+            </Grid>
+            <Grid item xs={8} style={{ fontSize: "1rem", color: "#202124" }}>
+              {profile.nationality}
+            </Grid>
+            <Grid item xs={1} align="right">
+              <IconButton style={{ padding: "4px" }} onClick={()=>{runEditNationality()}}>
+                <EditOutlined fontSize="small" />
+              </IconButton>
+            </Grid>
+          </Grid>
+
+          <Divider style={{ marginLeft: "16px", marginRight: "16px" }} />
+          <Grid
+            container
+            alignItems="center"
+            spacing={8}
+            style={{ padding: "16px" }}
+          >
+            <Grid item xs={3} style={styles.label}>
+              ເຜົ່າ
+            </Grid>
+            <Grid item xs={8} style={{ fontSize: "1rem", color: "#202124" }}>
+              {profile.minor_ethnicity}
+            </Grid>
+            <Grid item xs={1} align="right">
+              <IconButton style={{ padding: "4px" }} onClick={()=>{runEditMinorEthnicity()}}>
+                <EditOutlined fontSize="small" />
+              </IconButton>
+            </Grid>
+          </Grid>
+        </>
+      );
     }
   };
 

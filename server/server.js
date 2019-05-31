@@ -66,11 +66,12 @@ app.post("/api/users/country", auth, admin, (req, res) => {
 
 app.get("/api/users/countries", (req, res) => {
   let order = req.query.order ? req.query.order : "asc";
-  let sortBy = req.query.sortBy ? req.query.sortBy : "_id";
+  let sortBy = req.query.sortBy ? req.query.sortBy : "englishName";
   let limit = parseInt(req.query.limit);
 
   Country.find()
     .sort([[sortBy, order]])
+    .select("_id laoName")
     .limit(limit)
     .exec((err, countries) => {
       if (err) return res.status(400).send(err);
@@ -239,6 +240,16 @@ app.get("/api/users/districts", (req, res) => {
     .exec((err, district) => {
       return res.status(200).send(district);
     });
+});
+
+app.get("/api/users/districts_by_province", (req, res) => {
+  if (req.query.province) {
+    District.find({province: req.query.province})
+
+    .exec((err, district) => {
+      return res.status(200).send(district);
+    });
+  }
 });
 
 //====================================

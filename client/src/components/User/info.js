@@ -16,10 +16,11 @@ import UpdatePhoneNumber from "./Dialog/update_phone";
 import UpdateFax from "./Dialog/update_fax";
 import UpdateWebite from "./Dialog/update_website";
 import UpdateDateOfBirthDialogue from "./Dialog/update_date_of_birth";
-import UpdateFacebookDialogue from "./Dialog/update_facebook"
-import UpdateGenderDialogue from "./Dialog/update_gender"
-import UpdateMinorEthnicityDialogue from "./Dialog/update_minor_ethnicity"
-import UpdateNationalityDialogue from "./Dialog/update_nationality"
+import UpdateFacebookDialogue from "./Dialog/update_facebook";
+import UpdateGenderDialogue from "./Dialog/update_gender";
+import UpdateMinorEthnicityDialogue from "./Dialog/update_minor_ethnicity";
+import UpdateNationalityDialogue from "./Dialog/update_nationality";
+import UpdateAddressDialogue from "./Dialog/update_address";
 
 import {
   Hidden,
@@ -44,7 +45,8 @@ import {
   clearFollowing,
   clearFollower,
   getFollowerInLoadMore,
-  getFollowingInLoadMore
+  getFollowingInLoadMore,
+  getDistrict
 } from "../../actions/user_actions";
 
 import { CloseOutlined } from "@material-ui/icons";
@@ -77,7 +79,7 @@ class ProfileInfo extends Component {
     openEditDateOfBirthDialog: false,
     openEditPlaceOfBirthDialog: false,
     openEditNationalityDialog: false,
-    openEditMinorEthnicityDialog: false,
+    openEditMinorEthnicityDialog: false
   };
 
   componentWillMount() {
@@ -131,6 +133,14 @@ class ProfileInfo extends Component {
         this.setState({
           loadingFollower: false
         });
+      }
+
+      if (
+        response.payload.address &&
+        response.payload.address.province &&
+        response.payload.address.province._id
+      ) {
+        this.props.dispatch(getDistrict(response.payload.address.province._id));
       }
     });
   }
@@ -389,7 +399,7 @@ class ProfileInfo extends Component {
       openEditPhoneDialog: true
     });
   };
-  
+
   /*  Website edit dialogue actions */
 
   handleOpenUpdateWebsiteDialog = () => {
@@ -470,31 +480,31 @@ class ProfileInfo extends Component {
     });
   };
 
-    /*  Nationality edit dialogue actions */
-    handleOpenUpdateNationalityDialog = () => {
-      this.setState({
-        openEditNationalityDialog: true
-      });
-    };
-  
-    handleUpdateNationalityClose = () => {
-      this.setState({
-        openEditNationalityDialog: false
-      });
-    };
+  /*  Nationality edit dialogue actions */
+  handleOpenUpdateNationalityDialog = () => {
+    this.setState({
+      openEditNationalityDialog: true
+    });
+  };
 
-    /*  Minor-ethinicity edit dialogue actions */
-    handleOpenUpdateMinorEthinicityDialog = () => {
-      this.setState({
-        openEditMinorEthnicityDialog: true
-      });
-    };
-  
-    handleUpdateMinorEthnicityClose = () => {
-      this.setState({
-        openEditMinorEthnicityDialog: false
-      });
-    };
+  handleUpdateNationalityClose = () => {
+    this.setState({
+      openEditNationalityDialog: false
+    });
+  };
+
+  /*  Minor-ethinicity edit dialogue actions */
+  handleOpenUpdateMinorEthinicityDialog = () => {
+    this.setState({
+      openEditMinorEthnicityDialog: true
+    });
+  };
+
+  handleUpdateMinorEthnicityClose = () => {
+    this.setState({
+      openEditMinorEthnicityDialog: false
+    });
+  };
 
   render() {
     const { fullScreen } = this.props;
@@ -521,7 +531,6 @@ class ProfileInfo extends Component {
           </Hidden>
           <Grid item xs={12} lg={4} sm={6} md={5}>
             <Grid container spacing={24}>
-           
               <IntroductionCard {...this.props} />
               <ResearchaAreaCard {...this.props} />
 
@@ -531,16 +540,21 @@ class ProfileInfo extends Component {
                 runEditPhone={() => this.handleOpenUpdatePhoneDialog()}
                 runEditFax={() => this.handleOpenUpdateFaxDialog()}
                 runEditWebsite={() => this.handleOpenUpdateWebsiteDialog()}
-
-                runEditDateOfBirth={() => this.handleOpenUpdateDateOfBirthDialog()}
-
+                runEditDateOfBirth={() =>
+                  this.handleOpenUpdateDateOfBirthDialog()
+                }
                 runEditFacebook={() => this.handleOpenUpdateFacebookDialog()}
-
                 runEditGender={() => this.handleOpenUpdateGenderDialog()}
-
-                runEditMinorEthnicity ={() => this.handleOpenUpdateMinorEthinicityDialog()}
-
-                runEditNationality ={() => this.handleOpenUpdateNationalityDialog()}
+                runEditMinorEthnicity={() =>
+                  this.handleOpenUpdateMinorEthinicityDialog()
+                }
+                runEditNationality={() =>
+                  this.handleOpenUpdateNationalityDialog()
+                }
+                runEditAddress={() => this.handleOpenUpdateAddressDialog()}
+                runEditPlaceOfBirth={() =>
+                  this.handleOpenUpdatePlaceOfBirthDialog()
+                }
               />
             </Grid>
           </Grid>
@@ -737,6 +751,11 @@ class ProfileInfo extends Component {
         <UpdateNationalityDialogue
           open={this.state.openEditNationalityDialog}
           close={() => this.handleUpdateNationalityClose()}
+        />
+
+        <UpdateAddressDialogue
+          open={this.state.openEditAddressDialog}
+          close={() => this.handleUpdateAddressClose()}
         />
       </ProfileHeader>
     );

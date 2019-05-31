@@ -28,7 +28,10 @@ import {
   UPDATE_USER_DATE_OF_BIRTH,
   UPDATE_USER_PLACE_OF_BIRTH,
   UPDATE_USER_NATIONALITY,
-  UPDATE_USER_MINOR_ETHNICITY
+  UPDATE_USER_MINOR_ETHNICITY,
+  GET_PROVINCE,
+  GET_DISTRICT,
+  GET_COUNTRY,
 } from "./types";
 
 import { USER_SERVER, RESEARCHER_SERVER } from "../components/utils/misc";
@@ -295,6 +298,7 @@ export function updateGender(_id, gender) {
 }
 
 export function updateAddress(_id, village, district, province) {
+  console.log(`${RESEARCHER_SERVER}/update_address?userId=${_id}&village=${village}&district=${district}&province=${province}`)
   const request = axios
     .post(
       `${RESEARCHER_SERVER}/update_address?userId=${_id}&village=${village}&district=${district}&province=${province}`
@@ -347,7 +351,7 @@ export function updatePlaceOfBirth(_id, village, district, province, country) {
 
 }
 export function updateNationality(_id, nationality) {
-  console.log(`${RESEARCHER_SERVER}/update_nationality?userId=${_id}&nationality=${nationality}`)
+  //console.log(`${RESEARCHER_SERVER}/update_nationality?userId=${_id}&nationality=${nationality}`)
   const request = axios
     .post(
       `${RESEARCHER_SERVER}/update_nationality?userId=${_id}&nationality=${nationality}`
@@ -361,7 +365,6 @@ export function updateNationality(_id, nationality) {
 }
 
 export function updateMinorEthnicity(_id, minor_ethnicity) {
-  console.log(`${RESEARCHER_SERVER}/update_minor_ethnicity?userId=${_id}&minor_ethnicity=${minor_ethnicity}`)
   const request = axios
     .post(
       `${RESEARCHER_SERVER}/update_minor_ethnicity?userId=${_id}&minor_ethnicity=${minor_ethnicity}`
@@ -370,6 +373,47 @@ export function updateMinorEthnicity(_id, minor_ethnicity) {
 
   return {
     type: UPDATE_USER_MINOR_ETHNICITY,
+    payload: request
+  };
+}
+
+export function getProvince() {
+  console.log(`${USER_SERVER}/provinces`)
+  const request = axios
+    .get(
+      `${USER_SERVER}/provinces`
+    )
+    .then(response => response.data);
+
+  return {
+    type: GET_PROVINCE,
+    payload: request
+  };
+}
+
+export function getDistrict(provinceId) {
+  console.log(`${USER_SERVER}/districts_by_province?province=${provinceId}`)
+  const request = axios
+    .get(
+      `${USER_SERVER}/districts_by_province?province=${provinceId}`
+    )
+    .then(response => response.data);
+
+  return {
+    type: GET_DISTRICT,
+    payload: request
+  };
+}
+
+export function getCountry() {
+  const request = axios
+    .get(
+      `${USER_SERVER}/countries`
+    )
+    .then(response => response.data);
+
+  return {
+    type: GET_COUNTRY,
     payload: request
   };
 }

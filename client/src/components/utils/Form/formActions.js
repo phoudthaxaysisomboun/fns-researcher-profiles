@@ -1,3 +1,6 @@
+import React, { Component } from 'react';
+
+
 export const validate = (element, formdata = []) => {
   let error = [true, ""];
 
@@ -24,6 +27,7 @@ export const validate = (element, formdata = []) => {
 };
 
 export const update = (element, formdata, formName) => {
+  
   const newFormdata = {
     ...formdata
   };
@@ -66,14 +70,15 @@ export const isFormValid = (formdata, formName) => {
   for (let key in formdata) {
     formIsValid = formdata[key].valid && formIsValid;
     if (key === 'gender') {formIsValid = true}
-    
+    console.log(formdata[key].valid)
   }
-
+  
   return formIsValid;
 };
 
 export const populateOptionFields = (formdata, arrayData = [], field) => {
-  const newArray = []
+  if (arrayData) {
+    const newArray = []
   const newFormdata = {...formdata}
 
   arrayData.forEach(item=>{
@@ -83,4 +88,5 @@ export const populateOptionFields = (formdata, arrayData = [], field) => {
   newFormdata[field].config.options = newArray
 
   return newFormdata
+  }
 }

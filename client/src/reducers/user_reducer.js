@@ -26,7 +26,10 @@ import {
   UPDATE_USER_DATE_OF_BIRTH,
   UPDATE_USER_PLACE_OF_BIRTH,
   UPDATE_USER_NATIONALITY,
-  UPDATE_USER_MINOR_ETHNICITY
+  UPDATE_USER_MINOR_ETHNICITY,
+  GET_PROVINCE,
+  GET_DISTRICT,
+  GET_COUNTRY,
 } from "../actions/types";
 
 export default function(state = {}, action) {
@@ -164,6 +167,24 @@ export default function(state = {}, action) {
           ...state.userDetail,
           minor_ethnicity: action.payload.minor_ethnicity
         }
+      };
+    case GET_PROVINCE:
+      return {
+        ...state,
+        province: action.payload
+      };
+    case GET_COUNTRY:
+      return {
+        ...state,
+        country: [{
+          _id: action.payload._id,
+          name: action.payload.laoName,
+        }]
+      };
+    case GET_DISTRICT:
+      return {
+        ...state,
+        district: action.payload
       };
     default:
       return state;

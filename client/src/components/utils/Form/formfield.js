@@ -6,6 +6,7 @@ import {
   OutlinedInput,
   Select,
   InputLabel,
+  MenuItem
 } from "@material-ui/core";
 
 const FormField = ({ formdata, change, id, labelWidth, maxlength = null }) => {
@@ -122,21 +123,22 @@ const FormField = ({ formdata, change, id, labelWidth, maxlength = null }) => {
                     fontFamily: "'Noto Sans Lao UI', sans serif",
                     marginBottom: "8px"
                   }}
-                  native
+                 
                   value={formdata.value}
                   onBlur={event => change({ event, id, blur: true })}
                   onChange={event => change({ event, id })}
                   input={<OutlinedInput name={id} labelWidth={labelWidth} />}
                 >
-                  <option value="" />
+              
                   {formdata.config.options.map(item => (
-                    <option
-                      style={{ fontFamily: "'Noto Sans Lao UI', sans serif" }}
-                      key={item.key}
-                      value={item.key}
+                    <MenuItem
+                    style={{ fontFamily: "'Noto Sans Lao UI', sans serif" }}
+                    key={item.key}
+                    value={item.key}
                     >
-                      {item.value}
-                    </option>
+                     {item.value}
+                    </MenuItem>
+                    
                   ))}
                 </Select>
               </div>
@@ -148,21 +150,21 @@ const FormField = ({ formdata, change, id, labelWidth, maxlength = null }) => {
                     fontFamily: "'Noto Sans Lao UI', sans serif",
                     marginBottom: "8px"
                   }}
-                  native
+                 
                   value={formdata.value}
                   onBlur={event => change({ event, id, blur: true })}
                   onChange={event => change({ event, id })}
                   input={<OutlinedInput name={id} labelWidth={labelWidth} />}
                 >
-                  <option value="" />
+                  
                   {formdata.config.options.map(item => (
-                    <option
-                      style={{ fontFamily: "'Noto Sans Lao UI', sans serif" }}
-                      key={item.key}
-                      value={item.key}
+                    <MenuItem
+                    style={{ fontFamily: "'Noto Sans Lao UI', sans serif" }}
+                    key={item.key}
+                    value={item.key}
                     >
-                      {item.value}
-                    </option>
+                     {item.value}
+                    </MenuItem>
                   ))}
                 </Select>
               </div>

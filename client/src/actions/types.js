@@ -4,6 +4,10 @@ export const AUTH_USER = "auth_user";
 export const LOGOUT_USER = "logout_user";
 export const GET_USER_DETAIL = "get_user_detail";
 export const CLEAR_USER_DETAIL = "clear_user_detail";
+export const GET_PROVINCE = "get_province";
+export const GET_DISTRICT = "get_district";
+export const GET_COUNTRY = "get_country";
+
 export const GET_FOLLOWING = "get_following";
 export const GET_FOLLOWER = "get_follower";
 export const FOLLOW = "follow";
