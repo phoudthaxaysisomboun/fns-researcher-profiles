@@ -174,17 +174,15 @@ export default function(state = {}, action) {
         province: action.payload
       };
     case GET_COUNTRY:
+        console.log(action.payload.country)
       return {
         ...state,
-        country: [{
-          _id: action.payload._id,
-          name: action.payload.laoName,
-        }]
+        country: action.payload.country
       };
     case GET_DISTRICT:
       return {
         ...state,
-        district: action.payload
+        district: action.payload,
       };
     default:
       return state;

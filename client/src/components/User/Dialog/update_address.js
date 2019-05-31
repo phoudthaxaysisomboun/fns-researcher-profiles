@@ -25,8 +25,6 @@ import {
 
 import { CloseOutlined } from "@material-ui/icons";
 
-import { Link as ReactLink, withRouter } from "react-router-dom";
-
 import {
   updateAddress,
   getProvince,
@@ -53,7 +51,7 @@ class UpdateAddressDialogue extends Component {
         validation: {
           required: false
         },
-        valid: false,
+        valid: true,
         touched: false,
         validationMessage: ""
       },
@@ -64,13 +62,13 @@ class UpdateAddressDialogue extends Component {
           name: "district_input",
           type: "text",
           label: "ເມືອງ",
-          labelWidth: 40,
+          labelWidth: 31,
           options: []
         },
         validation: {
           required: false
         },
-        valid: false,
+        valid: true,
         touched: false,
         validationMessage: ""
       },
@@ -81,13 +79,13 @@ class UpdateAddressDialogue extends Component {
           name: "province_input",
           type: "text",
           label: "ແຂວງ",
-          labelWidth: 40,
+          labelWidth: 32,
           options: []
         },
         validation: {
           required: false
         },
-        valid: false,
+        valid: true,
         touched: false,
         validationMessage: ""
       }
@@ -147,8 +145,10 @@ class UpdateAddressDialogue extends Component {
         this.props.profile.address.district._id
           ? this.props.profile.address.district._id
           : "";
+
       this.setState({ formdata: newFormdata });
     }
+
     if (previousProvince !== currentProvince) {
       this.props.dispatch(getDistrict(currentProvince)).then(response => {
         const formdata = this.state.formdata;
@@ -191,45 +191,108 @@ class UpdateAddressDialogue extends Component {
   submitForm = event => {
     event.preventDefault();
     let formIsValid = isFormValid(this.state.formdata, "updateAddress");
-    console.log(this.state.formdata);
-    console.log(formIsValid);
-    if (formIsValid) {
-      this.props
-        .dispatch(
-          updateAddress(
-            this.props.profile._id,
-            this.state.formdata.village.value,
-            this.state.formdata.district.value,
-            this.state.formdata.province.value
+
+    const curVillage = this.state.formdata.village.value;
+    const curProvince = this.state.formdata.province.value;
+    const curDistrict = this.state.formdata.district.value;
+
+    if (
+      (curVillage.trim() === "") &
+      (curProvince.trim() === "") &
+      (curDistrict.trim() === "")
+    ) {
+      this.setState({formError: false})
+      if (formIsValid) {
+        this.props
+          .dispatch(
+            updateAddress(
+              this.props.profile._id,
+              this.state.formdata.village.value,
+              this.state.formdata.district.value,
+              this.state.formdata.province.value
+            )
           )
-        )
-        .then(response => {
-          console.log(this.state.formdata);
-          if (response.payload.success) {
-            this.setState({
-              formError: false,
-              formSuccess: true
-            });
-            this.props.close();
-          } else {
+          .then(response => {
+            console.log(this.state.formdata);
+            if (response.payload.success) {
+              this.setState({
+                formError: false,
+                formSuccess: true
+              });
+              this.props.close();
+            } else {
+              this.setState({
+                formError: true,
+                formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນທີ່ຢູ່ໄດ້`
+              });
+            }
+          })
+          .catch(e => {
             this.setState({
               formError: true,
               formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນທີ່ຢູ່ໄດ້`
             });
-          }
-        })
-        .catch(e => {
-          this.setState({
-            formError: true,
-            formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນທີ່ຢູ່ໄດ້`
           });
+      } else {
+        this.setState({
+          formError: true,
+          formErrorMessage: "ມີບາງຂໍ້ມູນບໍ່ຖືກຕ້ອງກະລຸນາກວດສອບຂໍ້ມູນຄືນ"
         });
-    } else {
-      this.setState({
-        formError: true,
-        formErrorMessage: "ມີບາງຂໍ້ມູນບໍ່ຖືກຕ້ອງກະລຸນາກວດສອບຂໍ້ມູນຄືນ"
-      });
+      }
+    } else if (
+      curVillage.trim() === "" ||
+      curProvince.trim() === "" ||
+      curDistrict.trim() === ""
+    ) {
+
+      this.setState({formError: true})
     }
+    else  if (
+      (curVillage.trim() !== "") &
+      (curProvince.trim() !== "") &
+      (curDistrict.trim() !== "")
+    ) {
+      this.setState({formError: false})
+      if (formIsValid) {
+        this.props
+          .dispatch(
+            updateAddress(
+              this.props.profile._id,
+              this.state.formdata.village.value,
+              this.state.formdata.district.value,
+              this.state.formdata.province.value
+            )
+          )
+          .then(response => {
+            console.log(this.state.formdata);
+            if (response.payload.success) {
+              this.setState({
+                formError: false,
+                formSuccess: true
+              });
+              this.props.close();
+            } else {
+              this.setState({
+                formError: true,
+                formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນທີ່ຢູ່ໄດ້`
+              });
+            }
+          })
+          .catch(e => {
+            this.setState({
+              formError: true,
+              formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນທີ່ຢູ່ໄດ້`
+            });
+          });
+      } else {
+        this.setState({
+          formError: true,
+          formErrorMessage: "ມີບາງຂໍ້ມູນບໍ່ຖືກຕ້ອງກະລຸນາກວດສອບຂໍ້ມູນຄືນ"
+        });
+      }
+    }
+
+    
   };
 
   render() {
@@ -284,6 +347,24 @@ class UpdateAddressDialogue extends Component {
               formdata={this.state.formdata.district}
               change={element => this.updateForm(element)}
             />
+            {this.state.formError ? (
+              <Grid container spacing={24}>
+                <Grid item xs={12}>
+                  <FormHelperText
+                    style={{
+                      fontFamily: "'Noto Sans Lao UI', sans serif",
+                      fontWeight: "600",
+                      marginBottom: "8px",
+                      marginTop: "8px"
+                    }}
+                    error
+                    id="component-error-text"
+                  >
+                    {this.state.formErrorMessage}
+                  </FormHelperText>
+                </Grid>
+              </Grid>
+            ) : null}
             <Grid item align="right" style={{ marginTop: "24px" }}>
               <Button onClick={() => this.props.close()}>ຍົກເລີກ</Button>
               <Button
@@ -291,6 +372,7 @@ class UpdateAddressDialogue extends Component {
                 color="primary"
                 style={{ marginLeft: "8px" }}
                 onClick={event => this.submitForm(event)}
+                type="submit"
               >
                 ບັນທຶກ
               </Button>

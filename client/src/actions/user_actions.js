@@ -411,6 +411,8 @@ export function getCountry() {
       `${USER_SERVER}/countries`
     )
     .then(response => response.data);
+    
+    console.log( `${USER_SERVER}/countries`)
 
   return {
     type: GET_COUNTRY,

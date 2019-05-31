@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-
+import React, { Component } from "react";
 
 export const validate = (element, formdata = []) => {
   let error = [true, ""];
@@ -27,7 +26,6 @@ export const validate = (element, formdata = []) => {
 };
 
 export const update = (element, formdata, formName) => {
-  
   const newFormdata = {
     ...formdata
   };
@@ -69,24 +67,34 @@ export const isFormValid = (formdata, formName) => {
 
   for (let key in formdata) {
     formIsValid = formdata[key].valid && formIsValid;
-    if (key === 'gender') {formIsValid = true}
-    console.log(formdata[key].valid)
+    if (key === "gender") {
+      formIsValid = true;
+    }
+    console.log(formdata[key].valid);
   }
-  
+
   return formIsValid;
 };
 
 export const populateOptionFields = (formdata, arrayData = [], field) => {
   if (arrayData) {
-    const newArray = []
-  const newFormdata = {...formdata}
+    const newArray = [];
+    const newFormdata = { ...formdata };
 
-  arrayData.forEach(item=>{
-    newArray.push({key: item._id, value: item.name})
-  })
+    if (field === "country") {
+      arrayData.forEach(item => {
+        newArray.push({ key: item._id, value: item.laoName });
+      });
+    } else {
+      arrayData.forEach(item => {
+        newArray.push({ key: item._id, value: item.name });
+      });
+    }
 
-  newFormdata[field].config.options = newArray
+    
 
-  return newFormdata
+    newFormdata[field].config.options = newArray;
+
+    return newFormdata;
   }
-}
+};

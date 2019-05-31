@@ -176,6 +176,7 @@ class UpdateFax extends Component {
                 color="primary"
                 style={{ marginLeft: "8px" }}
                 onClick={event => this.submitForm(event)}
+                type="submit"
               >
                 ບັນທຶກ
               </Button>

@@ -25,7 +25,8 @@ import {
   EditOutlined,
   ReplyOutlined,
   CheckOutlined,
-  Web
+  Web,
+  PublicOutlined
 } from "@material-ui/icons";
 
 import { Link as ReactLink, withRouter } from "react-router-dom";
@@ -134,7 +135,7 @@ const ProfileHeader = ({
               <Grid item style={{ width: "24px" }}>
                 <Mail
                   style={{
-                    position: "relative",
+              
                     
                     width: "20px",
                     color: "#BA000D"
@@ -167,8 +168,7 @@ const ProfileHeader = ({
               <Grid item style={{ width: "24px" }}>
               <svg
               style={{
-                position: "relative",
-                top: "2px",
+          
                 width: "20px",
                 color: "#1976D2"
               }}
@@ -195,14 +195,13 @@ const ProfileHeader = ({
                 href={facebook.url}
                   style={{ color: "#1976D2", wordWrap: "break-word" }}
                 >
-                  <Typography variant="inherit">
-                  {facebook.name}
-                    {isOwner || userData.isAdmin ? (
-                      <IconButton style={{ padding: "4px", margin: "4px" }}>
-                        <EditOutlined style={{ fontSize: "16px" }} />
-                      </IconButton>
-                    ) : null}
-                  </Typography>
+                <LinesEllipsis
+                text={facebook.name} 
+                maxLine="1"
+                ellipsis="..."
+                trimRight
+                basedOn="letters"
+              />
                 </Link>
               </Grid>
             </Grid>
@@ -214,8 +213,7 @@ const ProfileHeader = ({
               <Grid item style={{ width: "24px" }}>
                 <Phone
                   style={{
-                    position: "relative",
-                    top: "2px",
+                    
                     width: "20px",
                     color: "#2E7D32"
                   }}
@@ -226,14 +224,44 @@ const ProfileHeader = ({
                 href={`tel:{$profile.mobile}`}
                   style={{ color: "#2E7D32", wordWrap: "break-word" }}
                 >
-                  <Typography variant="inherit">
-                  {profile.mobile}
-                    {isOwner || userData.isAdmin ? (
-                      <IconButton style={{ padding: "4px", margin: "4px" }}>
-                        <EditOutlined style={{ fontSize: "16px" }} />
-                      </IconButton>
-                    ) : null}
-                  </Typography>
+                <LinesEllipsis
+                text={profile.mobile} 
+                maxLine="1"
+                ellipsis="..."
+                trimRight
+                basedOn="letters"
+              />
+                </Link>
+              </Grid>
+            </Grid>
+
+
+            
+          ) : null}
+
+          {profile.website ? (
+            <Grid container spacing={8} alignItems="flex-start">
+              <Grid item style={{ width: "24px" }}>
+                <PublicOutlined
+                  style={{
+                    
+                    width: "20px",
+                    color: "#3f51b5"
+                  }}
+                />
+              </Grid>
+              <Grid item xs>
+                <Link
+                href={profile.website}
+                  style={{  wordWrap: "break-word" }}
+                >
+                <LinesEllipsis
+                text={profile.website} 
+                maxLine="1"
+                ellipsis="..."
+                trimRight
+                basedOn="letters"
+              />
                 </Link>
               </Grid>
             </Grid>

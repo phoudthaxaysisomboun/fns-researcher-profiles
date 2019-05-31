@@ -597,6 +597,7 @@ class Register extends Component {
                     color="primary"
                     href="/register"
                     onClick={event => this.submitForm(event)}
+                    type="submit"
                   >
                     ຕໍ່ໄປ
                   </Button>

@@ -6,7 +6,7 @@ const app = express();
 const mongoose = require("mongoose");
 require("dotenv").config();
 
-const normalizeUrl = require('normalize-url');
+const normalizeUrl = require("normalize-url");
 
 mongoose.Promise = global.Promise;
 mongoose.connect(process.env.DATABASE);
@@ -14,7 +14,7 @@ mongoose.connect(process.env.DATABASE);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use('/uploads', express.static('uploads'))
+app.use("/uploads", express.static("uploads"));
 
 // Models
 const { User } = require("./models/user");
@@ -42,10 +42,13 @@ const { admin } = require("./middleware/admin");
 //====================================
 
 app.get("/api/users/departments", (req, res) => {
-  Department.find({'faculty': mongoose.Types.ObjectId('5caed82590264f5c10201b4a')}, (err, departments) => {
-    if (err) return res.status(400).send(err);
-    res.status(200).send(departments);
-  });
+  Department.find(
+    { faculty: mongoose.Types.ObjectId("5caed82590264f5c10201b4a") },
+    (err, departments) => {
+      if (err) return res.status(400).send(err);
+      res.status(200).send(departments);
+    }
+  );
 });
 
 //====================================
@@ -73,9 +76,12 @@ app.get("/api/users/countries", (req, res) => {
     .sort([[sortBy, order]])
     .select("_id laoName")
     .limit(limit)
-    .exec((err, countries) => {
-      if (err) return res.status(400).send(err);
-      res.send(countries);
+    .exec((err, doc) => {
+      if (err) return res.status(400).json({ success: false, err });
+      res.status(200).json(
+        {success: true,
+        country: doc}
+      );
     });
 });
 
@@ -244,8 +250,7 @@ app.get("/api/users/districts", (req, res) => {
 
 app.get("/api/users/districts_by_province", (req, res) => {
   if (req.query.province) {
-    District.find({province: req.query.province})
-
+    District.find({ province: req.query.province })
     .exec((err, district) => {
       return res.status(200).send(district);
     });
@@ -385,7 +390,11 @@ app.get("/api/researchers/profiles_by_id", (req, res) => {
     });
   }
 
-  User.find({ _id: { $in: items }, emailIsVerified: true, accountIsVerified: true })
+  User.find({
+    _id: { $in: items },
+    emailIsVerified: true,
+    accountIsVerified: true
+  })
     .populate("gender")
     .populate({
       path: "address.district"
@@ -429,7 +438,7 @@ app.get("/api/researchers/followings", (req, res) => {
   let order = req.query.order ? req.query.order : "asc";
   let sortBy = req.query.sortBy ? req.query.sortBy : "name";
   let limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 3;
-  let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0
+  let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0;
 
   let type = req.query.type;
   let items = req.query.id;
@@ -442,7 +451,11 @@ app.get("/api/researchers/followings", (req, res) => {
         return mongoose.Types.ObjectId(item);
       });
     }
-    User.find({ _id: { $in: items }, emailIsVerified: true, accountIsVerified: true })
+    User.find({
+      _id: { $in: items },
+      emailIsVerified: true,
+      accountIsVerified: true
+    })
       .sort([[sortBy, order]])
       .limit(limit)
       .skip(skip)
@@ -467,7 +480,7 @@ app.get("/api/researchers/followers", (req, res) => {
   let order = req.query.order ? req.query.order : "asc";
   let sortBy = req.query.sortBy ? req.query.sortBy : "name";
   let limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 3;
-  let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0
+  let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0;
 
   let type = req.query.type;
   let items = req.query.id;
@@ -480,12 +493,16 @@ app.get("/api/researchers/followers", (req, res) => {
         return mongoose.Types.ObjectId(item);
       });
     }
-    User.find({ _id: { $in: items }, emailIsVerified: true, accountIsVerified: true })
+    User.find({
+      _id: { $in: items },
+      emailIsVerified: true,
+      accountIsVerified: true
+    })
       .sort([[sortBy, order]])
       .limit(limit)
       .skip(skip)
       .select("_id name lastname profileImage affiliation researchArea")
-      .populate({ 
+      .populate({
         path: "affiliation.institution"
       })
       .populate({
@@ -606,9 +623,7 @@ app.post("/api/researchers/removeFollower", auth, (req, res) => {
   );
 });
 
-
 app.post("/api/researchers/update_mobile", auth, (req, res) => {
-  
   User.findOneAndUpdate(
     { _id: req.query.userId },
     {
@@ -783,7 +798,7 @@ app.post("/api/researchers/update_name", auth, (req, res) => {
       $set: {
         prefix: req.query.prefix,
         name: req.query.prefix,
-        lastname: req.query.prefix,
+        lastname: req.query.prefix
       }
     },
     {
@@ -795,7 +810,7 @@ app.post("/api/researchers/update_name", auth, (req, res) => {
         success: true,
         prefix: doc.dateOfBirth,
         name: doc.name,
-        lastname: doc.lastname,
+        lastname: doc.lastname
       });
     }
   );
@@ -823,54 +838,99 @@ app.post("/api/researchers/update_website", auth, (req, res) => {
 });
 
 app.post("/api/researchers/update_facebook", auth, (req, res) => {
-  User.findOneAndUpdate(
-    { _id: req.query.userId },
-    {
-      $set: {
-        facebook: {
-          name: req.query.name,
-          url: normalizeUrl(req.query.url)
+  if (req.query.name.trim() !== "" && req.query.url.trim() !== "") {
+    User.findOneAndUpdate(
+      { _id: req.query.userId },
+      {
+        $set: {
+          facebook: {
+            name: req.query.name,
+            url: normalizeUrl(req.query.url)
+          }
         }
+      },
+      {
+        new: true
+      },
+      (err, doc) => {
+        if (err) return res.json({ success: false, err });
+        res.status(200).json({
+          success: true,
+          facebook: doc.facebook
+        });
       }
-    },
-    {
-      new: true
-    },
-    (err, doc) => {
-      if (err) return res.json({ success: false, err });
-      res.status(200).json({
-        success: true,
-        facebook: doc.facebook
-      });
-    }
-  );
+    );
+  } else {
+    User.findOneAndUpdate(
+      { _id: req.query.userId },
+      {
+        $set: {
+          facebook: {}
+        }
+      },
+      {
+        new: true
+      },
+      (err, doc) => {
+        if (err) return res.json({ success: false, err });
+        res.status(200).json({
+          success: true,
+          facebook: doc.facebook
+        });
+      }
+    );
+  }
 });
 
 app.post("/api/researchers/update_address", auth, (req, res) => {
-  User.findOneAndUpdate(
-    { _id: req.query.userId },
-    {
-      $set: {
-        address: {
-          village: req.query.village,
-          district: mongoose.Types.ObjectId(req.query.district),
-          province: mongoose.Types.ObjectId(req.query.province),
+  if (
+    (req.query.village.trim() !== "") &
+    (req.query.province.trim() !== "") &
+    (req.query.district.trim() !== "")
+  ) {
+    User.findOneAndUpdate(
+      { _id: req.query.userId },
+      {
+        $set: {
+          address: {
+            village: req.query.village,
+            district: mongoose.Types.ObjectId(req.query.district),
+            province: mongoose.Types.ObjectId(req.query.province)
+          }
         }
+      },
+      {
+        new: true
       }
-    },
-    {
-      new: true
-    }
-  )
-  .populate({path:'address.district', model: 'District' })
-  .populate({path:'address.province', model: 'Province' })
-  .exec((err, doc) => {
-    if (err) return res.json({ success: false, err });
-    res.status(200).json({
-      success: true,
-      address: doc.address
-    })
-  })
+    )
+      .populate({ path: "address.district", model: "District" })
+      .populate({ path: "address.province", model: "Province" })
+      .exec((err, doc) => {
+        if (err) return res.json({ success: false, err });
+        res.status(200).json({
+          success: true,
+          address: doc.address
+        });
+      });
+  } else {
+    User.findOneAndUpdate(
+      { _id: req.query.userId },
+      {
+        $set: {
+          address: {}
+        }
+      },
+      {
+        new: true
+      }
+    ).exec((err, doc) => {
+      if (err) return res.json({ success: false, err });
+      res.status(200).json({
+        success: true,
+        address: doc.address
+      });
+    });
+  }
 });
 
 app.post("/api/researchers/update_affiliation", auth, (req, res) => {
@@ -882,7 +942,7 @@ app.post("/api/researchers/update_affiliation", auth, (req, res) => {
           institution: mongoose.Types.ObjectId(req.query.institution),
           faculty: mongoose.Types.ObjectId(req.query.faculty),
           department: mongoose.Types.ObjectId(req.query.department),
-          position: req.query.position,
+          position: req.query.position
         }
       }
     },
@@ -890,21 +950,21 @@ app.post("/api/researchers/update_affiliation", auth, (req, res) => {
       new: true
     }
   )
-  .populate({path:'affiliation.institution', model: 'Institution' })
-  .populate({path:'affiliation.faculty', model: 'Faculty' })
-  .populate({path:'affiliation.department', model: 'Department' })
-  .exec((err, doc) => {
-    if (err) return res.json({ success: false, err });
-    res.status(200).json({
-      success: true,
-      affiliation: {
-        institution: doc.institution,
-        faculty: doc.faculty,
-        department: doc.department,
-        position: doc.position,
-      },
-    })
-  })
+    .populate({ path: "affiliation.institution", model: "Institution" })
+    .populate({ path: "affiliation.faculty", model: "Faculty" })
+    .populate({ path: "affiliation.department", model: "Department" })
+    .exec((err, doc) => {
+      if (err) return res.json({ success: false, err });
+      res.status(200).json({
+        success: true,
+        affiliation: {
+          institution: doc.institution,
+          faculty: doc.faculty,
+          department: doc.department,
+          position: doc.position
+        }
+      });
+    });
 });
 
 app.post("/api/researchers/update_place_of_birth", auth, (req, res) => {
@@ -916,7 +976,7 @@ app.post("/api/researchers/update_place_of_birth", auth, (req, res) => {
           village: req.query.village,
           district: req.query.district,
           province: req.query.province,
-          country: mongoose.Types.ObjectId(req.query.country),
+          country: mongoose.Types.ObjectId(req.query.country)
         }
       }
     },
@@ -924,14 +984,14 @@ app.post("/api/researchers/update_place_of_birth", auth, (req, res) => {
       new: true
     }
   )
-  .populate({path:'placeOfBirth.country', model: 'Country' })
-  .exec((err, doc) => {
-    if (err) return res.json({ success: false, err });
-    res.status(200).json({
-      success: true,
-      placeOfBirth: doc.placeOfBirth
-    })
-  })
+    .populate({ path: "placeOfBirth.country", model: "Country" })
+    .exec((err, doc) => {
+      if (err) return res.json({ success: false, err });
+      res.status(200).json({
+        success: true,
+        placeOfBirth: doc.placeOfBirth
+      });
+    });
 });
 
 app.post("/api/researchers/update_gender", auth, (req, res) => {
@@ -946,14 +1006,14 @@ app.post("/api/researchers/update_gender", auth, (req, res) => {
       new: true
     }
   )
-  .populate({path:'gender', model: 'Gender' })
-  .exec((err, doc) => {
-    if (err) return res.json({ success: false, err });
-    res.status(200).json({
-      success: true,
-      gender: doc.gender
-    })
-  })
+    .populate({ path: "gender", model: "Gender" })
+    .exec((err, doc) => {
+      if (err) return res.json({ success: false, err });
+      res.status(200).json({
+        success: true,
+        gender: doc.gender
+      });
+    });
 });
 
 //====================================
@@ -1003,29 +1063,29 @@ app.post("/api/research/publication_type", auth, admin, (req, res) => {
 
 /*  Researches  */
 
-app.post('/api/research/researches', (req, res)=> {
-  let order = req.body.order ? req.body.order : 'desc'
-  let sortBy = req.body.sortBy ? req.body.sortBy : 'createdAt'
-  let limit = req.body.limit ? parseInt(req.body.limit) : 6
-  let skip = req.body.skip ? parseInt(req.body.skip) : 0
-  let findArgs = {}
+app.post("/api/research/researches", (req, res) => {
+  let order = req.body.order ? req.body.order : "desc";
+  let sortBy = req.body.sortBy ? req.body.sortBy : "createdAt";
+  let limit = req.body.limit ? parseInt(req.body.limit) : 6;
+  let skip = req.body.skip ? parseInt(req.body.skip) : 0;
+  let findArgs = {};
 
   for (let key in req.body.filters) {
     if (req.body.filters[key].length > 0) {
-      findArgs[key] = req.body.filters[key]
+      findArgs[key] = req.body.filters[key];
     }
   }
 
-  console.log(findArgs)
+  console.log(findArgs);
 
-  res.status(200)
-})
+  res.status(200);
+});
 
-app.get('/api/research/researches_by_id', (req, res)=> {
+app.get("/api/research/researches_by_id", (req, res) => {
   let order = req.query.order ? req.query.order : "asc";
   let sortBy = req.query.sortBy ? req.query.sortBy : "name";
   let limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 3;
-  let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0
+  let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0;
 
   let type = req.query.type;
   let items = req.query.id;
@@ -1051,27 +1111,27 @@ app.get('/api/research/researches_by_id', (req, res)=> {
       // .select("_id name lastname profileImage affiliation researchArea")
       .populate({
         path: "author",
-        model: 'User',
-        select: ['name', 'lastname', 'profileImage']
+        model: "User",
+        select: ["name", "lastname", "profileImage"]
       })
       .populate({
         path: "supervisor",
-        model: 'User',
-        select: ['name', 'lastname', 'profileImage']
+        model: "User",
+        select: ["name", "lastname", "profileImage"]
       })
-      .populate({ 
+      .populate({
         path: "uploader",
-        select: ['name', 'lastname', 'profileImage']
+        select: ["name", "lastname", "profileImage"]
       })
-      .populate({ 
+      .populate({
         path: "researchType"
       })
-      .populate({ 
+      .populate({
         path: "publicationType"
       })
-      .populate({ 
+      .populate({
         path: "files.uploader",
-        select: ['name', 'lastname', 'profileImage']
+        select: ["name", "lastname", "profileImage"]
       })
       // .populate({
       //   path: "affiliation.department"
@@ -1084,9 +1144,9 @@ app.get('/api/research/researches_by_id', (req, res)=> {
         res.status(200).send(researches);
       });
   }
-})
+});
 
-app.post('/api/research/research', auth, (req,res)=>{
+app.post("/api/research/research", auth, (req, res) => {
   const research = new Research(req.body);
 
   research.save((err, doc) => {
@@ -1097,7 +1157,7 @@ app.post('/api/research/research', auth, (req,res)=>{
     });
 
     // REMINDER: add researches id to other authors
-    
+
     User.findOneAndUpdate(
       { _id: req.user._id },
       {
@@ -1112,9 +1172,8 @@ app.post('/api/research/research', auth, (req,res)=>{
         if (err) return res.json({ success: false, err });
       }
     );
-
   });
-})
+});
 
 const port = process.env.PORT || 3002;
 

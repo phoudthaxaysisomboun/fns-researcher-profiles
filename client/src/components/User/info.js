@@ -21,6 +21,7 @@ import UpdateGenderDialogue from "./Dialog/update_gender";
 import UpdateMinorEthnicityDialogue from "./Dialog/update_minor_ethnicity";
 import UpdateNationalityDialogue from "./Dialog/update_nationality";
 import UpdateAddressDialogue from "./Dialog/update_address";
+import UpdatePlaceOfBirthDialogue from "./Dialog/update_place_of_birth";
 
 import {
   Hidden,
@@ -756,6 +757,11 @@ class ProfileInfo extends Component {
         <UpdateAddressDialogue
           open={this.state.openEditAddressDialog}
           close={() => this.handleUpdateAddressClose()}
+        />
+
+        <UpdatePlaceOfBirthDialogue
+          open={this.state.openEditPlaceOfBirthDialog}
+          close={() => this.handleUpdatePlaceOfBirthClose()}
         />
       </ProfileHeader>
     );

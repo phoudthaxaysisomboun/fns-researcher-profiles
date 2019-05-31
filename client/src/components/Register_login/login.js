@@ -69,6 +69,10 @@ class Login extends Component {
     let dataToSubmit = generateData(this.state.formdata, "login");
     let formIsValid = isFormValid(this.state.formdata, "login");
 
+    if ((this.state.formdata.email.value.trim() !== "") && (this.state.formdata.password.value.trim() !== "")) {
+      formIsValid = true
+    }
+
     if (formIsValid) {
       this.props.dispatch(loginUser(dataToSubmit)).then(response => {
         if (response.payload.loginSuccess) {
@@ -140,7 +144,7 @@ class Login extends Component {
                 <Button
                   variant="contained"
                   color="primary"
-      
+                  type="submit"
                   onClick={event => this.submitForm(event)}
                 >
                   ຕໍ່ໄປ

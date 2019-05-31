@@ -174,7 +174,7 @@ const FollowerCard = ({
       
       <Paper style={{ boxShadow: "none", border: "1px solid #d8d8d8" }}>
       <Grid container style={{padding: "16px", paddingBottom: 0}}>
-        <Grid item xs={6}>
+        <Grid item xs={12}>
           <Typography
             variant="inherit"
             style={{

@@ -50,7 +50,7 @@ const FormField = ({ formdata, change, id, labelWidth, maxlength = null }) => {
                   margin="normal"
                   variant="outlined"
                   inputProps={{
-                    maxLength: maxlength,
+                    maxLength: maxlength
                   }}
                 />
               ) : (
@@ -62,7 +62,7 @@ const FormField = ({ formdata, change, id, labelWidth, maxlength = null }) => {
                   margin="normal"
                   variant="outlined"
                   inputProps={{
-                    maxLength: maxlength,
+                    maxLength: maxlength
                   }}
                 />
               )}
@@ -118,52 +118,59 @@ const FormField = ({ formdata, change, id, labelWidth, maxlength = null }) => {
             {formdata.validationMessage ? (
               <div>
                 <InputLabel error>{formdata.config.label}</InputLabel>
-                <Select error fullWidth
+                <Select
+                  error
+                  fullWidth
                   style={{
                     fontFamily: "'Noto Sans Lao UI', sans serif",
                     marginBottom: "8px"
                   }}
-                 
                   value={formdata.value}
                   onBlur={event => change({ event, id, blur: true })}
                   onChange={event => change({ event, id })}
                   input={<OutlinedInput name={id} labelWidth={labelWidth} />}
                 >
-              
+                  <MenuItem
+                    style={{ fontFamily: "'Noto Sans Lao UI', sans serif" }}
+                    value=""
+                  />
+
                   {formdata.config.options.map(item => (
                     <MenuItem
-                    style={{ fontFamily: "'Noto Sans Lao UI', sans serif" }}
-                    key={item.key}
-                    value={item.key}
+                      style={{ fontFamily: "'Noto Sans Lao UI', sans serif" }}
+                      key={item.key}
+                      value={item.key}
                     >
-                     {item.value}
+                      {item.value}
                     </MenuItem>
-                    
                   ))}
                 </Select>
               </div>
             ) : (
               <div>
                 <InputLabel>{formdata.config.label}</InputLabel>
-                <Select fullWidth
+                <Select
+                  fullWidth
                   style={{
                     fontFamily: "'Noto Sans Lao UI', sans serif",
                     marginBottom: "8px"
                   }}
-                 
                   value={formdata.value}
                   onBlur={event => change({ event, id, blur: true })}
                   onChange={event => change({ event, id })}
                   input={<OutlinedInput name={id} labelWidth={labelWidth} />}
                 >
-                  
+                  <MenuItem
+                    style={{ fontFamily: "'Noto Sans Lao UI', sans serif" }}
+                    value=""
+                  />
                   {formdata.config.options.map(item => (
                     <MenuItem
-                    style={{ fontFamily: "'Noto Sans Lao UI', sans serif" }}
-                    key={item.key}
-                    value={item.key}
+                      style={{ fontFamily: "'Noto Sans Lao UI', sans serif" }}
+                      key={item.key}
+                      value={item.key}
                     >
-                     {item.value}
+                      {item.value}
                     </MenuItem>
                   ))}
                 </Select>
