@@ -70,7 +70,7 @@ const PersonalInfoCard = ({
             </Grid>
             <Grid item xs={1} align="right">
               <IconButton
-                style={{ padding: "4px" }}
+                style={{ padding: 0 }}
                 onClick={() => {
                   runEditGender();
                 }}
@@ -112,7 +112,7 @@ const PersonalInfoCard = ({
             </Grid>
             <Grid item xs={1} align="right">
               <IconButton
-                style={{ padding: "4px" }}
+                style={{ padding: 0 }}
                 onClick={() => {
                   runEditAddress();
                 }}
@@ -150,7 +150,7 @@ const PersonalInfoCard = ({
                 onClick={() => {
                   runEditMobile();
                 }}
-                style={{ padding: "4px" }}
+                style={{ padding: 0 }}
               >
                 <EditOutlined fontSize="small" />
               </IconButton>
@@ -182,7 +182,7 @@ const PersonalInfoCard = ({
             </Grid>
             <Grid item xs={1} align="right">
               <IconButton
-                style={{ padding: "4px" }}
+                style={{ padding: 0 }}
                 onClick={() => {
                   runEditPhone();
                 }}
@@ -217,7 +217,7 @@ const PersonalInfoCard = ({
             </Grid>
             <Grid item xs={1} align="right">
               <IconButton
-                style={{ padding: "4px" }}
+                style={{ padding: 0 }}
                 onClick={() => {
                   runEditFax();
                 }}
@@ -278,7 +278,7 @@ const PersonalInfoCard = ({
             </Grid>
             <Grid item xs={1} align="right">
               <IconButton
-                style={{ padding: "4px" }}
+                style={{ padding: 0 }}
                 onClick={() => {
                   runEditFacebook();
                 }}
@@ -325,7 +325,7 @@ const PersonalInfoCard = ({
             </Grid>
             <Grid item xs={1} align="right">
               <IconButton
-                style={{ padding: "4px" }}
+                style={{ padding: 0 }}
                 onClick={() => {
                   runEditWebsite();
                 }}
@@ -352,7 +352,7 @@ const PersonalInfoCard = ({
             </Grid>
             <Grid item xs={1} align="right">
               <IconButton
-                style={{ padding: "4px" }}
+                style={{ padding: 0 }}
                 onClick={() => {
                   runEditDateOfBirth();
                 }}
@@ -404,7 +404,7 @@ const PersonalInfoCard = ({
                 onClick={() => {
                   runEditPlaceOfBirth();
                 }}
-                style={{ padding: "4px" }}
+                style={{ padding: 0 }}
               >
                 <EditOutlined fontSize="small" />
               </IconButton>
@@ -426,7 +426,7 @@ const PersonalInfoCard = ({
             </Grid>
             <Grid item xs={1} align="right">
               <IconButton
-                style={{ padding: "4px" }}
+                style={{ padding: 0 }}
                 onClick={() => {
                   runEditNationality();
                 }}
@@ -451,7 +451,7 @@ const PersonalInfoCard = ({
             </Grid>
             <Grid item xs={1} align="right">
               <IconButton
-                style={{ padding: "4px" }}
+                style={{ padding: 0 }}
                 onClick={() => {
                   runEditMinorEthnicity();
                 }}

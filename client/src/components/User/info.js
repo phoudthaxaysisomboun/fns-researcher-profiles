@@ -10,6 +10,7 @@ import FollowerCard from "../User/Card/follower";
 import LoadMoreFollowerCard from "./Card/load_more_follower";
 import LoadMoreFollowingCard from "../User/Card/load_more_following";
 import PersonalInfoCard from "../User/Card/personal_info";
+import EducationCard from "../User/Card/education";
 
 import UpdateMobilePhoneNumber from "./Dialog/update_mobile_number";
 import UpdatePhoneNumber from "./Dialog/update_phone";
@@ -557,6 +558,9 @@ class ProfileInfo extends Component {
                   this.handleOpenUpdatePlaceOfBirthDialog()
                 }
               />
+
+              <EducationCard userData={this.props.user.userData}
+              userDetail={this.props.user.userDetail} props={this.props} />
             </Grid>
           </Grid>
 

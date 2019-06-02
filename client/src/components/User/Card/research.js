@@ -18,7 +18,8 @@ import {
   Typography,
   IconButton,
   LinearProgress,
-  Chip
+  Chip,
+  Fab
 } from "@material-ui/core";
 
 import {
@@ -30,7 +31,8 @@ import {
   ReplyOutlined,
   FavoriteOutlined,
   FavoriteBorderOutlined,
-  MoreVertOutlined
+  MoreVertOutlined,
+  AddOutlined
 } from "@material-ui/icons";
 
 const styles = {
@@ -98,7 +100,7 @@ const ResearchCard = ({ userData, userDetail, userResearch, loading }) => {
           
           <Paper style={{ boxShadow: "none", border: "1px solid #d8d8d8" }}>
           <Grid container style={{padding: "16px", paddingBottom: 0}}>
-            <Grid item xs={6}>
+            <Grid item xs={8}>
               <Typography
                 variant="inherit"
                 style={{
@@ -109,6 +111,16 @@ const ResearchCard = ({ userData, userDetail, userResearch, loading }) => {
               >
                 ຜົນງານການຄົ້ນຄວ້າ
               </Typography>
+            </Grid>
+            <Grid item xs={4} align="right">
+            {
+              !loading && (isOwner || user.isAdmin) ? 
+              
+              <IconButton style={{padding: "0px"}}>
+              <AddOutlined fontSize="default" />
+              </IconButton >
+              : null
+            }
             </Grid>
           </Grid>
             {userResearch ? (
@@ -425,7 +437,7 @@ const ResearchCard = ({ userData, userDetail, userResearch, loading }) => {
           
           <Paper style={{ boxShadow: "none", border: "1px solid #d8d8d8" }}>
           <Grid container style={{padding: "16px", paddingBottom: 0}}>
-            <Grid item xs={6}>
+            <Grid item xs={8}>
               <Typography
                 variant="inherit"
                 style={{
@@ -436,6 +448,16 @@ const ResearchCard = ({ userData, userDetail, userResearch, loading }) => {
               >
                 ຜົນງານການຄົ້ນຄວ້າ
               </Typography>
+            </Grid>
+            <Grid item xs={4} align="right">
+            {
+              !loading && (isOwner || user.isAdmin) ? 
+              
+              <IconButton style={{padding: "0px"}}>
+              <AddOutlined fontSize="default" />
+              </IconButton >
+              : null
+            }
             </Grid>
           </Grid>
           <div style={{ margin: "20px" }}>
@@ -455,7 +477,7 @@ const ResearchCard = ({ userData, userDetail, userResearch, loading }) => {
         
         <Paper style={{ boxShadow: "none", border: "1px solid #d8d8d8" }}>
         <Grid container style={{padding: "16px", paddingBottom: 0}}>
-            <Grid item xs={6}>
+            <Grid item xs={8}>
               <Typography
                 variant="inherit"
                 style={{
@@ -467,6 +489,7 @@ const ResearchCard = ({ userData, userDetail, userResearch, loading }) => {
                 ຜົນງານການຄົ້ນຄວ້າ
               </Typography>
             </Grid>
+            
           </Grid>
         <LinearProgress style={{ margin: "16px" }} />
         </Paper>

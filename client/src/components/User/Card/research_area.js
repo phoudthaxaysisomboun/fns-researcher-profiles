@@ -48,8 +48,8 @@ const ResearchaAreaCard = props => {
           </Typography>
         </Grid>
         <Grid item xs={6} align="right">
-          {isOwner ? (
-            <IconButton style={{ padding: "4px",  }}>
+          {props.user.userDetail && (isOwner || user.isAdmin) ? (
+            <IconButton style={{ padding: "0",  }}>
               <EditOutlined fontSize="small" />
             </IconButton>
           ) : null}
