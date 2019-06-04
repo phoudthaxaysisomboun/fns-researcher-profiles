@@ -30,6 +30,9 @@ import {
   GET_PROVINCE,
   GET_DISTRICT,
   GET_COUNTRY,
+  ADD_EDUCATION,
+  UPDATE_EDUCATION,
+  REMOVE_EDUCATION
 } from "../actions/types";
 
 export default function(state = {}, action) {
@@ -168,13 +171,21 @@ export default function(state = {}, action) {
           minor_ethnicity: action.payload.minor_ethnicity
         }
       };
+      case ADD_EDUCATION:
+      return {
+        ...state,
+        userDetail: {
+          ...state.userDetail,
+          education: action.payload.education
+        }
+      };
     case GET_PROVINCE:
       return {
         ...state,
         province: action.payload
       };
     case GET_COUNTRY:
-        console.log(action.payload.country)
+      
       return {
         ...state,
         country: action.payload.country

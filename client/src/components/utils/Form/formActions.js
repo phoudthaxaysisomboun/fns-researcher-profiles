@@ -85,6 +85,10 @@ export const populateOptionFields = (formdata, arrayData = [], field) => {
       arrayData.forEach(item => {
         newArray.push({ key: item._id, value: item.laoName });
       });
+    } else if (field === "year") {
+      arrayData.forEach(item => {
+        newArray.push({ key: item, value: item });
+      });
     } else {
       arrayData.forEach(item => {
         newArray.push({ key: item._id, value: item.name });

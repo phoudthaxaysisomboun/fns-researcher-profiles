@@ -56,12 +56,13 @@ body {
   padding: 0;
   font-family: "Noto Sans Lao UI", sans-serif;
   color: #404040;
-  background-color: #fcfcfc;
+  /* color: #404040; */
+  background-color: white;
 }
 
 .page_container {
   min-height: 75vh;
-  padding-top: 64px
+  padding-top: 64px;
 }
 
 .center_vertical_and_horizontal {
@@ -73,7 +74,7 @@ body {
   top: 100px;
   transform: translate(-50%, 0%);
   min-width: 350px;
-  margin-bottom: 60px
+  margin-bottom: 60px;
 }
 
 .progress {
@@ -97,13 +98,32 @@ span {
 }
 
 .research-card-title {
-  max-lines: 2
+  max-lines: 2;
 }
 
 .MuiTypography-body1-78 {
   font-size: 1rem !important;
 }
+.MuiTypography-body1-81 {
+  font-size: 1rem !important;
+}
 
 .genderLabel .MuiTypography-body1-78 {
-  color: rgba(0, 0, 0, 0.54) !important
+  color: rgba(0, 0, 0, 0.54) !important;
 }
+
+#header {
+  transition: all 0.15s linear;
+}
+
+.MuiMenu-paper-125 {
+  box-shadow: 0px 8px 10px 1px rgba(0, 0, 0, 0.14),
+    0px 3px 14px 2px rgba(0, 0, 0, 0.12), 0px 5px 5px -3px rgba(0, 0, 0, 0.2) !important
+}
+
+#header.active {
+  box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.302),
+    0 2px 6px 2px rgba(60, 64, 67, 0.149) !important;
+}
+
+/* 0 2px 4px -1px rgba(0,0,0,0.2), 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12) */

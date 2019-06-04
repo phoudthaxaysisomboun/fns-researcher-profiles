@@ -106,7 +106,6 @@ class UpdatePlaceOfBirthDialogue extends Component {
 
   componentDidMount() {
     const formdata = this.state.formdata;
-    console.log(this.state);
 
     this.props.dispatch(getCountry()).then(response => {
       const newFormdata = populateOptionFields(
@@ -164,7 +163,6 @@ class UpdatePlaceOfBirthDialogue extends Component {
 
       this.setState({ formdata: newFormdata });
 
-      console.log(this.state.formdata.country)
     }
   }
 
@@ -221,7 +219,6 @@ class UpdatePlaceOfBirthDialogue extends Component {
             )
           )
           .then(response => {
-            console.log(this.state.formdata);
             if (response.payload.success) {
               this.setState({
                 formError: false,

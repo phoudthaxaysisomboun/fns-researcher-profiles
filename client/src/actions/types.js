@@ -30,6 +30,9 @@ export const UPDATE_USER_DATE_OF_BIRTH = "update_user_date_of_birth";
 export const UPDATE_USER_PLACE_OF_BIRTH = "update_user_place_of_birth";
 export const UPDATE_USER_NATIONALITY = "update_user_nationality";
 export const UPDATE_USER_MINOR_ETHNICITY = "update_user_minor_ethnicity";
+export const ADD_EDUCATION = "add_education";
+export const UPDATE_EDUCATION = "update_education";
+export const REMOVE_EDUCATION = "remove_education";
 
 export const GET_RESEARCH_FOR_CARD = "get_research_for_card";
 export const CLEAR_RESEARCH_CARD = "clear_research_card";

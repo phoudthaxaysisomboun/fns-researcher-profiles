@@ -32,6 +32,9 @@ import {
   GET_PROVINCE,
   GET_DISTRICT,
   GET_COUNTRY,
+  ADD_EDUCATION,
+  UPDATE_EDUCATION,
+  REMOVE_EDUCATION
 } from "./types";
 
 import { USER_SERVER, RESEARCHER_SERVER } from "../components/utils/misc";
@@ -350,6 +353,20 @@ export function updatePlaceOfBirth(_id, village, district, province, country) {
   };
 
 }
+export function addEducation(userId, institution, fieldOfStudy, degree, start, end, city, country) {
+
+  const request = axios
+    .post(
+      `${RESEARCHER_SERVER}/addEducation?userId=${userId}&institution=${institution}&fieldOfStudy=${fieldOfStudy}&degree=${degree}&start=${start}&end=${end}&city=${city}&country=${country}`
+    )
+    .then(response => response.data);
+
+  return {
+    type: ADD_EDUCATION,
+    payload: request
+  };
+}
+
 export function updateNationality(_id, nationality) {
   //console.log(`${RESEARCHER_SERVER}/update_nationality?userId=${_id}&nationality=${nationality}`)
   const request = axios

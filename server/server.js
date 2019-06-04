@@ -78,10 +78,7 @@ app.get("/api/users/countries", (req, res) => {
     .limit(limit)
     .exec((err, doc) => {
       if (err) return res.status(400).json({ success: false, err });
-      res.status(200).json(
-        {success: true,
-        country: doc}
-      );
+      res.status(200).json({ success: true, country: doc });
     });
 });
 
@@ -250,8 +247,7 @@ app.get("/api/users/districts", (req, res) => {
 
 app.get("/api/users/districts_by_province", (req, res) => {
   if (req.query.province) {
-    District.find({ province: req.query.province })
-    .exec((err, district) => {
+    District.find({ province: req.query.province }).exec((err, district) => {
       return res.status(200).send(district);
     });
   }
@@ -1012,6 +1008,122 @@ app.post("/api/researchers/update_gender", auth, (req, res) => {
       res.status(200).json({
         success: true,
         gender: doc.gender
+      });
+    });
+});
+
+app.post("/api/researchers/addEducation", auth, (req, res) => {
+  User.findOneAndUpdate(
+    { _id: mongoose.Types.ObjectId(req.query.userId) },
+    {
+      $push: {
+        education: {
+          institution: req.query.institution,
+          fieldOfStudy: req.query.fieldOfStudy,
+          degree: req.query.degree,
+          start: req.query.start,
+          end: req.query.end,
+          city: req.query.city,
+          country: mongoose.Types.ObjectId(req.query.country)
+        }
+      }
+    },
+    {
+      new: true
+    }
+  )
+    .populate({ path: "education.country", model: "Country" })
+    .exec((err, doc) => {
+      if (err) return res.json({ success: false, err });
+      res.status(200).json({
+        success: true,
+        education: doc.education
+      });
+    });
+});
+
+app.post("/api/researchers/addEducation", auth, (req, res) => {
+  User.findOneAndUpdate(
+    { _id: mongoose.Types.ObjectId(req.query.userId) },
+    {
+      $push: {
+        education: {
+          institution: req.query.institution,
+          fieldOfStudy: req.query.fieldOfStudy,
+          degree: req.query.degree,
+          start: req.query.start,
+          end: req.query.end,
+          city: req.query.city,
+          country: mongoose.Types.ObjectId(req.query.country)
+        }
+      }
+    },
+    {
+      new: true
+    }
+  )
+    .populate({ path: "education.country", model: "Country" })
+    .exec((err, doc) => {
+      if (err) return res.json({ success: false, err });
+      res.status(200).json({
+        success: true,
+        education: doc.education
+      });
+    });
+});
+
+app.post("/api/researchers/updateEducation", auth, (req, res) => {
+  User.findOneAndUpdate(
+    {
+      _id: mongoose.Types.ObjectId(req.query.userId),
+      "education._id": mongoose.Types.ObjectId(req.query.id)
+    },
+    {
+      $set: {
+        "education.$._id": mongoose.Types.ObjectId(req.query.id),
+        "education.$.institution": req.query.institution,
+        "education.$.fieldOfStudy": req.query.fieldOfStudy,
+        "education.$.degree": req.query.degree,
+        "education.$.start": req.query.start,
+        "education.$.end": req.query.end,
+        "education.$.city": req.query.city,
+        "education.$.country": mongoose.Types.ObjectId(req.query.country)
+      }
+    },
+    {
+      new: true
+    }
+  )
+    .populate({ path: "education.country", model: "Country" })
+    .exec((err, doc) => {
+      if (err) return res.json({ success: false, err });
+      res.status(200).json({
+        success: true,
+        education: doc.education
+      });
+    });
+});
+
+app.post("/api/researchers/removeEducation", auth, (req, res) => {
+  User.findOneAndUpdate(
+    { _id: mongoose.Types.ObjectId(req.query.userId) },
+    {
+      $pull: {
+        education: {
+          _id: mongoose.Types.ObjectId(req.query.id)
+        }
+      }
+    },
+    {
+      new: true
+    }
+  )
+    .populate({ path: "education.country", model: "Country" })
+    .exec((err, doc) => {
+      if (err) return res.json({ success: false, err });
+      res.status(200).json({
+        success: true,
+        education: doc
       });
     });
 });

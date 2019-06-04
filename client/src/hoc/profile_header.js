@@ -336,6 +336,8 @@ const ProfileHeader = ({
             borderRadius: 0,
             boxShadow: "none",
             border: "1px solid #d8d8d8",
+            borderLeft: 0,
+            borderRight: 0,
             borderTop: "0"
           }}
         >

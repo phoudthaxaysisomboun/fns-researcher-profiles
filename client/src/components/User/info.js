@@ -23,6 +23,7 @@ import UpdateMinorEthnicityDialogue from "./Dialog/update_minor_ethnicity";
 import UpdateNationalityDialogue from "./Dialog/update_nationality";
 import UpdateAddressDialogue from "./Dialog/update_address";
 import UpdatePlaceOfBirthDialogue from "./Dialog/update_place_of_birth";
+import AddEducationDialogue from "./Dialog/add_education";
 
 import {
   Hidden,
@@ -81,7 +82,12 @@ class ProfileInfo extends Component {
     openEditDateOfBirthDialog: false,
     openEditPlaceOfBirthDialog: false,
     openEditNationalityDialog: false,
-    openEditMinorEthnicityDialog: false
+    openEditMinorEthnicityDialog: false,
+
+    openAddEducationDialog: false,
+    openEditEducationDialog: false,
+
+    anchorElEducation: null,
   };
 
   componentWillMount() {
@@ -508,6 +514,41 @@ class ProfileInfo extends Component {
     });
   };
 
+    /*  add education dialogue actions */
+    handleOpenAddEducationDialog = () => {
+      this.setState({
+        openAddEducationDialog: true
+      });
+    };
+  
+    handleAddEducationClose = () => {
+      this.setState({
+        openAddEducationDialog: false
+      });
+    };
+
+    /*  edit education dialogue actions */
+    handleOpenEditEducationDialog = () => {
+      this.setState({
+        openEditEducationDialog: true
+      });
+    };
+  
+    handleEditEducationClose = () => {
+      this.setState({
+        openEditEducationDialog: false
+      });
+    };
+
+    handleEducationMenuClick = event => {
+      this.setState({ anchorElEducation: event.currentTarget });
+    };
+  
+    handleEducationMenuClose = () => {
+      this.setState({ anchorElEducation: null });
+    };
+  
+
   render() {
     const { fullScreen } = this.props;
 
@@ -560,7 +601,15 @@ class ProfileInfo extends Component {
               />
 
               <EducationCard userData={this.props.user.userData}
-              userDetail={this.props.user.userDetail} props={this.props} />
+              userDetail={this.props.user.userDetail} props={this.props} 
+              runAddEducation={() =>
+                this.handleOpenAddEducationDialog()
+              }
+
+              handleClick={(event)=>{this.handleEducationMenuClick(event)}}
+              handleClose={(event)=>{this.handleEducationMenuClose(event)}}
+              anchorEl = {this.state.anchorElEducation}
+              />
             </Grid>
           </Grid>
 
@@ -767,6 +816,13 @@ class ProfileInfo extends Component {
           open={this.state.openEditPlaceOfBirthDialog}
           close={() => this.handleUpdatePlaceOfBirthClose()}
         />
+
+        <AddEducationDialogue
+          open={this.state.openAddEducationDialog}
+          close={() => this.handleAddEducationClose()}
+        />
+        
+        
       </ProfileHeader>
     );
   }

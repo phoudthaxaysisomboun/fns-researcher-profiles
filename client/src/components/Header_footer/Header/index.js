@@ -16,7 +16,13 @@ import {
   Menu,
   Avatar,
   Fab,
-  Button
+  Button,
+  Drawer,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Divider
 } from "@material-ui/core";
 
 import { Link } from "react-router-dom";
@@ -31,7 +37,8 @@ import {
   SettingsOutlined,
   ExitToAppOutlined,
   AddOutlined,
-  PersonOutlined
+  PersonOutlined, 
+  
 } from "@material-ui/icons";
 
 const styles = theme => ({
@@ -73,7 +80,7 @@ const styles = theme => ({
     width: theme.spacing.unit * 9,
     height: "100%",
     position: "absolute",
-    pointerEvents: "none",
+    // pointerEvents: "none",
     display: "flex",
     alignItems: "center",
     justifyContent: "right",
@@ -107,7 +114,17 @@ const styles = theme => ({
     [theme.breakpoints.up("md")]: {
       display: "none"
     }
-  }
+  },
+  drawer: {
+    width: 240,
+    flexShrink: 0,
+  },
+  drawerPaper: {
+    width: 240,
+  },
+  appBar: {
+    zIndex: theme.zIndex.drawer + 1,
+  },
 });
 
 class Header extends Component {
@@ -124,6 +141,10 @@ class Header extends Component {
     this.setState({ anchorEl: null });
     this.handleMobileMenuClose();
   };
+
+  handleSearch = (event) => {
+    console.log(event.target.value)
+  }
 
   logoutHandler = () => {
     this.props.dispatch(logoutUser()).then(response => {
@@ -198,7 +219,7 @@ class Header extends Component {
     }
   };
 
-  render() {
+  render(props) {
     const { anchorEl, mobileMoreAnchorEl } = this.state;
     const { classes } = this.props;
     const isMenuOpen = Boolean(anchorEl);
@@ -353,80 +374,116 @@ class Header extends Component {
     };
 
     return (
+      <>
       <div className={classes.root}>
-        <AppBar
-          position="fixed"
-          color="default"
-          style={{
-            boxShadow: "0 2px 6px 0 rgba(0,0,0,0.12)",
-            backgroundColor: "white"
-          }}
-        >
-          <Toolbar variant="regular" style={{ height: "64px" }}>
-            <IconButton
-              className={classes.menuButton}
+      <AppBar
+        position="fixed"
+        id="header"
+        color="default"
+        className={`${classes.appbar} ${this.props.headerclass}`}
+        style={{
+          background: "white",
+          boxShadow: "none",
+          zIndex: 1201
+        }}
+      >
+
+      
+        <Toolbar variant="regular" style={{ height: "64px" }}>
+          <IconButton
+            className={classes.menuButton}
+            color="inherit"
+            aria-label="Open drawer"
+          >
+            <MenuIcon />
+          </IconButton>
+          <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
+            <Typography
+              className={classes.title}
+              variant="h6"
               color="inherit"
-              aria-label="Open drawer"
+              noWrap
             >
-              <MenuIcon />
+              FNS Researcher Profiles
+            </Typography>
+          </Link>
+
+          <div className={classes.search}>
+            <IconButton className={classes.searchIcon} style={{padding: "2px", margin: 0, width: "28px", height: "28px", marginTop: "8.5px", marginBottom: "8.5px", marginLeft: "8px"}}>
+              <SearchIcon />
             </IconButton>
-            <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
-              <Typography
-                className={classes.title}
-                variant="h6"
-                color="inherit"
-                noWrap
-              >
-                FNS Researcher Profiles
-              </Typography>
-            </Link>
+            <InputBase
+              placeholder="ຄົ້ນຫານັກຄົ້ນຄວ້າ, ຜົນງານ ຯລຯ"
+              classes={{
+                root: classes.inputRoot,
+                input: classes.inputInput
+              }}
+              style={{
+                fontFamily: "'Noto Sans Lao UI', sans-serif"
+              }}
+              onChange={(event)=>{this.handleSearch(event)}}
+            />
+          </div>
+          <div className={classes.grow} />
+          <div className={classes.sectionDesktop}>
+            {
+              // <IconButton color="inherit">
+              //   <Badge badgeContent={4} color="secondary">
+              //     <MailIcon />
+              //   </Badge>
+              // </IconButton>
+              // <IconButton color="inherit">
+              //   <Badge badgeContent={17} color="secondary">
+              //     <NotificationsIcon />
+              //   </Badge>
+              // </IconButton>
+            }
 
-            <div className={classes.search}>
-              <div className={classes.searchIcon}>
-                <SearchIcon />
-              </div>
-              <InputBase
-                placeholder="ຄົ້ນຫານັກຄົ້ນຄວ້າ, ຜົນງານ ຯລຯ"
-                classes={{
-                  root: classes.inputRoot,
-                  input: classes.inputInput
-                }}
-                style={{
-                  fontFamily: "'Noto Sans Lao UI', sans-serif"
-                }}
-              />
-            </div>
-            <div className={classes.grow} />
-            <div className={classes.sectionDesktop}>
-              {
-                // <IconButton color="inherit">
-                //   <Badge badgeContent={4} color="secondary">
-                //     <MailIcon />
-                //   </Badge>
-                // </IconButton>
-                // <IconButton color="inherit">
-                //   <Badge badgeContent={17} color="secondary">
-                //     <NotificationsIcon />
-                //   </Badge>
-                // </IconButton>
-              }
-
-              {this.showAccountButton()}
-            </div>
-            <div className={classes.sectionMobile}>
-              <IconButton
-                aria-haspopup="true"
-                onClick={this.handleMobileMenuOpen}
-                color="inherit"
-              >
-                <MoreIcon />
-              </IconButton>
-            </div>
-          </Toolbar>
-        </AppBar>
-        {renderMenu}
-        {renderMobileMenu()}
-      </div>
+            {this.showAccountButton()}
+          </div>
+          <div className={classes.sectionMobile}>
+            <IconButton
+              aria-haspopup="true"
+              onClick={this.handleMobileMenuOpen}
+              color="inherit"
+            >
+              <MoreIcon />
+            </IconButton>
+          </div>
+        </Toolbar>
+      </AppBar>
+      
+      {renderMenu}
+      {renderMobileMenu()}
+    </div>
+    <Drawer
+      className={classes.drawer}
+      variant="persistent"
+      classes={{
+        paper: classes.drawerPaper,
+      }}
+      open={false}
+    >
+      <div className={classes.toolbar} />
+      <List>
+        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+          <ListItem button key={text}>
+            <ListItemIcon>{index % 2 === 0 ? <SearchIcon /> : <SearchIcon />}</ListItemIcon>
+            <ListItemText primary={text} />
+          </ListItem>
+        ))}
+      </List>
+      <Divider />
+      <List>
+        {['All mail', 'Trash', 'Spam'].map((text, index) => (
+          <ListItem button key={text}>
+            <ListItemIcon>{index % 2 === 0 ? <SearchIcon /> : <SearchIcon />}</ListItemIcon>
+            <ListItemText primary={text} />
+          </ListItem>
+        ))}
+      </List>
+    </Drawer>
+      </>
     );
   }
 }
