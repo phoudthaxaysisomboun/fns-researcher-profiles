@@ -367,6 +367,34 @@ export function addEducation(userId, institution, fieldOfStudy, degree, start, e
   };
 }
 
+export function editEducation(userId, institution, fieldOfStudy, degree, start, end, city, country, id) {
+
+  const request = axios
+    .post(
+      `${RESEARCHER_SERVER}/updateEducation?userId=${userId}&institution=${institution}&fieldOfStudy=${fieldOfStudy}&degree=${degree}&start=${start}&end=${end}&city=${city}&country=${country}&id=${id}`
+    )
+    .then(response => response.data);
+
+  return {
+    type: UPDATE_EDUCATION,
+    payload: request
+  };
+}
+
+export function removeEducation(userId, id) {
+
+  const request = axios
+    .post(
+      `${RESEARCHER_SERVER}/removeEducation?userId=${userId}&id=${id}`
+    )
+    .then(response => response.data);
+console.log(`${RESEARCHER_SERVER}/removeEducation?userId=${userId}&id=${id}`)
+  return {
+    type: REMOVE_EDUCATION,
+    payload: request
+  };
+}
+
 export function updateNationality(_id, nationality) {
   //console.log(`${RESEARCHER_SERVER}/update_nationality?userId=${_id}&nationality=${nationality}`)
   const request = axios

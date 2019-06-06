@@ -8,6 +8,7 @@ import {
   InputLabel,
   MenuItem
 } from "@material-ui/core";
+import { string } from "prop-types";
 
 const FormField = ({ formdata, change, id, labelWidth, maxlength = null }) => {
   const showError = () => {
@@ -63,6 +64,48 @@ const FormField = ({ formdata, change, id, labelWidth, maxlength = null }) => {
                   variant="outlined"
                   inputProps={{
                     maxLength: maxlength
+                  }}
+                />
+              )}
+
+              {formdata.validationMessage ? showError() : null}
+            </FormControl>
+          </div>
+        );
+        break;
+      case "year":
+        formTemplate = (
+          <div>
+            <FormControl fullWidth>
+              {formdata.validationMessage ? (
+                <TextField
+                  error
+                  {...formdata.config}
+                  value={formdata.value}
+                  onBlur={event => change({ event, id, blur: true })}
+                  onChange={event => change({ event, id })}
+                  margin="normal"
+                  variant="outlined"
+                  inputProps={{
+                    maxLength: 4,
+                    min: "1900",
+                    max: "9999",
+                    pattern: String("/^-?\d+\.?\d*$/")
+                  }}
+                />
+              ) : (
+                <TextField
+                  {...formdata.config}
+                  value={formdata.value}
+                  onBlur={event => change({ event, id, blur: true })}
+                  onChange={event => change({ event, id })}
+                  margin="normal"
+                  variant="outlined"
+                  inputProps={{
+                    maxLength: 4,
+                    min: "1900",
+                    max: "9999",
+                    pattern: String("/^-?\d+\.?\d*$/")
                   }}
                 />
               )}

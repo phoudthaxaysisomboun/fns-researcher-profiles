@@ -1123,7 +1123,7 @@ app.post("/api/researchers/removeEducation", auth, (req, res) => {
       if (err) return res.json({ success: false, err });
       res.status(200).json({
         success: true,
-        education: doc
+        education: doc.education
       });
     });
 });

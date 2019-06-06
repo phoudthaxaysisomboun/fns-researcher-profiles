@@ -308,7 +308,7 @@ class UpdateAddressDialogue extends Component {
           <Grid container>
             <Grid
               item
-              xs={10}
+              xs={9}
               style={{
                 padding: "24px",
                 fontWeight: "bold",
@@ -317,10 +317,10 @@ class UpdateAddressDialogue extends Component {
             >
               <Typography variant="inherit">{`ແກ້ໄຂທີ່ຢູ່`}</Typography>
             </Grid>
-            <Grid item xs={2} align="right" style={{ padding: "16px" }}>
+            <Grid item xs align="right" style={{ padding: "0" }}>
               <IconButton
                 onClick={() => this.props.close()}
-                style={{ padding: 0 }}
+                style={{ padding: 0, marginRight: "24px", marginTop: "24px" }}
               >
                 <CloseOutlined />
               </IconButton>

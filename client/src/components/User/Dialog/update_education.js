@@ -26,11 +26,11 @@ import {
 
 import { CloseOutlined } from "@material-ui/icons";
 
-import { addEducation, getCountry } from "../../../actions/user_actions";
+import { editEducation, getCountry } from "../../../actions/user_actions";
 
 import { connect } from "react-redux";
 
-class AddEducationDialogue extends Component {
+class UpdateEducationDialogue extends Component {
   state = {
     formError: false,
     formErrorMessage: "ມີບາງຂໍ້ມູນບໍ່ຖືກຕ້ອງກະລຸນາກວດສອບຂໍ້ມູນຄືນ",
@@ -174,53 +174,39 @@ class AddEducationDialogue extends Component {
     this.setState({ formdata: newFormdata });
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    // const prevPlaceOfBirth =
-    //   prevProps.profile && prevProps.profile.placeOfBirth
-    //     ? prevProps.profile.placeOfBirth
-    //     : "";
-    // const currentPlaceOfBirth =
-    //   this.props.profile && this.props.profile.placeOfBirth
-    //     ? this.props.profile.placeOfBirth
-    //     : "";
-    // if (prevPlaceOfBirth !== currentPlaceOfBirth) {
-    //   const newFormdata = {
-    //     ...this.state.formdata
-    //   };
-    //   newFormdata["village"].value =
-    //     this.props.profile &&
-    //     this.props.profile.placeOfBirth &&
-    //     this.props.profile.placeOfBirth.village
-    //       ? this.props.profile.placeOfBirth.village
-    //       : "";
-    //   newFormdata["province"].value =
-    //     this.props.profile &&
-    //     this.props.profile.placeOfBirth &&
-    //     this.props.profile.placeOfBirth.province
-    //       ? this.props.profile.placeOfBirth.province
-    //       : "";
-    //   newFormdata["district"].value =
-    //     this.props.profile &&
-    //     this.props.profile.placeOfBirth &&
-    //     this.props.profile.placeOfBirth.district
-    //       ? this.props.profile.placeOfBirth.district
-    //       : "";
-    //   newFormdata["country"].value =
-    //     this.props.profile &&
-    //     this.props.profile.placeOfBirth &&
-    //     this.props.profile.placeOfBirth.country &&
-    //     this.props.profile.placeOfBirth.country._id
-    //       ? this.props.profile.placeOfBirth.country._id
-    //       : "";
-    //   this.setState({ formdata: newFormdata });
+  componentDidUpdate(prevProps) {
+      if (prevProps.education !== this.props.education) {
+        const newFormdata = {
+                ...this.state.formdata
+              };
+              newFormdata["institution"].value =
+               this.props.education && this.props.education.institution ? this.props.education.institution
+                  : "";
+              newFormdata["fieldOfStudy"].value =
+               this.props.education && this.props.education.fieldOfStudy ? this.props.education.fieldOfStudy
+                  : "";
+              newFormdata["degree"].value =
+               this.props.education && this.props.education.degree ? this.props.education.degree
+                  : "";
+              newFormdata["start"].value =
+               this.props.education && this.props.education.start ? moment(this.props.education.start).format("YYYY")
+                  : "";
+              newFormdata["end"].value =
+               this.props.education && this.props.education.end ? moment(this.props.education.end).format("YYYY")
+                  : "";
+              newFormdata["city"].value =
+               this.props.education && this.props.education.city ? this.props.education.city
+                  : "";
+              
+              newFormdata["country"].value =
+              this.props.education && this.props.education.country && this.props.education.country._id ? this.props.education.country._id
+              : "";
+              this.setState({ formdata: newFormdata });
+      }
   }
 
   updateForm = element => {
-    const newFormdata = update(
-      element,
-      this.state.formdata,
-      "addEducation"
-    );
+    const newFormdata = update(element, this.state.formdata, "addEducation");
     this.setState({
       formError: false,
       formdata: newFormdata
@@ -251,91 +237,104 @@ class AddEducationDialogue extends Component {
     const institution = this.state.formdata.institution.value;
     const fieldOfStudy = this.state.formdata.fieldOfStudy.value;
     const degree = this.state.formdata.degree.value;
-    const start = moment(`01-01-${this.state.formdata.start.value}`).format("MM-DD-YYYY")
-    const end = moment(`01-01-${this.state.formdata.end.value}`).format("MM-DD-YYYY")
+    const start = moment(`01-01-${this.state.formdata.start.value}`).format(
+      "MM-DD-YYYY"
+    );
+    const end = moment(`01-01-${this.state.formdata.end.value}`).format(
+      "MM-DD-YYYY"
+    );
     const city = this.state.formdata.city.value;
     const country = this.state.formdata.country.value;
+
+    if ((institution.trim()) !== "" && (start.trim() !== "") && (end.trim() !== "") && (country.trim() !== "")  && (degree.trim() !== "")){
+        formIsValid = true
+    }
 
     if (moment(start).format("YYYY") > moment(end).format("YYYY")) {
       this.setState({
         formError: true,
         formErrorMessage: "ປິເລີ່ມບໍ່ສາມາດຫລາຍກວ່າປິທີ່ສິ້ນສຸດໄດ້"
-      })
-formIsValid = false
-    } 
-    else if (moment(start).format("YYYY") <= moment(end).format("YYYY")) {
+      });
+      formIsValid = false;
+    } else if (moment(start).format("YYYY") <= moment(end).format("YYYY")) {
       this.setState({
         formError: false,
         formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນທີ່ເກີດໄດ້`
       });
-    } 
-    else if ((moment(start).format("YYYY").trim().length > 4) || (moment(end).format("YYYY").trim().length > 4)) {
+    } else if (
+      moment(start)
+        .format("YYYY")
+        .trim().length > 4 ||
+      moment(end)
+        .format("YYYY")
+        .trim().length > 4
+    ) {
       this.setState({
         formError: true,
         formErrorMessage: `ຂໍອະໄພປີທີ່ທ່ານປ້ອນບໍ່ຖືກຕ້ອງ`
       });
-      formIsValid = false
+      formIsValid = false;
     }
 
     if (formIsValid & !this.state.formError) {
-        this.props
-          .dispatch(
-            addEducation(
-              this.props.profile._id,
-              institution,
-              fieldOfStudy,
-              degree,
-              start,
-              end,
-              city,
-              country,
-            )
+      this.props
+        .dispatch(
+            editEducation(
+            this.props.profile._id,
+            
+            institution,
+            fieldOfStudy,
+            degree,
+            start,
+            end,
+            city,
+            country,
+            this.props.education._id,
           )
-          .then(response => {
-            console.log(this.state.formdata);
-            if (response.payload.success) {
-              this.setState({
-                formError: false,
-                formSuccess: true
-              });
-              const newFormdata = {
-                ...this.state.formdata
-              };
-              newFormdata["country"].value = "5cb447959c03a67fad711b7b";
-              newFormdata["fieldOfStudy"].value = "";
-              newFormdata["degree"].value = "";
-              newFormdata["start"].value = "";
-              newFormdata["end"].value = "";
-              newFormdata["city"].value = "";
-              newFormdata["institution"].value = "";
-          
-              this.setState({ formdata: newFormdata });
-              this.props.close();
-            } else {
-              this.setState({
-                formError: true,
-                formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນທີ່ເກີດໄດ້`
-              });
-            }
-          })
-          .catch(e => {
+        )
+        .then(response => {
+          console.log(this.state.formdata);
+          if (response.payload.success) {
+            this.setState({
+              formError: false,
+              formSuccess: true
+            });
+            const newFormdata = {
+              ...this.state.formdata
+            };
+            newFormdata["country"].value = "5cb447959c03a67fad711b7b";
+            newFormdata["fieldOfStudy"].value = "";
+            newFormdata["degree"].value = "";
+            newFormdata["start"].value = "";
+            newFormdata["end"].value = "";
+            newFormdata["city"].value = "";
+            newFormdata["institution"].value = "";
+
+            this.setState({ formdata: newFormdata });
+            this.props.closeMenu()
+            this.props.close();
+          } else {
             this.setState({
               formError: true,
               formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນທີ່ເກີດໄດ້`
             });
+          }
+        })
+        .catch(e => {
+          this.setState({
+            formError: true,
+            formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນທີ່ເກີດໄດ້`
           });
-      } else {
-        this.setState({
-          formError: true,
-          formErrorMessage: "ມີບາງຂໍ້ມູນບໍ່ຖືກຕ້ອງກະລຸນາກວດສອບຂໍ້ມູນຄືນ"
         });
-      }
+    } else {
+      this.setState({
+        formError: true,
+        formErrorMessage: "ມີບາງຂໍ້ມູນບໍ່ຖືກຕ້ອງກະລຸນາກວດສອບຂໍ້ມູນຄືນ"
+      });
+    }
   };
 
-  
-
   render() {
-      
     return (
       <Dialog
         open={this.props.open}
@@ -355,7 +354,7 @@ formIsValid = false
                 fontFamily: "'Noto Sans Lao UI', sans serif"
               }}
             >
-              <Typography variant="inherit">{`ເພີ່ມຂໍ້ມູນການສຶກສາ`}</Typography>
+              <Typography variant="inherit">{`ແກ້ໄຂຂໍ້ມູນການສຶກສາ`}</Typography>
             </Grid>
             <Grid item xs align="right" style={{ padding: "16px" }}>
               <IconButton
@@ -389,64 +388,62 @@ formIsValid = false
               change={element => this.updateForm(element)}
               maxlength={500}
             />
-              <Grid container >
-                <Grid item xs={6} style={{paddingRight: "8px"}}>
+            <Grid container>
+              <Grid item xs={6} style={{ paddingRight: "8px" }}>
                 <FormField
-              id={"start"}
-              formdata={this.state.formdata.start}
-              change={element => this.updateForm(element)}
-              maxlength={4}
-            />
-                </Grid>
-                <Grid item xs={6} style={{paddingLeft: "8px"}}>
-                <FormField
-                id={"end"}
-                formdata={this.state.formdata.end}
-                change={element => this.updateForm(element)}
-                maxlength={4}
-              />
-                </Grid>
-                <FormHelperText
-                    style={{
-                      fontFamily: "'Noto Sans Lao UI', sans serif",
-                      fontWeight: "500",
-                      marginBottom: "8px",
-                      marginTop: "8px"
-                    }}
-                    
-                  >
-                    ຖ້າກໍາລັງສຶກສາຢູ່ແມ່ນໃສ່ປີຄາດວ່າຈະຈົບ
-                  </FormHelperText>
+                  id={"start"}
+                  formdata={this.state.formdata.start}
+                  change={element => this.updateForm(element)}
+                  maxlength={4}
+                />
               </Grid>
-            
+              <Grid item xs={6} style={{ paddingLeft: "8px" }}>
+                <FormField
+                  id={"end"}
+                  formdata={this.state.formdata.end}
+                  change={element => this.updateForm(element)}
+                  maxlength={4}
+                />
+              </Grid>
+              <FormHelperText
+                style={{
+                  fontFamily: "'Noto Sans Lao UI', sans serif",
+                  fontWeight: "500",
+                  marginBottom: "8px",
+                  marginTop: "8px"
+                }}
+              >
+                ຖ້າກໍາລັງສຶກສາຢູ່ແມ່ນໃສ່ປີຄາດວ່າຈະຈົບ
+              </FormHelperText>
+            </Grid>
+
             {
-            //     <FormControlLabel
-            //   control={
-            //     <Checkbox checked={true} color="primary" value="checkedA" />
-            //   }
-            //   label="Secondary"
-            // />
-        }
-        <Grid container >
-                <Grid item xs={6} style={{paddingRight: "8px"}}>
+              //     <FormControlLabel
+              //   control={
+              //     <Checkbox checked={true} color="primary" value="checkedA" />
+              //   }
+              //   label="Secondary"
+              // />
+            }
+            <Grid container>
+              <Grid item xs={6} style={{ paddingRight: "8px" }}>
                 <FormField
-              id={"city"}
-              formdata={this.state.formdata.city}
-              change={element => this.updateForm(element)}
-              maxlength={500}
-            />
-                </Grid>
-                <Grid item xs={6} style={{paddingLeft: "8px"}}>
-                <FormField
-              labelWidth={this.state.formdata.country.config.labelWidth}
-              id={"country"}
-              formdata={this.state.formdata.country}
-              change={element => this.updateForm(element)}
-            />
-                </Grid>
-                
+                  id={"city"}
+                  formdata={this.state.formdata.city}
+                  change={element => this.updateForm(element)}
+                  maxlength={500}
+                />
               </Grid>
-            
+              <Grid item xs={6} style={{ paddingLeft: "8px" }}>
+                <FormField
+                  labelWidth={this.state.formdata.country.config.labelWidth}
+                  id={"country"}
+                  formdata={this.state.formdata.country}
+                  change={element => this.updateForm(element)}
+                />
+              </Grid>
+            </Grid>
+
             {this.state.formError ? (
               <Grid container spacing={24}>
                 <Grid item xs={12}>
@@ -491,4 +488,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(AddEducationDialogue);
+export default connect(mapStateToProps)(UpdateEducationDialogue);

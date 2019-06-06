@@ -792,7 +792,7 @@ const PersonalInfoCard = ({
             </>
           ) : null}
 
-          {profile.nationality ? (
+          {profile.minor_ethnicity ? (
             <>
               <Grid
                 container

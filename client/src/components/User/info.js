@@ -24,6 +24,7 @@ import UpdateNationalityDialogue from "./Dialog/update_nationality";
 import UpdateAddressDialogue from "./Dialog/update_address";
 import UpdatePlaceOfBirthDialogue from "./Dialog/update_place_of_birth";
 import AddEducationDialogue from "./Dialog/add_education";
+import UpdateEducationDialogue from "./Dialog/update_education";
 
 import {
   Hidden,
@@ -33,7 +34,12 @@ import {
   Divider,
   DialogContent,
   IconButton,
-  Typography
+  Typography,
+  Menu,
+  MenuItem,
+  DialogContentText,
+  DialogActions,
+  Button
 } from "@material-ui/core";
 
 import {
@@ -49,10 +55,13 @@ import {
   clearFollower,
   getFollowerInLoadMore,
   getFollowingInLoadMore,
-  getDistrict
+  getDistrict,
+  removeEducation
 } from "../../actions/user_actions";
 
 import { CloseOutlined } from "@material-ui/icons";
+
+let edId;
 
 class ProfileInfo extends Component {
   state = {
@@ -88,6 +97,12 @@ class ProfileInfo extends Component {
     openEditEducationDialog: false,
 
     anchorElEducation: null,
+
+    educationId: "",
+
+    selectedEducation: {},
+
+    openRemoveEducationConformationDialog: false
   };
 
   componentWillMount() {
@@ -514,40 +529,79 @@ class ProfileInfo extends Component {
     });
   };
 
-    /*  add education dialogue actions */
-    handleOpenAddEducationDialog = () => {
-      this.setState({
-        openAddEducationDialog: true
-      });
-    };
-  
-    handleAddEducationClose = () => {
-      this.setState({
-        openAddEducationDialog: false
-      });
-    };
+  /*  add education dialogue actions */
+  handleOpenAddEducationDialog = () => {
+    this.setState({
+      openAddEducationDialog: true
+    });
+  };
 
-    /*  edit education dialogue actions */
-    handleOpenEditEducationDialog = () => {
-      this.setState({
-        openEditEducationDialog: true
-      });
-    };
-  
-    handleEditEducationClose = () => {
-      this.setState({
-        openEditEducationDialog: false
-      });
-    };
+  handleAddEducationClose = () => {
+    this.setState({
+      openAddEducationDialog: false
+    });
+  };
 
-    handleEducationMenuClick = event => {
-      this.setState({ anchorElEducation: event.currentTarget });
-    };
-  
-    handleEducationMenuClose = () => {
-      this.setState({ anchorElEducation: null });
-    };
-  
+  /*  edit education dialogue actions */
+  handleOpenEditEducationDialog = () => {
+    this.setState({
+      openEditEducationDialog: true
+    });
+  };
+
+  handleEditEducationClose = () => {
+    this.setState({
+      openEditEducationDialog: false
+    });
+  };
+
+  handleEducationMenuClick = (event, id) => {
+    this.setState({ anchorElEducation: event.currentTarget });
+    this.setState({
+      educationId: id
+    });
+
+    let educations = this.props.user.userDetail.education
+    let obj = educations.find(o => o._id === id);
+   this.setState({
+    selectedEducation: obj
+   })
+  };
+
+  handleEducationMenuClose = () => {
+    this.setState({ anchorElEducation: null });
+  };
+
+  /*  edit education dialogue actions */
+  handleOpenDeleteEducationConfirmationDialogue = () => {
+    this.setState({
+      openRemoveEducationConformationDialog: true
+    });
+  };
+
+  handleDeleteEducationConfirmationClose = () => {
+    this.setState({
+      openRemoveEducationConformationDialog: false
+      // anchorElEducation: null
+    });
+  };
+
+  handleEducationDeletion = () => {
+    console.log(this.state.educationId)
+    if (this.state.educationId.trim() !== "") {
+      this.props
+      .dispatch(removeEducation(this.props.user.userDetail._id, this.state.educationId))
+      .then(response => {
+        this.setState({
+          openRemoveEducationConformationDialog: false,
+          anchorElEducation: null
+        });
+        if(response.success) {
+          
+        }
+      });
+    }
+  };
 
   render() {
     const { fullScreen } = this.props;
@@ -600,15 +654,25 @@ class ProfileInfo extends Component {
                 }
               />
 
-              <EducationCard userData={this.props.user.userData}
-              userDetail={this.props.user.userDetail} props={this.props} 
-              runAddEducation={() =>
-                this.handleOpenAddEducationDialog()
-              }
-
-              handleClick={(event)=>{this.handleEducationMenuClick(event)}}
-              handleClose={(event)=>{this.handleEducationMenuClose(event)}}
-              anchorEl = {this.state.anchorElEducation}
+              <EducationCard
+                userData={this.props.user.userData}
+                userDetail={this.props.user.userDetail}
+                props={this.props}
+                runAddEducation={() => this.handleOpenAddEducationDialog()}
+                handleClick={(event, id) => {
+                  this.handleEducationMenuClick(event, id);
+                }}
+                handleClose={event => {
+                  this.handleEducationMenuClose(event);
+                }}
+                anchorEl={this.state.anchorElEducation}
+                runDelete={() => {
+                  this.handleOpenDeleteEducationConfirmationDialogue();
+                }}
+                runEdit={() => {
+                  this.handleOpenEditEducationDialog();
+                }}
+                
               />
             </Grid>
           </Grid>
@@ -821,8 +885,44 @@ class ProfileInfo extends Component {
           open={this.state.openAddEducationDialog}
           close={() => this.handleAddEducationClose()}
         />
-        
-        
+
+        <UpdateEducationDialogue
+          open={this.state.openEditEducationDialog}
+          close={() => this.handleEditEducationClose()}
+          education = {this.state.selectedEducation}
+          closeMenu={()=>{this.handleEducationMenuClose()}}
+        />
+
+        <Dialog
+          open={this.state.openRemoveEducationConformationDialog}
+          onClose={this.handleDeleteEducationConfirmationClose}
+          maxWidth="xs"
+        >
+          <DialogTitle style={{ fontFamily: "'Noto Sans Lao UI', sans serif" }}>
+            ຕ້ອງການລຶບຂໍ້ມູນນີ້ແທ້ບໍ?
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText
+              style={{ fontFamily: "'Noto Sans Lao UI', sans serif" }}
+            >
+              ທ່ານກໍາລັງຈະລຶບຂໍ້ມູນການສຶກສານີ້.
+              ທ່ານແນ່ໃຈຫລືບໍ່ວ່າຈະລຶບຂໍ້ມູນດັ່ງກ່າວ?
+              ການກະທໍາຕໍ່ໄປນີ້ບໍ່ສາມາດແກ້ໄຂໄດ້
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleDeleteEducationConfirmationClose}>
+              ຍົກເລີກ
+            </Button>
+            <Button
+              onClick={this.handleEducationDeletion}
+              style={{ color: "#f44336" }}
+              autoFocus
+            >
+              ຢືນຢັນ
+            </Button>
+          </DialogActions>
+        </Dialog>
       </ProfileHeader>
     );
   }

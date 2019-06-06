@@ -179,6 +179,22 @@ export default function(state = {}, action) {
           education: action.payload.education
         }
       };
+      case REMOVE_EDUCATION:
+      return {
+        ...state,
+        userDetail: {
+          ...state.userDetail,
+          education: action.payload.education
+        }
+      };
+      case UPDATE_EDUCATION:
+      return {
+        ...state,
+        userDetail: {
+          ...state.userDetail,
+          education: action.payload.education
+        }
+      };
     case GET_PROVINCE:
       return {
         ...state,

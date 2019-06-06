@@ -21,7 +21,8 @@ import {
   Chip,
   Fab,
   Menu,
-  MenuItem
+  MenuItem,
+  MenuList
 } from "@material-ui/core";
 
 import {
@@ -34,7 +35,9 @@ import {
   FavoriteOutlined,
   FavoriteBorderOutlined,
   MoreVertOutlined,
-  AddOutlined
+  AddOutlined,
+  EditOutlined,
+  DeleteOutline
 } from "@material-ui/icons";
 
 const EducationCard = ({
@@ -43,7 +46,9 @@ const EducationCard = ({
   runAddEducation,
   handleClick,
   handleClose,
-  anchorEl
+  anchorEl,
+  runDelete,
+  runEdit
 }) => {
   const user = { ...userData };
   const profile = { ...userDetail };
@@ -66,6 +71,71 @@ const EducationCard = ({
           <Grid item xs={12}>
             {profile.education[0] ? (
               <div>
+                <Menu
+                  className="menu"
+                  anchorEl={anchorEl}
+                  open={Boolean(anchorEl)}
+                  
+                  onClose={event => {
+                    handleClose(event);
+                  }}
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right"
+                  }}
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right"
+                  }}
+             
+                >
+                  <MenuItem
+                    style={{
+                      fontFamily: "'Noto Sans Lao UI', sans-serif",
+                      fontWeight: 500,
+                     
+                    }}
+                  onClick={()=>{runEdit()}}
+                    selected ={false}
+                  >
+                    {" "}
+                    <EditOutlined style={{ marginRight: "16px" }} /> ແກ້ໄຂ
+                  </MenuItem>
+
+                  <MenuItem
+                    style={{
+                      fontFamily: "'Noto Sans Lao UI', sans-serif",
+                      fontWeight: 500,
+                      
+                    }}
+                    selected ={false}
+                    onClick={()=>{runDelete()}}
+                  >
+                    <svg
+                      style={{ marginRight: "16px" }}
+                      width="24px"
+                      height="24px"
+                      viewBox="0 0 24 24"
+                      fill="#212121"
+                      focusable="false"
+                      class="a-s-fa-Ha-pa"
+                    >
+                      <path d="M0 0h24v24H0z" fill="none" />
+                      <path d="M15 4V3H9v1H4v2h1v13c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V6h1V4h-5zm2 15H7V6h10v13z" />
+                      <path d="M9 8h2v9H9zm4 0h2v9h-2z" />
+                    </svg>
+                    ລຶບ
+                  </MenuItem>
+
+                  <MenuItem 
+                    style={{
+                      fontFamily: "'Noto Sans Lao UI', sans-serif",
+                      fontWeight: 500,
+                      display: "none"
+                    }}
+                    selected ={true}
+                  ></MenuItem>
+                </Menu>
                 <Paper
                   style={{ boxShadow: "none", border: "1px solid #d8d8d8" }}
                 >
@@ -83,18 +153,17 @@ const EducationCard = ({
                       </Typography>
                     </Grid>
                     <Grid item xs={4} align="right">
-                      {isOwner ? (
-                        <IconButton
-                          style={{ padding: "0px" }}
-                          onClick={() => {
-                            runAddEducation();
-                          }}
-                        >
-                          <AddOutlined fontSize="default" />
-                        </IconButton>
-                      ) : null}
+                      <IconButton
+                        style={{ padding: "0px" }}
+                        onClick={() => {
+                          runAddEducation();
+                        }}
+                      >
+                        <AddOutlined fontSize="default" />
+                      </IconButton>
                     </Grid>
                   </Grid>
+
                   {profile.education.map((value, index, array) => (
                     <>
                       <Grid container style={{ padding: "8px" }} wrap="nowrap">
@@ -113,8 +182,11 @@ const EducationCard = ({
                               color: "#00695C"
                             }}
                           >
-                            {moment(value.start).format("YYYY")}-
-                            {moment(value.end).format("YYYY")}
+                          {value.start === value.end ? 
+                            moment(value.start).format("YYYY") :
+                            <>{moment(value.start).format("YYYY")} - {moment(value.end).format("YYYY")}</>
+                          }
+                          
                           </Typography>
                         </Grid>
                         <Grid
@@ -126,40 +198,14 @@ const EducationCard = ({
                             objectFit: "contain"
                           }}
                         >
-                          {isOwner ? (
-                            <>
-                              <IconButton
-                                style={{ padding: 0 }}
-                                onClick={event => {
-                                  handleClick(event);
-                                }}
-                              >
-                                <MoreVertOutlined fontSize="small" />
-                              </IconButton>
-                              <Menu
-                            
-                                anchorEl={anchorEl}
-                                open={Boolean(anchorEl)}
-                                
-                                onClose={event => {
-                                  handleClose(event);
-                                }}
-                                anchorOrigin={{
-                                  vertical: "top",
-                                  horizontal: "right"
-                                }}
-                                transformOrigin={{
-                                  vertical: "top",
-                                  horizontal: "right"
-                                }}
-                                keepMounted
-                              >
-                                <MenuItem>Profile</MenuItem>
-                                <MenuItem>My account</MenuItem>
-                                <MenuItem>Logout</MenuItem>
-                              </Menu>
-                            </>
-                          ) : null}
+                          <IconButton
+                            style={{ padding: 0 }}
+                            onClick={event => {
+                              handleClick(event, value._id);
+                            }}
+                          >
+                            <MoreVertOutlined fontSize="small" />
+                          </IconButton>
                         </Grid>
                       </Grid>
                       <Grid
@@ -173,7 +219,7 @@ const EducationCard = ({
                             ellipsis="..."
                             trimRight
                             basedOn="letters"
-                            style={{ fontSize: "19px", fontWeight: "700" }}
+                            style={{ fontSize: "19px", fontWeight: "500" }}
                           />
                         </Grid>
                         <Grid item xs={12} style={{ paddingTop: "4px" }}>
@@ -192,9 +238,9 @@ const EducationCard = ({
                         </Grid>
                         <Grid item xs={12} style={{ paddingTop: "4px" }}>
                           <LinesEllipsis
-                            text={`${value.institution}, ເມືອງ${
+                            text={value.city.trim() !== "" ? `${value.institution} • ${
                               value.city
-                            }, ປະເທດ${value.country.laoName.trim()}`}
+                            } • ປະເທດ${value.country.laoName.trim()}` : `${value.institution} • ປະເທດ${value.country.laoName.trim()}`}
                             maxLine="3"
                             ellipsis="..."
                             trimRight
