@@ -98,7 +98,10 @@ class UpdateWebsite extends Component {
     if (formIsValid) {
       this.props
         .dispatch(
-          updateWebsite(this.props.profile._id, this.state.formdata.website.value)
+          updateWebsite(
+            this.props.profile._id,
+            this.state.formdata.website.value
+          )
         )
         .then(response => {
           if (response.payload.success) {
@@ -110,15 +113,18 @@ class UpdateWebsite extends Component {
           } else {
             this.setState({
               formError: true,
-              formErrorMessage:
-                `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນ${this.state.formdata.website.config.label}ໄດ້`
+              formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນ${
+                this.state.formdata.website.config.label
+              }ໄດ້`
             });
           }
         })
         .catch(e => {
           this.setState({
             formError: true,
-            formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນ${this.state.formdata.website.config.label}ໄດ້ (error: ${e})`
+            formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນ${
+              this.state.formdata.website.config.label
+            }ໄດ້ (error: ${e})`
           });
         });
     } else {
@@ -149,7 +155,9 @@ class UpdateWebsite extends Component {
                 fontFamily: "'Noto Sans Lao UI', sans serif"
               }}
             >
-              <Typography variant="inherit">{`ແກ້ໄຂ ${this.state.formdata.website.config.label}`}</Typography>
+              <Typography variant="inherit">{`ແກ້ໄຂ ${
+                this.state.formdata.website.config.label
+              }`}</Typography>
             </Grid>
             <Grid item xs align="right" style={{ padding: "0" }}>
               <IconButton

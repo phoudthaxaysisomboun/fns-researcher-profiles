@@ -277,6 +277,10 @@ formIsValid = false
       formIsValid = false
     }
 
+    if ((institution.trim()) !== "" && (start.trim() !== "") && (end.trim() !== "") && (country.trim() !== "")  && (degree.trim() !== "")){
+      formIsValid = true
+  }
+
     if (formIsValid & !this.state.formError) {
         this.props
           .dispatch(

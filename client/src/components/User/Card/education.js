@@ -278,7 +278,9 @@ const EducationCard = ({
                     </Grid>
                     <Grid item xs={4} align="right">
                       {isOwner || user.isAdmin ? (
-                        <IconButton style={{ padding: "0px" }}>
+                        <IconButton style={{ padding: "0px" }} onClick={() => {
+                          runAddEducation();
+                        }}>
                           <AddOutlined fontSize="default" />
                         </IconButton>
                       ) : null}
@@ -286,7 +288,7 @@ const EducationCard = ({
                   </Grid>
                   <div style={{ margin: "20px" }}>
                     <Typography variant="inherit" align="center">
-                      ຍັງບໍ່ມີການສຶກສາເທື່ອ
+                      ຍັງບໍ່ມີຂໍ້ມູນການສຶກສາເທື່ອຄລິກທີ່ປຸ່ມ "{<AddOutlined style={{margin: 0, color: "#404040", position: "relative", top: '5px'}} fontSize="small" />}" ດ້ານເທິງເພື່ອເພີ່ມຂໍ້ມູນ
                     </Typography>
                   </div>
                 </Paper>
@@ -296,7 +298,113 @@ const EducationCard = ({
         </>
       );
     } else {
-      return <></>;
+      return (
+        <>
+          <Grid item xs={12}>
+            {profile.education[0] ? (
+              <div>
+                
+                <Paper
+                  style={{ boxShadow: "none", border: "1px solid #d8d8d8" }}
+                >
+                  <Grid container style={{ padding: "16px", paddingBottom: 0 }}>
+                    <Grid item xs={8}>
+                      <Typography
+                        variant="inherit"
+                        style={{
+                          fontSize: "1.375rem",
+                          marginBottom: "8px",
+                          fontWeight: "bold"
+                        }}
+                      >
+                        ການສຶກສາ
+                      </Typography>
+                    </Grid>
+                  </Grid>
+
+                  {profile.education.map((value, index, array) => (
+                    <>
+                      <Grid container style={{ padding: "8px" }} wrap="nowrap">
+                        <Grid
+                          item
+                          xs={6}
+                          style={{ paddingTop: "8px", paddingLeft: "8px" }}
+                        >
+                          <Typography
+                            variant="inherit"
+                            style={{
+                              fontFamily: "'Roboto', sans-serif",
+                              fontSize: "0.9rem",
+                              letterSpacing: "1.5 px",
+                              fontWeight: "600",
+                              color: "#00695C"
+                            }}
+                          >
+                          {value.start === value.end ? 
+                            moment(value.start).format("YYYY") :
+                            <>{moment(value.start).format("YYYY")} - {moment(value.end).format("YYYY")}</>
+                          }
+                          
+                          </Typography>
+                        </Grid>
+                        
+                      </Grid>
+                      <Grid
+                        container
+                        style={{ padding: "16px", paddingTop: 0 }}
+                      >
+                        <Grid item xs={12}>
+                          <LinesEllipsis
+                            text={value.fieldOfStudy}
+                            maxLine="2"
+                            ellipsis="..."
+                            trimRight
+                            basedOn="letters"
+                            style={{ fontSize: "19px", fontWeight: "500" }}
+                          />
+                        </Grid>
+                        <Grid item xs={12} style={{ paddingTop: "4px" }}>
+                          <LinesEllipsis
+                            text={value.degree}
+                            maxLine="2"
+                            ellipsis="..."
+                            trimRight
+                            basedOn="letters"
+                            style={{
+                              fontSize: "16px",
+                              fontWeight: "500",
+                              color: "#4c4c4c"
+                            }}
+                          />
+                        </Grid>
+                        <Grid item xs={12} style={{ paddingTop: "4px" }}>
+                          <LinesEllipsis
+                            text={value.city.trim() !== "" ? `${value.institution} • ${
+                              value.city
+                            } • ປະເທດ${value.country.laoName.trim()}` : `${value.institution} • ປະເທດ${value.country.laoName.trim()}`}
+                            maxLine="3"
+                            ellipsis="..."
+                            trimRight
+                            basedOn="letters"
+                            style={{
+                              fontSize: "14px",
+                              fontWeight: "normal",
+                              color: "#666666"
+                            }}
+                          />
+                        </Grid>
+                      </Grid>
+                      {index !== array.length - 1 ? <Divider /> : null}
+                    </>
+                  ))}
+                </Paper>
+              </div>
+            ) : (
+             <></>
+            )}
+          </Grid>
+        </>
+      );
     }
   };
   const renderNoData = () => {

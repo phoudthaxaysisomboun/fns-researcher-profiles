@@ -425,6 +425,10 @@ app.get("/api/researchers/profiles_by_id", (req, res) => {
     .populate({
       path: "researchExperience.country"
     })
+    .populate({
+      path: "education",
+      options: {sort: {city: 1}}
+    })
     .exec((err, docs) => {
       return res.status(200).send(docs);
     });
@@ -1054,9 +1058,12 @@ app.post("/api/researchers/addEducation", auth, (req, res) => {
           start: req.query.start,
           end: req.query.end,
           city: req.query.city,
-          country: mongoose.Types.ObjectId(req.query.country)
-        }
-      }
+          country: mongoose.Types.ObjectId(req.query.country),
+          $sort: { start: 1 }
+        },
+        
+      },
+      
     },
     {
       new: true
@@ -1244,6 +1251,10 @@ app.get("/api/research/researches_by_id", (req, res) => {
       .populate({
         path: "files.uploader",
         select: ["name", "lastname", "profileImage"]
+      })
+      .populate({
+        path: "education",
+        options: {sort: {"start": 1}}
       })
       // .populate({
       //   path: "affiliation.department"
