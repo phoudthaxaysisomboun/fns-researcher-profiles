@@ -25,6 +25,7 @@ import UpdateAddressDialogue from "./Dialog/update_address";
 import UpdatePlaceOfBirthDialogue from "./Dialog/update_place_of_birth";
 import AddEducationDialogue from "./Dialog/add_education";
 import UpdateEducationDialogue from "./Dialog/update_education";
+import ShareDialog from "../User/Dialog/share";
 
 import {
   Hidden,
@@ -61,7 +62,8 @@ import {
 
 import { CloseOutlined } from "@material-ui/icons";
 
-let edId;
+import { LOCALHOST } from "../utils/misc";
+let shareUrl
 
 class ProfileInfo extends Component {
   state = {
@@ -102,7 +104,8 @@ class ProfileInfo extends Component {
 
     selectedEducation: {},
 
-    openRemoveEducationConformationDialog: false
+    openRemoveEducationConformationDialog: false,
+    openShareDialog: false
   };
 
   componentWillMount() {
@@ -117,6 +120,8 @@ class ProfileInfo extends Component {
       for (var key in following) {
         followingId.push(following[key]._id);
       }
+
+      shareUrl =  `${LOCALHOST}/profile/${response.payload._id}/info`
 
       if (following.length > 0) {
         this.props.dispatch(getFollowing(followingId)).then(() => {
@@ -603,6 +608,18 @@ class ProfileInfo extends Component {
     }
   };
 
+  handleShareDialogClose = () => {
+    this.setState({
+      openShareDialog: false
+    });
+  };
+
+  handleShareDialogOpen = () => {
+    this.setState({
+      openShareDialog: true
+    });
+  };
+
   render() {
     const { fullScreen } = this.props;
 
@@ -621,6 +638,9 @@ class ProfileInfo extends Component {
         runUnfollow={id => this.unfollowUser(id)}
         loading={this.state.followLoading}
         tab={this.state.tabNumber}
+        openShareDialog={() => {
+          this.handleShareDialogOpen();
+        }}
       >
         <Grid container spacing={24} style={{ margin: "8px" }}>
           <Hidden only="sm">
@@ -923,6 +943,17 @@ class ProfileInfo extends Component {
             </Button>
           </DialogActions>
         </Dialog>
+
+        <ShareDialog
+          open={this.state.openShareDialog}
+          close={() => this.handleShareDialogClose()}
+          url={shareUrl}
+          profile={this.props && this.props.user && this.props.user.userDetail ? this.props.user.userDetail : null}
+          user={this.props.user.userData ? this.props.user.userData : this.props}
+          handleShareCount = {()=>{console.log(`shared`)}}
+          title = {this.props && this.props.user && this.props.user.userDetail && this.props.user.userDetail.name ? `ປະຫວັດ${this.props.user.userDetail.prefix} ${this.props.user.userDetail.name} ${this.props.user.userDetail.lastname} - FNS Researcher Profiles` : ""}
+          description = {this.props && this.props.user && this.props.user.userDetail && this.props.user.userDetail.name ? `ປະຫວັດ ແລະ ຂໍ້ມູນນັກຄົ້ນຄວ້າຂອງ${this.props.user.userDetail.prefix} ${this.props.user.userDetail.name} ${this.props.user.userDetail.lastname} - FNS Researcher Profiles` : ""}
+        />
       </ProfileHeader>
     );
   }

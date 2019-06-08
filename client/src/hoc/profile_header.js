@@ -44,7 +44,8 @@ const ProfileHeader = ({
   runFollow,
   children,
   loading,
-  tab
+  tab,
+  openShareDialog,
 }) => {
   const userData = { ...props.user.userData };
   const profile = { ...props.user.userDetail };
@@ -135,8 +136,6 @@ const ProfileHeader = ({
               <Grid item style={{ width: "24px" }}>
                 <Mail
                   style={{
-              
-                    
                     width: "20px",
                     color: "#BA000D"
                   }}
@@ -148,72 +147,66 @@ const ProfileHeader = ({
                   style={{ color: "#BA000D", wordWrap: "break-word" }}
                 >
                   <Typography variant="inherit">
-                    
                     <LinesEllipsis
-                            text={profile.email} 
-                            maxLine="1"
-                            ellipsis="..."
-                            trimRight
-                            basedOn="letters"
-                          />
+                      text={profile.email}
+                      maxLine="1"
+                      ellipsis="..."
+                      trimRight
+                      basedOn="letters"
+                    />
                   </Typography>
                 </Link>
               </Grid>
             </Grid>
           ) : null}
 
-          
           {facebook.name ? (
             <Grid container spacing={8} alignItems="flex-start">
               <Grid item style={{ width: "24px" }}>
-              <svg
-              style={{
-          
-                width: "20px",
-                color: "#1976D2"
-              }}
-              aria-hidden="true"
-              focusable="false"
-              data-prefix="fab"
-              data-icon="facebook"
-              role="img"
-              width="20px"
-              height="20px"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 448 512"
-              className="svg-inline--fa fa-facebook fa-w-14 fa-2x"
-            >
-              <path
-                fill="currentColor"
-                d="M448 56.7v398.5c0 13.7-11.1 24.7-24.7 24.7H309.1V306.5h58.2l8.7-67.6h-67v-43.2c0-19.6 5.4-32.9 33.5-32.9h35.8v-60.5c-6.2-.8-27.4-2.7-52.2-2.7-51.6 0-87 31.5-87 89.4v49.9h-58.4v67.6h58.4V480H24.7C11.1 480 0 468.9 0 455.3V56.7C0 43.1 11.1 32 24.7 32h398.5c13.7 0 24.8 11.1 24.8 24.7z"
-                className=""
-              />
-            </svg>
+                <svg
+                  style={{
+                    width: "20px",
+                    color: "#1976D2"
+                  }}
+                  aria-hidden="true"
+                  focusable="false"
+                  data-prefix="fab"
+                  data-icon="facebook"
+                  role="img"
+                  width="20px"
+                  height="20px"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 448 512"
+                  className="svg-inline--fa fa-facebook fa-w-14 fa-2x"
+                >
+                  <path
+                    fill="currentColor"
+                    d="M448 56.7v398.5c0 13.7-11.1 24.7-24.7 24.7H309.1V306.5h58.2l8.7-67.6h-67v-43.2c0-19.6 5.4-32.9 33.5-32.9h35.8v-60.5c-6.2-.8-27.4-2.7-52.2-2.7-51.6 0-87 31.5-87 89.4v49.9h-58.4v67.6h58.4V480H24.7C11.1 480 0 468.9 0 455.3V56.7C0 43.1 11.1 32 24.7 32h398.5c13.7 0 24.8 11.1 24.8 24.7z"
+                    className=""
+                  />
+                </svg>
               </Grid>
               <Grid item xs>
                 <Link
-                href={facebook.url}
+                  href={facebook.url}
                   style={{ color: "#1976D2", wordWrap: "break-word" }}
                 >
-                <LinesEllipsis
-                text={facebook.name} 
-                maxLine="1"
-                ellipsis="..."
-                trimRight
-                basedOn="letters"
-              />
+                  <LinesEllipsis
+                    text={facebook.name}
+                    maxLine="1"
+                    ellipsis="..."
+                    trimRight
+                    basedOn="letters"
+                  />
                 </Link>
               </Grid>
             </Grid>
-            
-            
           ) : null}
           {profile.mobile ? (
             <Grid container spacing={8} alignItems="flex-start">
               <Grid item style={{ width: "24px" }}>
                 <Phone
                   style={{
-                    
                     width: "20px",
                     color: "#2E7D32"
                   }}
@@ -221,22 +214,19 @@ const ProfileHeader = ({
               </Grid>
               <Grid item xs>
                 <Link
-                href={`tel:{$profile.mobile}`}
+                  href={`tel:{$profile.mobile}`}
                   style={{ color: "#2E7D32", wordWrap: "break-word" }}
                 >
-                <LinesEllipsis
-                text={profile.mobile} 
-                maxLine="1"
-                ellipsis="..."
-                trimRight
-                basedOn="letters"
-              />
+                  <LinesEllipsis
+                    text={profile.mobile}
+                    maxLine="1"
+                    ellipsis="..."
+                    trimRight
+                    basedOn="letters"
+                  />
                 </Link>
               </Grid>
             </Grid>
-
-
-            
           ) : null}
 
           {profile.website ? (
@@ -244,33 +234,24 @@ const ProfileHeader = ({
               <Grid item style={{ width: "24px" }}>
                 <PublicOutlined
                   style={{
-                    
                     width: "20px",
                     color: "#3f51b5"
                   }}
                 />
               </Grid>
               <Grid item xs>
-                <Link
-                href={profile.website}
-                  style={{  wordWrap: "break-word" }}
-                >
-                <LinesEllipsis
-                text={profile.website} 
-                maxLine="1"
-                ellipsis="..."
-                trimRight
-                basedOn="letters"
-              />
+                <Link href={profile.website} style={{ wordWrap: "break-word" }}>
+                  <LinesEllipsis
+                    text={profile.website}
+                    maxLine="1"
+                    ellipsis="..."
+                    trimRight
+                    basedOn="letters"
+                  />
                 </Link>
               </Grid>
             </Grid>
-
-
-            
           ) : null}
-
-          
         </div>
       );
     } else {
@@ -281,6 +262,7 @@ const ProfileHeader = ({
   const renderItems = () => {
     return (
       <div>
+
         {props.user.userDetail ? (
           <>
             <Typography
@@ -365,12 +347,14 @@ const ProfileHeader = ({
                   {renderItems()}
                 </Grid>
                 <Grid item lg={4} md={4} sm={12} xs={12} align="right">
+                  
                   {props.user.userDetail ? (
                     <Button
                       size="medium"
                       variant="outlined"
                       color="primary"
                       style={{ margin: "8px" }}
+                      onClick={()=>{openShareDialog()}}
                     >
                       <ReplyOutlined
                         style={{

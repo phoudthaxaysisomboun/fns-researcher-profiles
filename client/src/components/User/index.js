@@ -11,8 +11,11 @@ import FollowerCard from "../User/Card/follower";
 import LoadMoreFollowerCard from "./Card/load_more_follower";
 import LoadMoreFollowingCard from "../User/Card/load_more_following";
 import ResearchCard from "../User/Card/research";
+import ShareDialog from "../User/Dialog/share";
 
 import PropTypes from "prop-types";
+
+
 
 import {
   Hidden,
@@ -22,7 +25,8 @@ import {
   Divider,
   DialogContent,
   IconButton,
-  Typography
+  Typography,
+  Button
 } from "@material-ui/core";
 
 import {
@@ -46,8 +50,11 @@ import {
 } from "../../actions/research_actions";
 
 import { CloseOutlined } from "@material-ui/icons";
+import { LOCALHOST } from "../utils/misc";
 
-let userAuthor = [];
+
+
+let shareUrl
 class ProfileOverview extends Component {
   state = {
     loadingMoreFollower: false,
@@ -65,9 +72,10 @@ class ProfileOverview extends Component {
     loadingResearchCard: true,
     loadingFollower: true,
     loadingFollowing: true,
-    tabNumber: 0
+    tabNumber: 0,
+    openShareDialog: false
   };
-  
+
   componentWillMount() {
     const id = this.props.match.params.id;
     var following = [];
@@ -83,6 +91,8 @@ class ProfileOverview extends Component {
         followingId.push(following[key]._id);
       }
 
+      shareUrl =  `${LOCALHOST}/profile/${response.payload._id}`
+
       if (following.length > 0) {
         this.props.dispatch(getFollowing(followingId)).then(() => {
           this.setState({
@@ -97,21 +107,18 @@ class ProfileOverview extends Component {
             this.state.followingSkip
           )
         );
-  
       } else {
         this.setState({
           loadingFollowing: false
         });
       }
 
-      
-
       if (response.payload.follower.length > 0) {
-        this.props.dispatch(getFollower(followerId)).then(()=>{
+        this.props.dispatch(getFollower(followerId)).then(() => {
           this.setState({
             loadingFollower: false
           });
-        })
+        });
 
         this.props.dispatch(
           getFollowerInLoadMore(
@@ -125,7 +132,6 @@ class ProfileOverview extends Component {
           loadingFollower: false
         });
       }
-      
 
       if (response.payload.research.length > 0) {
         this.props.dispatch(getResearchForCard(researchId)).then(response => {
@@ -138,9 +144,6 @@ class ProfileOverview extends Component {
           loadingResearchCard: false
         });
       }
-
-      
-      
     });
   }
 
@@ -367,10 +370,22 @@ class ProfileOverview extends Component {
     });
   };
 
+  handleShareDialogClose = () => {
+    this.setState({
+      openShareDialog: false
+    });
+  };
+
+  handleShareDialogOpen = () => {
+    this.setState({
+      openShareDialog: true
+    });
+  };
+
   changeTab = tabNumber => {
     this.setState({
       tabNumber
-    })
+    });
   };
 
   render() {
@@ -390,8 +405,11 @@ class ProfileOverview extends Component {
         runFollow={id => this.followUser(id)}
         runUnfollow={id => this.unfollowUser(id)}
         loading={this.state.followLoading}
-        tab = {this.state.tabNumber}
+        tab={this.state.tabNumber}
         changeTab={tabNumber => this.changeTab(tabNumber)}
+        openShareDialog={() => {
+          this.handleShareDialogOpen();
+        }}
       >
         <Grid container spacing={24} style={{ margin: "8px" }}>
           <Hidden only="sm">
@@ -511,7 +529,6 @@ class ProfileOverview extends Component {
           open={this.state.openFollowingDialog}
           onClose={id => this.handleShowMoreFollowingClose(id)}
           scroll="paper"
-          aria-labelledby="max-width-dialog-title"
         >
           <DialogTitle style={{ padding: 0 }}>
             <Grid container>
@@ -564,6 +581,17 @@ class ProfileOverview extends Component {
             />
           </DialogContent>
         </Dialog>
+
+        <ShareDialog
+          open={this.state.openShareDialog}
+          close={() => this.handleShareDialogClose()}
+          url={shareUrl}
+          profile={this.props && this.props.user && this.props.user.userDetail ? this.props.user.userDetail : null}
+          user={this.props.user.userData ? this.props.user.userData : this.props}
+          handleShareCount = {()=>{console.log(`shared`)}}
+          title = {this.props && this.props.user && this.props.user.userDetail && this.props.user.userDetail.name ? `ຂໍ້ມູນ${this.props.user.userDetail.prefix} ${this.props.user.userDetail.name} ${this.props.user.userDetail.lastname} - FNS Researcher Profiles` : ""}
+          description = {this.props && this.props.user && this.props.user.userDetail && this.props.user.userDetail.name ? `ປະຫວັດ ແລະ ຂໍ້ມູນນັກຄົ້ນຄວ້າຂອງ${this.props.user.userDetail.prefix} ${this.props.user.userDetail.name} ${this.props.user.userDetail.lastname} - FNS Researcher Profiles` : ""}
+        />
       </ProfileHeader>
     );
   }
