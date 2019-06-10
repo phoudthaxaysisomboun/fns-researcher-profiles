@@ -125,7 +125,6 @@ const ResearchHeader = ({
   const renderItems = () => {
     return (
       <div>
-
         {props.user.userDetail ? (
           <>
             <Typography

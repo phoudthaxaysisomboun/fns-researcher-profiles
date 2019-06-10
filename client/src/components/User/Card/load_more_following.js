@@ -145,7 +145,7 @@ const LoadMoreFollowingCard = ({
                     <Link to={`/profile/${followings._id}`} style={{color: "inherit", textDecoration: "none"}}>
                     <Avatar
                     alt="profile image"
-                    style={{ width: "46px", height: "46px", backgroundColor: `${followings.name.toColor()}`, fontFamily: "'Noto Sans Lao UI', sans serif", fontWeight: "bold" }}
+                    style={{ width: "46px", height: "46px", backgroundColor: `${`${followings.name}${followings.lastname}`.toColor()}`, fontFamily: "'Noto Sans Lao UI', sans serif", fontWeight: "500" }}
                     
                   >
                   {`${followings.name.charAt(0)}${followings.lastname.charAt(0)}`}

@@ -41,6 +41,22 @@ import {
   
 } from "@material-ui/icons";
 
+import {colorPallete} from "../../../components/utils/misc"
+
+String.prototype.toColor = function() {
+	var colors = colorPallete
+	
+    var hash = 0;
+	if (this.length === 0) return hash;
+    for (var i = 0; i < this.length; i++) {
+        hash = this.charCodeAt(i) + ((hash << 5) - hash);
+        hash = hash & hash;
+    }
+    hash = ((hash % colors.length) + colors.length) % colors.length;
+    return colors[hash];
+}
+
+
 const styles = theme => ({
   root: {
     width: "100%"
@@ -179,30 +195,10 @@ class Header extends Component {
               }}
             >
               <Avatar
-                style={{ width: "32px", height: "32px", margin: 0, backgroundColor: "white", borderStyle: "solid", borderWidth: "2px", borderColor: "#e6e6e6" }}
+                style={{ width: "32px", height: "32px", backgroundColor: `${`${this.props.user.userData.name}${this.props.user.userData.lastname}`.toColor()}`, fontFamily: "'Noto Sans Lao UI', sans serif", fontSize: "14px", fontWeight: "500" }}
                 >
                 
-                <svg
-                  viewBox="0 0 24 24"
-                  preserveAspectRatio="xMidYMid meet"
-                  focusable="false"
-                  
-                  style={{
-                    pointerEvents: "none",
-                    display: "block",
-                    width: "100%",
-                    height: "100%",
-                    fill: "#0066cb",
-                    padding: "2px"
-                  }}
-                >
-                  <g style={{color: "#0066cb"}}>
-                    <path
-                      d="M12,0 C18.62375,0 24,5.37625 24,12 C24,18.62375 18.62375,24 12,24 C5.37625,24 0,18.62375 0,12 C0,5.37625 5.37625,0 12,0 Z M12,10.63625 C13.66,10.63625 15,9.29625 15,7.63625 C15,5.97625 13.66,4.63625 12,4.63625 C10.34,4.63625 9,5.97625 9,7.63625 C9,9.29625 10.34,10.63625 12,10.63625 Z M12,12.40875 C8.33375,12.40875 5.455,14.18125 5.455,15.8175 C6.84125,17.95 9.26875,19.3625 12,19.3625 C14.73125,19.3625 17.15875,17.95 18.545,15.8175 C18.545,14.18125 15.66625,12.40875 12,12.40875 Z"
-                      class="style-scope yt-icon"
-                    />
-                  </g>
-                </svg>
+                {`${this.props.user.userData.name.charAt(0)}${this.props.user.userData.lastname.charAt(0)}`}
                 
                 </Avatar>
             </IconButton>

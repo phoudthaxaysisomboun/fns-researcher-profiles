@@ -47,7 +47,8 @@ class Research extends Component {
     state = {
         isAuthor:  false,
         isUploader: false,
-        isAuth: false
+        isAuth: false,
+        isAdmin: false
     }
   componentWillMount() {
     const id = this.props.match.params.id;
@@ -59,8 +60,8 @@ class Research extends Component {
 
       const author = response.payload[0].author.find( array => array._id === this.props.user.userData._id );
       const uploader = response.payload[0].uploader._id === this.props.user.userData._id
-
       const auth = this.props.user.userData.isAuth
+      const admin = this.props.user.userData.isAdmin
 
       if (author) {
           this.setState({
@@ -77,6 +78,12 @@ class Research extends Component {
       if (auth) {
           this.setState({
               isAuth: true
+          })
+      }
+
+      if (admin) {
+          this.setState({
+              isAdmin: true
           })
       }
 console.log(this.state)

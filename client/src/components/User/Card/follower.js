@@ -18,6 +18,21 @@ import {
   PersonAddOutlined
 } from "@material-ui/icons";
 
+import { colorPallete } from "../../utils/misc";
+
+String.prototype.toColor = function() {
+  var colors = colorPallete;
+
+  var hash = 0;
+  if (this.length === 0) return hash;
+  for (var i = 0; i < this.length; i++) {
+    hash = this.charCodeAt(i) + ((hash << 5) - hash);
+    hash = hash & hash;
+  }
+  hash = ((hash % colors.length) + colors.length) % colors.length;
+  return colors[hash];
+};
+
 const FollowerCard = ({
   userData,
   userDetail,
@@ -101,12 +116,24 @@ const FollowerCard = ({
                     align="center"
                     style={{ marginRight: "8px", width: "54px" }}
                   >
-                    <Link to={`/profile/${followings._id}`}>
-                      <Avatar
-                        alt="Remy Sharp"
-                        style={{ width: "46px", height: "46px" }}
-                        src="http://hespokestyle.com/wp-content/uploads/2017/04/navy-cotton-linen-blazer-tan-chinos-polo-shirt-mens-spring-fashion-trends-8-800x533.jpg"
-                      />
+                    <Link to={`/profile/${followings._id}`}
+                    
+                    style={{ color: "inherit", textDecoration: "none" }}
+                    >
+                    <Avatar
+                    alt="profile image"
+                    style={{
+                      width: "46px",
+                      height: "46px",
+                      backgroundColor: `${`${followings.name}${followings.lastname}`.toColor()}`,
+                      fontFamily: "'Noto Sans Lao UI', sans serif",
+                      fontWeight: "500"
+                    }}
+                  >
+                    {`${followings.name.charAt(
+                      0
+                    )}${followings.lastname.charAt(0)}`}
+                  </Avatar>
                     </Link>
                   </Grid>
                   <Grid item xs>

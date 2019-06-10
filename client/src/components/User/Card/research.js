@@ -35,6 +35,22 @@ import {
   AddOutlined
 } from "@material-ui/icons";
 
+import {colorPallete} from "../../utils/misc"
+
+String.prototype.toColor = function() {
+	var colors = colorPallete
+	
+    var hash = 0;
+	if (this.length === 0) return hash;
+    for (var i = 0; i < this.length; i++) {
+        hash = this.charCodeAt(i) + ((hash << 5) - hash);
+        hash = hash & hash;
+    }
+    hash = ((hash % colors.length) + colors.length) % colors.length;
+    return colors[hash];
+}
+
+
 const styles = {
   chip: {
     marginTop: "4px",
@@ -224,9 +240,12 @@ const ResearchCard = ({ userData, userDetail, userResearch, loading }) => {
                               }}
                             >
                               <Avatar
-                                style={{ width: "18px", height: "18px" }}
-                                src="http://hespokestyle.com/wp-content/uploads/2017/04/navy-cotton-linen-blazer-tan-chinos-polo-shirt-mens-spring-fashion-trends-8-800x533.jpg"
-                              />
+                                style={{ width: "18px", height: "18px", backgroundColor: `${`${value.name}${value.lastname}`.toColor()}`, fontFamily: "'Noto Sans Lao UI', sans serif", fontWeight: "normal", fontSize: "8px" }}
+                               alt= "profile image"
+                              >
+                              {console.log(`${value.name}{value.lastname}`)}
+                              {`${value.name.charAt(0)}${value.lastname.charAt(0)}`}
+                              </Avatar>
                             </Grid>
                             <Grid item>
                               <Typography
