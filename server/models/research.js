@@ -97,30 +97,38 @@ const researchSchema = mongoose.Schema({
         date: {type: Date},
         uploader: {type: Schema.Types.ObjectId, ref: 'User',}
     }],
-    likes: {
-        type: Array,
-        default: []
-    },
-    comments: {
-        type: Array,
-        default: []
-    },
-    shares: {
-        type: Array,
-        default: []
-    },
-    citations: {
-        type: Array,
-        default: []
-    },
-    reads: {
-        type: Array,
-        default: []
-    },
-    downloads: {
-        type: Array,
-        default: []
-    },
+    likes: [{
+        time: {type: Date},
+        user: {type: Schema.Types.ObjectId, ref: 'User',},
+        
+    }],
+    comments: [{
+        time: {type: Date},
+        comment: {type: String, maxlength: 1000},
+        user: {type: Schema.Types.ObjectId, ref: 'User',},
+        replies: [{
+            time: {type: Date},
+            reply: {type: String, maxlength: 1000},
+            user: {type: Schema.Types.ObjectId, ref: 'User',},
+        }]
+    }],
+    shares:  [{
+        time: {type: Date},
+        user: {type: String},
+        to: {type: String, maxlength: 100}
+    }],
+    citations:  [{
+        time: {type: Date},
+        user: {type: String},
+    }],
+    reads: [{
+        time: {type: Date},
+        user: {type: String},
+    }],
+    downloads: [{
+        time: {type: Date},
+        user: {type: String},
+    }],
     fundings: [{
         grantor: {type: String, maxlength: 256},
         amount: {type: Number},

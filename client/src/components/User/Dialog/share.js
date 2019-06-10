@@ -377,7 +377,9 @@ const ShareDialog = ({
               inputProps={{
                 style: {
                   padding: "8px",
-                  margin: 0
+                  margin: 0,
+                  backgroundColor: "#f7f7f7",
+                  borderRadius: "4px"
                 }
               }}
             />
@@ -386,7 +388,7 @@ const ShareDialog = ({
             <CopyToClipboard
               text={url}
             >
-            <Button>ຄັດລອກ</Button>
+            <Button color= "primary">ຄັດລອກ</Button>
             </CopyToClipboard>
             
           </Grid>

@@ -1269,7 +1269,7 @@ app.get("/api/research/researches_by_id", (req, res) => {
   }
 });
 
-app.post("/api/research/research", auth, (req, res) => {
+app.post("/api/research/add_research", auth, (req, res) => {
   const research = new Research(req.body);
 
   research.save((err, doc) => {
@@ -1279,10 +1279,12 @@ app.post("/api/research/research", auth, (req, res) => {
       doc
     });
 
+    let ids = doc.author
+
     // REMINDER: add researches id to other authors
 
-    User.findOneAndUpdate(
-      { _id: req.user._id },
+    User.updateMany(
+      { _id: ids },
       {
         $push: {
           research: mongoose.Types.ObjectId(doc._id)

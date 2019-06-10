@@ -90,7 +90,7 @@ class ProfileOverview extends Component {
       for (var key in following) {
         followingId.push(following[key]._id);
       }
-
+console.log(response)
       shareUrl =  `${LOCALHOST}/profile/${response.payload._id}`
 
       if (following.length > 0) {

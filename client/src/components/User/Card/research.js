@@ -172,6 +172,7 @@ const ResearchCard = ({ userData, userDetail, userResearch, loading }) => {
                         zeroMinWidth
                         style={{ paddingRight: "16px" }}
                       >
+                      <ReactLink to={`/research/${researches._id}`} style={{textDecoration: "none", color: "inherit"}}>
                         <LinesEllipsis
                           text={researches.title}
                           maxLine="2"
@@ -179,7 +180,9 @@ const ResearchCard = ({ userData, userDetail, userResearch, loading }) => {
                           trimRight
                           basedOn="letters"
                           style={{ fontSize: "20px", fontWeight: "500" }}
+                          
                         />
+                        </ReactLink>
                         <Grid container />
                         <Grid
                           container
@@ -268,7 +271,7 @@ const ResearchCard = ({ userData, userDetail, userResearch, loading }) => {
                         alignItems="flex-end"
                       >
                         <Grid item xs={6}>
-                          <Button variant="contained" color="primary">
+                          <Button variant="contained" color="primary" component={ReactLink} to={`/research/${researches._id}`} >
                             ອ່ານ
                           </Button>
                         </Grid>
