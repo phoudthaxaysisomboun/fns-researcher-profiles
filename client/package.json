@@ -19,6 +19,7 @@
     "react-copy-to-clipboard": "^5.0.1",
     "react-dom": "^16.8.6",
     "react-dropzone": "^4.2.12",
+    "react-file-viewer": "^1.1.0",
     "react-images": "^0.5.17",
     "react-lines-ellipsis": "^0.14.1",
     "react-moment": "^0.7.7",

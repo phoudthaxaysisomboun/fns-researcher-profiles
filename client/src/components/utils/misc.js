@@ -4,6 +4,8 @@
  export const RESEARCHER_SERVER = '/api/researchers'
  
  export const LOCALHOST= 'https://chilly-badger-18.localtunnel.me'
+
+ export const UPLOADS_SERVER = 'http://localhost:3002/uploads/'
  
  export const colorPallete= [
     '#944336',

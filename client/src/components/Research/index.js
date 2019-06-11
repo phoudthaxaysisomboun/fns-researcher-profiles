@@ -39,6 +39,11 @@ import {
 
 import { CloseOutlined } from "@material-ui/icons";
 import { LOCALHOST } from "../utils/misc";
+import AddResearchButton from "../utils/Button/add_research_button";
+
+import AbstractCard from "../Research/Card/abstract"
+import FileViwerCard from "../Research/Card/file_viewer"
+
 
 let shareUrl;
 
@@ -91,7 +96,31 @@ console.log(this.state)
   }
 
   render() {
-    return <div />;
+    return (
+      <ResearchHeader
+        props={this.props}
+        children={this.props.children}
+        userData={this.props.user.userData}
+        research={this.props.research && this.props.research.userResearch ? this.props.research.userResearch[0]: ""}
+        openShareDialog={() => {
+          this.handleShareDialogOpen();
+        }}
+      >
+      <Grid container spacing={24} style={{paddingTop: "24px", paddingBottom: "24px"}}>
+      <Grid item xs sm={1} lg={2} md={1} />
+
+      <Grid item xs={11} sm={10} lg={8} md={10}>
+
+      <AbstractCard user={this.props.user.userData} research={this.props.research && this.props.research.userResearch ? this.props.research.userResearch[0]: ""} />
+      <FileViwerCard />
+      </Grid>
+
+      <Grid item xs sm={1} lg={2} md={1} />
+      </Grid>
+      
+      <AddResearchButton />
+      </ResearchHeader>
+    )
   }
 }
 
