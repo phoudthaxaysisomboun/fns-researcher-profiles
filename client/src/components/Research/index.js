@@ -106,13 +106,13 @@ console.log(this.state)
           this.handleShareDialogOpen();
         }}
       >
-      <Grid container spacing={24} style={{paddingTop: "24px", paddingBottom: "24px"}}>
+      <Grid container spacing={0} style={{paddingTop: "24px", paddingBottom: "24px"}}>
       <Grid item xs sm={1} lg={2} md={1} />
 
       <Grid item xs={11} sm={10} lg={8} md={10}>
 
       <AbstractCard user={this.props.user.userData} research={this.props.research && this.props.research.userResearch ? this.props.research.userResearch[0]: ""} />
-      <FileViwerCard />
+      <FileViwerCard user={this.props.user.userData} research={this.props.research && this.props.research.userResearch ? this.props.research.userResearch[0]: ""} />
       </Grid>
 
       <Grid item xs sm={1} lg={2} md={1} />

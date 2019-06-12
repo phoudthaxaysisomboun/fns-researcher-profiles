@@ -311,10 +311,11 @@ const ResearchCard = ({ userData, userDetail, userResearch, loading }) => {
                           >
                             &nbsp;
                             <NumberFormat
-                              value={research.reads ? research.reads.length : 0}
+                              value={researches.reads ? researches.reads.length : 0}
                               displayType={"text"}
                               thousandSeparator={true}
                             />
+                            {console.log(researches.reads)}
                             &nbsp;
                           </div>
                           <span

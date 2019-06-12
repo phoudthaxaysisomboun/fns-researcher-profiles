@@ -1,6 +1,6 @@
 import React from "react";
 import AutoLinkText from "react-autolink-text2";
-
+import ReactTextFormat from "react-text-format";
 import {
   IconButton,
   Grid,
@@ -11,32 +11,26 @@ import {
 
 import { EditOutlined } from "@material-ui/icons";
 
+const renderNoData = () => {
+  return <LinearProgress style={{ margin: "16px" }} />;
+};
 
+const AbstractCard = ({ user, research }) => {
+  const abstract = research && research.abstract ? research.abstract : "";
 
-  const renderNoData = () => {
+  const renderItems = () => {
     return (
-      <LinearProgress style={{margin: "16px"}} />
-    )
-  }
-
-const AbstractCard = ({user, research}) => {
-    const renderItems = () => {
-        return (
-          
-          <Grid container spacing={8} style={{ padding: "24px" }}>
-          <Typography variant="body1" style={{}} >
-            <AutoLinkText text={research ? research.abstract : null} />
-    
-            
-          </Typography>
-        </Grid>
-        )
-      }
-    return (
-        <Grid item xs={12}>
-    
-        <Paper style={{ boxShadow: "none", border: "1px solid #d8d8d8" }}>
-        <Grid container style={{padding: "24px", paddingBottom: 0}}>
+      <Grid container spacing={8} style={{ padding: "24px", paddingTop: "16px" }}>
+        <Typography style={{ whiteSpace: "pre-wrap", lineHeight: "32px", fontSize: "1rem" }}>
+          <AutoLinkText text={abstract}></AutoLinkText>
+        </Typography>
+      </Grid>
+    );
+  };
+  return (
+    <Grid item xs={12}>
+      <Paper style={{ boxShadow: "none", border: "1px solid #d8d8d8" }}>
+        <Grid container style={{ padding: "24px", paddingBottom: 0 }}>
           <Grid item xs={6}>
             <Typography
               variant="inherit"
@@ -46,7 +40,7 @@ const AbstractCard = ({user, research}) => {
                 fontWeight: "bold"
               }}
             >
-              ແນະນໍາ
+              ບົດຄັດຍໍ່
             </Typography>
           </Grid>
           <Grid item xs={6} align="right">
@@ -58,10 +52,9 @@ const AbstractCard = ({user, research}) => {
           </Grid>
         </Grid>
         {true ? renderItems() : renderNoData()}
-          
-        </Paper>
-      </Grid>
-    );
+      </Paper>
+    </Grid>
+  );
 };
 
 export default AbstractCard;

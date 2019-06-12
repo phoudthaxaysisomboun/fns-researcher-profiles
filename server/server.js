@@ -1246,7 +1246,7 @@ app.get("/api/research/researches_by_id", (req, res) => {
       .populate({
         path: "supervisor",
         model: "User",
-        select: ["name", "lastname", "profileImage"]
+        select: ["name", "lastname", "profileImage", "prefix"]
       })
       .populate({
         path: "uploader",

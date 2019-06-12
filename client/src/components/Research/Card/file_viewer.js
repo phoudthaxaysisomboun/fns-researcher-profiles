@@ -13,14 +13,19 @@ import {
 import { EditOutlined } from "@material-ui/icons";
 import { UPLOADS_SERVER } from "../../../components/utils/misc";
 
-const name = "1558183548fns_researcher_profiles.pdf";
+
+
+
+const FileViwerCard = ({user, research}) => {
+let name
+  name = research && research.files && research.files[0] ? research.files[0].name : "";
 
 const file = `${UPLOADS_SERVER}${name}`;
-const type = "pdf";
-
-const FileViwerCard = () => {
+const type = file.split('.').pop();
   return (
+    
     <Grid item xs={12}>
+    {console.log(research)}
       {type === "pdf" ? (
         <Paper
           style={{
@@ -33,7 +38,10 @@ const FileViwerCard = () => {
             textAlign: "center"
           }}
         >
-          <FileViewer fileType={type} filePath={file} />
+        {
+          name !== "" ? <FileViewer fileType={type} filePath={file} /> : null
+        }
+          
         </Paper>
       ) : (
         <Paper
@@ -47,7 +55,9 @@ const FileViwerCard = () => {
             
           }}
         >
-          <FileViewer fileType={type} filePath={file} />
+        {
+          name !== "" ? <FileViewer fileType={type} filePath={file} /> : null
+        }
         </Paper>
       )}
     </Grid>
