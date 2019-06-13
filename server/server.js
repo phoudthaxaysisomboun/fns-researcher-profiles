@@ -8,6 +8,8 @@ require("dotenv").config();
 
 const normalizeUrl = require("normalize-url");
 
+const searchPlugin = require('mongoose-search-plugin');
+
 mongoose.Promise = global.Promise;
 mongoose.connect(process.env.DATABASE);
 
@@ -382,6 +384,64 @@ app.get("/api/users/logout", auth, (req, res) => {
 //====================================
 //            RESEARCHERS
 //====================================
+
+function escapeRegex(text) {
+  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+};
+
+// /api/researchers/profiles?id=asdasd,asdasdas,asdasd&type=single
+app.get("/api/researchers/test", (req, res) => {
+
+  const regex = new RegExp(escapeRegex(req.query.search), 'gi');
+  User.find({ $or:
+    [{name: regex}, {lastname: regex},{prefix: regex}, {"affiliation.position": regex}], $and: [{emailIsVerified: true},
+    {accountIsVerified: true}]
+    
+  })
+  .select("name lastname")
+    // .populate("gender")
+    // .populate({
+    //   path: "address.district"
+    // })
+    // .populate({
+    //   path: "address.province"
+    // })
+    // .populate({
+    //   path: "desipline.maindesipline"
+    // })
+    // .populate({
+    //   path: "desipline.subdesipline.item"
+    // })
+    // .populate({
+    //   path: "affiliation.institution"
+    // })
+    // .populate({
+    //   path: "affiliation.department"
+    // })
+    // .populate({
+    //   path: "affiliation.faculty"
+    // })
+    // .populate({
+    //   path: "placeOfBirth.country"
+    // })
+    // .populate({
+    //   path: "education.country"
+    // })
+    // .populate({
+    //   path: "teachingExperience.country"
+    // })
+    // .populate({
+    //   path: "researchExperience.country"
+    // })
+    // .populate({
+    //   path: "education",
+    //   options: {sort: {city: 1}}
+    // })
+    .exec((err, docs) => {
+      return res.status(200).send(docs);
+    });
+});
+
 
 // /api/researchers/profiles?id=asdasd,asdasdas,asdasd&type=single
 app.get("/api/researchers/profiles_by_id", (req, res) => {

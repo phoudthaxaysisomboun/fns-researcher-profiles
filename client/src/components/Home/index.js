@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import SearchHeader from '../../hoc/search_header'
 
 class Home extends Component {
 
@@ -8,9 +9,11 @@ class Home extends Component {
 
     render() {
         return (
-            <div>
-                Home
-            </div>
+           <>
+            <SearchHeader >
+            
+            </SearchHeader>
+           </>
         );
     }
 }

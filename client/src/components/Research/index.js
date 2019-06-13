@@ -44,6 +44,8 @@ import AddResearchButton from "../utils/Button/add_research_button";
 import AbstractCard from "../Research/Card/abstract"
 import FileViwerCard from "../Research/Card/file_viewer"
 
+import { Document, Page } from 'react-pdf';
+
 
 let shareUrl;
 
@@ -53,8 +55,15 @@ class Research extends Component {
         isAuthor:  false,
         isUploader: false,
         isAuth: false,
-        isAdmin: false
+        isAdmin: false,
+        numPages: null,
+    pageNumber: 1,
     }
+    
+  onDocumentLoadSuccess = ({ numPages }) => {
+    this.setState({ numPages });
+  }
+
   componentWillMount() {
     const id = this.props.match.params.id;
 
@@ -96,6 +105,7 @@ console.log(this.state)
   }
 
   render() {
+
     return (
       <ResearchHeader
         props={this.props}
@@ -110,7 +120,18 @@ console.log(this.state)
       <Grid item xs sm={1} lg={2} md={1} />
 
       <Grid item xs={11} sm={10} lg={8} md={10}>
-
+      <div> 
+      {
+      //   <Document
+      //   file="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+      //   onLoadSuccess={this.onDocumentLoadSuccess}
+      //   onSourceError={(e)=>{console.log(e)}}
+      // >
+      //   <Page pageNumber={1} />
+      // </Document><p>Page {this.state.pageNumber} of {this.state.numPages}</p>
+      }
+      
+    </div>
       <AbstractCard user={this.props.user.userData} research={this.props.research && this.props.research.userResearch ? this.props.research.userResearch[0]: ""} />
       <FileViwerCard user={this.props.user.userData} research={this.props.research && this.props.research.userResearch ? this.props.research.userResearch[0]: ""} />
       </Grid>

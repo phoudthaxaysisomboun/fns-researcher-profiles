@@ -12,20 +12,23 @@ import {
 
 import { EditOutlined } from "@material-ui/icons";
 import { UPLOADS_SERVER } from "../../../components/utils/misc";
+import { Document, Page } from 'react-pdf';
+import 'react-pdf/dist/Page/AnnotationLayer.css';
 
 
 
+const FileViwerCard = ({ user, research }) => {
+  let name;
+  name =
+    research && research.files && research.files[0]
+      ? research.files[0].name
+      : "";
 
-const FileViwerCard = ({user, research}) => {
-let name
-  name = research && research.files && research.files[0] ? research.files[0].name : "";
-
-const file = `${UPLOADS_SERVER}${name}`;
-const type = file.split('.').pop();
+  const file = `${UPLOADS_SERVER}${name}`;
+  const type = file.split(".").pop();
   return (
-    
     <Grid item xs={12}>
-    {console.log(research)}
+      {console.log(research)}
       {type === "pdf" ? (
         <Paper
           style={{
@@ -38,10 +41,18 @@ const type = file.split('.').pop();
             textAlign: "center"
           }}
         >
-        {
-          name !== "" ? <FileViewer fileType={type} filePath={file} /> : null
+          {name !== "" ? <FileViewer fileType={type} filePath={file} /> : null}
+
+          {
+          //   name !== "" ? (
+          //   <Document
+          //     file={'/1558183548fns_researcher_profiles.pdf'}
+            
+          //   >
+          //     <Page  pageNumber={1}/>
+          //   </Document>
+          // ) : null
         }
-          
         </Paper>
       ) : (
         <Paper
@@ -51,13 +62,10 @@ const type = file.split('.').pop();
             padding: "16px",
             marginTop: "24px",
             fontFamily: "'Phetsarath', sans-serif",
-            borderRadius: 0,
-            
+            borderRadius: 0
           }}
         >
-        {
-          name !== "" ? <FileViewer fileType={type} filePath={file} /> : null
-        }
+          {name !== "" ? <FileViewer fileType={type} filePath={file} /> : null}
         </Paper>
       )}
     </Grid>
