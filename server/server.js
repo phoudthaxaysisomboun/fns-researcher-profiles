@@ -8,7 +8,7 @@ require("dotenv").config();
 
 const normalizeUrl = require("normalize-url");
 
-const searchPlugin = require('mongoose-search-plugin');
+const searchPlugin = require("mongoose-search-plugin");
 
 mongoose.Promise = global.Promise;
 mongoose.connect(process.env.DATABASE);
@@ -16,17 +16,18 @@ mongoose.connect(process.env.DATABASE);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
-var cors = require('cors');
+var cors = require("cors");
 app.use(cors());
 app.use("/uploads", express.static("uploads"));
 
-
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
   next();
 });
-
 
 // Models
 const { User } = require("./models/user");
@@ -385,63 +386,115 @@ app.get("/api/users/logout", auth, (req, res) => {
 //            RESEARCHERS
 //====================================
 
-function escapeRegex(text) {
-  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
-};
-
-// /api/researchers/profiles?id=asdasd,asdasdas,asdasd&type=single
-app.get("/api/researchers/test", (req, res) => {
-
-  const regex = new RegExp(escapeRegex(req.query.search), 'gi');
-  User.find({ $or:
-    [{name: regex}, {lastname: regex},{prefix: regex}, {"affiliation.position": regex}], $and: [{emailIsVerified: true},
-    {accountIsVerified: true}]
-    
-  })
-  .select("name lastname")
-    // .populate("gender")
-    // .populate({
-    //   path: "address.district"
-    // })
-    // .populate({
-    //   path: "address.province"
-    // })
-    // .populate({
-    //   path: "desipline.maindesipline"
-    // })
-    // .populate({
-    //   path: "desipline.subdesipline.item"
-    // })
-    // .populate({
-    //   path: "affiliation.institution"
-    // })
-    // .populate({
-    //   path: "affiliation.department"
-    // })
-    // .populate({
-    //   path: "affiliation.faculty"
-    // })
-    // .populate({
-    //   path: "placeOfBirth.country"
-    // })
-    // .populate({
-    //   path: "education.country"
-    // })
-    // .populate({
-    //   path: "teachingExperience.country"
-    // })
-    // .populate({
-    //   path: "researchExperience.country"
-    // })
-    // .populate({
-    //   path: "education",
-    //   options: {sort: {city: 1}}
-    // })
-    .exec((err, docs) => {
-      return res.status(200).send(docs);
+app.get("/api/researcher_profiles/count", (req, res) => {
+  User.find({
+    emailIsVerified: true,
+    accountIsVerified: true
+  }).exec((err, docs) => {
+    Research.find({}).exec((err, researchDoc) => {
+      if (err) return res.status(400).send(err);
+      res.status(200).json({
+        profileCount: docs.length,
+        researchCount: researchDoc.length,
+      });
     });
+   
+  });
 });
 
+function escapeRegex(text) {
+  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+}
+
+// /api/researchers/profiles?id=asdasd,asdasdas,asdasd&type=single
+app.post("/api/researchers/search", (req, res) => {
+  let order = req.query.order ? req.query.order : "asc";
+  let sortBy = req.query.sortBy ? req.query.sortBy : "name";
+  let limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 6;
+  let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0;
+  let findArgs = {};
+
+  for (let key in req.body.filters) {
+    if (req.body.filters[key].length > 0) {
+      findArgs[key] = req.body.filters[key];
+    }
+  }
+
+  findArgs.emailIsVerified = true;
+  findArgs.accountIsVerified = true;
+
+  // findArgs["affiliation.department"] = "5cd3a6481c9d44000074849b"
+
+  if (findArgs || req.query.search) {
+    const regex = new RegExp(
+      escapeRegex(req.query.search ? req.query.search : ""),
+      "gi"
+    );
+    User.find({
+      $or: [
+        { name: regex },
+        { lastname: regex },
+        { prefix: regex },
+        { "affiliation.position": regex }
+      ],
+      $and: [{ emailIsVerified: true }, { accountIsVerified: true }]
+    })
+      .select("_id")
+
+      .exec((err, docs) => {
+        if (docs) {
+          findArgs["_id"] = docs;
+          docs.map((value, index) => {
+            findArgs._id[index] = value["_id"];
+          });
+        }
+
+        User.find(findArgs)
+          .populate("gender")
+          .populate({
+            path: "address.district"
+          })
+          .populate({
+            path: "address.province"
+          })
+          .populate({
+            path: "desipline.maindesipline"
+          })
+          .populate({
+            path: "desipline.subdesipline.item"
+          })
+          .populate({
+            path: "affiliation.institution"
+          })
+          .populate({
+            path: "affiliation.department"
+          })
+          .populate({
+            path: "affiliation.faculty"
+          })
+          .populate({
+            path: "placeOfBirth.country"
+          })
+          .populate({
+            path: "education.country"
+          })
+          .populate({
+            path: "teachingExperience.country"
+          })
+          .populate({
+            path: "researchExperience.country"
+          })
+          .populate({
+            path: "education",
+            options: { sort: { city: 1 } }
+          })
+          .exec((err, result) => {
+            console.log(findArgs);
+            return res.status(200).send(result);
+          });
+      });
+  }
+});
 
 // /api/researchers/profiles?id=asdasd,asdasdas,asdasd&type=single
 app.get("/api/researchers/profiles_by_id", (req, res) => {
@@ -497,7 +550,7 @@ app.get("/api/researchers/profiles_by_id", (req, res) => {
     })
     .populate({
       path: "education",
-      options: {sort: {city: 1}}
+      options: { sort: { city: 1 } }
     })
     .exec((err, docs) => {
       return res.status(200).send(docs);
@@ -1130,10 +1183,8 @@ app.post("/api/researchers/addEducation", auth, (req, res) => {
           city: req.query.city,
           country: mongoose.Types.ObjectId(req.query.country),
           $sort: { start: 1 }
-        },
-        
-      },
-      
+        }
+      }
     },
     {
       new: true
@@ -1252,6 +1303,16 @@ app.post("/api/research/publication_type", auth, admin, (req, res) => {
 
 /*  Researches  */
 
+app.get("/api/research/research_count", (req, res) => {
+  Research.find({}).exec((err, docs) => {
+    if (err) return res.status(400).send(err);
+
+    res.status(200).json({
+      researchCount: docs.length
+    });
+  });
+});
+
 app.post("/api/research/researches", (req, res) => {
   let order = req.body.order ? req.body.order : "desc";
   let sortBy = req.body.sortBy ? req.body.sortBy : "createdAt";
@@ -1324,7 +1385,7 @@ app.get("/api/research/researches_by_id", (req, res) => {
       })
       .populate({
         path: "education",
-        options: {sort: {"start": 1}}
+        options: { sort: { start: 1 } }
       })
       // .populate({
       //   path: "affiliation.department"
@@ -1349,7 +1410,7 @@ app.post("/api/research/add_research", auth, (req, res) => {
       doc
     });
 
-    let ids = doc.author
+    let ids = doc.author;
 
     // REMINDER: add researches id to other authors
 

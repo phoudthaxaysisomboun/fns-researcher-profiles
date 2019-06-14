@@ -38,3 +38,6 @@ export const GET_RESEARCH_FOR_CARD = "get_research_for_card";
 export const CLEAR_RESEARCH_CARD = "clear_research_card";
 
 export const GET_DEPARTMENTS = "get_departments";
+
+
+export const GET_PROFILE_RESEARCH_COUNT = "get_profile_and_research_count";

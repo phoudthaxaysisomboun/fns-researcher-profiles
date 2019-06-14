@@ -22,7 +22,8 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  Divider
+  Divider,
+  Grid
 } from "@material-ui/core";
 
 import { Link } from "react-router-dom";
@@ -32,30 +33,28 @@ import MenuIcon from "@material-ui/icons/MenuOutlined";
 import SearchIcon from "@material-ui/icons/SearchOutlined";
 import AccountCircle from "@material-ui/icons/AccountCircleOutlined";
 import MoreIcon from "@material-ui/icons/MoreVertOutlined";
-import {ArrowDropDownOutlined} from "@material-ui/icons";
+import { ArrowDropDownOutlined } from "@material-ui/icons";
 import {
   SettingsOutlined,
   ExitToAppOutlined,
   AddOutlined,
-  PersonOutlined, 
-  
+  PersonOutlined
 } from "@material-ui/icons";
 
-import {colorPallete} from "../../../components/utils/misc"
+import { colorPallete } from "../../../components/utils/misc";
 
 String.prototype.toColor = function() {
-	var colors = colorPallete
-	
-    var hash = 0;
-	if (this.length === 0) return hash;
-    for (var i = 0; i < this.length; i++) {
-        hash = this.charCodeAt(i) + ((hash << 5) - hash);
-        hash = hash & hash;
-    }
-    hash = ((hash % colors.length) + colors.length) % colors.length;
-    return colors[hash];
-}
+  var colors = colorPallete;
 
+  var hash = 0;
+  if (this.length === 0) return hash;
+  for (var i = 0; i < this.length; i++) {
+    hash = this.charCodeAt(i) + ((hash << 5) - hash);
+    hash = hash & hash;
+  }
+  hash = ((hash % colors.length) + colors.length) % colors.length;
+  return colors[hash];
+};
 
 const styles = theme => ({
   root: {
@@ -133,13 +132,25 @@ const styles = theme => ({
   },
   drawer: {
     width: 240,
-    flexShrink: 0,
+    flexShrink: 0
   },
   drawerPaper: {
-    width: 240,
+    width: 240
   },
   appBar: {
-    zIndex: theme.zIndex.drawer + 1,
+    zIndex: theme.zIndex.drawer + 1
+  },
+  sectionDesktop2: {
+    display: "none",
+    [theme.breakpoints.up("md")]: {
+      display: "inherit"
+    }
+  },
+  sectionMobile2: {
+    display: "inherit",
+    [theme.breakpoints.up("md")]: {
+      display: "none"
+    }
   },
 });
 
@@ -158,9 +169,9 @@ class Header extends Component {
     this.handleMobileMenuClose();
   };
 
-  handleSearch = (event) => {
-    console.log(event.target.value)
-  }
+  handleSearch = event => {
+    console.log(event.target.value);
+  };
 
   logoutHandler = () => {
     this.props.dispatch(logoutUser()).then(response => {
@@ -185,23 +196,35 @@ class Header extends Component {
       if (this.props.user.userData.isAuth) {
         return (
           <div>
-          <Link to={`/profile/${this.props.user.userData._id}`} style={{textDecoration: "none", outline: 0}}>
-            <IconButton
-              aria-haspopup="true"
-              color="inherit"
-              style={{
-                padding: "8px",
-                margin: 0
-              }}
+            <Link
+              to={`/profile/${this.props.user.userData._id}`}
+              style={{ textDecoration: "none", outline: 0 }}
             >
-              <Avatar
-                style={{ width: "32px", height: "32px", backgroundColor: `${`${this.props.user.userData.name}${this.props.user.userData.lastname}`.toColor()}`, fontFamily: "'Noto Sans Lao UI', sans serif", fontSize: "14px", fontWeight: "500" }}
+              <IconButton
+                aria-haspopup="true"
+                color="inherit"
+                style={{
+                  padding: "8px",
+                  margin: 0
+                }}
+              >
+                <Avatar
+                  style={{
+                    width: "32px",
+                    height: "32px",
+                    backgroundColor: `${`${this.props.user.userData.name}${
+                      this.props.user.userData.lastname
+                    }`.toColor()}`,
+                    fontFamily: "'Noto Sans Lao UI', sans serif",
+                    fontSize: "14px",
+                    fontWeight: "500"
+                  }}
                 >
-                
-                {`${this.props.user.userData.name.charAt(0)}${this.props.user.userData.lastname.charAt(0)}`}
-                
+                  {`${this.props.user.userData.name.charAt(
+                    0
+                  )}${this.props.user.userData.lastname.charAt(0)}`}
                 </Avatar>
-            </IconButton>
+              </IconButton>
             </Link>
 
             <IconButton
@@ -215,8 +238,6 @@ class Header extends Component {
             >
               <ArrowDropDownOutlined />
             </IconButton>
-
-            
           </div>
         );
       } else {
@@ -252,13 +273,17 @@ class Header extends Component {
         onClose={this.handleMenuClose}
       >
         {this.props.user.userData ? (
-          <Link to={`/profile/${this.props.user.userData._id}`} style={{textDecoration: "none", outline: 0}}>
+          <Link
+            to={`/profile/${this.props.user.userData._id}`}
+            style={{ textDecoration: "none", outline: 0 }}
+          >
             <MenuItem
               style={{ fontFamily: "'Noto Sans Lao UI', sans-serif" }}
               onClick={this.handleMenuClose}
             >
               <AccountCircle style={{ marginRight: "4px" }} />
-              {this.props.user.userData.name} {this.props.user.userData.lastname}
+              {this.props.user.userData.name}{" "}
+              {this.props.user.userData.lastname}
             </MenuItem>
           </Link>
         ) : null}
@@ -322,33 +347,38 @@ class Header extends Component {
                     paddingRight: "8px"
                   }}
                 >
-                <Avatar
-                style={{ width: "32px", height: "32px", margin: 0, backgroundColor: "white", borderStyle: "solid", borderWidth: "2px", borderColor: "#e6e6e6" }}
-                >
-                
-                <svg
-                  viewBox="0 0 24 24"
-                  preserveAspectRatio="xMidYMid meet"
-                  focusable="false"
-                  
-                  style={{
-                    pointerEvents: "none",
-                    display: "block",
-                    width: "100%",
-                    height: "100%",
-                    fill: "#0066cb",
-                    padding: "2px"
-                  }}
-                >
-                  <g style={{color: "#0066cb"}}>
-                    <path
-                      d="M12,0 C18.62375,0 24,5.37625 24,12 C24,18.62375 18.62375,24 12,24 C5.37625,24 0,18.62375 0,12 C0,5.37625 5.37625,0 12,0 Z M12,10.63625 C13.66,10.63625 15,9.29625 15,7.63625 C15,5.97625 13.66,4.63625 12,4.63625 C10.34,4.63625 9,5.97625 9,7.63625 C9,9.29625 10.34,10.63625 12,10.63625 Z M12,12.40875 C8.33375,12.40875 5.455,14.18125 5.455,15.8175 C6.84125,17.95 9.26875,19.3625 12,19.3625 C14.73125,19.3625 17.15875,17.95 18.545,15.8175 C18.545,14.18125 15.66625,12.40875 12,12.40875 Z"
-                      class="style-scope yt-icon"
-                    />
-                  </g>
-                </svg>
-                
-                </Avatar>
+                  <Avatar
+                    style={{
+                      width: "32px",
+                      height: "32px",
+                      margin: 0,
+                      backgroundColor: "white",
+                      borderStyle: "solid",
+                      borderWidth: "2px",
+                      borderColor: "#e6e6e6"
+                    }}
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      preserveAspectRatio="xMidYMid meet"
+                      focusable="false"
+                      style={{
+                        pointerEvents: "none",
+                        display: "block",
+                        width: "100%",
+                        height: "100%",
+                        fill: "#0066cb",
+                        padding: "2px"
+                      }}
+                    >
+                      <g style={{ color: "#0066cb" }}>
+                        <path
+                          d="M12,0 C18.62375,0 24,5.37625 24,12 C24,18.62375 18.62375,24 12,24 C5.37625,24 0,18.62375 0,12 C0,5.37625 5.37625,0 12,0 Z M12,10.63625 C13.66,10.63625 15,9.29625 15,7.63625 C15,5.97625 13.66,4.63625 12,4.63625 C10.34,4.63625 9,5.97625 9,7.63625 C9,9.29625 10.34,10.63625 12,10.63625 Z M12,12.40875 C8.33375,12.40875 5.455,14.18125 5.455,15.8175 C6.84125,17.95 9.26875,19.3625 12,19.3625 C14.73125,19.3625 17.15875,17.95 18.545,15.8175 C18.545,14.18125 15.66625,12.40875 12,12.40875 Z"
+                          class="style-scope yt-icon"
+                        />
+                      </g>
+                    </svg>
+                  </Avatar>
                 </IconButton>
                 <p style={{ fontFamily: "'Noto Sans Lao UI', sans serif" }}>
                   ບັນຊີ
@@ -415,114 +445,210 @@ class Header extends Component {
 
     return (
       <>
-      <div className={classes.root}>
-      <AppBar
-        position="fixed"
-        id="header"
-        color="default"
-        className={`${classes.appbar} ${this.props.headerclass}`}
-        style={{
-          background: "white",
-          boxShadow: "none",
-          zIndex: 1201
-        }}
-      >
-
-      
-        <Toolbar variant="regular" style={{ height: "64px" }}>
-          <IconButton
-            className={classes.menuButton}
-            color="inherit"
-            aria-label="Open drawer"
+        <div className={classes.root}>
+          <AppBar
+            position="fixed"
+            id="header"
+            color="default"
+            className={`${classes.appbar} ${this.props.headerclass}`}
+            style={{
+              background: "white",
+              boxShadow: "none",
+              zIndex: 1201
+            }}
           >
-            <MenuIcon />
-          </IconButton>
-          <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
-            <Typography
-              className={classes.title}
-              variant="h6"
-              color="inherit"
-              noWrap
-            >
-              FNS Researcher Profiles
-            </Typography>
-          </Link>
+            <Toolbar variant="regular" style={{ height: "64px" }}>
+              {!this.props.location.pathname.startsWith("/home") ? (
+                <>
+                  <IconButton
+                    className={classes.menuButton}
+                    color="inherit"
+                    aria-label="Open drawer"
+                  >
+                    <MenuIcon />
+                  </IconButton>
+                </>
+              ) : null}
+              {!this.props.location.pathname.startsWith("/home") ? (
+                <Link
+                  to="/"
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
+                  <Typography
+                    className={classes.title}
+                    variant="h6"
+                    color="inherit"
+                    noWrap
+                    style={{ fontWeight: "bold" }}
+                  >
+                    FNS Researcher Profiles
+                  </Typography>
+                </Link>
+              ) : null}
 
-          <div className={classes.search}>
-            <IconButton className={classes.searchIcon} style={{padding: "2px", margin: 0, width: "28px", height: "28px", marginTop: "8.5px", marginBottom: "8.5px", marginLeft: "8px"}}>
-              <SearchIcon />
-            </IconButton>
-            <InputBase
-              placeholder="ຄົ້ນຫານັກຄົ້ນຄວ້າ, ຜົນງານ ຯລຯ"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput
-              }}
-              style={{
-                fontFamily: "'Noto Sans Lao UI', sans-serif"
-              }}
-              onChange={(event)=>{this.handleSearch(event)}}
-            />
-          </div>
-          <div className={classes.grow} />
-          <div className={classes.sectionDesktop}>
-            {
-              // <IconButton color="inherit">
-              //   <Badge badgeContent={4} color="secondary">
-              //     <MailIcon />
-              //   </Badge>
-              // </IconButton>
-              // <IconButton color="inherit">
-              //   <Badge badgeContent={17} color="secondary">
-              //     <NotificationsIcon />
-              //   </Badge>
-              // </IconButton>
-            }
+              {!this.props.location.pathname.startsWith("/home") ? (
+                <>
+                  <div className={classes.search}>
+                    <IconButton
+                      className={classes.searchIcon}
+                      style={{
+                        padding: "2px",
+                        margin: 0,
+                        width: "28px",
+                        height: "28px",
+                        marginTop: "8.5px",
+                        marginBottom: "8.5px",
+                        marginLeft: "8px"
+                      }}
+                    >
+                      <SearchIcon />
+                    </IconButton>
+                    <InputBase
+                      placeholder="ຄົ້ນຫານັກຄົ້ນຄວ້າ, ຜົນງານ ຯລຯ"
+                      classes={{
+                        root: classes.inputRoot,
+                        input: classes.inputInput
+                      }}
+                      style={{
+                        fontFamily: "'Noto Sans Lao UI', sans-serif"
+                      }}
+                      onChange={event => {
+                        this.handleSearch(event);
+                      }}
+                    />
+                  </div>
+                  <div className={classes.grow} />
+                </>
+              ) : (
+                <>
+                  <Grid container style={{ flexGrow: "1", margin: 0,  }}>
+                    <Grid item xs={2} align="left">
+                      <IconButton
+                        className={classes.menuButton}
+                        color="inherit"
+                        aria-label="Open drawer"
+                      >
+                        <MenuIcon />
+                      </IconButton>
+                    </Grid>
 
-            {this.showAccountButton()}
-          </div>
-          <div className={classes.sectionMobile}>
-            <IconButton
-              aria-haspopup="true"
-              onClick={this.handleMobileMenuOpen}
-              color="inherit"
-            >
-              <MoreIcon />
-            </IconButton>
-          </div>
-        </Toolbar>
-      </AppBar>
-      
-      {renderMenu}
-      {renderMobileMenu()}
-    </div>
-    <Drawer
-      className={classes.drawer}
-      variant="persistent"
-      classes={{
-        paper: classes.drawerPaper,
-      }}
-      open={false}
-    >
-      <div className={classes.toolbar} />
-      <List>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>{index % 2 === 0 ? <SearchIcon /> : <SearchIcon />}</ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
-      <List>
-        {['All mail', 'Trash', 'Spam'].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>{index % 2 === 0 ? <SearchIcon /> : <SearchIcon />}</ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
-      </List>
-    </Drawer>
+                    <Grid item xs ={8} alignContent="center">
+                      <Link
+                        to="/"
+                        style={{ textDecoration: "none", color: "inherit" }}
+                      >
+                        <Typography
+                          variant="h6"
+                          color="inherit"
+                          style={{
+                            
+                            textAlign: "center",
+                            fontWeight: "bold",
+                            fontFamily: "'Roboto', sans serif",
+                            paddingTop: "6px"
+                          }}
+                          noWrap
+                        >
+                          FNS Researcher Profiles
+                        </Typography>
+                      </Link>
+                    </Grid>
+
+                    <Grid item xs={2}  align="right">
+                      <div className={classes.sectionDesktop2}>
+                        {
+                          // <IconButton color="inherit">
+                          //   <Badge badgeContent={4} color="secondary">
+                          //     <MailIcon />
+                          //   </Badge>
+                          // </IconButton>
+                          // <IconButton color="inherit">
+                          //   <Badge badgeContent={17} color="secondary">
+                          //     <NotificationsIcon />
+                          //   </Badge>
+                          // </IconButton>
+                        }
+                        {this.showAccountButton()}
+                      </div>
+                      <div className={classes.sectionMobile2}>
+                        <IconButton
+                          aria-haspopup="true"
+                          onClick={this.handleMobileMenuOpen}
+                          color="inherit"
+                        >
+                          <MoreIcon />
+                        </IconButton>
+                      </div>
+                    </Grid>
+                  </Grid>
+                </>
+              )}
+
+              {!this.props.location.pathname.startsWith("/home") ? (
+                <>
+                  <div className={classes.sectionDesktop}>
+                    {
+                      // <IconButton color="inherit">
+                      //   <Badge badgeContent={4} color="secondary">
+                      //     <MailIcon />
+                      //   </Badge>
+                      // </IconButton>
+                      // <IconButton color="inherit">
+                      //   <Badge badgeContent={17} color="secondary">
+                      //     <NotificationsIcon />
+                      //   </Badge>
+                      // </IconButton>
+                    }
+                    {this.showAccountButton()}
+                  </div>
+                  <div className={classes.sectionMobile}>
+                    <IconButton
+                      aria-haspopup="true"
+                      onClick={this.handleMobileMenuOpen}
+                      color="inherit"
+                    >
+                      <MoreIcon />
+                    </IconButton>
+                  </div>
+                </>
+              ) : null}
+            </Toolbar>
+          </AppBar>
+
+          {renderMenu}
+          {renderMobileMenu()}
+        </div>
+        <Drawer
+          className={classes.drawer}
+          variant="persistent"
+          classes={{
+            paper: classes.drawerPaper
+          }}
+          open={false}
+        >
+          <div className={classes.toolbar} />
+          <List>
+            {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
+              <ListItem button key={text}>
+                <ListItemIcon>
+                  {index % 2 === 0 ? <SearchIcon /> : <SearchIcon />}
+                </ListItemIcon>
+                <ListItemText primary={text} />
+              </ListItem>
+            ))}
+          </List>
+          <Divider />
+          <List>
+            {["All mail", "Trash", "Spam"].map((text, index) => (
+              <ListItem button key={text}>
+                <ListItemIcon>
+                  {index % 2 === 0 ? <SearchIcon /> : <SearchIcon />}
+                </ListItemIcon>
+                <ListItemText primary={text} />
+              </ListItem>
+            ))}
+          </List>
+        </Drawer>
       </>
     );
   }

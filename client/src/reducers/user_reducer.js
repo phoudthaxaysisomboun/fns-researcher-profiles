@@ -32,7 +32,8 @@ import {
   GET_COUNTRY,
   ADD_EDUCATION,
   UPDATE_EDUCATION,
-  REMOVE_EDUCATION
+  REMOVE_EDUCATION,
+  GET_PROFILE_RESEARCH_COUNT
 } from "../actions/types";
 
 export default function(state = {}, action) {
@@ -210,6 +211,12 @@ export default function(state = {}, action) {
       return {
         ...state,
         district: action.payload,
+      };
+    case GET_PROFILE_RESEARCH_COUNT:
+      return {
+        ...state,
+        profileCount: action.payload.profileCount,
+        researchCount: action.payload.researchCount,
       };
     default:
       return state;

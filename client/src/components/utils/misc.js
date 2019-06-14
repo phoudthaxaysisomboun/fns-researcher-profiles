@@ -6,6 +6,8 @@
  export const LOCALHOST= 'https://chilly-badger-18.localtunnel.me'
 
  export const UPLOADS_SERVER = 'http://localhost:3002/uploads/'
+
+ export const RESEARCHER_PROFILES_SERVER = '/api/researcher_profiles'
  
  export const colorPallete= [
     '#944336',

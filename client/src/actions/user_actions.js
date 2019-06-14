@@ -34,10 +34,11 @@ import {
   GET_COUNTRY,
   ADD_EDUCATION,
   UPDATE_EDUCATION,
-  REMOVE_EDUCATION
+  REMOVE_EDUCATION,
+  GET_PROFILE_RESEARCH_COUNT
 } from "./types";
 
-import { USER_SERVER, RESEARCHER_SERVER } from "../components/utils/misc";
+import { USER_SERVER, RESEARCHER_SERVER, RESEARCHER_PROFILES_SERVER } from "../components/utils/misc";
 
 export function loginUser(dataToSubmit) {
   const request = axios
@@ -461,6 +462,19 @@ export function getCountry() {
 
   return {
     type: GET_COUNTRY,
+    payload: request
+  };
+}
+
+export function getProfileAndResearchCount() {
+
+  const request = axios
+    .get(
+      `${RESEARCHER_PROFILES_SERVER}/count`
+    )
+    .then(response => response.data);
+  return {
+    type: GET_PROFILE_RESEARCH_COUNT,
     payload: request
   };
 }

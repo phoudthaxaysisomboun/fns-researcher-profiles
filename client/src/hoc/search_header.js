@@ -9,7 +9,6 @@ import {
   Button,
   Tabs,
   Tab,
-  Link,
   Typography,
   LinearProgress,
   CircularProgress,
@@ -26,6 +25,8 @@ import NumberFormat from "react-number-format";
 import moment from "moment";
 
 import LinesEllipsis from "react-lines-ellipsis";
+
+import { Link } from "react-router-dom";
 
 import {
   Mail,
@@ -48,7 +49,8 @@ import {
   RemoveRedEyeOutlined,
   MenuOutlined,
   DirectionsOutlined,
-  SearchOutlined
+  SearchOutlined,
+  CloseOutlined
 } from "@material-ui/icons";
 
 import { Link as ReactLink, withRouter } from "react-router-dom";
@@ -107,7 +109,7 @@ const styles = {
   }
 };
 
-const SearchHeader = ({ props }) => {
+const SearchHeader = ({ props, children, searchTerm, handleSearchTextChange, clearText, researchCount, profileCount }) => {
   return (
     <Grid container>
       <Grid item xs={12}>
@@ -122,40 +124,59 @@ const SearchHeader = ({ props }) => {
             borderTop: "0"
           }}
         >
-        <Grid container justify="center" style={{ paddingBottom: "24px"}}>
-          <Typography variant="inherit" style={{fontSize: "24px", fontWeight: "bold"}}>
-            ຄົ້ນຫາ
-          </Typography><div style={{display: "inline", fontSize: "24px", fontWeight: "bold", fontFamily: "'Roboto', sans serif"}}>
-          FNS Researcher Profiles
-          </div>
-        </Grid>
+          <Grid container justify="center" style={{ paddingBottom: "14px" }}>
+            <Typography
+              variant="inherit"
+              style={{ fontSize: "24px", fontWeight: "bold" }}
+            >
+              ຄົ້ນຫາ
+            </Typography>
+          </Grid>
+          <Grid container justify="center" style={{ paddingBottom: "24px" }}>
+            <Grid item xs={12}>
+              <Typography variant="inherit" style={{ textAlign: "center" }}>
+                ດ້ວຍ <Link to="/">{researchCount} ລ້ານນັກຄົ້ນຄວ້າ</Link> ແລະ{" "}
+                <Link to="/">{profileCount} ລ້ານເຄື່ອງພິມ</Link>
+              </Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="inherit" style={{ textAlign: "center" }}>
+                ນີ້ແມ່ນບ່ອນທີ່ທຸກຄົນສາມາດເຂົ້າເຖິງວິທະຍາສາດ
+              </Typography>
+            </Grid>
+          </Grid>
           <Grid container>
             <Grid item xs sm={2} lg={4} md={3} />
             <Grid item xs={10} sm={8} lg={4} md={6}>
               <Grid container justify="center">
                 <Paper style={styles.root} elevation={0}>
                   {
-                //     <IconButton style={styles.iconButton} aria-label="Menu">
-                //     <MenuOutlined />
-                //   </IconButton>
+                        <IconButton style={styles.iconButton} aria-label="Menu">
+                        <SearchOutlined />
+                      </IconButton>
                   }
                   <InputBase
                     style={styles.input}
+                    autoFocus
                     placeholder="ຄົ້ນຫາຜົນງານຄົ້ນຄວ້າ, ນັກວິໄຈ..."
+                    onChange={e=> {handleSearchTextChange(e.target.value)}}
+                    value={searchTerm}
                   />
-                  <IconButton style={styles.iconButton} aria-label="Search">
-                    <SearchOutlined />
-                  </IconButton>
                   {
-
-                //     <Divider style={styles.divider} />
-                //   <IconButton
-                //     color="primary"
-                //     style={styles.iconButton}
-                //     aria-label="Directions"
-                //   >
-                //     <DirectionsOutlined />
-                //   </IconButton>
+                    searchTerm !== "" ?
+                    <IconButton style={styles.iconButton} onClick={()=>{clearText()}} aria-label="Search">
+                    <CloseOutlined />
+                  </IconButton> : null
+                  }
+                  {
+                    //     <Divider style={styles.divider} />
+                      // <IconButton
+                      //   color="primary"
+                      //   style={styles.iconButton}
+                      //   aria-label="Directions"
+                      // >
+                      //   <DirectionsOutlined />
+                      // </IconButton>
                   }
                 </Paper>
               </Grid>
@@ -173,7 +194,7 @@ const SearchHeader = ({ props }) => {
               >
                 <Tab
                   style={{ fontSize: "16px", fontWeight: 500 }}
-                  label="ໂດຍລວມ"
+                  label="ນັກຄົ້ນຄວ້າ"
                   to={`/research/}`}
                   component={ReactLink}
                 />
@@ -184,7 +205,7 @@ const SearchHeader = ({ props }) => {
                     fontWeight: 500,
                     textDecoration: "none"
                   }}
-                  label="ສະຖິຕິ"
+                  label="ຜົນງານຄົ້ນຄວ້າ"
                   to={`/profile/`}
                   component={ReactLink}
                 />
@@ -198,6 +219,8 @@ const SearchHeader = ({ props }) => {
           </Grid>
         </Paper>
       </Grid>
+
+      {children}
     </Grid>
   );
 };
