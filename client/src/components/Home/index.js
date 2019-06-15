@@ -21,6 +21,7 @@ class Home extends Component {
   }
 
   componentWillMount() {
+    console.log(this.props.location)
       this.props.dispatch(getProfileAndResearchCount()).then(response => {
           console.log(response.payload)
       })

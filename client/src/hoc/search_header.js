@@ -109,7 +109,16 @@ const styles = {
   }
 };
 
-const SearchHeader = ({ props, children, searchTerm, handleSearchTextChange, clearText, researchCount, profileCount }) => {
+const SearchHeader = ({
+  props,
+  children,
+  searchTerm,
+  handleSearchTextChange,
+  clearText,
+  researchCount,
+  profileCount,
+  performSearch
+}) => {
   return (
     <Grid container>
       <Grid item xs={12}>
@@ -135,8 +144,20 @@ const SearchHeader = ({ props, children, searchTerm, handleSearchTextChange, cle
           <Grid container justify="center" style={{ paddingBottom: "24px" }}>
             <Grid item xs={12}>
               <Typography variant="inherit" style={{ textAlign: "center" }}>
-                ດ້ວຍ <Link to="/">{researchCount} ລ້ານນັກຄົ້ນຄວ້າ</Link> ແລະ{" "}
-                <Link to="/">{profileCount} ລ້ານເຄື່ອງພິມ</Link>
+                ດ້ວຍ{" "}
+                <Link to="/">
+                  <NumberFormat
+                    value={profileCount}
+                    displayType={"text"}
+                    thousandSeparator={true}
+                  />{" "}
+                  ນັກຄົ້ນຄວ້າ
+                </Link>{" "}
+                ແລະ <Link to="/"><NumberFormat
+                value={researchCount}
+                displayType={"text"}
+                thousandSeparator={true}
+              />{" "} ຜົນງານຄົ້ນຄວ້າ</Link>
               </Typography>
             </Grid>
             <Grid item xs={12}>
@@ -148,38 +169,55 @@ const SearchHeader = ({ props, children, searchTerm, handleSearchTextChange, cle
           <Grid container>
             <Grid item xs sm={2} lg={4} md={3} />
             <Grid item xs={10} sm={8} lg={4} md={6}>
-              <Grid container justify="center">
-                <Paper style={styles.root} elevation={0}>
+            <Grid container justify="center">
+            <form onSubmit={()=>{performSearch()}} style={{padding: 0, margin: 0, width: "100%"}}>
+            <Paper style={styles.root} elevation={0}>
+            
+            
                   {
-                        <IconButton style={styles.iconButton} aria-label="Menu">
-                        <SearchOutlined />
-                      </IconButton>
+                    <IconButton style={styles.iconButton} aria-label="Menu" type="submit">
+                      <SearchOutlined />
+                    </IconButton>
                   }
                   <InputBase
                     style={styles.input}
                     autoFocus
+                    
                     placeholder="ຄົ້ນຫາຜົນງານຄົ້ນຄວ້າ, ນັກວິໄຈ..."
-                    onChange={e=> {handleSearchTextChange(e.target.value)}}
+                    onChange={e => {
+                      handleSearchTextChange(e.target.value);
+                    }}
                     value={searchTerm}
                   />
-                  {
-                    searchTerm !== "" ?
-                    <IconButton style={styles.iconButton} onClick={()=>{clearText()}} aria-label="Search">
-                    <CloseOutlined />
-                  </IconButton> : null
-                  }
+                 
+                  {searchTerm !== "" ? (
+                    <IconButton
+                      style={styles.iconButton}
+                      onClick={() => {
+                        clearText();
+                      }}
+                      
+                      aria-label="Search"
+                    >
+                      <CloseOutlined />
+                    </IconButton>
+                  ) : null}
                   {
                     //     <Divider style={styles.divider} />
-                      // <IconButton
-                      //   color="primary"
-                      //   style={styles.iconButton}
-                      //   aria-label="Directions"
-                      // >
-                      //   <DirectionsOutlined />
-                      // </IconButton>
+                    // <IconButton
+                    //   color="primary"
+                    //   style={styles.iconButton}
+                    //   aria-label="Directions"
+                    // >
+                    //   <DirectionsOutlined />
+                    // </IconButton>
                   }
+                  
+                  
                 </Paper>
+  </form>
               </Grid>
+              
             </Grid>
             <Grid item xs sm={2} lg={4} md={3} />
           </Grid>
@@ -208,11 +246,6 @@ const SearchHeader = ({ props, children, searchTerm, handleSearchTextChange, cle
                   label="ຜົນງານຄົ້ນຄວ້າ"
                   to={`/profile/`}
                   component={ReactLink}
-                />
-
-                <Tab
-                  style={{ fontSize: "16px", fontWeight: 500 }}
-                  label="ຄໍາເຫັນ"
                 />
               </Tabs>
             </Grid>

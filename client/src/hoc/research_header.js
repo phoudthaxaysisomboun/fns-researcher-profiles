@@ -51,7 +51,8 @@ const ResearchHeader = ({
   loading,
   tab,
   research,
-  openShareDialog
+  openShareDialog,
+  
 }) => {
   const userData = { ...props.user.userData };
 

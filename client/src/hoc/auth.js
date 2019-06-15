@@ -19,7 +19,7 @@ export default function(ComposedClass, reload, adminRoute) {
                     
                     if (reload) {
                         if (this.props.location.pathname === '/') {
-                            this.props.history.push('/home')
+                            this.props.history.push('/search')
                         } else {
                             this.props.history.push('/login')
                         }

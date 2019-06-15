@@ -35,7 +35,9 @@ import {
   ADD_EDUCATION,
   UPDATE_EDUCATION,
   REMOVE_EDUCATION,
-  GET_PROFILE_RESEARCH_COUNT
+  GET_PROFILE_RESEARCH_COUNT,
+  SEARCH_PROFILES,
+  CLEAR_SEARCH_PROFILES
 } from "./types";
 
 import { USER_SERVER, RESEARCHER_SERVER, RESEARCHER_PROFILES_SERVER } from "../components/utils/misc";
@@ -476,5 +478,25 @@ export function getProfileAndResearchCount() {
   return {
     type: GET_PROFILE_RESEARCH_COUNT,
     payload: request
+  };
+}
+
+export function searchProfiles(search) {
+
+  const request = axios
+    .post(
+      `${RESEARCHER_SERVER}/search?search=${search}`
+    )
+    .then(response => response.data);
+  return {
+    type: SEARCH_PROFILES,
+    payload: request
+  };
+}
+
+export function clearSearchProfiles() {
+  return {
+    type: CLEAR_SEARCH_PROFILES,
+    payload: ""
   };
 }

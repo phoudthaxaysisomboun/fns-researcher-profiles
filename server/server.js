@@ -8,7 +8,7 @@ require("dotenv").config();
 
 const normalizeUrl = require("normalize-url");
 
-const searchPlugin = require("mongoose-search-plugin");
+
 
 mongoose.Promise = global.Promise;
 mongoose.connect(process.env.DATABASE);
@@ -49,6 +49,10 @@ const { Research } = require("./models/research");
 // Middlewares
 const { auth } = require("./middleware/auth");
 const { admin } = require("./middleware/admin");
+
+
+
+
 
 //====================================
 //             DEPARTMENTS
@@ -412,6 +416,7 @@ app.post("/api/researchers/search", (req, res) => {
   let sortBy = req.query.sortBy ? req.query.sortBy : "name";
   let limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 6;
   let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0;
+  let ids = []
   let findArgs = {};
 
   for (let key in req.body.filters) {
@@ -423,6 +428,19 @@ app.post("/api/researchers/search", (req, res) => {
   findArgs.emailIsVerified = true;
   findArgs.accountIsVerified = true;
 
+
+  let reg = new RegExp(req.query.search, 'g')
+  // User.aggregate([
+  //   {$project: {fullname: {$concat: ['$name', ' ', '$lastname']}, doc: '$$ROOT'}},
+  // {$match: {fullname: reg}}
+  // ], function(err, persons){
+  //   findArgs["_id"] = persons;
+  //   persons.map((value, index)=>{
+  //     // console.log(persons[index]._id)
+  //     ids.push(persons[index]._id)
+  //   })
+  // })
+
   // findArgs["affiliation.department"] = "5cd3a6481c9d44000074849b"
 
   if (findArgs || req.query.search) {
@@ -430,24 +448,32 @@ app.post("/api/researchers/search", (req, res) => {
       escapeRegex(req.query.search ? req.query.search : ""),
       "gi"
     );
+
     User.find({
+      emailIsVerified: true , accountIsVerified: true ,
       $or: [
-        { name: regex },
-        { lastname: regex },
-        { prefix: regex },
-        { "affiliation.position": regex }
+        { name: {$regex: reg, $options: 'm' }},
+        { lastname: {$regex: reg, $options: 'm' }},
+        { prefix: {$regex: reg, $options: 'm' }},
+        { "affiliation.position": {$regex: reg, $options: 'm' }},
       ],
-      $and: [{ emailIsVerified: true }, { accountIsVerified: true }]
+      
     })
       .select("_id")
 
       .exec((err, docs) => {
         if (docs) {
-          findArgs["_id"] = docs;
+          
           docs.map((value, index) => {
-            findArgs._id[index] = value["_id"];
+            // Array.prototype.push.apply(ids, value["_id"])
+            ids.push(value["_id"])
+            
           });
         }
+
+        // console.log(ids)
+
+        findArgs._id = ids;
 
         User.find(findArgs)
           .populate("gender")
@@ -489,7 +515,7 @@ app.post("/api/researchers/search", (req, res) => {
             options: { sort: { city: 1 } }
           })
           .exec((err, result) => {
-            console.log(findArgs);
+            // console.log(findArgs);
             return res.status(200).send(result);
           });
       });

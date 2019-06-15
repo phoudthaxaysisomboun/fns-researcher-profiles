@@ -3,6 +3,8 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
+var searchable = require('mongoose-searchable');
+
 const SALT_I = 10
 const Schema = mongoose.Schema;
 
@@ -11,7 +13,8 @@ const userSchema = mongoose.Schema({
         type: String,
         required: true,
         trim: true,
-        unique: 1
+        unique: 1,
+        index: true
     },
     password: {
         type: String,
@@ -26,17 +29,20 @@ const userSchema = mongoose.Schema({
     name: {
         type: String,
         required: true,
-        maxlength: 100
+        maxlength: 100,
+        index: true
     },
     lastname: {
         type: String,
         required: true,
-        v: 100
+        maxlength: 100,
+        index: true
     },
     prefix: {
         type: String,
         required: true,
-        maxlength: 100
+        maxlength: 100,
+        index: true
     },
     englishName: {
         type: String,
@@ -67,11 +73,13 @@ const userSchema = mongoose.Schema({
         institution: {type: Schema.Types.ObjectId, default: '5c8fcd398b7ae6cfecf5796e', ref: 'Institution', required: true},
         faculty: {type: Schema.Types.ObjectId, default: '5caed82590264f5c10201b4a',ref: 'Faculty', required: true},
         department: {type: Schema.Types.ObjectId, ref: 'Department', required: true},
-        position: {type: String, maxlength: 100, required: true},
+        position: {type: String, maxlength: 100, required: true,
+            index: true},
     },
     dateOfBirth: {
         type: Date,
-        required: true
+        required: true,
+        index: true
     },
     placeOfBirth: {
         village: {type: String, maxlength: 100},
@@ -234,6 +242,9 @@ userSchema.pre('save', function(next){
     }
 })
 
+
+ 
+
 userSchema.methods.comparePassword = function(candidatePassword, cb){
     bcrypt.compare(candidatePassword, this.password, function(err, isMatch){
         if (err) return cb(err)
@@ -262,6 +273,8 @@ userSchema.statics.findByToken = function (token, cb) {
         })
     })
 }
+
+
 
 const User = mongoose.model('User', userSchema)
 

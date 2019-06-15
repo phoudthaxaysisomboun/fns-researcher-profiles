@@ -458,7 +458,7 @@ class Header extends Component {
             }}
           >
             <Toolbar variant="regular" style={{ height: "64px" }}>
-              {!this.props.location.pathname.startsWith("/home") ? (
+              {!this.props.location.pathname.startsWith("/search") ? (
                 <>
                   <IconButton
                     className={classes.menuButton}
@@ -469,7 +469,7 @@ class Header extends Component {
                   </IconButton>
                 </>
               ) : null}
-              {!this.props.location.pathname.startsWith("/home") ? (
+              {!this.props.location.pathname.startsWith("/search") ? (
                 <Link
                   to="/"
                   style={{ textDecoration: "none", color: "inherit" }}
@@ -486,7 +486,7 @@ class Header extends Component {
                 </Link>
               ) : null}
 
-              {!this.props.location.pathname.startsWith("/home") ? (
+              {!this.props.location.pathname.startsWith("/search") ? (
                 <>
                   <div className={classes.search}>
                     <IconButton
@@ -584,7 +584,7 @@ class Header extends Component {
                 </>
               )}
 
-              {!this.props.location.pathname.startsWith("/home") ? (
+              {!this.props.location.pathname.startsWith("/search") ? (
                 <>
                   <div className={classes.sectionDesktop}>
                     {

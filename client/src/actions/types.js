@@ -41,3 +41,6 @@ export const GET_DEPARTMENTS = "get_departments";
 
 
 export const GET_PROFILE_RESEARCH_COUNT = "get_profile_and_research_count";
+export const SEARCH_PROFILES = "search_profiles";
+export const SEARCH_RESEARCHES = "search_researches";
+export const CLEAR_SEARCH_PROFILES = "clear_search_researches";

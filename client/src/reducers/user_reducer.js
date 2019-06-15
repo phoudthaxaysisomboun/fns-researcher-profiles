@@ -33,7 +33,9 @@ import {
   ADD_EDUCATION,
   UPDATE_EDUCATION,
   REMOVE_EDUCATION,
-  GET_PROFILE_RESEARCH_COUNT
+  GET_PROFILE_RESEARCH_COUNT,
+  SEARCH_PROFILES,
+  CLEAR_SEARCH_PROFILES
 } from "../actions/types";
 
 export default function(state = {}, action) {
@@ -217,6 +219,16 @@ export default function(state = {}, action) {
         ...state,
         profileCount: action.payload.profileCount,
         researchCount: action.payload.researchCount,
+      };
+    case SEARCH_PROFILES:
+      return {
+        ...state,
+        profilesSearchResult: action.payload,
+      };
+    case CLEAR_SEARCH_PROFILES:
+      return {
+        ...state,
+        profilesSearchResult: action.payload,
       };
     default:
       return state;
