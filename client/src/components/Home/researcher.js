@@ -14,7 +14,13 @@ import {withRouter} from "react-router-dom"
 import {
     getProfileAndResearchCount,
     searchProfiles,
-    clearSearchProfiles
+    clearSearchProfiles,
+    follow,
+  addFollower,
+  unfollow,
+  removeFollower,
+  clearFollowing,
+  clearFollower,
   } from "../../actions/user_actions";
 
 class ResearcherSearch extends Component {
@@ -25,6 +31,33 @@ class ResearcherSearch extends Component {
   state = {
       search: '',
   }
+
+  followUser = id => {
+    if (this.props.user.userData.isAuth) {
+      this.setState({
+        followLoading: true
+      });
+      this.props.dispatch(follow(id)).then(() => {
+        this.props.dispatch(addFollower(id)).then(() => {
+          
+        });
+      });
+    } else {
+      console.log("You need to login");
+    }
+  };
+
+  unfollowUser = id => {
+    if (this.props.user.userData.isAuth) {
+      this.props.dispatch(unfollow(id)).then(() => {
+        this.props.dispatch(removeFollower(id)).then(() => {
+         
+        });
+      });
+    } else {
+      console.log("You need to login");
+    }
+  };
 
   componentWillMount() {
     
@@ -74,11 +107,12 @@ class ResearcherSearch extends Component {
             <Grid item xs={10} sm={8} lg={4} md={6}>
               <Grid container justify="center" >
               {
-                 < ProfileCard resercher = {this.props.user && this.props.user.profilesSearchResult ? this.props.user.profilesSearchResult : null} />
+                 < ProfileCard resercher = {this.props.user && this.props.user.profilesSearchResult ? this.props.user.profilesSearchResult : null} user = {this.props.user && this.props.user.userData ? this.props.user.userData : null} runFollow={id => this.followUser(id)}
+                 runUnfollow={id => this.unfollowUser(id)} />
               }
 
               {
-                console.log(this.props.user.profilesSearchResult)
+                console.log(this.props.user.userData)
               }
           
               </Grid>

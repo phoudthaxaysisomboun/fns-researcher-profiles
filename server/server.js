@@ -12,6 +12,7 @@ const normalizeUrl = require("normalize-url");
 
 mongoose.Promise = global.Promise;
 mongoose.connect(process.env.DATABASE);
+mongoose.set('debug', true);
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -429,7 +430,7 @@ app.post("/api/researchers/search", (req, res) => {
   findArgs.accountIsVerified = true;
 
 
-  let reg = new RegExp(req.query.search, 'g')
+  let reg = new RegExp(req.query.search, 'i')
   // User.aggregate([
   //   {$project: {fullname: {$concat: ['$name', ' ', '$lastname']}, doc: '$$ROOT'}},
   // {$match: {fullname: reg}}
@@ -1328,6 +1329,90 @@ app.post("/api/research/publication_type", auth, admin, (req, res) => {
 });
 
 /*  Researches  */
+
+app.post("/api/research/search", (req, res) => {
+  let order = req.query.order ? req.query.order : "asc";
+  let sortBy = req.query.sortBy ? req.query.sortBy : "name";
+  let limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 6;
+  let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0;
+  let ids = []
+  let findArgs = {};
+  let rFindArgs = {};
+
+  for (let key in req.body.filters) {
+    if (req.body.filters[key].length > 0) {
+      findArgs[key] = req.body.filters[key];
+    }
+  }
+
+
+  let reg = new RegExp(req.query.search, 'g')
+  // User.aggregate([
+  //   {$project: {fullname: {$concat: ['$name', ' ', '$lastname']}, doc: '$$ROOT'}},
+  // {$match: {fullname: reg}}
+  // ], function(err, persons){
+  //   findArgs["_id"] = persons;
+  //   persons.map((value, index)=>{
+  //     // console.log(persons[index]._id)
+  //     ids.push(persons[index]._id)
+  //   })
+  // })
+
+  // findArgs["affiliation.department"] = "5cd3a6481c9d44000074849b"
+
+  if (findArgs || req.query.search) {
+    const regex = new RegExp(
+      escapeRegex(req.query.search ? req.query.search : ""),
+      "gi"
+    );
+
+    User.find({
+      emailIsVerified: true , accountIsVerified: true ,
+      $or: [
+        { name: {$regex: reg, $options: 'm' }},
+        { lastname: {$regex: reg, $options: 'm' }}
+      ],
+      
+    })
+      .select("_id")
+
+      .exec((err, docs) => {
+        if (docs) {
+          
+          docs.map((value, index) => {
+            // Array.prototype.push.apply(ids, value["_id"])
+            ids.push(value["_id"])
+            
+          });
+        }
+
+        findArgs._id = ids;
+
+        User.find(findArgs)
+        .select("_id")
+          .exec((err, result) => {
+            console.log(findArgs);
+            rFindArgs.author = findArgs,
+            console.log(ids);
+
+            Research.find(
+              {
+                $or: [
+                  // { title: {$regex: reg, $options: 'm' }},
+                  // { abstract: {$regex: reg, $options: 'm' }},
+                  // { description: {$regex: reg, $options: 'm' }},
+                  { "author._id" : ids },
+                ],
+              }
+            )
+            .select("_id title")
+            .exec((err, research)=> {
+              console.log("research is " + research)
+            })
+          });
+      });
+  }
+});
 
 app.get("/api/research/research_count", (req, res) => {
   Research.find({}).exec((err, docs) => {

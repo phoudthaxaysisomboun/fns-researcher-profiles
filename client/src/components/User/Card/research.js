@@ -216,7 +216,10 @@ const ResearchCard = ({ userData, userDetail, userResearch, loading }) => {
                           </div>
                         </Grid>
                       </Grid>
-                      <Grid item align="right">
+                      {
+                        true ? null :
+
+                        <Grid item align="right">
                         <img
                           style={{
                             marginRight: "4px",
@@ -229,6 +232,7 @@ const ResearchCard = ({ userData, userDetail, userResearch, loading }) => {
                           height={80}
                         />
                       </Grid>
+                      }
                       <Grid container style={{}}>
                         {researches.author.map((value, item, array) => (
                           <>

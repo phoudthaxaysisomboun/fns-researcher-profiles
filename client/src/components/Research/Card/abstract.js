@@ -21,7 +21,7 @@ const AbstractCard = ({ user, research }) => {
   const renderItems = () => {
     return (
       <Grid container spacing={8} style={{ padding: "24px", paddingTop: "16px" }}>
-        <Typography style={{ whiteSpace: "pre-wrap", lineHeight: "32px", fontSize: "1rem" }}>
+        <Typography style={{ whiteSpace: "pre-wrap", lineHeight: "24px", fontSize: "1rem" }}>
           <AutoLinkText text={abstract}></AutoLinkText>
         </Typography>
       </Grid>

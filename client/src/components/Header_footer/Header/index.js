@@ -6,6 +6,8 @@ import { withRouter } from "react-router-dom";
 
 import { logoutUser } from "../../../actions/user_actions";
 
+import {UPLOADS_SERVER} from "../../../components/utils/misc"
+
 import {
   AppBar,
   Toolbar,
@@ -205,10 +207,27 @@ class Header extends Component {
                 color="inherit"
                 style={{
                   padding: "8px",
-                  margin: 0
+                  margin: 0,
+                  
                 }}
               >
-                <Avatar
+                {
+                  this.props.user.userData && this.props.user.userData.profileImage && this.props.user.userData.profileImage[0] && this.props.user.userData.profileImage[0].name ?
+                  <Avatar
+                  src={`${UPLOADS_SERVER}/images/${this.props.user.userData.profileImage[0].name}`}
+                  style={{
+                    width: "32px",
+                    height: "32px",
+                    borderStyle: "solid",
+                    borderColor: "#CFCECE",
+                    borderWidth: "1px"
+                  }}
+                >
+                 
+                </Avatar>
+                  :
+
+                  <Avatar
                   style={{
                     width: "32px",
                     height: "32px",
@@ -224,6 +243,8 @@ class Header extends Component {
                     0
                   )}${this.props.user.userData.lastname.charAt(0)}`}
                 </Avatar>
+                }
+                
               </IconButton>
             </Link>
 
@@ -521,7 +542,7 @@ class Header extends Component {
                 </>
               ) : (
                 <>
-                  <Grid container style={{ flexGrow: "1", margin: 0,  }}>
+                  <Grid container alignItems="center" style={{ flexGrow: "1", margin: 0,  }}>
                     <Grid item xs={2} align="left">
                       <IconButton
                         className={classes.menuButton}
@@ -545,7 +566,7 @@ class Header extends Component {
                             textAlign: "center",
                             fontWeight: "bold",
                             fontFamily: "'Roboto', sans serif",
-                            paddingTop: "6px"
+                           
                           }}
                           noWrap
                         >

@@ -2,6 +2,8 @@ import React from "react";
 
 import { Link, withRouter } from "react-router-dom";
 
+import { UPLOADS_SERVER } from "../../../components/utils/misc";
+
 import {
   Grid,
   Avatar,
@@ -140,13 +142,42 @@ const LoadMoreFollowerCard = ({
                       style={{ marginRight: "8px", width: "54px" }}
                     >
                       <Link to={`/profile/${followings._id}`} style={{color: "inherit", textDecoration: "none"}}>
-                      <Avatar
-                      alt="profile image"
-                      style={{ width: "46px", height: "46px", backgroundColor: `${`${followings.name}${followings.lastname}`.toColor()}`, fontFamily: "'Noto Sans Lao UI', sans serif", fontWeight: "500" }}
-                      
-                    >
-                    {`${followings.name.charAt(0)}${followings.lastname.charAt(0)}`}
-                    </Avatar>
+                      {followings.profileImage &&
+                        followings.profileImage[0] &&
+                        followings.profileImage[0].name ? (
+                          <Avatar
+                            alt="profile image"
+                            style={{
+                              width: "46px",
+                              height: "46px",
+                              borderStyle: "solid",
+                borderColor: "#CFCECE",
+                borderWidth: "1px"
+                            }}
+                            src={`${UPLOADS_SERVER}/images/${
+                              followings.profileImage[0].name
+                            }`}
+                          />
+                        ) : (
+                          <Avatar
+                            alt="profile image"
+                            style={{
+                              width: "46px",
+                              height: "46px",
+                              backgroundColor: `${`${followings.name}${
+                                followings.lastname
+                              }`.toColor()}`,
+                              fontFamily: "'Noto Sans Lao UI', sans serif",
+                              fontWeight: "500"
+                            }}
+                          >
+                            <Typography variant="inherit">
+                              {`${followings.name.charAt(
+                                0
+                              )}${followings.lastname.charAt(0)}`}
+                            </Typography>
+                          </Avatar>
+                        )}
                       </Link>
                     </Grid>
                     <Grid item xs>

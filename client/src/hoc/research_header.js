@@ -45,6 +45,8 @@ import {
 
 import { Link as ReactLink, withRouter } from "react-router-dom";
 
+import {UPLOADS_SERVER} from "../components/utils/misc"
+
 const ResearchHeader = ({
   props,
   children,
@@ -164,24 +166,42 @@ const ResearchHeader = ({
                                 marginBottom: "8px"
                               }}
                             >
+                            {
+                              value.profileImage && value.profileImage[0] && value.profileImage[0].name ?
                               <Avatar
-                                style={{
-                                  width: "18px",
-                                  height: "18px",
-                                  backgroundColor: `${`${value.name}${
-                                    value.lastname
-                                  }`.toColor()}`,
-                                  fontFamily: "'Noto Sans Lao UI', sans serif",
-                                  fontWeight: "normal",
-                                  fontSize: "8px"
-                                }}
-                                alt="profile image"
-                              >
-                                {console.log(`${value.name}{value.lastname}`)}
-                                {`${value.name.charAt(
-                                  0
-                                )}${value.lastname.charAt(0)}`}
-                              </Avatar>
+                              src={`${UPLOADS_SERVER}/images/${value.profileImage[0].name}`}
+                              style={{
+                                width: "18px",
+                                height: "18px",
+                              }}
+                              alt="profile image"
+                            >
+                              
+                            </Avatar>
+                              :
+
+                              <Avatar
+                              style={{
+                                width: "18px",
+                                height: "18px",
+                                backgroundColor: `${`${value.name}${
+                                  value.lastname
+                                }`.toColor()}`,
+                               
+                                fontWeight: "normal",
+                                fontSize: "8px"
+                              }}
+                              alt="profile image"
+                            >
+                              <Typography variant="inherit">
+                              
+                              {`${value.name.charAt(
+                                0
+                              )}${value.lastname.charAt(0)}`}
+                              </Typography>
+                            </Avatar>
+                            }
+                              
                             </Grid>
                             <Grid item>
                               <Typography
@@ -235,6 +255,39 @@ const ResearchHeader = ({
                           ) : null}
                         </>
                       ) : null}
+
+                      {research &&
+                        research.researchType &&
+                        research.researchType._id ===
+                          "5d0516e447c496528476ec94" ? (
+                          <>
+                            {research.conferenceTitle ? (
+                              <Grid container>
+                                <Typography
+                                  variant="inherit"
+                                  style={{
+                                    letterSpacing: "1.5 px"
+                                  }}
+                                >
+                                  <strong>ງານປະຊຸມ: </strong> {research.conferenceTitle}
+                                </Typography>
+                              </Grid>
+                            ) : null}
+                            {research.location ? (
+                              <Grid container>
+                                <Typography
+                                  variant="inherit"
+                                  style={{
+                                    letterSpacing: "1.5 px"
+                                  }}
+                                >
+                                  <strong>ສະຖານທີ່ປະຊຸມ: </strong>{" "}
+                                  {`${research.location}`}
+                                </Typography>
+                              </Grid>
+                            ) : null}
+                          </>
+                        ) : null}
                     </>
                   ) : (
                     ""

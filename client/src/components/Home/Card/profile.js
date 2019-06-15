@@ -5,6 +5,8 @@ import ReactTextFormat from "react-text-format";
 import LinesEllipsis from "react-lines-ellipsis";
 
 import NumberFormat from "react-number-format";
+import {UPLOADS_SERVER} from "../../../components/utils/misc"
+
 import {
   IconButton,
   Grid,
@@ -18,7 +20,8 @@ import {
 import {
   EditOutlined,
   CheckOutlined,
-  PersonAddOutlined
+  PersonAddOutlined,
+  ReplyOutlined
 } from "@material-ui/icons";
 
 import { colorPallete } from "../../utils/misc";
@@ -42,7 +45,7 @@ const renderNoData = () => {
   return <LinearProgress style={{ margin: "16px" }} />;
 };
 
-const ProfileCard = ({ resercher }) => {
+const ProfileCard = ({ resercher, user, runFollow,runUnfollow }) => {
   const renderResearchArea = (id, researchArea) => {
     let researchArealabel = [];
     let list = "";
@@ -67,52 +70,58 @@ const ProfileCard = ({ resercher }) => {
           </Typography>
     )
   };
-  // const renderFollowButton = id => {
-  //   let duplicate = false;
-  //   userData.following.forEach(item => {
-  //     if (item._id === id) {
-  //       duplicate = true;
-  //     }
-  //   });
 
-  //   if (id === userData._id) {
-  //     return <div />;
-  //   }
+  const renderFollowButton = id => {
+    if (user.isAuth) {
+    let duplicate = false;
+    user.following.forEach(item => {
+      if (item._id === id) {
+        duplicate = true;
+      }
+    });
 
-  //   if (duplicate) {
-  //     return (
-  //       <Grid item style={{ width: "100px" }} align="right">
-  //         <Button
-  //           size="small"
-  //           variant="outlined"
-  //           color="primary"
-  //           onClick={() => {
-  //             runUnfollow(id);
-  //           }}
-  //         >
-  //           <CheckOutlined style={{ marginRight: "8px" }} />
-  //           ຕິດຕາມຢູ່
-  //         </Button>
-  //       </Grid>
-  //     );
-  //   } else {
-  //     return (
-  //       <Grid item style={{ width: "100px" }} align="right">
-  //         <Button
-  //           size="small"
-  //           variant="contained"
-  //           color="primary"
-  //           onClick={() => {
-  //             runFollow(id);
-  //           }}
-  //         >
-  //           <PersonAddOutlined style={{ marginRight: "8px" }} />
-  //           ຕິດຕາມ
-  //         </Button>
-  //       </Grid>
-  //     );
-  //   }
-  // };
+    if (id === user._id) {
+      return <div />;
+    }
+
+    
+      if (duplicate) {
+        return (
+       
+            <Button
+              size="small"
+              variant="outlined"
+              color="primary"
+              style={{marginRight: "8px"}}
+              onClick={() => {
+                runUnfollow(id);
+              }}
+            >
+              <CheckOutlined style={{ marginRight: "8px" }} />
+              ຕິດຕາມຢູ່
+            </Button>
+    
+        );
+      } else {
+        return (
+          
+            <Button
+              size="small"
+              variant="contained"
+              color="primary"
+              onClick={() => {
+                runFollow(id);
+              }}
+              style={{marginRight: "8px"}}
+            >
+              <PersonAddOutlined style={{ marginRight: "8px" }} />
+              ຕິດຕາມ
+            </Button>
+         
+        );
+      }
+    }
+  };
 
   return (
     <Grid item xs={12}>
@@ -132,26 +141,47 @@ const ProfileCard = ({ resercher }) => {
                   <Grid
                     item
                     align="center"
-                    style={{ marginRight: "8px", width: "54px" }}
+                    style={{ marginRight: "16px", width: "54px" }}
                   >
                     <Link
                       to={`/profile/${value._id}`}
                       style={{ color: "inherit", textDecoration: "none" }}
                     >
+                    {
+                      value.profileImage && value.profileImage[0] && value.profileImage[0].name ?
                       <Avatar
-                        alt="profile image"
-                        style={{
-                          width: "46px",
-                          height: "46px",
-                          backgroundColor: `${`${value.name}${
-                            value.lastname
-                          }`.toColor()}`,
-                          fontFamily: "'Noto Sans Lao UI', sans serif",
-                          fontWeight: "500"
-                        }}
-                      >
-                        {`${value.name.charAt(0)}${value.lastname.charAt(0)}`}
-                      </Avatar>
+                      src={`${UPLOADS_SERVER}/images/${value.profileImage[0].name}`}
+                      alt="profile image"
+                      style={{
+                        width: "46px",
+                        height: "46px",
+                        borderStyle: "solid",
+                borderColor: "#CFCECE",
+                borderWidth: "1px"
+                      }}
+                    >
+                      
+                    </Avatar>
+                      : 
+                      <Avatar
+                      alt="profile image"
+                      style={{
+                        width: "46px",
+                        height: "46px",
+                        backgroundColor: `${`${value.name}${
+                          value.lastname
+                        }`.toColor()}`,
+                        fontFamily: "'Noto Sans Lao UI', sans serif",
+                        fontWeight: "500"
+                      }}
+                    >
+                    <Typography variant="inherit">
+                    {`${value.name.charAt(0)}${value.lastname.charAt(0)}`}
+                    </Typography>
+                      
+                    </Avatar>
+                    }
+                      
                     </Link>
                   </Grid>
                   <Grid item xs>
@@ -207,26 +237,14 @@ const ProfileCard = ({ resercher }) => {
                               </>
                             </>
                           ) : null}
+                          </Link>
                           <Grid
                             container
                             alignItems="flex-end"
-                            style={{ marginTop: "8px" }}
+                            style={{ marginTop: "16px" }}
                           >
                             <Grid item xs={8} align="left">
-                              <Button
-                                size="small"
-                                variant="contained"
-                                color="primary"
-                                onClick={() => {
-                                  console.log("click");
-                                }}
-                                style={{ marginRight: "8px" }}
-                              >
-                                <PersonAddOutlined
-                                  style={{ marginRight: "8px" }}
-                                />
-                                ຕິດຕາມ
-                              </Button>
+                            {renderFollowButton(value._id)}
 
                               <Button
                                 size="small"
@@ -236,42 +254,48 @@ const ProfileCard = ({ resercher }) => {
                                   console.log("click");
                                 }}
                               >
-                                <PersonAddOutlined
-                                  style={{ marginRight: "8px" }}
+                                <ReplyOutlined
+                                  style={{ marginRight: "8px", transform: "rotateY(180deg)" }}
                                 />
-                                ຕິດຕາມ
+                                ແບ່ງປັນ
                               </Button>
                             </Grid>
                             <Grid item xs align="right">
+                            {
+                              value.research && value.research.length > 0 ?
+                              <>
                               <div
-                                style={{
-                                  fontSize: "14px",
-                                  color: "#757575",
-                                  fontFamily: "'Roboto', sans serif",
-                                  display: "inline",
-                                  fontWeight: "500"
-                                }}
-                              >
-                                &nbsp;
-                                <NumberFormat
-                                  value={
-                                    value.research && value.research.length
-                                      ? value.research.length
-                                      : 0
-                                  }
-                                  displayType={"text"}
-                                  thousandSeparator={true}
-                                />
-                                &nbsp;
-                              </div>
-                              <span
-                                style={{ fontSize: "14px", color: "#757575" }}
-                              >
-                                ຜົນງານຄົ້ນຄວ້າ
-                              </span>
+                              style={{
+                                fontSize: "14px",
+                                color: "#757575",
+                                fontFamily: "'Roboto', sans serif",
+                                display: "inline",
+                                fontWeight: "500"
+                              }}
+                            >
+                              &nbsp;
+                              <NumberFormat
+                                value={
+                                  value.research && value.research.length
+                                    ? value.research.length
+                                    : 0
+                                }
+                                displayType={"text"}
+                                thousandSeparator={true}
+                              />
+                              &nbsp;
+                            </div>
+                            <span
+                              style={{ fontSize: "14px", color: "#757575" }}
+                            >
+                              ຜົນງານຄົ້ນຄວ້າ
+                            </span>
+                              </>: null
+                            }
+                              
                             </Grid>
                           </Grid>
-                        </Link>
+                        
                       </Grid>
                     </Grid>
                   </Grid>
