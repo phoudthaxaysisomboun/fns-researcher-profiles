@@ -48,3 +48,7 @@ export const CLEAR_SEARCH_PROFILES = "clear_search_profiles";
 
 export const SEARCH_RESEARCHES = "search_researches";
 export const CLEAR_SEARCH_RESEARCHES = "clear_search_researches";
+
+
+export const GET_RESEARCH_TYPE = "get_research_type"
+export const GET_PUBLICATION_TYPE = "get_publication_type"

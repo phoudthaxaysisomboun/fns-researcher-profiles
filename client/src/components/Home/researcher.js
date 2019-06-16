@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 
 import queryString from "query-string";
 
-import { Grid } from "@material-ui/core";
+import { Grid, Typography } from "@material-ui/core";
 
 import ProfileCard from "../Home/Card/profile";
 
@@ -19,10 +19,9 @@ import {
   addFollower,
   unfollow,
   removeFollower,
-  clearFollowing,
-  clearFollower
 } from "../../actions/user_actions";
 
+let query
 class ResearcherSearch extends Component {
   componentDidMount() {
     document.title = "FNS Researcher Profiles";
@@ -56,7 +55,7 @@ class ResearcherSearch extends Component {
   };
 
   componentWillMount() {
-    const query = queryString.parse(this.props.location.search);
+    query = queryString.parse(this.props.location.search);
     this.setState({
       search: query.q
     });
@@ -119,6 +118,13 @@ class ResearcherSearch extends Component {
             <Grid item xs sm={2} lg={4} md={3} />
             <Grid item xs={10} sm={8} lg={4} md={6}>
               <Grid container justify="center">
+              {
+                (query && query.q.trim() === "") ?
+
+                  <Typography variant="inherit" style={{marginTop: "16px", fontSize: "1.2rem", fontWeight: "500"}}>
+                    ນັກຄົ້ນຄວ້າທັງຫມົດ ({this.props.user.profileCount})
+                  </Typography> : null
+              }
                 {
                   <ProfileCard
                     resercher={

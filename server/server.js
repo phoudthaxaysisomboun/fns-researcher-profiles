@@ -1434,7 +1434,7 @@ app.post("/api/research/search", (req, res) => {
               options: { sort: { start: 1 } }
             })
             .exec((err, research)=> {
-              console.log("research is " + research)
+            
               return res.status(200).send(research);
             })
           });
