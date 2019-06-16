@@ -8,6 +8,9 @@ import Select from "react-select";
 import { withStyles } from "@material-ui/core/styles";
 import NoSsr from "@material-ui/core/NoSsr";
 
+import Dropzone from "react-dropzone";
+// import { useDropzone } from "react-dropzone";
+
 import moment from "moment";
 import {
   update,
@@ -36,7 +39,11 @@ import {
 
 import { emphasize } from "@material-ui/core/styles/colorManipulator";
 
-import { CloseOutlined, CancelOutlined } from "@material-ui/icons";
+import {
+  CloseOutlined,
+  CancelOutlined,
+  DescriptionOutlined
+} from "@material-ui/icons";
 
 // import { getCountry } from "../../../actions/user_actions";
 import {
@@ -48,10 +55,10 @@ import { connect } from "react-redux";
 
 const suggestions = [
   { label: "ພຸດທະໄຊ ສີສົມບູນ" },
-  { label: "Aland Islands" },
-  { label: "Albania" },
-  { label: "Algeria" },
-  { label: "American Samoa" },
+  { label: "ສົມສັກ ອິນທະສອນ" },
+  { label: "Nicolas Pasquier" },
+  { label: "Andrea G. B. Tettamanzi" },
+  { label: "Celia da Costa Pereira" },
   { label: "Andorra" },
   { label: "Angola" },
   { label: "Anguilla" },
@@ -126,7 +133,7 @@ const styles = theme => ({
   },
   paper: {
     position: "absolute",
-    zIndex: 1,
+    zIndex: 20000,
     marginTop: theme.spacing.unit,
     left: 0,
     right: 0
@@ -177,7 +184,7 @@ function Option(props) {
       selected={props.isFocused}
       component="div"
       style={{
-        fontWeight: props.isSelected ? 500 : 400,
+        fontWeight: props.isSelected ? 700 : 500
       }}
       {...props.innerProps}
     >
@@ -339,7 +346,7 @@ class AddResearch extends Component {
           name: "publication_type_input",
           type: "text",
           label: "ປະເພດວາລະສານ",
-          labelWidth: 94,
+          labelWidth: 96,
           options: []
         },
         validation: {
@@ -365,6 +372,23 @@ class AddResearch extends Component {
         touched: false,
         validationMessage: ""
       },
+      file: {
+        element: "input",
+        value: "",
+        size: "",
+        config: {
+          name: "location_input",
+          type: "text",
+          label: "ສະຖານທີ່ປະຊຸມ",
+          placeholder: "ທີ່ຕັ້ງຂອງສະຖານທີ່ຈັດປະຊຸມ"
+        },
+        validation: {
+          required: false
+        },
+        valid: false,
+        touched: false,
+        validationMessage: ""
+      },
       location: {
         element: "input",
         value: "",
@@ -381,31 +405,142 @@ class AddResearch extends Component {
         touched: false,
         validationMessage: ""
       },
+
+      journalName: {
+        element: "input",
+        value: "",
+        config: {
+          name: "journal_input",
+          type: "text",
+          label: "ຊື່ວາລະສານ",
+          placeholder: ""
+        },
+        validation: {
+          required: false
+        },
+        valid: false,
+        touched: false,
+        validationMessage: ""
+      },
+
+      volume: {
+        element: "input",
+        value: "",
+        config: {
+          name: "volume_input",
+          type: "text",
+          label: "ເຫລັ້ມ",
+          placeholder: ""
+        },
+        validation: {
+          required: false
+        },
+        valid: false,
+        touched: false,
+        validationMessage: ""
+      },
+      issue: {
+        element: "input",
+        value: "",
+        config: {
+          name: "issue_input",
+          type: "text",
+          label: "ສະບັບ",
+          placeholder: ""
+        },
+        validation: {
+          required: false
+        },
+        valid: false,
+        touched: false,
+        validationMessage: ""
+      },
+      page: {
+        element: "input",
+        value: "",
+        config: {
+          name: "page_input",
+          type: "text",
+          label: "ຫນ້າ",
+          placeholder: ""
+        },
+        validation: {
+          required: false
+        },
+        valid: false,
+        touched: false,
+        validationMessage: ""
+      }
     }
+  };
+
+  handleFileDrop = acceptedFiles => {
+    const newFormdata = {
+      ...this.state.formdata
+    };
+    newFormdata["file"].value = acceptedFiles[0].name;
+    newFormdata["file"].size = acceptedFiles[0].size;
+
+    this.setState({ formdata: newFormdata });
+
+    console.log(acceptedFiles[0]);
   };
 
   renderFields = () => {
     switch (this.state.currentResearchType) {
       case "5cdb82bb27ba7c4214ef5776": {
-        return <div>{this.state.currentResearchType}</div>;
+        return (
+          <>
+            <Grid container>
+              <Grid item xs={4} style={{ paddingRight: "8px" }}>
+                <FormField
+                  id={"journalName"}
+                  formdata={this.state.formdata.journalName}
+                  change={element => this.updateForm(element)}
+                />
+              </Grid>
+              <Grid
+                item
+                xs={4}
+                style={{ paddingLeft: "8px", paddingRight: "8px" }}
+              >
+                <FormField
+                  id={"volume"}
+                  formdata={this.state.formdata.volume}
+                  change={element => this.updateForm(element)}
+                  maxlength={500}
+                />
+              </Grid>
+              <Grid item xs={4} style={{ paddingLeft: "8px" }}>
+                <FormField
+                  id={"page"}
+                  formdata={this.state.formdata.page}
+                  change={element => this.updateForm(element)}
+                  maxlength={500}
+                />
+              </Grid>
+            </Grid>
+          </>
+        );
       }
       // conference paper
       case "5d0516e447c496528476ec94": {
-        return <>
-        <FormField
+        return (
+          <>
+            <FormField
               id={"conferenceTitle"}
               formdata={this.state.formdata.conferenceTitle}
               change={element => this.updateForm(element)}
               maxlength={500}
             />
-        <FormField
+            <FormField
               id={"location"}
               formdata={this.state.formdata.location}
               change={element => this.updateForm(element)}
               maxlength={500}
             />
-        
-        </>;
+          </>
+        );
       }
       default: {
         break;
@@ -420,11 +555,9 @@ class AddResearch extends Component {
   };
 
   componentDidMount() {
-   
+    this.props.dispatch(getResearchType());
 
-    this.props.dispatch(getResearchType())
-
-    this.props.dispatch(getPublicationType())
+    this.props.dispatch(getPublicationType());
 
     const newFormdata = {
       ...this.state.formdata
@@ -635,6 +768,13 @@ class AddResearch extends Component {
       })
     };
 
+    // const { getRootProps, getInputProps, acceptedFiles } = useDropzone({
+    //   noKeyboard: true
+    // });
+    // const files = acceptedFiles.map(file => (
+    //   <li key={file.path}>{file.path}</li>
+    // ));
+
     return (
       <Dialog
         open={this.props.open}
@@ -654,7 +794,7 @@ class AddResearch extends Component {
                 fontFamily: "'Noto Sans Lao UI', sans serif"
               }}
             >
-              <Typography variant="inherit">{`ເພີ່ມຂໍ້ມູນການສຶກສາ`}</Typography>
+              <Typography variant="inherit">{`ເພີ່ມຜົນງານການຄົ້ນຄວ້າ`}</Typography>
             </Grid>
             <Grid item xs align="right" style={{ padding: "16px" }}>
               <IconButton
@@ -745,11 +885,75 @@ class AddResearch extends Component {
               </NoSsr>
             </div>
 
+            {this.state.formdata.file.value.trim() !== "" ? (
+              <>
+                <Paper
+                  style={{
+                    boxShadow: "none",
+                    border: "1px solid #d8d8d8",
+                    marginTop: "16px",
+                    padding: "16px"
+                  }}
+                >
+                  <Grid
+                    container
+                    alignItems="flex-start"
+                    alignContent="flex-start"
+                  >
+                    <Grid item style={{ width: "51px" }} align="left">
+                      <DescriptionOutlined fontSize="large" />
+                    </Grid>
+                    <Grid item xs align="left">
+                      <Typography variant="inherit" style={{ fontWeight: 600 }}>
+                        {this.state.formdata.file.value}
+                      </Typography>
+                      <Typography
+                        variant="inherit"
+                        style={{ fontSize: "12px" }}
+                      >
+                        {this.state.formdata.file.size} bytes
+                      </Typography>
+                    </Grid>
+
+                    <Grid item align="right" style={{width: "46px"}}>
+                      <IconButton style={{padding: "4px"}}>
+                        <CloseOutlined />
+                      </IconButton>
+                    </Grid>
+                  </Grid>
+                </Paper>
+              </>
+            ) : (
+              <Button
+                variant="outlined"
+                color="primary"
+                style={{
+                  width: "100%",
+                  marginTop: "16px",
+                  textTransform: "none"
+                }}
+              >
+                <Dropzone
+                  style={{ height: "100%", width: "100%" }}
+                  onDrop={acceptedFiles => this.handleFileDrop(acceptedFiles)}
+                >
+                  <Grid container alignItems="center" alignContent="flex-start">
+                    <Grid item style={{ width: "51px" }} align="left">
+                      <DescriptionOutlined fontSize="large" />
+                    </Grid>
+                    <Grid item xs align="left">
+                      <Typography variant="inherit">ເພີ່ມ</Typography>
+                    </Grid>
+                  </Grid>
+                </Dropzone>
+              </Button>
+            )}
+
             <FormField
               id={"abstract"}
               formdata={this.state.formdata.abstract}
               change={element => this.updateForm(element)}
-              maxlength={500}
+            
             />
 
             {this.renderFields()}
@@ -803,15 +1007,6 @@ const mapStateToProps = state => {
   };
 };
 
-// export default compose(
-//     withStyles(styles),
-//     connect(mapStateToProps)
-// )(AddResearch);
-
 export default connect(mapStateToProps)(
   withStyles(styles, { withTheme: true })(AddResearch)
 );
-
-//  export default connect(mapStateToProps)(AddResearch);
-
-// export default connect(withStyles(styles, { withTheme: true })(mapStateToProps)(AddResearch));

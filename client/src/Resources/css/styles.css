@@ -132,9 +132,15 @@ canvas {
 }
 
 .AddResearch-valueContainer-203 {
-  padding: 16px
+  padding: 8px
+}
+.AddResearch-input-526 {
+  padding: 8px
 }
 
+.AddResearch-input-202 {
+  min-height: 54px
+}
 textarea {
   font-family: "Noto Sans Lao UI", sans-serif !important
 }

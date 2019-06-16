@@ -12,7 +12,7 @@ const normalizeUrl = require("normalize-url");
 
 mongoose.Promise = global.Promise;
 mongoose.connect(process.env.DATABASE);
-mongoose.set('debug', true);
+// mongoose.set('debug', true);
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -771,6 +771,62 @@ app.post("/api/researchers/removeFollower", auth, (req, res) => {
       res.status(200).json(doc.follower);
     }
   );
+});
+
+app.get("/api/researchers/get_feed", auth, (req, res) => {
+  let order = req.query.order ? req.query.order : "asc";
+  let sortBy = req.query.sortBy ? req.query.sortBy : "name";
+  let limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 3;
+  let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0;
+
+  let type = req.query.type;
+  let items = req.query.id;
+  
+  let followings = []
+
+  // console.log(req.user)
+
+  User.findOne({ _id: req.user._id }, (err, doc) => {
+  
+
+    doc.following.forEach(item => {
+      followings.push(item._id)
+    });
+
+    Research.find({uploader: followings})
+    .populate({
+      path: "author",
+      model: "User",
+      select: ["name", "lastname", "profileImage", "prefix"]
+    })
+    .populate({
+      path: "supervisor",
+      model: "User",
+      select: ["name", "lastname", "profileImage", "prefix"]
+    })
+    .populate({
+      path: "uploader",
+      select: ["name", "lastname", "profileImage"]
+    })
+    .populate({
+      path: "researchType"
+    })
+    .populate({
+      path: "publicationType"
+    })
+    .populate({
+      path: "files.uploader",
+      select: ["name", "lastname", "profileImage", "prefix"]
+    })
+    .populate({
+      path: "education",
+      options: { sort: { start: 1 } }
+    })
+    .exec((err, docs)=>{
+      // console.log(req.User-Agent)
+      return res.status(200).send(docs);
+    })
+  });
 });
 
 app.post("/api/researchers/update_mobile", auth, (req, res) => {
