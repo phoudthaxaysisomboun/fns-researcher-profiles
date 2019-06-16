@@ -5,11 +5,9 @@ import { connect } from "react-redux";
 
 import { Grid } from "@material-ui/core";
 
-import ProfileCard from "../Home/Card/profile"
+import ProfileCard from "../Home/Card/profile";
 
-import {
-    getProfileAndResearchCount
-  } from "../../actions/user_actions";
+import { getProfileAndResearchCount } from "../../actions/user_actions";
 
 class Home extends Component {
   componentDidMount() {
@@ -17,44 +15,78 @@ class Home extends Component {
   }
 
   state = {
-      search: '',
+    search: "",
+    tabValue: 0
+  };
+
+  handleChangeTab (value) {
+    this.setState({
+      tabValue: value
+    })
   }
 
   componentWillMount() {
-    console.log(this.props.location)
-      this.props.dispatch(getProfileAndResearchCount()).then(response => {
-          console.log(response.payload)
-      })
+    console.log(this.props.location);
+    this.props.dispatch(getProfileAndResearchCount()).then(response => {
+      console.log(response.payload);
+    });
   }
 
-  handleTextChange = (value) => {
+  handleTextChange = value => {
     this.setState({
-        search: value
+      search: value
     });
-    console.log(this.state.search)
+    console.log(this.state.search);
   };
 
   handleClearText = () => {
     this.setState({
-        search: ""
+      search: ""
     });
-    console.log(this.state.search)
+    console.log(this.state.search);
   };
+
+  handleToggleResearchTab() {
+    this.props.history.push(`/search/researches?q=${this.state.search}`);
+    
+    
+  }
+
+  handleSearchButtonClick () {
+    if (this.state.tabValue === 0){
+      this.props.history.push(`/search/researchers?q=${this.state.search}`);
+    } else {
+      this.props.history.push(`/search/researches?q=${this.state.search}`);
+    }
+  }
+
+  handleToggleResearcherTab() {
+    this.props.history.push(`/search/researchers?q=${this.state.search}`);
+  }
 
   render() {
     return (
       <>
-        <SearchHeader children={this.props.children} researchCount={this.props.user.researchCount} profileCount={this.props.user.profileCount} searchTerm = {this.state.search} handleSearchTextChange={value => this.handleTextChange(value)} clearText={()=> this.handleClearText()}>
+        <SearchHeader
+          children={this.props.children}
+          researchCount={this.props.user.researchCount}
+          profileCount={this.props.user.profileCount}
+          searchTerm={this.state.search}
+          handleSearchTextChange={value => this.handleTextChange(value)}
+          clearText={() => this.handleClearText()}
+          tabValue ={this.state.tabValue}
+          changeToResearcher = {()=>this.handleChangeTab(0)}
+          changeToResearch = {()=>this.handleChangeTab(1)}
+          performSearch={() => this.handleSearchButtonClick()}
+        >
           <Grid container>
             <Grid item xs sm={2} lg={4} md={3} />
             <Grid item xs={10} sm={8} lg={4} md={6}>
-              <Grid container justify="center" >
-               < ProfileCard />
-          
+              <Grid container justify="center">
+                <ProfileCard />
               </Grid>
             </Grid>
             <Grid item xs sm={2} lg={4} md={3} />
-
           </Grid>
         </SearchHeader>
       </>
@@ -63,11 +95,11 @@ class Home extends Component {
 }
 
 const mapStateToProps = state => {
-    console.log(state)
-    return {
-        user: state.user,
-        research: state.research
-      };
+  console.log(state);
+  return {
+    user: state.user,
+    research: state.research
   };
+};
 
 export default connect(mapStateToProps)(Home);

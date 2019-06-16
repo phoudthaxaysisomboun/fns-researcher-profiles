@@ -8,6 +8,8 @@ import LinesEllipsis from "react-lines-ellipsis";
 
 import moment from "moment";
 
+import {UPLOADS_SERVER} from "../../../components/utils/misc"
+
 import {
   Grid,
   Paper,
@@ -243,13 +245,44 @@ const ResearchCard = ({ userData, userDetail, userResearch, loading }) => {
                                 marginBottom: "8px"
                               }}
                             >
-                              <Avatar
-                                style={{ width: "18px", height: "18px", backgroundColor: `${`${value.name}${value.lastname}`.toColor()}`, fontFamily: "'Noto Sans Lao UI', sans serif", fontWeight: "normal", fontSize: "8px" }}
-                               alt= "profile image"
-                              >
-                              {console.log(`${value.name}{value.lastname}`)}
-                              {`${value.name.charAt(0)}${value.lastname.charAt(0)}`}
-                              </Avatar>
+                            {value.profileImage &&
+                              value.profileImage[0] &&
+                              value.profileImage[0].name ? (
+                                <Avatar
+                                  style={{
+                                    width: "18px",
+                                    height: "18px",
+                                    borderStyle: "solid",
+                                    borderColor: "#CFCECE",
+                                    borderWidth: "1px"
+                                  }}
+                                  alt="profile image"
+                                  src={`${UPLOADS_SERVER}/images/${
+                                    value.profileImage[0].name
+                                  }`}
+                                />
+                              ) : (
+                                <Avatar
+                                  style={{
+                                    width: "18px",
+                                    height: "18px",
+                                    backgroundColor: `${`${value.name}${
+                                      value.lastname
+                                    }`.toColor()}`,
+                                    fontFamily:
+                                      "'Noto Sans Lao UI', sans serif",
+                                    fontWeight: "normal",
+                                    fontSize: "8px"
+                                  }}
+                                  alt="profile image"
+                                >
+                                  <Typography variant="inherit">
+                                    {`${value.name.charAt(
+                                      0
+                                    )}${value.lastname.charAt(0)}`}
+                                  </Typography>
+                                </Avatar>
+                              )}
                             </Grid>
                             <Grid item>
                               <Typography

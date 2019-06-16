@@ -6,6 +6,7 @@ import Auth from './hoc/auth'
 
 import Home from "./components/Home";
 import ResearcherSearch from "./components/Home/researcher";
+import ResearchSearch from "./components/Home/research";
 
 import RegisterLogin from './components/Register_login'
 import Register from './components/Register_login/register'
@@ -28,6 +29,7 @@ const Routes = () => {
         <Route path="/login" exact component={Auth(RegisterLogin, false)} />
         <Route path="/search" exact component={Auth(Home, null)} />
         <Route path="/search/researchers/" exact component={Auth(ResearcherSearch, null)} />
+        <Route path="/search/researches/" exact component={Auth(ResearchSearch, null)} />
         <Route path="/" exact component={Auth(Feed, true)} />
       </Switch>
     </Layout>

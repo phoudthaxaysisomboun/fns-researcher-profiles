@@ -17,7 +17,7 @@ import {
 
 import LinesEllipsis from "react-lines-ellipsis";
 
-import {UPLOADS_SERVER} from "../components/utils/misc"
+import { UPLOADS_SERVER } from "../components/utils/misc";
 
 import {
   Mail,
@@ -337,35 +337,45 @@ const ProfileHeader = ({
             <Grid item xs sm={1} lg={3} md={2} />
             <Grid item xs={10} sm={10} lg={6} md={8}>
               <Grid container spacing={24}>
-                <Grid align="left" style={{ width: "96px", margin: "12px",
-                
-              }}>
-                  {
-                    profile.profileImage && profile.profileImage[0] && profile.profileImage[0].name ?
+                <Grid align="left" style={{ width: "96px", margin: "12px" }}>
+                  {profile.profileImage &&
+                  profile.profileImage[0] &&
+                  profile.profileImage[0].name ? (
                     <Avatar
-                    src={`${UPLOADS_SERVER}/images/${profile.profileImage[0].name}`}
-                    style={{ width: "96px", height: "96px",borderStyle: "solid",
-                    borderColor: "#CFCECE",
-                    borderWidth: "1px" }}
-                    alt="profile image"
-                  >
-                 
-                  </Avatar>
-                    :
+                      src={`${UPLOADS_SERVER}/images/${
+                        profile.profileImage[0].name
+                      }`}
+                      style={{
+                        width: "96px",
+                        height: "96px",
+                        borderStyle: "solid",
+                        borderColor: "#CFCECE",
+                        borderWidth: "1px"
+                      }}
+                      alt="profile image"
+                    />
+                  ) : (
                     <Avatar
-                    style={{ width: "96px", height: "96px", backgroundColor: `${`${profile.name}${profile.lastname}`.toColor()}`,fontWeight: "500", fontSize: "46px" }}
-                    alt="profile image"
-                  >
-                  <Typography variant="inherit">
-                  {
-                    profile.name ? `${profile.name.charAt(0)}${profile.lastname.charAt(0)}`: ""
-                  }
-                  </Typography>
-                  
-                 
-                  </Avatar>
-                  }
-                  
+                      style={{
+                        width: "96px",
+                        height: "96px",
+                        backgroundColor: `${`${profile.name}${
+                          profile.lastname
+                        }`.toColor()}`,
+                        fontWeight: "500",
+                        fontSize: "46px"
+                      }}
+                      alt="profile image"
+                    >
+                      <Typography variant="inherit">
+                        {profile.name
+                          ? `${profile.name.charAt(0)}${profile.lastname.charAt(
+                              0
+                            )}`
+                          : ""}
+                      </Typography>
+                    </Avatar>
+                  )}
                 </Grid>
                 <Grid
                   item

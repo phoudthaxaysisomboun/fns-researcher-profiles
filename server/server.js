@@ -1398,16 +1398,44 @@ app.post("/api/research/search", (req, res) => {
             Research.find(
               {
                 $or: [
-                  // { title: {$regex: reg, $options: 'm' }},
-                  // { abstract: {$regex: reg, $options: 'm' }},
-                  // { description: {$regex: reg, $options: 'm' }},
-                  { "author._id" : ids },
+                  { title: {$regex: reg, $options: 'm' }},
+                  { abstract: {$regex: reg, $options: 'm' }},
+                  { description: {$regex: reg, $options: 'm' }},
+                  // { "author._id" : ids },
                 ],
               }
             )
-            .select("_id title")
+            .populate({
+              path: "author",
+              model: "User",
+              select: ["name", "lastname", "profileImage"]
+            })
+            .populate({
+              path: "supervisor",
+              model: "User",
+              select: ["name", "lastname", "profileImage", "prefix"]
+            })
+            .populate({
+              path: "uploader",
+              select: ["name", "lastname", "profileImage"]
+            })
+            .populate({
+              path: "researchType"
+            })
+            .populate({
+              path: "publicationType"
+            })
+            .populate({
+              path: "files.uploader",
+              select: ["name", "lastname", "profileImage"]
+            })
+            .populate({
+              path: "education",
+              options: { sort: { start: 1 } }
+            })
             .exec((err, research)=> {
               console.log("research is " + research)
+              return res.status(200).send(research);
             })
           });
       });

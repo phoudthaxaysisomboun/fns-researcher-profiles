@@ -117,7 +117,10 @@ const SearchHeader = ({
   clearText,
   researchCount,
   profileCount,
-  performSearch
+  performSearch,
+  tabValue,
+  changeToResearcher,
+  changeToResearch
 }) => {
   return (
     <Grid container>
@@ -145,7 +148,7 @@ const SearchHeader = ({
             <Grid item xs={12}>
               <Typography variant="inherit" style={{ textAlign: "center" }}>
                 ດ້ວຍ{" "}
-                <Link to="/">
+                <Link to="/search/researchers?q=">
                   <NumberFormat
                     value={profileCount}
                     displayType={"text"}
@@ -153,7 +156,7 @@ const SearchHeader = ({
                   />{" "}
                   ນັກຄົ້ນຄວ້າ
                 </Link>{" "}
-                ແລະ <Link to="/"><NumberFormat
+                ແລະ <Link to="/search/researches?q="><NumberFormat
                 value={researchCount}
                 displayType={"text"}
                 thousandSeparator={true}
@@ -224,7 +227,7 @@ const SearchHeader = ({
           <Grid container>
             <Grid item xs={12}>
               <Tabs
-                value={0}
+                value={tabValue}
                 indicatorColor="primary"
                 textColor="primary"
                 centered
@@ -233,8 +236,9 @@ const SearchHeader = ({
                 <Tab
                   style={{ fontSize: "16px", fontWeight: 500 }}
                   label="ນັກຄົ້ນຄວ້າ"
-                  to={`/research/}`}
-                  component={ReactLink}
+                  // to={`/research/}`}
+                  // component={ReactLink}
+                  onClick={()=>{changeToResearcher()}}
                 />
 
                 <Tab
@@ -244,8 +248,9 @@ const SearchHeader = ({
                     textDecoration: "none"
                   }}
                   label="ຜົນງານຄົ້ນຄວ້າ"
-                  to={`/profile/`}
-                  component={ReactLink}
+                  // to={`/profile/`}
+                  // component={ReactLink}
+                  onClick={()=>{changeToResearch()}}
                 />
               </Tabs>
             </Grid>
