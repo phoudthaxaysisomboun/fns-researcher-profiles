@@ -4,6 +4,7 @@ import SearchHeader from "../../hoc/search_header";
 import { connect } from "react-redux";
 
 import { Grid } from "@material-ui/core";
+import { SearchOutlined } from "@material-ui/icons";
 
 import ProfileCard from "../Home/Card/profile";
 
@@ -83,7 +84,9 @@ class Home extends Component {
             <Grid item xs sm={2} lg={4} md={3} />
             <Grid item xs={10} sm={8} lg={4} md={6}>
               <Grid container justify="center">
-                <ProfileCard />
+              <Grid item style={{marginTop: "32px"}}>
+             <SearchOutlined style={{top: "8px", position: "relative"}}/> ພິມຫົວຂໍ້ຜົນງານ ຊື່ນັກຄົ້ນຄວ້າ ເພື່ອຄົ້ນຫານັກຄົ້ນຄວ້າ ຫລື ຜົນງານການຄົ້ນຄວ້າທີ່ຕ້ອງການ
+              </Grid>
               </Grid>
             </Grid>
             <Grid item xs sm={2} lg={4} md={3} />

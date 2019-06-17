@@ -2,7 +2,15 @@ import React, { Component } from "react";
 import { Fab, Grid } from "@material-ui/core";
 import { AddOutlined } from "@material-ui/icons";
 
+import { connect } from "react-redux";
+
+import { withRouter } from "react-router-dom";
+
 import AddResearch from "../../../components/utils/Dialogs/add_research";
+
+import {getFeed, clearFeed} from "../../../actions/research_actions"
+
+import FeedCard from "../Feed/Card/post"
 
 const fabStyle = {
   margin: 0,
@@ -18,6 +26,14 @@ class Feed extends Component {
   state = {
     openAddResearchDialog: false
   };
+
+  componentWillMount() {
+    this.props.dispatch(getFeed());
+  }
+
+  componentWillUnmount() {
+    this.props.dispatch(clearFeed());
+  }
 
   handleAddResearchClose = () => {
     this.setState({
@@ -38,7 +54,19 @@ class Feed extends Component {
           <Grid item xs sm={2} lg={4} md={3} />
           <Grid item xs={10} sm={8} lg={4} md={6}>
             <Grid container justify="center">
-              asdasd
+            <FeedCard
+            userResearch={
+              this.props.user &&
+              this.props.research.feed
+                ? this.props.research.feed
+                : null
+            }
+            userData={
+              this.props.user && this.props.user.userData
+                ? this.props.user.userData
+                : null
+            }
+          />
             </Grid>
           </Grid>
           <Grid item xs sm={2} lg={4} md={3} />
@@ -64,4 +92,12 @@ class Feed extends Component {
   }
 }
 
-export default Feed;
+
+const mapStateToProps = state => {
+  return {
+    user: state.user,
+    research: state.research
+  };
+};
+
+export default withRouter(connect(mapStateToProps)(Feed));

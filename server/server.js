@@ -774,8 +774,8 @@ app.post("/api/researchers/removeFollower", auth, (req, res) => {
 });
 
 app.get("/api/researchers/get_feed", auth, (req, res) => {
-  let order = req.query.order ? req.query.order : "asc";
-  let sortBy = req.query.sortBy ? req.query.sortBy : "name";
+  let order = req.query.order ? req.query.order : "desc";
+  let sortBy = req.query.sortBy ? req.query.sortBy : "createdAt";
   let limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 3;
   let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0;
 
@@ -794,6 +794,7 @@ app.get("/api/researchers/get_feed", auth, (req, res) => {
     });
 
     Research.find({uploader: followings})
+    .sort([[sortBy, order]])
     .populate({
       path: "author",
       model: "User",
@@ -806,7 +807,7 @@ app.get("/api/researchers/get_feed", auth, (req, res) => {
     })
     .populate({
       path: "uploader",
-      select: ["name", "lastname", "profileImage"]
+      select: ["name", "lastname", "profileImage" , "prefix"]
     })
     .populate({
       path: "researchType"
@@ -1454,10 +1455,10 @@ app.post("/api/research/search", (req, res) => {
             Research.find(
               {
                 $or: [
-                  { title: {$regex: reg, $options: 'm' }},
-                  { abstract: {$regex: reg, $options: 'm' }},
-                  { description: {$regex: reg, $options: 'm' }},
-                  // { "author._id" : ids },
+                  { title: {$regex: reg, $options: 'i' }},
+                  { abstract: {$regex: reg, $options: 'i' }},
+                  { description: {$regex: reg, $options: 'i' }},
+                  { "author._id" : ids },
                 ],
               }
             )

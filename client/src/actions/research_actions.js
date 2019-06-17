@@ -6,10 +6,12 @@ import {
   SEARCH_RESEARCHES,
   CLEAR_SEARCH_RESEARCHES,
   GET_RESEARCH_TYPE,
-  GET_PUBLICATION_TYPE
+  GET_PUBLICATION_TYPE,
+  GET_FEED,
+  CLEAR_FEED
 } from "./types";
 
-import { RESEARCH_SERVER } from "../components/utils/misc";
+import { RESEARCH_SERVER, RESEARCHER_SERVER } from "../components/utils/misc";
 
 export function getResearchForCard(id, limit, skip) {
   const request = axios
@@ -66,5 +68,21 @@ export function getPublicationType() {
   return {
     type: GET_PUBLICATION_TYPE,
     payload: request
+  };
+}
+
+export function getFeed() {
+  const request = axios
+    .get(`${RESEARCHER_SERVER}/get_feed`)
+    .then(response => response.data);
+  return {
+    type: GET_FEED,
+    payload: request
+  };
+}
+export function clearFeed() {
+  return {
+    type: CLEAR_FEED,
+    payload: ""
   };
 }

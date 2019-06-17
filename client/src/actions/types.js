@@ -52,3 +52,6 @@ export const CLEAR_SEARCH_RESEARCHES = "clear_search_researches";
 
 export const GET_RESEARCH_TYPE = "get_research_type"
 export const GET_PUBLICATION_TYPE = "get_publication_type"
+
+export const GET_FEED = "get_users_feed"
+export const CLEAR_FEED = "clear_users_feed"
