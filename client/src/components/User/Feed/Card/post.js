@@ -85,7 +85,7 @@ const styles = {
   }
 };
 
-const FeedCard = ({ userData, userResearch }) => {
+const FeedCard = ({ userData, userResearch, runLike, runUnLike }) => {
   const user = { ...userData };
   const research = { ...userResearch };
   const profileResearch = { ...research.userResearch };
@@ -99,143 +99,130 @@ const FeedCard = ({ userData, userResearch }) => {
   const isAuth = user.isAuth;
   let isOwner = false;
 
-  const showTime = (time) => {   
+  const showTime = time => {
+    var durationMinutes = moment().diff(time, "minutes");
+    var durationHours = moment().diff(time, "hours");
+    var durationDay = moment().diff(time, "days");
+    var durationWeek = moment().diff(time, "weeks");
+    var durationMonth = moment().diff(time, "months");
+    var durationYear = moment().diff(time, "years");
 
-      var durationMinutes = moment().diff(time, 'minutes');
-      var durationHours = moment().diff(time, 'hours');
-      var durationDay = moment().diff(time, 'days');
-      var durationWeek = moment().diff(time, 'weeks');
-      var durationMonth = moment().diff(time, 'months');
-      var durationYear = moment().diff(time, 'years');
+    console.log(durationMinutes + "nati");
 
-      console.log(durationMinutes + "nati")
-
-       
     if (durationMinutes < 60) {
-        return (
-            <Typography
-                      variant="inherit"
-                        style={{
-                          fontWeight: 400
-                          ,display: "block",
-                          fontSize: "13px"
-                          , color: "rgb(140, 140, 140)"
-                        }}
-                      >
-                        {durationMinutes} ນາທີກ່ອນ
-                      </Typography>
-        )
-    }
-      else if (durationHours < 24) {
-        return (
-            <Typography
-                      variant="inherit"
-                        style={{
-                          fontWeight: 400
-                          ,display: "block",
-                          fontSize: "13px"
-                          , color: "rgb(140, 140, 140)"
-                        }}
-                      >
-                        {durationHours} ຊົ່ວໂມງ
-                      </Typography>
-        )
-        
-      } else if (durationDay === 1) {
-        return (
-            <Typography
-                      variant="inherit"
-                        style={{
-                          fontWeight: 400
-                          ,display: "block",
-                          fontSize: "13px"
-                          , color: "rgb(140, 140, 140)"
-                        }}
-                      >
-                        ມື້ວານ
-                      </Typography>
-        )
-      }
-
-      else if (durationDay >= 1 && durationWeek === 0 ) {
-          return (
-            <Typography
-            variant="inherit"
-              style={{
-                fontWeight: 400
-                ,display: "block",
-                fontSize: "13px"
-                , color: "rgb(140, 140, 140)"
-              }}
-            >
-              {durationDay} ວັນກ່ອນ
-            </Typography>
-          )
-      }
-      else if (durationMonth === 0 || durationWeek < 4 ) {
-   
-        return (
-          <Typography
+      return (
+        <Typography
           variant="inherit"
-            style={{
-              fontWeight: 400
-              ,display: "block",
-              fontSize: "13px"
-              , color: "rgb(140, 140, 140)"
-            }}
-          >
-            {durationWeek} ອາທິດກ່ອນ
-          </Typography>
-        )
-      console.log(durationMonth + " deuan krn")
+          style={{
+            fontWeight: 400,
+            display: "block",
+            fontSize: "13px",
+            color: "rgb(140, 140, 140)"
+          }}
+        >
+          {durationMinutes} ນາທີກ່ອນ
+        </Typography>
+      );
+    } else if (durationHours < 24) {
+      return (
+        <Typography
+          variant="inherit"
+          style={{
+            fontWeight: 400,
+            display: "block",
+            fontSize: "13px",
+            color: "rgb(140, 140, 140)"
+          }}
+        >
+          {durationHours} ຊົ່ວໂມງ
+        </Typography>
+      );
+    } else if (durationDay === 1) {
+      return (
+        <Typography
+          variant="inherit"
+          style={{
+            fontWeight: 400,
+            display: "block",
+            fontSize: "13px",
+            color: "rgb(140, 140, 140)"
+          }}
+        >
+          ມື້ວານ
+        </Typography>
+      );
+    } else if (durationDay >= 1 && durationWeek === 0) {
+      return (
+        <Typography
+          variant="inherit"
+          style={{
+            fontWeight: 400,
+            display: "block",
+            fontSize: "13px",
+            color: "rgb(140, 140, 140)"
+          }}
+        >
+          {durationDay} ວັນກ່ອນ
+        </Typography>
+      );
+    } else if (durationMonth === 0 || durationWeek < 4) {
+      return (
+        <Typography
+          variant="inherit"
+          style={{
+            fontWeight: 400,
+            display: "block",
+            fontSize: "13px",
+            color: "rgb(140, 140, 140)"
+          }}
+        >
+          {durationWeek} ອາທິດກ່ອນ
+        </Typography>
+      );
+    } else if (durationMonth >= 1 && durationYear < 1) {
+      return (
+        <Typography
+          variant="inherit"
+          style={{
+            fontWeight: 400,
+            display: "block",
+            fontSize: "13px",
+            color: "rgb(140, 140, 140)"
+          }}
+        >
+          {durationMonth} ເດືອນກ່ອນ
+        </Typography>
+      );
+    } else if (durationYear >= 1) {
+      console.log(durationYear + " py krn");
+      return (
+        <Typography
+          variant="inherit"
+          style={{
+            fontWeight: 400,
+            display: "block",
+            fontSize: "13px",
+            color: "rgb(140, 140, 140)"
+          }}
+        >
+          {durationYear} ປີກ່ອນ
+        </Typography>
+      );
+    } else {
+      return (
+        <Typography
+          variant="inherit"
+          style={{
+            fontWeight: 400,
+            display: "block",
+            fontSize: "13px",
+            color: "rgb(140, 140, 140)"
+          }}
+        >
+          {moment(time).format("DD/MM/YYYY")}
+        </Typography>
+      );
     }
-      else if ( durationMonth >= 1 && durationYear < 1) {
-          return (
-            <Typography
-            variant="inherit"
-              style={{
-                fontWeight: 400
-                ,display: "block",
-                fontSize: "13px"
-                , color: "rgb(140, 140, 140)"
-              }}
-            >
-              {durationMonth} ເດືອນກ່ອນ
-            </Typography>
-          )
-        console.log(durationMonth + " deuan krn")
-      }
-      else if (durationYear >= 1) {
-        console.log(durationYear + " py krn")
-        return (
-            <Typography
-            variant="inherit"
-              style={{
-                fontWeight: 400
-                ,display: "block",
-                fontSize: "13px"
-                , color: "rgb(140, 140, 140)"
-              }}
-            >
-              {durationYear} ປີກ່ອນ
-            </Typography>
-        )
-      }
-      else {
-        return (
-            <Typography
-            variant="inherit"
-              style={{
-                fontWeight: 400
-                ,display: "block",
-                fontSize: "13px"
-                , color: "rgb(140, 140, 140)"
-              }}
-            >
-            {moment(time).format("DD/MM/YYYY")}
-            </Typography>
-        )
-      }
 
     //   <Typography
     //                   variant="inherit"
@@ -247,7 +234,94 @@ const FeedCard = ({ userData, userResearch }) => {
     //                   >
     //                     {researches.createdAt}
     //                   </Typography>
-  }
+  };
+
+  const renderLikeButton = (id, researchLike) => {
+    let likeCount = researchLike ? researchLike.length : 0;
+    let duplicate = false;
+    if (userData.likes) {
+      userData.likes.forEach(item => {
+        if (item === id) {
+          duplicate = true;
+        }
+      });
+    }
+
+    if (duplicate) {
+      return (
+        <Button
+          size="small"
+          style={{
+            color: "#d32f2f",
+            minWidth: "14px",
+            height: "36px",
+            borderRadius: "22px"
+          }}
+          onClick={() => {
+            runUnLike(id);
+          }}
+        >
+          {" "}
+          <FavoriteOutlined fontSize="small" />
+          {likeCount > 0 ? (
+            <div
+              style={{
+                fontSize: "13.5px",
+                color: "#d32f2f",
+                fontFamily: "'Roboto', sans serif",
+                display: "inline"
+              }}
+            >
+              &nbsp;
+              <NumberFormat
+                value={likeCount}
+                displayType={"text"}
+                thousandSeparator={true}
+              />
+              &nbsp;
+            </div>
+          ) : null}
+        </Button>
+      );
+    } else {
+      return (
+
+        <Button
+          size="small"
+          style={{
+            color: "#686868",
+            minWidth: "14px",
+            height: "36px",
+            borderRadius: "22px"
+          }}
+          onClick={() => {
+            runLike(id);
+          }}
+        >
+          {" "}
+          <FavoriteBorderOutlined fontSize="small" />
+          {likeCount > 0 ? (
+            <div
+              style={{
+                fontSize: "13.5px",
+                color: "#757575",
+                fontFamily: "'Roboto', sans serif",
+                display: "inline"
+              }}
+            >
+              &nbsp;
+              <NumberFormat
+                value={likeCount}
+                displayType={"text"}
+                thousandSeparator={true}
+              />
+              &nbsp;
+            </div>
+          ) : null}
+        </Button>
+      );
+    }
+  };
 
   const renderItems = () => (
     <Grid item xs={12}>
@@ -328,7 +402,7 @@ const FeedCard = ({ userData, userResearch }) => {
                       style={{ color: "inherit", textDecoration: "none" }}
                     >
                       <Typography
-                      variant="inherit"
+                        variant="inherit"
                         style={{
                           display: "inline",
                           fontWeight: 500,
@@ -338,12 +412,20 @@ const FeedCard = ({ userData, userResearch }) => {
                         {researches.uploader.prefix} {researches.uploader.name}{" "}
                         {researches.uploader.lastname}
                       </Typography>
-                      </ReactLink>
-                      { " "}
-                      <Typography variant="body1" style={{ display: "inline", fontWeight: "400", color: "rgb(140, 140, 140)", fontSize: "16px", fontFamily: "'Noto Sans Lao UI', sans serif"}}>
-                        ໄດ້ເພີ່ມຜົນງານການຄົ້ນຄວ້າ
-                      </Typography>
-                      {showTime(researches.createdAt)}
+                    </ReactLink>{" "}
+                    <Typography
+                      variant="body1"
+                      style={{
+                        display: "inline",
+                        fontWeight: "400",
+                        color: "rgb(140, 140, 140)",
+                        fontSize: "16px",
+                        fontFamily: "'Noto Sans Lao UI', sans serif"
+                      }}
+                    >
+                      ໄດ້ເພີ່ມຜົນງານການຄົ້ນຄວ້າ
+                    </Typography>
+                    {showTime(researches.createdAt)}
                   </Grid>
                 </Grid>
                 <Paper
@@ -416,9 +498,12 @@ const FeedCard = ({ userData, userResearch }) => {
                           {researches.researchType.name}
                         </div>
 
-                        
-                          {researches.files[0] ? <div style={styles.chipSecondary}>ມີເອກກະສານໃຫ້ອ່ານ</div> : null}
-                        
+                        {researches.files[0] ? (
+                          <div style={styles.chipSecondary}>
+                            ມີເອກກະສານໃຫ້ອ່ານ
+                          </div>
+                        ) : null}
+
                         <div style={styles.chipSecondary}>
                           {researches.publicationType.name}
                         </div>
@@ -548,38 +633,10 @@ const FeedCard = ({ userData, userResearch }) => {
                   alignItems="center"
                 >
                   <Grid item xs={6} align="left" alignItems="flex-start">
-                    <Button
-                      size="small"
-                      style={{
-                        color: "#686868",
-                        minWidth: "14px",
-                        height: "36px",
-                        borderRadius: "22px"
-                      }}
-                    >
-                      {" "}
-                      <FavoriteBorderOutlined fontSize="small" />
-                      {research.likes ? (
-                        <div
-                          style={{
-                            fontSize: "13.5px",
-                            color: "#757575",
-                            fontFamily: "'Roboto', sans serif",
-                            display: "inline"
-                          }}
-                        >
-                          &nbsp;
-                          <NumberFormat
-                            value={
-                              research.likes ? research.likes.length : null
-                            }
-                            displayType={"text"}
-                            thousandSeparator={true}
-                          />
-                          &nbsp;
-                        </div>
-                      ) : null}
-                    </Button>
+                    {isAuth
+                      ? renderLikeButton(researches._id, researches.likes)
+                      : null}
+
                     <Button
                       size="small"
                       style={{
@@ -677,9 +734,7 @@ const FeedCard = ({ userData, userResearch }) => {
               </Paper>
             </>
           ))}
-          <div style={{height: "24px"}}>
-          
-          </div>
+          <div style={{ height: "24px" }} />
         </div>
       ) : (
         <Grid

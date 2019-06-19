@@ -8,7 +8,10 @@ import {
   GET_RESEARCH_TYPE,
   GET_PUBLICATION_TYPE,
   GET_FEED,
-  CLEAR_FEED
+  CLEAR_FEED,
+  ADD_LIKE,
+  REMOVE_LIKE,
+  CLEAR_LIKES_RESEARCH
 } from "./types";
 
 import { RESEARCH_SERVER, RESEARCHER_SERVER } from "../components/utils/misc";
@@ -84,5 +87,38 @@ export function clearFeed() {
   return {
     type: CLEAR_FEED,
     payload: ""
+  };
+}
+
+
+
+export function addLike(_id) {
+  console.log(`${RESEARCH_SERVER}/add_like?researchId=${_id}`)
+  const request = axios
+    .post(`${RESEARCH_SERVER}/add_like?researchId=${_id}`)
+    .then(response => response.data);
+
+  return {
+    type: ADD_LIKE,
+    payload: request
+  };
+}
+
+export function removeLike(_id) {
+  console.log(`${RESEARCH_SERVER}/remove_like?researchId=${_id}`)
+  const request = axios
+    .post(`${RESEARCH_SERVER}/remove_like?researchId=${_id}`)
+    .then(response => response.data);
+
+  return {
+    type: REMOVE_LIKE,
+    payload: request
+  };
+}
+
+export function clearLikeResearch() {
+  return {
+    type: CLEAR_LIKES_RESEARCH,
+    payload: ''
   };
 }

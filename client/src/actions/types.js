@@ -55,3 +55,11 @@ export const GET_PUBLICATION_TYPE = "get_publication_type"
 
 export const GET_FEED = "get_users_feed"
 export const CLEAR_FEED = "clear_users_feed"
+
+
+export const LIKE = "like";
+export const ADD_LIKE = "add_like";
+export const UNLIKE = "unlike";
+export const REMOVE_LIKE = "remove_like";
+export const CLEAR_LIKES_USER = "clear_likes_in_users";
+export const CLEAR_LIKES_RESEARCH = "clear_likes_in_researches"

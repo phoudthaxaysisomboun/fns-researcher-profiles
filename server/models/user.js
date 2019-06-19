@@ -116,7 +116,7 @@ const userSchema = mongoose.Schema({
     }],
     researchArea: {
         type: Array,
-        default: []
+        default: [],
     },
     teachingExperience: [{
         institution: {type: String},
@@ -147,6 +147,11 @@ const userSchema = mongoose.Schema({
     following: [{
         _id: { type: Schema.Types.ObjectId, ref: 'User' },
         createdAt: {type: Date}
+    }],
+    likes: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Research',
+        default: []
     }],
     follower: [{
         type: Schema.Types.ObjectId,

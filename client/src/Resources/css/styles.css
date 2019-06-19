@@ -127,9 +127,6 @@ span {
 .pg-viewer {
   min-width: 0;
 }
-canvas {
-  width: 100%,
-}
 
 .AddResearch-valueContainer-203 {
   padding: 8px
@@ -143,5 +140,10 @@ canvas {
 }
 textarea {
   font-family: "Noto Sans Lao UI", sans-serif !important
+}
+
+canvas {
+  width: 100% !important;
+  height: auto !important;
 }
 /* 0 2px 4px -1px rgba(0,0,0,0.2), 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12) */

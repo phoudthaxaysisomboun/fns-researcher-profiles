@@ -32,8 +32,8 @@ class Layout extends Component {
         return (
             <div>
                 <Header headerclass={this.state.headerclass}/>
-                <div className="page_container" style={{}
-                    // {marginLeft: 240}
+                <div className="page_container" style={
+                    {marginLeft: 240}
                 }>
                     {this.props.children}
                 </div>

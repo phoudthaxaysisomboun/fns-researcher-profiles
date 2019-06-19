@@ -2,6 +2,8 @@ import React from "react";
 
 import FileViewer from "react-file-viewer";
 
+import { PDFReader, MobilePDFReader } from 'reactjs-pdf-reader';
+
 import {
   IconButton,
   Grid,
@@ -26,9 +28,12 @@ const FileViwerCard = ({ user, research }) => {
 
   const file = `${UPLOADS_SERVER}${name}`;
   const type = file.split(".").pop();
+
+
   return (
+    research && research.files && research.files[0] ?
+    
     <Grid item xs={12}>
-      {console.log(research)}
       {type === "pdf" ? (
         <Paper
           style={{
@@ -38,21 +43,13 @@ const FileViwerCard = ({ user, research }) => {
             marginTop: "24px",
             fontFamily: "'Phetsarath', sans-serif",
             borderRadius: 0,
-            textAlign: "center"
+            textAlign: "center",
+            overflow:'auto',
+            
           }}
         >
-          {name !== "" ? <FileViewer fileType={type} filePath={file} /> : null}
 
-          {
-          //   name !== "" ? (
-          //   <Document
-          //     file={'/1558183548fns_researcher_profiles.pdf'}
-            
-          //   >
-          //     <Page  pageNumber={1}/>
-          //   </Document>
-          // ) : null
-        }
+           <PDFReader showAllPage withCredentials={false} url={file}/>
         </Paper>
       ) : (
         <Paper
@@ -68,7 +65,7 @@ const FileViwerCard = ({ user, research }) => {
           {name !== "" ? <FileViewer fileType={type} filePath={file} /> : null}
         </Paper>
       )}
-    </Grid>
+    </Grid> : null
   );
 };
 

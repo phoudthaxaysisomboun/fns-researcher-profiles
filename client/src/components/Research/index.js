@@ -17,52 +17,54 @@ import {
   Button
 } from "@material-ui/core";
 
-import {
-  getProfileDetail,
-  clearProfileDetail,
-  getFollowing,
-  getFollower,
-  follow,
-  addFollower,
-  unfollow,
-  removeFollower,
-  clearFollowing,
-  clearFollower,
-  getFollowerInLoadMore,
-  getFollowingInLoadMore
-} from "../../actions/user_actions";
+import { like, unlike, clearLike } from "../../actions/user_actions";
 
 import {
   getResearchForCard,
-  clearResearchCard
+  clearResearchCard,
+  addLike,
+  removeLike,
+  clearLikeResearch
 } from "../../actions/research_actions";
 
 import { CloseOutlined } from "@material-ui/icons";
 import { LOCALHOST } from "../utils/misc";
 import AddResearchButton from "../utils/Button/add_research_button";
 
-import AbstractCard from "../Research/Card/abstract"
-import FileViwerCard from "../Research/Card/file_viewer"
-
-import { Document, Page } from 'react-pdf';
-
+import AbstractCard from "../Research/Card/abstract";
+import FileViwerCard from "../Research/Card/file_viewer";
 
 let shareUrl;
 
-
 class Research extends Component {
-    state = {
-        isAuthor:  false,
-        isUploader: false,
-        isAuth: false,
-        isAdmin: false,
-        numPages: null,
-    pageNumber: 1,
+  state = {
+    isAuthor: false,
+    isUploader: false,
+    isAuth: false,
+    isAdmin: false
+  };
+
+  like = id => {
+    if (this.props.user.userData.isAuth) {
+      this.props.dispatch(like(id)).then(() => {});
+      this.props.dispatch(addLike(id)).then(() => {
+        this.props.dispatch(getResearchForCard(id));
+      });
+    } else {
+      console.log("You need to login");
     }
-    
-  onDocumentLoadSuccess = ({ numPages }) => {
-    this.setState({ numPages });
-  }
+  };
+
+  unlike = id => {
+    if (this.props.user.userData.isAuth) {
+      this.props.dispatch(unlike(id)).then(() => {});
+      this.props.dispatch(removeLike(id)).then(() => {
+        this.props.dispatch(getResearchForCard(id));
+      });
+    } else {
+      console.log("You need to login");
+    }
+  };
 
   componentWillMount() {
     const id = this.props.match.params.id;
@@ -70,86 +72,103 @@ class Research extends Component {
     this.props.dispatch(getResearchForCard(id)).then(response => {
       shareUrl = `${LOCALHOST}/research/${response.payload[0]._id}`;
       document.title = `${response.payload[0].title} - FNS Researcher Profiles`;
-      console.log(this.props)
 
-      const author = response.payload[0].author.find( array => array._id === this.props.user.userData._id );
-      const uploader = response.payload[0].uploader._id === this.props.user.userData._id
-      const auth = this.props.user.userData.isAuth
-      const admin = this.props.user.userData.isAdmin
+      const author = response.payload[0].author.find(
+        array => array._id === this.props.user.userData._id
+      );
+      const uploader =
+        response.payload[0].uploader._id === this.props.user.userData._id;
+      const auth = this.props.user.userData.isAuth;
+      const admin = this.props.user.userData.isAdmin;
 
       if (author) {
-          this.setState({
-              isAuthor: true
-          })
+        this.setState({
+          isAuthor: true
+        });
       }
 
       if (uploader) {
         this.setState({
-            isUploader: true
-        })
+          isUploader: true
+        });
       }
 
       if (auth) {
-          this.setState({
-              isAuth: true
-          })
+        this.setState({
+          isAuth: true
+        });
       }
 
       if (admin) {
-          this.setState({
-              isAdmin: true
-          })
+        this.setState({
+          isAdmin: true
+        });
       }
-console.log(this.state)
     });
   }
 
-  render() {
+  componentWillUnmount() {
+    this.props.dispatch(clearLikeResearch());
+    this.props.dispatch(clearResearchCard());
+  }
 
+  render() {
     return (
       <ResearchHeader
         props={this.props}
         children={this.props.children}
         userData={this.props.user.userData}
-        research={this.props.research && this.props.research.userResearch ? this.props.research.userResearch[0]: ""}
+        research={
+          this.props.research && this.props.research.userResearch
+            ? this.props.research.userResearch[0]
+            : ""
+        }
         openShareDialog={() => {
           this.handleShareDialogOpen();
         }}
+        runLike={id => this.like(id)}
+        runUnLike={id => this.unlike(id)}
       >
-      <Grid container spacing={0} style={{paddingTop: "24px", paddingBottom: "24px"}}>
-      <Grid item xs sm={1} lg={2} md={1} />
+        <Grid
+          container
+          spacing={0}
+          style={{ paddingTop: "24px", paddingBottom: "24px" }}
+        >
+          <Grid item xs sm={1} lg={2} md={1} />
 
-      <Grid item xs={11} sm={10} lg={8} md={10}>
-      <div> 
-      {
-      //   <Document
-      //   file="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
-      //   onLoadSuccess={this.onDocumentLoadSuccess}
-      //   onSourceError={(e)=>{console.log(e)}}
-      // >
-      //   <Page pageNumber={1} />
-      // </Document><p>Page {this.state.pageNumber} of {this.state.numPages}</p>
-      }
-      
-    </div>
-      <AbstractCard user={this.props.user.userData} research={this.props.research && this.props.research.userResearch ? this.props.research.userResearch[0]: ""} />
-      <FileViwerCard user={this.props.user.userData} research={this.props.research && this.props.research.userResearch ? this.props.research.userResearch[0]: ""} />
-      </Grid>
+          <Grid item xs={11} sm={10} lg={8} md={10}>
+            <AbstractCard
+              user={this.props.user.userData}
+              research={
+                this.props.research && this.props.research.userResearch
+                  ? this.props.research.userResearch[0]
+                  : ""
+              }
+            />
+            <FileViwerCard
+              user={this.props.user.userData}
+              research={
+                this.props.research && this.props.research.userResearch
+                  ? this.props.research.userResearch[0]
+                  : ""
+              }
+            />
+          </Grid>
 
-      <Grid item xs sm={1} lg={2} md={1} />
-      </Grid>
-      
-      <AddResearchButton />
+          <Grid item xs sm={1} lg={2} md={1} />
+        </Grid>
+
+        <AddResearchButton />
       </ResearchHeader>
-    )
+    );
   }
 }
 
 const mapStateToProps = state => {
-    return {
-      user: state.user,
-      research: state.research
-    };
+  return {
+    user: state.user,
+    research: state.research
   };
+};
 
 export default connect(mapStateToProps)(Research);

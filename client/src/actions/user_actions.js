@@ -37,7 +37,10 @@ import {
   REMOVE_EDUCATION,
   GET_PROFILE_RESEARCH_COUNT,
   SEARCH_PROFILES,
-  CLEAR_SEARCH_PROFILES
+  CLEAR_SEARCH_PROFILES,
+  LIKE,
+  UNLIKE,
+  CLEAR_LIKES_USER
 } from "./types";
 
 import { USER_SERVER, RESEARCHER_SERVER, RESEARCHER_PROFILES_SERVER } from "../components/utils/misc";
@@ -498,5 +501,37 @@ export function clearSearchProfiles() {
   return {
     type: CLEAR_SEARCH_PROFILES,
     payload: ""
+  };
+}
+
+
+export function like(_id) {
+  console.log(`${RESEARCHER_SERVER}/like?researchId=${_id}`)
+  const request = axios
+    .post(`${RESEARCHER_SERVER}/like?researchId=${_id}`)
+    .then(response => response.data);
+
+  return {
+    type: LIKE,
+    payload: request
+  };
+}
+
+export function unlike(_id) {
+  console.log(`${RESEARCHER_SERVER}/unlike?researchId=${_id}`)
+  const request = axios
+    .post(`${RESEARCHER_SERVER}/unlike?researchId=${_id}`)
+    .then(response => response.data);
+
+  return {
+    type: UNLIKE,
+    payload: request
+  };
+}
+
+export function clearLike() {
+  return {
+    type: CLEAR_LIKES_USER,
+    payload: ''
   };
 }

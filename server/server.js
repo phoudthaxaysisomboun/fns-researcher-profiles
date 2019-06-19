@@ -8,8 +8,6 @@ require("dotenv").config();
 
 const normalizeUrl = require("normalize-url");
 
-
-
 mongoose.Promise = global.Promise;
 mongoose.connect(process.env.DATABASE);
 // mongoose.set('debug', true);
@@ -50,10 +48,6 @@ const { Research } = require("./models/research");
 // Middlewares
 const { auth } = require("./middleware/auth");
 const { admin } = require("./middleware/admin");
-
-
-
-
 
 //====================================
 //             DEPARTMENTS
@@ -316,6 +310,7 @@ app.get("/api/users/auth", auth, (req, res) => {
     emailIsVerified: req.user.emailIsVerified,
     accountIsVerified: req.user.accountIsVerified,
     advisor: req.user.advisor,
+    likes: req.user.likes,  
     createdAt: req.user.createdAt
   });
 });
@@ -400,10 +395,9 @@ app.get("/api/researcher_profiles/count", (req, res) => {
       if (err) return res.status(400).send(err);
       res.status(200).json({
         profileCount: docs.length,
-        researchCount: researchDoc.length,
+        researchCount: researchDoc.length
       });
     });
-   
   });
 });
 
@@ -417,7 +411,7 @@ app.post("/api/researchers/search", (req, res) => {
   let sortBy = req.query.sortBy ? req.query.sortBy : "name";
   let limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 6;
   let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0;
-  let ids = []
+  let ids = [];
   let findArgs = {};
 
   for (let key in req.body.filters) {
@@ -429,8 +423,7 @@ app.post("/api/researchers/search", (req, res) => {
   findArgs.emailIsVerified = true;
   findArgs.accountIsVerified = true;
 
-
-  let reg = new RegExp(req.query.search, 'i')
+  let reg = new RegExp(req.query.search, "i");
   // User.aggregate([
   //   {$project: {fullname: {$concat: ['$name', ' ', '$lastname']}, doc: '$$ROOT'}},
   // {$match: {fullname: reg}}
@@ -451,24 +444,22 @@ app.post("/api/researchers/search", (req, res) => {
     );
 
     User.find({
-      emailIsVerified: true , accountIsVerified: true ,
+      emailIsVerified: true,
+      accountIsVerified: true,
       $or: [
-        { name: {$regex: reg, $options: 'm' }},
-        { lastname: {$regex: reg, $options: 'm' }},
-        { prefix: {$regex: reg, $options: 'm' }},
-        { "affiliation.position": {$regex: reg, $options: 'm' }},
-      ],
-      
+        { name: { $regex: reg, $options: "m" } },
+        { lastname: { $regex: reg, $options: "m" } },
+        { prefix: { $regex: reg, $options: "m" } },
+        { "affiliation.position": { $regex: reg, $options: "m" } }
+      ]
     })
       .select("_id")
 
       .exec((err, docs) => {
         if (docs) {
-          
           docs.map((value, index) => {
             // Array.prototype.push.apply(ids, value["_id"])
-            ids.push(value["_id"])
-            
+            ids.push(value["_id"]);
           });
         }
 
@@ -781,52 +772,50 @@ app.get("/api/researchers/get_feed", auth, (req, res) => {
 
   let type = req.query.type;
   let items = req.query.id;
-  
-  let followings = []
+
+  let followings = [];
 
   // console.log(req.user)
 
   User.findOne({ _id: req.user._id }, (err, doc) => {
-  
-
     doc.following.forEach(item => {
-      followings.push(item._id)
+      followings.push(item._id);
     });
 
-    Research.find({uploader: followings})
-    .sort([[sortBy, order]])
-    .populate({
-      path: "author",
-      model: "User",
-      select: ["name", "lastname", "profileImage", "prefix"]
-    })
-    .populate({
-      path: "supervisor",
-      model: "User",
-      select: ["name", "lastname", "profileImage", "prefix"]
-    })
-    .populate({
-      path: "uploader",
-      select: ["name", "lastname", "profileImage" , "prefix"]
-    })
-    .populate({
-      path: "researchType"
-    })
-    .populate({
-      path: "publicationType"
-    })
-    .populate({
-      path: "files.uploader",
-      select: ["name", "lastname", "profileImage", "prefix"]
-    })
-    .populate({
-      path: "education",
-      options: { sort: { start: 1 } }
-    })
-    .exec((err, docs)=>{
-      // console.log(req.User-Agent)
-      return res.status(200).send(docs);
-    })
+    Research.find({ uploader: followings })
+      .sort([[sortBy, order]])
+      .populate({
+        path: "author",
+        model: "User",
+        select: ["name", "lastname", "profileImage", "prefix"]
+      })
+      .populate({
+        path: "supervisor",
+        model: "User",
+        select: ["name", "lastname", "profileImage", "prefix"]
+      })
+      .populate({
+        path: "uploader",
+        select: ["name", "lastname", "profileImage", "prefix"]
+      })
+      .populate({
+        path: "researchType"
+      })
+      .populate({
+        path: "publicationType"
+      })
+      .populate({
+        path: "files.uploader",
+        select: ["name", "lastname", "profileImage", "prefix"]
+      })
+      .populate({
+        path: "education",
+        options: { sort: { start: 1 } }
+      })
+      .exec((err, docs) => {
+        // console.log(req.User-Agent)
+        return res.status(200).send(docs);
+      });
   });
 });
 
@@ -1392,7 +1381,7 @@ app.post("/api/research/search", (req, res) => {
   let sortBy = req.query.sortBy ? req.query.sortBy : "name";
   let limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 6;
   let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0;
-  let ids = []
+  let ids = [];
   let findArgs = {};
   let rFindArgs = {};
 
@@ -1402,8 +1391,7 @@ app.post("/api/research/search", (req, res) => {
     }
   }
 
-
-  let reg = new RegExp(req.query.search, 'g')
+  let reg = new RegExp(req.query.search, "g");
   // User.aggregate([
   //   {$project: {fullname: {$concat: ['$name', ' ', '$lastname']}, doc: '$$ROOT'}},
   // {$match: {fullname: reg}}
@@ -1424,76 +1412,70 @@ app.post("/api/research/search", (req, res) => {
     );
 
     User.find({
-      emailIsVerified: true , accountIsVerified: true ,
+      emailIsVerified: true,
+      accountIsVerified: true,
       $or: [
-        { name: {$regex: reg, $options: 'm' }},
-        { lastname: {$regex: reg, $options: 'm' }}
-      ],
-      
+        { name: { $regex: reg, $options: "m" } },
+        { lastname: { $regex: reg, $options: "m" } }
+      ]
     })
       .select("_id")
 
       .exec((err, docs) => {
         if (docs) {
-          
           docs.map((value, index) => {
             // Array.prototype.push.apply(ids, value["_id"])
-            ids.push(value["_id"])
-            
+            ids.push(value["_id"]);
           });
         }
 
         findArgs._id = ids;
 
         User.find(findArgs)
-        .select("_id")
+          .select("_id")
           .exec((err, result) => {
             console.log(findArgs);
-            rFindArgs.author = findArgs,
-            console.log(ids);
+            (rFindArgs.author = findArgs), console.log(ids);
 
-            Research.find(
-              {
-                $or: [
-                  { title: {$regex: reg, $options: 'i' }},
-                  { abstract: {$regex: reg, $options: 'i' }},
-                  { description: {$regex: reg, $options: 'i' }},
-                  { "author._id" : ids },
-                ],
-              }
-            )
-            .populate({
-              path: "author",
-              model: "User",
-              select: ["name", "lastname", "profileImage"]
+            Research.find({
+              $or: [
+                { title: { $regex: reg, $options: "i" } },
+                { abstract: { $regex: reg, $options: "i" } },
+                { description: { $regex: reg, $options: "i" } },
+                { "author._id": { $in: ids } }
+              ]
             })
-            .populate({
-              path: "supervisor",
-              model: "User",
-              select: ["name", "lastname", "profileImage", "prefix"]
-            })
-            .populate({
-              path: "uploader",
-              select: ["name", "lastname", "profileImage"]
-            })
-            .populate({
-              path: "researchType"
-            })
-            .populate({
-              path: "publicationType"
-            })
-            .populate({
-              path: "files.uploader",
-              select: ["name", "lastname", "profileImage"]
-            })
-            .populate({
-              path: "education",
-              options: { sort: { start: 1 } }
-            })
-            .exec((err, research)=> {
-            
-              return res.status(200).send(research);
-            })
+              .populate({
+                path: "author",
+                model: "User",
+                select: ["name", "lastname", "profileImage"]
+              })
+              .populate({
+                path: "supervisor",
+                model: "User",
+                select: ["name", "lastname", "profileImage", "prefix"]
+              })
+              .populate({
+                path: "uploader",
+                select: ["name", "lastname", "profileImage"]
+              })
+              .populate({
+                path: "researchType"
+              })
+              .populate({
+                path: "publicationType"
+              })
+              .populate({
+                path: "files.uploader",
+                select: ["name", "lastname", "profileImage"]
+              })
+              .populate({
+                path: "education",
+                options: { sort: { start: 1 } }
+              })
+              .exec((err, research) => {
+                return res.status(200).send(research);
+              });
           });
       });
   }
@@ -1625,6 +1607,123 @@ app.post("/api/research/add_research", auth, (req, res) => {
       }
     );
   });
+});
+
+/*  likes   */
+
+app.post("/api/researchers/like", auth, (req, res) => {
+  User.findOne({ _id: req.user._id }, (err, doc) => {
+    let duplicate = false;
+
+    doc.likes.forEach(item => {
+      if (item._id == req.query.researchId) {
+        duplicate = true;
+      }
+    });
+
+    if (duplicate) {
+      res.status(200).json({ message: "Already Like" });
+    } else {
+      User.findOneAndUpdate(
+        { _id: req.user._id },
+        {
+          $push: {
+            likes: {
+              _id: mongoose.Types.ObjectId(req.query.researchId)
+            }
+          }
+        },
+        {
+          new: true
+        },
+        (err, doc) => {
+          if (err) return res.json({ success: false, err });
+          res.status(200).json(doc.likes);
+        }
+      );
+    }
+  });
+});
+
+app.post("/api/research/add_like", auth, (req, res) => {
+  var today = new Date();
+  var date =
+    today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
+  var time =
+    today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+  var dateTime = date + " " + time;
+  Research.findOne({ _id: req.query.researchId }, (err, doc) => {
+    let duplicate = false;
+
+    if (doc.likes[0]) {
+      doc.likes.forEach(item => {
+        if (item === req.user._id) {
+          duplicate = true;
+        }
+      });
+    }
+
+    if (duplicate) {
+      res.status(200).json({ message: "Already add like" });
+    } else {
+      Research.findOneAndUpdate(
+        { _id: req.query.researchId },
+        {
+          $push: {
+            likes: {
+              user: mongoose.Types.ObjectId(req.user._id),
+              time: dateTime
+            }
+          }
+        },
+        {
+          new: true
+        },
+        (err, doc) => {
+          if (err) return res.json({ success: false, err });
+          res.status(200).json({success: true});
+        }
+      );
+    }
+  });
+});
+
+app.post("/api/researchers/unlike", auth, (req, res) => {
+  User.findOneAndUpdate(
+    { _id: req.user._id },
+    {
+      $pull: {
+        likes: 
+          mongoose.Types.ObjectId(req.query.researchId)
+        
+      }
+    },
+    {
+      new: true
+    },
+    (err, doc) => {
+      if (err) return res.json({ success: false, err });
+      res.status(200).json(doc.likes);
+    }
+  );
+});
+
+app.post("/api/research/remove_like", auth, (req, res) => {
+  Research.findOneAndUpdate(
+    { _id: req.query.researchId },
+    {
+      $pull: {
+        likes: { user: mongoose.Types.ObjectId(req.user._id) }
+      }
+    },
+    {
+      new: true
+    },
+    (err, doc) => {
+      if (err) return res.json({ success: false, err });
+      res.status(200).json({success: true});
+    }
+  );
 });
 
 const port = process.env.PORT || 3002;

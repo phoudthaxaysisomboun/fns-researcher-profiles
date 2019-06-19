@@ -8,9 +8,16 @@ import { withRouter } from "react-router-dom";
 
 import AddResearch from "../../../components/utils/Dialogs/add_research";
 
-import {getFeed, clearFeed} from "../../../actions/research_actions"
+import {
+  getFeed,
+  clearFeed,
+  addLike,
+  removeLike,
+  clearLikeResearch
+} from "../../../actions/research_actions";
+import { like, unlike, clearLike } from "../../../actions/user_actions";
 
-import FeedCard from "../Feed/Card/post"
+import FeedCard from "../Feed/Card/post";
 
 const fabStyle = {
   margin: 0,
@@ -29,6 +36,7 @@ class Feed extends Component {
 
   componentWillMount() {
     this.props.dispatch(getFeed());
+    document.title = "Feed - FNS Researcher Profiles";
   }
 
   componentWillUnmount() {
@@ -47,6 +55,28 @@ class Feed extends Component {
     });
   };
 
+  like = id => {
+    if (this.props.user.userData.isAuth) {
+      this.props.dispatch(like(id)).then(() => {});
+      this.props.dispatch(addLike(id)).then(() => {
+        this.props.dispatch(getFeed());
+      });
+    } else {
+      console.log("You need to login");
+    }
+  };
+
+  unlike = id => {
+    if (this.props.user.userData.isAuth) {
+      this.props.dispatch(unlike(id)).then(() => {});
+      this.props.dispatch(removeLike(id)).then(() => {
+        this.props.dispatch(getFeed());
+      });
+    } else {
+      console.log("You need to login");
+    }
+  };
+
   render() {
     return (
       <div>
@@ -54,19 +84,20 @@ class Feed extends Component {
           <Grid item xs sm={2} lg={4} md={3} />
           <Grid item xs={10} sm={8} lg={4} md={6}>
             <Grid container justify="center">
-            <FeedCard
-            userResearch={
-              this.props.user &&
-              this.props.research.feed
-                ? this.props.research.feed
-                : null
-            }
-            userData={
-              this.props.user && this.props.user.userData
-                ? this.props.user.userData
-                : null
-            }
-          />
+              <FeedCard
+                userResearch={
+                  this.props.user && this.props.research.feed
+                    ? this.props.research.feed
+                    : null
+                }
+                userData={
+                  this.props.user && this.props.user.userData
+                    ? this.props.user.userData
+                    : null
+                }
+                runLike={id => this.like(id)}
+                runUnLike={id => this.unlike(id)}
+              />
             </Grid>
           </Grid>
           <Grid item xs sm={2} lg={4} md={3} />
@@ -91,7 +122,6 @@ class Feed extends Component {
     );
   }
 }
-
 
 const mapStateToProps = state => {
   return {

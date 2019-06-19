@@ -85,7 +85,7 @@ const styles = {
   }
 };
 
-const ResearchCard = ({ userData, userResearch }) => {
+const ResearchCard = ({ userData, userResearch, runLike, runUnLike }) => {
   const user = { ...userData };
   const research = { ...userResearch };
   const profileResearch = { ...research.userResearch };
@@ -98,6 +98,129 @@ const ResearchCard = ({ userData, userResearch }) => {
 
   const isAuth = user.isAuth;
   let isOwner = false;
+
+  const renderLikeButton = (id, researchLike) => {
+    let likeCount = researchLike ? researchLike.length : 0;
+    let duplicate = false;
+    if (userData.likes) {
+      userData.likes.forEach(item => {
+        if (item === id) {
+          duplicate = true;
+        }
+      });
+    }
+
+    if (!user.isAuth && (likeCount > 0)) {
+      return (
+        <Button
+          size="small"
+          disabled
+          style={{
+            color: "#686868",
+            minWidth: "14px",
+            height: "36px",
+            borderRadius: "22px"
+          }}
+        >
+          {" "}
+          <FavoriteBorderOutlined fontSize="small" />
+          {likeCount > 0 ? (
+            <div
+              style={{
+                fontSize: "13.5px",
+                color: "#757575",
+                fontFamily: "'Roboto', sans serif",
+                display: "inline"
+              }}
+            >
+              &nbsp;
+              <NumberFormat
+                value={likeCount}
+                displayType={"text"}
+                thousandSeparator={true}
+              />
+              &nbsp;
+            </div>
+          ) : null}
+        </Button>
+      )
+    }
+
+    if (duplicate) {
+      return (
+        <Button
+          size="small"
+          style={{
+            color: "#d32f2f",
+            minWidth: "14px",
+            height: "36px",
+            borderRadius: "22px"
+          }}
+          onClick={() => {
+            runUnLike(id);
+          }}
+        >
+          {" "}
+          <FavoriteOutlined fontSize="small" />
+          {likeCount > 0 ? (
+            <div
+              style={{
+                fontSize: "13.5px",
+                color: "#d32f2f",
+                fontFamily: "'Roboto', sans serif",
+                display: "inline"
+              }}
+            >
+              &nbsp;
+              <NumberFormat
+                value={likeCount}
+                displayType={"text"}
+                thousandSeparator={true}
+              />
+              &nbsp;
+            </div>
+          ) : null}
+        </Button>
+      );
+    } else {
+      return (
+
+        <Button
+          size="small"
+          style={{
+            color: "#686868",
+            minWidth: "14px",
+            height: "36px",
+            borderRadius: "22px"
+          }}
+          onClick={() => {
+            runLike(id);
+          }}
+        >
+          {" "}
+          <FavoriteBorderOutlined fontSize="small" />
+          {likeCount > 0 ? (
+            <div
+              style={{
+                fontSize: "13.5px",
+                color: "#757575",
+                fontFamily: "'Roboto', sans serif",
+                display: "inline"
+              }}
+            >
+              &nbsp;
+              <NumberFormat
+                value={likeCount}
+                displayType={"text"}
+                thousandSeparator={true}
+              />
+              &nbsp;
+            </div>
+          ) : null}
+        </Button>
+      );
+    }
+  };
 
   const renderItems = () => (
     <Grid item xs={12}>
@@ -341,38 +464,7 @@ const ResearchCard = ({ userData, userResearch }) => {
                 container
                 style={{ marginTop: "4px", marginBottom: "8px" }}
               >
-                <Button
-                  size="small"
-                  style={{
-                    color: "#686868",
-                    minWidth: "14px",
-                    height: "36px",
-                    borderRadius: "22px"
-                  }}
-                >
-                  {" "}
-                  <FavoriteBorderOutlined fontSize="small" />
-                  {research.likes ? (
-                    <div
-                      style={{
-                        fontSize: "13.5px",
-                        color: "#757575",
-                        fontFamily: "'Roboto', sans serif",
-                        display: "inline"
-                      }}
-                    >
-                      &nbsp;
-                      <NumberFormat
-                        value={
-                          research.likes ? research.likes.length : null
-                        }
-                        displayType={"text"}
-                        thousandSeparator={true}
-                      />
-                      &nbsp;
-                    </div>
-                  ) : null}
-                </Button>
+              {renderLikeButton(researches._id, researches.likes)}
                 <Button
                   size="small"
                   style={{

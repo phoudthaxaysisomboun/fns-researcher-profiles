@@ -11,11 +11,14 @@ import ResearchCard from "../Home/Card/research";
 
 import { withRouter } from "react-router-dom";
 
-import { getProfileAndResearchCount } from "../../actions/user_actions";
+import { getProfileAndResearchCount,like, unlike, clearLike } from "../../actions/user_actions";
 
 import {
   searchResearches,
-  clearSearchResearches
+  clearSearchResearches,
+  addLike,
+  removeLike,
+  clearLikeResearch
 } from "../../actions/research_actions";
 let query = ""
 class ResearchSearch extends Component {
@@ -70,7 +73,28 @@ class ResearchSearch extends Component {
     this.setState({
       search: ""
     });
-    console.log(this.state.search);
+  };
+
+  like = id => {
+    if (this.props.user.userData.isAuth) {
+      this.props.dispatch(like(id)).then(() => {});
+      this.props.dispatch(addLike(id)).then(() => {
+        this.props.dispatch(this.props.dispatch(searchResearches(this.state.search)))
+      });
+    } else {
+      console.log("You need to login");
+    }
+  };
+
+  unlike = id => {
+    if (this.props.user.userData.isAuth) {
+      this.props.dispatch(unlike(id)).then(() => {});
+      this.props.dispatch(removeLike(id)).then(() => {
+        this.props.dispatch(this.props.dispatch(searchResearches(this.state.search)))
+      });
+    } else {
+      console.log("You need to login");
+    }
   };
 
   render() {
@@ -112,6 +136,9 @@ class ResearchSearch extends Component {
                         ? this.props.user.userData
                         : null
                     }
+
+                    runLike={id => this.like(id)}
+                runUnLike={id => this.unlike(id)}
                   />
                 }
               </Grid>

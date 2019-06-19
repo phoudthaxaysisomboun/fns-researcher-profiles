@@ -35,7 +35,10 @@ import {
   REMOVE_EDUCATION,
   GET_PROFILE_RESEARCH_COUNT,
   SEARCH_PROFILES,
-  CLEAR_SEARCH_PROFILES
+  CLEAR_SEARCH_PROFILES,
+  LIKE,
+  UNLIKE,
+  CLEAR_LIKES_USER
 } from "../actions/types";
 
 export default function(state = {}, action) {
@@ -174,7 +177,7 @@ export default function(state = {}, action) {
           minor_ethnicity: action.payload.minor_ethnicity
         }
       };
-      case ADD_EDUCATION:
+    case ADD_EDUCATION:
       return {
         ...state,
         userDetail: {
@@ -182,7 +185,7 @@ export default function(state = {}, action) {
           education: action.payload.education
         }
       };
-      case REMOVE_EDUCATION:
+    case REMOVE_EDUCATION:
       return {
         ...state,
         userDetail: {
@@ -190,7 +193,7 @@ export default function(state = {}, action) {
           education: action.payload.education
         }
       };
-      case UPDATE_EDUCATION:
+    case UPDATE_EDUCATION:
       return {
         ...state,
         userDetail: {
@@ -204,7 +207,6 @@ export default function(state = {}, action) {
         province: action.payload
       };
     case GET_COUNTRY:
-      
       return {
         ...state,
         country: action.payload.country
@@ -212,23 +214,47 @@ export default function(state = {}, action) {
     case GET_DISTRICT:
       return {
         ...state,
-        district: action.payload,
+        district: action.payload
       };
     case GET_PROFILE_RESEARCH_COUNT:
       return {
         ...state,
         profileCount: action.payload.profileCount,
-        researchCount: action.payload.researchCount,
+        researchCount: action.payload.researchCount
       };
     case SEARCH_PROFILES:
       return {
         ...state,
-        profilesSearchResult: action.payload,
+        profilesSearchResult: action.payload
       };
     case CLEAR_SEARCH_PROFILES:
       return {
         ...state,
-        profilesSearchResult: action.payload,
+        profilesSearchResult: action.payload
+      };
+    case LIKE:
+      return {
+        ...state,
+        userData: {
+          ...state.userData,
+          likes: action.payload
+        }
+      };
+    case UNLIKE:
+      return {
+        ...state,
+        userData: {
+          ...state.userData,
+          likes: action.payload
+        }
+      };
+    case CLEAR_LIKES_USER:
+      return {
+        ...state,
+        userData: {
+          ...state.userData,
+          likes: action.payload
+        }
       };
     default:
       return state;

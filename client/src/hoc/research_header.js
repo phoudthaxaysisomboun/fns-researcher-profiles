@@ -45,7 +45,7 @@ import {
 
 import { Link as ReactLink, withRouter } from "react-router-dom";
 
-import {UPLOADS_SERVER} from "../components/utils/misc"
+import { UPLOADS_SERVER } from "../components/utils/misc";
 
 const ResearchHeader = ({
   props,
@@ -54,9 +54,12 @@ const ResearchHeader = ({
   tab,
   research,
   openShareDialog,
-  
+  runLike,
+  runUnLike
 }) => {
   const userData = { ...props.user.userData };
+
+  const isAuth = userData.isAuth;
 
   const styles = {
     chip: {
@@ -88,6 +91,128 @@ const ResearchHeader = ({
       fontWeight: "500",
       fontSize: "14px",
       lineHeight: "26px"
+    }
+  };
+
+  const renderLikeButton = id => {
+    let likeCount = research.likes  && research.likes ? research.likes.length : 0
+    let duplicate = false;
+    let hasLike = false;
+    if (userData.likes) {
+      userData.likes.forEach(item => {
+        if (item === id) {
+          duplicate = true; 
+        }
+      });
+    }
+
+    if (research.likes) {
+      research.likes.forEach((item, index) => {
+        if (item) {
+          hasLike = true;
+        }
+      });
+    }
+
+    if (duplicate) {
+      return (
+        <Grid item>
+          <Button
+            style={{
+              color: "#d32f2f",
+              minWidth: "14px",
+              padding: "4px"
+            }}
+            size="large"
+            onClick={() => {
+              runUnLike(id);
+            }}
+          >
+            <FavoriteOutlined
+              fontSize="default"
+              style={{ marginRight: "6px" }}
+            />
+            {likeCount > 0 ? (
+            <div
+                style={{
+                  fontSize: "1rem",
+                  color: "#d32f2f",
+                  fontFamily: "'Roboto', sans serif",
+                  display: "inline"
+                }}
+              >
+                &nbsp;
+                <NumberFormat
+                  value={likeCount}
+                  displayType={"text"}
+                  thousandSeparator={true}
+                />
+                &nbsp;
+              </div>): 
+              <div
+              style={{
+                fontSize: "1rem",
+
+                fontFamily: "'Roboto', sans serif",
+                display: "inline"
+              }}
+            >
+              ຖຶກໃຈ
+            </div>}
+            
+          </Button>
+        </Grid>
+      );
+    } else {
+      return (
+        <Grid item>
+          <Button
+            style={{
+              color: "#686868",
+              minWidth: "14px",
+              padding: "4px"
+            }}
+            size="large"
+            onClick={() => {
+              runLike(id);
+            }}
+          >
+            <FavoriteBorderOutlined
+              fontSize="default"
+              style={{ marginRight: "6px" }}
+            />
+            {likeCount > 0 ? (
+              <div
+                style={{
+                  fontSize: "1rem",
+                  color: "#757575",
+                  fontFamily: "'Roboto', sans serif",
+                  display: "inline"
+                }}
+              >
+                &nbsp;
+                <NumberFormat
+                  value={likeCount}
+                  displayType={"text"}
+                  thousandSeparator={true}
+                />
+                &nbsp;
+              </div>
+            ) : (
+              <div
+                style={{
+                  fontSize: "1rem",
+
+                  fontFamily: "'Roboto', sans serif",
+                  display: "inline"
+                }}
+              >
+                ຖຶກໃຈ
+              </div>
+            )}
+          </Button>
+        </Grid>
+      );
     }
   };
 
@@ -166,42 +291,40 @@ const ResearchHeader = ({
                                 marginBottom: "8px"
                               }}
                             >
-                            {
-                              value.profileImage && value.profileImage[0] && value.profileImage[0].name ?
-                              <Avatar
-                              src={`${UPLOADS_SERVER}/images/${value.profileImage[0].name}`}
-                              style={{
-                                width: "18px",
-                                height: "18px",
-                              }}
-                              alt="profile image"
-                            >
-                              
-                            </Avatar>
-                              :
+                              {value.profileImage &&
+                              value.profileImage[0] &&
+                              value.profileImage[0].name ? (
+                                <Avatar
+                                  src={`${UPLOADS_SERVER}/images/${
+                                    value.profileImage[0].name
+                                  }`}
+                                  style={{
+                                    width: "18px",
+                                    height: "18px"
+                                  }}
+                                  alt="profile image"
+                                />
+                              ) : (
+                                <Avatar
+                                  style={{
+                                    width: "18px",
+                                    height: "18px",
+                                    backgroundColor: `${`${value.name}${
+                                      value.lastname
+                                    }`.toColor()}`,
 
-                              <Avatar
-                              style={{
-                                width: "18px",
-                                height: "18px",
-                                backgroundColor: `${`${value.name}${
-                                  value.lastname
-                                }`.toColor()}`,
-                               
-                                fontWeight: "normal",
-                                fontSize: "8px"
-                              }}
-                              alt="profile image"
-                            >
-                              <Typography variant="inherit">
-                              
-                              {`${value.name.charAt(
-                                0
-                              )}${value.lastname.charAt(0)}`}
-                              </Typography>
-                            </Avatar>
-                            }
-                              
+                                    fontWeight: "normal",
+                                    fontSize: "8px"
+                                  }}
+                                  alt="profile image"
+                                >
+                                  <Typography variant="inherit">
+                                    {`${value.name.charAt(
+                                      0
+                                    )}${value.lastname.charAt(0)}`}
+                                  </Typography>
+                                </Avatar>
+                              )}
                             </Grid>
                             <Grid item>
                               <Typography
@@ -257,37 +380,38 @@ const ResearchHeader = ({
                       ) : null}
 
                       {research &&
-                        research.researchType &&
-                        research.researchType._id ===
-                          "5d0516e447c496528476ec94" ? (
-                          <>
-                            {research.conferenceTitle ? (
-                              <Grid container>
-                                <Typography
-                                  variant="inherit"
-                                  style={{
-                                    letterSpacing: "1.5 px"
-                                  }}
-                                >
-                                  <strong>ງານປະຊຸມ: </strong> {research.conferenceTitle}
-                                </Typography>
-                              </Grid>
-                            ) : null}
-                            {research.location ? (
-                              <Grid container>
-                                <Typography
-                                  variant="inherit"
-                                  style={{
-                                    letterSpacing: "1.5 px"
-                                  }}
-                                >
-                                  <strong>ສະຖານທີ່ປະຊຸມ: </strong>{" "}
-                                  {`${research.location}`}
-                                </Typography>
-                              </Grid>
-                            ) : null}
-                          </>
-                        ) : null}
+                      research.researchType &&
+                      research.researchType._id ===
+                        "5d0516e447c496528476ec94" ? (
+                        <>
+                          {research.conferenceTitle ? (
+                            <Grid container>
+                              <Typography
+                                variant="inherit"
+                                style={{
+                                  letterSpacing: "1.5 px"
+                                }}
+                              >
+                                <strong>ງານປະຊຸມ: </strong>{" "}
+                                {research.conferenceTitle}
+                              </Typography>
+                            </Grid>
+                          ) : null}
+                          {research.location ? (
+                            <Grid container>
+                              <Typography
+                                variant="inherit"
+                                style={{
+                                  letterSpacing: "1.5 px"
+                                }}
+                              >
+                                <strong>ສະຖານທີ່ປະຊຸມ: </strong>{" "}
+                                {`${research.location}`}
+                              </Typography>
+                            </Grid>
+                          ) : null}
+                        </>
+                      ) : null}
                     </>
                   ) : (
                     ""
@@ -297,8 +421,14 @@ const ResearchHeader = ({
                   <Hidden mdUp>
                     <Grid container>
                       <Grid container>
-                        <Grid item style={{ width: "32px", marginRight: "8px" }} align="left">
-                          <RemoveRedEyeOutlined style={{ color: "#757575", paddingLeft: 0 }} />
+                        <Grid
+                          item
+                          style={{ width: "32px", marginRight: "8px" }}
+                          align="left"
+                        >
+                          <RemoveRedEyeOutlined
+                            style={{ color: "#757575", paddingLeft: 0 }}
+                          />
                         </Grid>
                         <Grid item xs align="left">
                           <Typography variant="inherit">
@@ -467,52 +597,8 @@ const ResearchHeader = ({
                     style={{ marginTop: "4px", marginBottom: "8px" }}
                     spacing={16}
                   >
-                    <Grid item>
-                      <Button
-                        style={{
-                          color: "#686868",
-                          minWidth: "14px",
-                          padding: "4px"
-                        }}
-                        size="large"
-                      >
-                        <FavoriteBorderOutlined
-                          fontSize="default"
-                          style={{ marginRight: "6px" }}
-                        />
-                        {research.likes && research.likes[0] ? (
-                          <div
-                            style={{
-                              fontSize: "1rem",
-                              color: "#757575",
-                              fontFamily: "'Roboto', sans serif",
-                              display: "inline"
-                            }}
-                          >
-                            &nbsp;
-                            <NumberFormat
-                              value={
-                                research.likes ? research.likes.length : null
-                              }
-                              displayType={"text"}
-                              thousandSeparator={true}
-                            />
-                            &nbsp;
-                          </div>
-                        ) : (
-                          <div
-                            style={{
-                              fontSize: "1rem",
-
-                              fontFamily: "'Roboto', sans serif",
-                              display: "inline"
-                            }}
-                          >
-                            ຖຶກໃຈ
-                          </div>
-                        )}
-                      </Button>
-                    </Grid>
+                    {isAuth ? renderLikeButton(research._id) : null}
+                  
                     <Grid item>
                       <Button
                         style={{
