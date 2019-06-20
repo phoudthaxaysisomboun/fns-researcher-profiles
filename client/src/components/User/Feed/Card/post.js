@@ -19,7 +19,8 @@ import {
   IconButton,
   CircularProgress,
   Chip,
-  Fab
+  Fab,
+  LinearProgress
 } from "@material-ui/core";
 
 import {
@@ -737,13 +738,26 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike }) => {
           <div style={{ height: "24px" }} />
         </div>
       ) : (
-        <Grid
-          container
-          alignContent="cen"
-          style={{ width: "100%", height: "100%" }}
-        >
-          <CircularProgress />
+        <div>
+        <Paper
+        style={{
+          boxShadow: "none",
+          border: "1px solid #d8d8d8",
+          marginTop: "16px",
+          padding: "16px",
+      
+        }}
+      >
+        <Grid container alignContent="center" alignItems="center" justify="center">
+          <Grid item align="center">
+          <CircularProgress style={{padding: "24px"}} />
+          </Grid>
         </Grid>
+
+
+      </Paper>
+          <div style={{ height: "24px" }} />
+        </div>
       )}
     </Grid>
   );

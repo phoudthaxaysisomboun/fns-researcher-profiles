@@ -81,15 +81,15 @@ class Home extends Component {
           performSearch={() => this.handleSearchButtonClick()}
         >
           <Grid container>
-            <Grid item xs sm={2} lg={4} md={3} />
-            <Grid item xs={10} sm={8} lg={4} md={6}>
+            <Grid item xs sm lg md />
+            <Grid item xs={11} sm={11} lg={5} md={8}>
               <Grid container justify="center">
               <Grid item style={{marginTop: "32px"}}>
-             <SearchOutlined style={{top: "8px", position: "relative"}}/> ພິມຫົວຂໍ້ຜົນງານ ຊື່ນັກຄົ້ນຄວ້າ ເພື່ອຄົ້ນຫານັກຄົ້ນຄວ້າ ຫລື ຜົນງານການຄົ້ນຄວ້າທີ່ຕ້ອງການ
+             <SearchOutlined style={{top: "6px", position: "relative"}}/> ພິມຫົວຂໍ້ຜົນງານ ຊື່ນັກຄົ້ນຄວ້າ ເພື່ອຄົ້ນຫານັກຄົ້ນຄວ້າ ຫລື ຜົນງານການຄົ້ນຄວ້າທີ່ຕ້ອງການ
               </Grid>
               </Grid>
             </Grid>
-            <Grid item xs sm={2} lg={4} md={3} />
+            <Grid item xs sm lg md />
           </Grid>
         </SearchHeader>
       </>

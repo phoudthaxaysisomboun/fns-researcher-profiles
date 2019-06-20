@@ -113,8 +113,8 @@ class ResearchSearch extends Component {
           changeToResearch = {()=>this.handleToggleResearchTab()}
         >
           <Grid container>
-            <Grid item xs sm={2} lg={4} md={3} />
-            <Grid item xs={10} sm={8} lg={4} md={6}>
+            <Grid item xs sm lg md />
+            <Grid item xs={11} sm={11} lg={5} md={8}>
               <Grid container justify="center">
               {
                 (query && query.q.trim() === "") ?
@@ -143,7 +143,7 @@ class ResearchSearch extends Component {
                 }
               </Grid>
             </Grid>
-            <Grid item xs sm={2} lg={4} md={3} />
+            <Grid item xs sm lg md />
           </Grid>
         </SearchHeader>
       </>

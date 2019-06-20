@@ -41,6 +41,7 @@ export default function(ComposedClass, reload, adminRoute) {
 
         render() {
             if(this.state.loading) {
+                console.log(this.props)
                 return (
                     <div className="progress">
                         <CircularProgress thickness={5}  size={40} variant="indeterminate"/>

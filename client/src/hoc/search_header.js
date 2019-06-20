@@ -174,8 +174,8 @@ const SearchHeader = ({
             </Grid>
           </Grid>
           <Grid container>
-            <Grid item xs sm={2} lg={4} md={3} />
-            <Grid item xs={10} sm={8} lg={4} md={6}>
+            <Grid item xs sm lg md />
+            <Grid item xs={11} sm={11} lg={5} md={8}>
               <Grid container justify="center">
                 <form
                   onSubmit={() => {
@@ -228,7 +228,7 @@ const SearchHeader = ({
                 </form>
               </Grid>
             </Grid>
-            <Grid item xs sm={2} lg={4} md={3} />
+            <Grid item xs sm lg md />
           </Grid>
           <Grid container>
             <Grid item xs={12}>

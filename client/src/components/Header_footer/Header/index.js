@@ -8,6 +8,12 @@ import { logoutUser } from "../../../actions/user_actions";
 
 import {UPLOADS_SERVER} from "../../../components/utils/misc"
 
+import classNames from 'classnames';
+
+import PropTypes from 'prop-types';
+
+import CssBaseline from '@material-ui/core/CssBaseline';
+
 import {
   AppBar,
   Toolbar,
@@ -19,12 +25,7 @@ import {
   Avatar,
   Fab,
   Button,
-  Drawer,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Divider,
+  
   Grid
 } from "@material-ui/core";
 
@@ -40,7 +41,7 @@ import {
   SettingsOutlined,
   ExitToAppOutlined,
   AddOutlined,
-  PersonOutlined
+  PersonOutlined,ChevronLeftOutlined, ChevronRightOutlined, InboxOutlined, MailOutlineOutlined
 } from "@material-ui/icons";
 
 import { colorPallete } from "../../../components/utils/misc";
@@ -57,6 +58,8 @@ String.prototype.toColor = function() {
   hash = ((hash % colors.length) + colors.length) % colors.length;
   return colors[hash];
 };
+
+const drawerWidth = 240;
 
 const styles = theme => ({
   root: {
@@ -132,16 +135,16 @@ const styles = theme => ({
       display: "none"
     }
   },
-  drawer: {
-    width: 240,
-    flexShrink: 0
-  },
-  drawerPaper: {
-    width: 240
-  },
-  appBar: {
-    zIndex: theme.zIndex.drawer + 1
-  },
+  // drawer: {
+  //   width: 240,
+  //   flexShrink: 0
+  // },
+  // drawerPaper: {
+  //   width: 240
+  // },
+  // appBar: {
+  //   zIndex: theme.zIndex.drawer + 1
+  // },
   sectionDesktop2: {
     display: "none",
     [theme.breakpoints.up("md")]: {
@@ -154,12 +157,14 @@ const styles = theme => ({
       display: "none"
     }
   },
+
 });
 
 class Header extends Component {
   state = {
     anchorEl: null,
-    mobileMoreAnchorEl: null
+    mobileMoreAnchorEl: null,
+    open: false,
   };
 
   handleProfileMenuOpen = event => {
@@ -464,6 +469,8 @@ class Header extends Component {
       }
     };
 
+    const { open } = this.state;
+
     return (
       <>
         <div className={classes.root}>
@@ -475,17 +482,18 @@ class Header extends Component {
             style={{
               background: "white",
               boxShadow: "none",
-              zIndex: 1201
+              // zIndex: 1201
             }}
           >
             <Toolbar variant="regular" style={{ height: "64px" }}>
               {!this.props.location.pathname.startsWith("/search") ? (
                 <>
                   <IconButton
-                    className={classes.menuButton}
+                  className={classes.menuButton}
                     color="inherit"
                     aria-label="Open drawer"
                   >
+                  
                     <MenuIcon />
                   </IconButton>
                 </>
@@ -639,42 +647,51 @@ class Header extends Component {
           {renderMenu}
           {renderMobileMenu()}
         </div>
-        <Drawer
-          className={classes.drawer}
-          variant="persistent"
-          classes={{
-            paper: classes.drawerPaper
-          }}
-          open={true}
+        {
+        //   <Drawer
+        //   className={classes.drawer}
+        //   variant="persistent"
+        //   classes={{
+        //     paper: classes.drawerPaper
+        //   }}
+        //   open={false}
           
-        >
-          <div className={classes.toolbar}style={{paddingTop: "64px"}} />
-          <List>
-            {["Inbox", "Starred", "Send on the most amazing", "Drafts"].map((text, index) => (
-              <ListItem button key={text}>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <SearchIcon /> : <SearchIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItem>
-            ))}
-          </List>
-          <Divider />
-          <List>
-            {["All mail", "Trash", "Spam"].map((text, index) => (
-              <ListItem button key={text}>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <SearchIcon /> : <SearchIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItem>
-            ))}
-          </List>
-        </Drawer>
+        // >
+        //   <div className={classes.toolbar}style={{paddingTop: "64px"}} />
+        //   <List>
+        //     {["Inbox", "Starred", "Send on the most amazing", "Drafts"].map((text, index) => (
+        //       <ListItem button key={text}>
+        //         <ListItemIcon>
+        //           {index % 2 === 0 ? <SearchIcon /> : <SearchIcon />}
+        //         </ListItemIcon>
+        //         <ListItemText primary={text} />
+        //       </ListItem>
+        //     ))}
+        //   </List>
+        //   <Divider />
+        //   <List>
+        //     {["All mail", "Trash", "Spam"].map((text, index) => (
+        //       <ListItem button key={text}>
+        //         <ListItemIcon>
+        //           {index % 2 === 0 ? <SearchIcon /> : <SearchIcon />}
+        //         </ListItemIcon>
+        //         <ListItemText primary={text} />
+        //       </ListItem>
+        //     ))}
+        //   </List>
+        // </Drawer>
+        }
+       
+        
       </>
     );
   }
 }
+
+Header.propTypes = {
+  classes: PropTypes.object.isRequired,
+  theme: PropTypes.object.isRequired,
+};
 
 const mapStateToProps = state => {
   return {
