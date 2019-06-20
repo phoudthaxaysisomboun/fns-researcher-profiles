@@ -301,10 +301,10 @@ const ProfileHeader = ({
           <LinearProgress style={{ margin: "16px" }} />
         )}
 
-        {profile.degree ? (
+        {profile.degree && profile.degree.name ? (
           <Typography variant="inherit">
             <span style={{ fontWeight: "bold" }}>ວຸດທິການສຶກສາ: </span>
-            {profile.degree}
+            {profile.degree.name}
             {isOwner || userData.isAdmin ? (
               <span>
                 <IconButton style={{ padding: "4px", margin: "4px" }}>
@@ -334,8 +334,8 @@ const ProfileHeader = ({
           }}
         >
           <Grid container>
-            <Grid item xs sm={1} lg={3} md={2} />
-            <Grid item xs={10} sm={10} lg={6} md={8}>
+            <Grid item xs sm lg md />
+            <Grid item xs={10} sm={10} lg={8} md={10}>
               <Grid container spacing={24}>
                 <Grid align="left" style={{ width: "96px", margin: "12px" }}>
                   {profile.profileImage &&
@@ -381,13 +381,13 @@ const ProfileHeader = ({
                   item
                   lg={5}
                   md={5}
-                  sm={8}
+                  sm={7}
                   xs={12}
                   style={{ padding: "left" }}
                 >
                   {renderItems()}
                 </Grid>
-                <Grid item lg={4} md={4} sm={12} xs={12} align="right">
+                <Grid item lg md sm xs={12} align="right">
                   {props.user.userDetail ? (
                     <Button
                       size="medium"
@@ -420,7 +420,7 @@ const ProfileHeader = ({
                 </Grid>
               </Grid>
             </Grid>
-            <Grid item xs sm={1} lg={3} md={2} />
+            <Grid item xs sm lg md />
           </Grid>
           <Grid container>
             <Grid item xs={12}>

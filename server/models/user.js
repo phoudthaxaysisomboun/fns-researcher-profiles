@@ -98,8 +98,8 @@ const userSchema = mongoose.Schema({
         subdesipline: [{ item: {type: Schema.Types.ObjectId, ref: 'Subdesipline'} }]
     }],
     degree: {
-        type: String,
-        maxlength: 100
+        type: Schema.Types.ObjectId,
+        ref: 'Degree',
     },
     research_area: [{
         type: Schema.Types.ObjectId,

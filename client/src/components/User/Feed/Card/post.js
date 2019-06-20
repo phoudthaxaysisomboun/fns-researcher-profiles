@@ -119,6 +119,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike }) => {
             display: "block",
             fontSize: "13px",
             color: "rgb(140, 140, 140)"
+            , marginBottom: "8px"
           }}
         >
           {durationMinutes} ນາທີກ່ອນ
@@ -132,10 +133,10 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike }) => {
             fontWeight: 400,
             display: "block",
             fontSize: "13px",
-            color: "rgb(140, 140, 140)"
+            color: "rgb(140, 140, 140)", marginBottom: "8px"
           }}
         >
-          {durationHours} ຊົ່ວໂມງ
+          {durationHours} ຊົ່ວໂມງກ່ອນ
         </Typography>
       );
     } else if (durationDay === 1) {
@@ -146,7 +147,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike }) => {
             fontWeight: 400,
             display: "block",
             fontSize: "13px",
-            color: "rgb(140, 140, 140)"
+            color: "rgb(140, 140, 140)", marginBottom: "8px"
           }}
         >
           ມື້ວານ
@@ -160,7 +161,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike }) => {
             fontWeight: 400,
             display: "block",
             fontSize: "13px",
-            color: "rgb(140, 140, 140)"
+            color: "rgb(140, 140, 140)", marginBottom: "8px"
           }}
         >
           {durationDay} ວັນກ່ອນ
@@ -174,7 +175,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike }) => {
             fontWeight: 400,
             display: "block",
             fontSize: "13px",
-            color: "rgb(140, 140, 140)"
+            color: "rgb(140, 140, 140)", marginBottom: "8px"
           }}
         >
           {durationWeek} ອາທິດກ່ອນ
@@ -188,7 +189,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike }) => {
             fontWeight: 400,
             display: "block",
             fontSize: "13px",
-            color: "rgb(140, 140, 140)"
+            color: "rgb(140, 140, 140)", marginBottom: "8px"
           }}
         >
           {durationMonth} ເດືອນກ່ອນ
@@ -203,7 +204,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike }) => {
             fontWeight: 400,
             display: "block",
             fontSize: "13px",
-            color: "rgb(140, 140, 140)"
+            color: "rgb(140, 140, 140)", marginBottom: "8px"
           }}
         >
           {durationYear} ປີກ່ອນ
@@ -217,7 +218,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike }) => {
             fontWeight: 400,
             display: "block",
             fontSize: "13px",
-            color: "rgb(140, 140, 140)"
+            color: "rgb(140, 140, 140)", marginBottom: "8px"
           }}
         >
           {moment(time).format("DD/MM/YYYY")}

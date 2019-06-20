@@ -14,7 +14,8 @@ import {
   Typography,
   Button,
   LinearProgress,
-  Avatar
+  Avatar,
+  CircularProgress
 } from "@material-ui/core";
 
 import {
@@ -304,7 +305,28 @@ const ProfileCard = ({ resercher, user, runFollow,runUnfollow }) => {
             </Grid>
           ))}
         </>
-      ) : null}
+      ) : 
+    
+    <Grid item>
+    <Paper
+        style={{
+          boxShadow: "none",
+          border: "1px solid #d8d8d8",
+          marginTop: "16px",
+          padding: "16px",
+      
+        }}
+      >
+        <Grid container alignContent="center" alignItems="center" justify="center">
+          <Grid item align="center">
+          <CircularProgress style={{padding: "24px"}} />
+          </Grid>
+        </Grid>
+
+
+      </Paper>
+    </Grid>
+    }
     </Grid>
   );
 };

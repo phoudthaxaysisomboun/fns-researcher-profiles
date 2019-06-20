@@ -40,6 +40,7 @@ const { Subdesipline } = require("./models/subdesipline");
 const { Country } = require("./models/country");
 const { Department } = require("./models/department");
 const { Faculty } = require("./models/faculty");
+const { Degree } = require("./models/degree");
 
 const { ResearchType } = require("./models/research_type");
 const { PublicationType } = require("./models/publication_type");
@@ -188,6 +189,29 @@ app.get("/api/users/genders", (req, res) => {
 });
 
 //====================================
+//             DEGREE
+//====================================
+
+app.post("/api/users/degree", auth, admin, (req, res) => {
+  const degree = new Degree(req.body);
+
+  degree.save((err, doc) => {
+    if (err) return res.json({ success: false, err });
+    res.status(200).json({
+      success: true,
+      degree: doc
+    });
+  });
+});
+
+app.get("/api/users/degrees", (req, res) => {
+  Degree.find({}, (err, degree) => {
+    if (err) return res.status(400).send(err);
+    res.status(200).send(degree);
+  });
+});
+
+//====================================
 //            INSTITUTION
 //====================================
 
@@ -291,7 +315,7 @@ app.get("/api/users/auth", auth, (req, res) => {
     nationality: req.user.nationality,
     minor_ethnicity: req.user.minor_ethnicity,
     desipline: req.user.desipline,
-    degree: req.user.degree,
+    // degree: req.user.degree,
     research_area: req.user.research_area,
     education: req.user.education,
     researchArea: req.user.researchArea,
@@ -533,6 +557,7 @@ app.get("/api/researchers/profiles_by_id", (req, res) => {
     accountIsVerified: true
   })
     .populate("gender")
+    .populate("degree")
     .populate({
       path: "address.district"
     })
@@ -571,6 +596,7 @@ app.get("/api/researchers/profiles_by_id", (req, res) => {
       options: { sort: { city: 1 } }
     })
     .exec((err, docs) => {
+      console.log(err)
       return res.status(200).send(docs);
     });
 });

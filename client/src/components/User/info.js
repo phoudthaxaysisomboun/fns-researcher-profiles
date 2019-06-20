@@ -642,11 +642,13 @@ class ProfileInfo extends Component {
           this.handleShareDialogOpen();
         }}
       >
-        <Grid container spacing={24} style={{ margin: "8px" }}>
-          <Hidden only="sm">
-            <Grid item md={1} lg />
-          </Hidden>
-          <Grid item xs={12} lg={4} sm={6} md={5}>
+      <Grid container style={{paddingTop: "24px"}}>
+      <Grid item xs sm={1} lg={2} md={1} />
+      <Grid item xs={10} sm={10} lg={8} md={10}>
+      
+      <Grid container spacing={24}>
+         
+      <Grid item xs={12} lg={7} sm={12} md={6}>
             <Grid container spacing={24}>
               <IntroductionCard {...this.props} />
               <ResearchaAreaCard {...this.props} />
@@ -697,7 +699,7 @@ class ProfileInfo extends Component {
             </Grid>
           </Grid>
 
-          <Grid item xs={12} lg={3} sm={6} md={5}>
+          <Grid item xs={12} lg sm md>
             <Grid container spacing={24}>
               <Grid item xs={12}>
                 <AffiliationCard {...this.props} />
@@ -728,10 +730,11 @@ class ProfileInfo extends Component {
               </Grid>
             </Grid>
           </Grid>
-          <Hidden only="sm">
-            <Grid item xs md={1} lg />
-          </Hidden>
         </Grid>
+      </Grid>
+      <Grid item xs sm={1} lg={2} md={1} />
+      </Grid>
+        
 
         <Dialog
           fullWidth={this.state.fullWidth}

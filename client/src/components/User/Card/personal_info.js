@@ -81,6 +81,35 @@ const PersonalInfoCard = ({
           </Grid>
 
           <Divider style={{ marginLeft: "16px", marginRight: "16px" }} />
+
+          <Grid
+            container
+            alignItems="center"
+            spacing={8}
+            style={{ padding: "16px" }}
+          >
+            <Grid item xs={3} style={styles.label}>
+              ວຸດທິການສຶກສາ
+            </Grid>
+            <Grid item xs={8} style={{ fontSize: "1rem", color: "#202124" }}>
+              {profile.degree.name ? profile.degree.name : null}
+            </Grid>
+            <Grid item xs={1} align="right">
+              <IconButton
+                style={{ padding: 0 }}
+                onClick={() => {
+                  // to do: edit degree
+                  // runEditGender();
+                  console.log("edit degree")
+                }}
+              >
+                <EditOutlined fontSize="small" />
+              </IconButton>
+            </Grid>
+          </Grid>
+
+          <Divider style={{ marginLeft: "16px", marginRight: "16px" }} />
+
           <Grid
             container
             alignItems="center"
@@ -477,6 +506,22 @@ const PersonalInfoCard = ({
               </Grid>
               <Grid item xs={9} style={{ fontSize: "1rem", color: "#202124" }}>
                 {profile.gender.name ? profile.gender.name : null}
+              </Grid>
+            </Grid>
+          ) : null}
+
+          {profile.degree.name ? (
+            <Grid
+              container
+              alignItems="center"
+              spacing={8}
+              style={{ padding: "16px" }}
+            >
+              <Grid item xs={3} style={styles.label}>
+                ວຸດທິການສຶກສາ
+              </Grid>
+              <Grid item xs={9} style={{ fontSize: "1rem", color: "#202124" }}>
+                {profile.degree.name ? profile.degree.name : null}
               </Grid>
             </Grid>
           ) : null}

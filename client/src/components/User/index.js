@@ -15,8 +15,6 @@ import ShareDialog from "../User/Dialog/share";
 
 import PropTypes from "prop-types";
 
-
-
 import {
   Hidden,
   Grid,
@@ -52,9 +50,7 @@ import {
 import { CloseOutlined } from "@material-ui/icons";
 import { LOCALHOST } from "../utils/misc";
 
-
-
-let shareUrl
+let shareUrl;
 class ProfileOverview extends Component {
   state = {
     loadingMoreFollower: false,
@@ -90,8 +86,8 @@ class ProfileOverview extends Component {
       for (var key in following) {
         followingId.push(following[key]._id);
       }
-console.log(response)
-      shareUrl =  `${LOCALHOST}/profile/${response.payload._id}`
+      console.log(response);
+      shareUrl = `${LOCALHOST}/profile/${response.payload._id}`;
 
       if (following.length > 0) {
         this.props.dispatch(getFollowing(followingId)).then(() => {
@@ -411,64 +407,125 @@ console.log(response)
           this.handleShareDialogOpen();
         }}
       >
-        <Grid container spacing={24} style={{ margin: "8px" }}>
-          <Hidden only="sm">
-            <Grid item md={1} lg />
-          </Hidden>
-          <Grid item xs={12} lg={4} sm={6} md={5}>
-            <Grid container spacing={24}>
-              <IntroductionCard {...this.props} />
+        <Grid container style={{paddingTop: "24px"}}>
+          <Grid item xs sm={1} lg={2} md={1} />
+          <Grid item xs={10} sm={10} lg={8} md={10}>
+            <Grid container spacing={24} >
+              <Grid item xs={12} lg={7} sm={12} md={6}>
+                <Grid container spacing={24}>
+                  <IntroductionCard {...this.props} />
 
-              <ResearchaAreaCard {...this.props} />
-              <Grid item xs={12}>
-                <MiniStatsCard {...this.props} />
+                  <ResearchaAreaCard {...this.props} />
+                  <Grid item xs={12}>
+                    <MiniStatsCard {...this.props} />
+                  </Grid>
+
+                  <ResearchCard
+                    userData={this.props.user.userData}
+                    userDetail={this.props.user.userDetail}
+                    userResearch={this.props.research.userResearch}
+                    props={this.props}
+                    loading={this.state.loadingResearchCard}
+                  />
+                </Grid>
               </Grid>
 
-              <ResearchCard
-                userData={this.props.user.userData}
-                userDetail={this.props.user.userDetail}
-                userResearch={this.props.research.userResearch}
-                props={this.props}
-                loading={this.state.loadingResearchCard}
-              />
+              <Grid item xs={12} lg sm md>
+                <Grid container spacing={24}>
+                  <Grid item xs={12}>
+                    <AffiliationCard {...this.props} />
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <FollowerCard
+                      userData={this.props.user.userData}
+                      userDetail={this.props.user.userDetail}
+                      userFollower={this.props.user.follower}
+                      runFollow={id => this.followUser(id)}
+                      runUnfollow={id => this.unfollowUser(id)}
+                      runSeeAllFollower={id => this.seeAllFollower(id)}
+                      loading={this.state.loadingFollower}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <FollowingCard
+                      userData={this.props.user.userData}
+                      userDetail={this.props.user.userDetail}
+                      userFollowing={this.props.user.following}
+                      runFollow={id => this.followUser(id)}
+                      runUnfollow={id => this.unfollowUser(id)}
+                      runSeeAllFollowing={id => this.seeAllFollowing(id)}
+                      loading={this.state.loadingFollowing}
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
-
-          <Grid item xs={12} lg={3} sm={6} md={5}>
-            <Grid container spacing={24}>
-              <Grid item xs={12}>
-                <AffiliationCard {...this.props} />
-              </Grid>
-
-              <Grid item xs={12}>
-                <FollowerCard
-                  userData={this.props.user.userData}
-                  userDetail={this.props.user.userDetail}
-                  userFollower={this.props.user.follower}
-                  runFollow={id => this.followUser(id)}
-                  runUnfollow={id => this.unfollowUser(id)}
-                  runSeeAllFollower={id => this.seeAllFollower(id)}
-                  loading={this.state.loadingFollower}
-                />
-              </Grid>
-
-              <Grid item xs={12}>
-                <FollowingCard
-                  userData={this.props.user.userData}
-                  userDetail={this.props.user.userDetail}
-                  userFollowing={this.props.user.following}
-                  runFollow={id => this.followUser(id)}
-                  runUnfollow={id => this.unfollowUser(id)}
-                  runSeeAllFollowing={id => this.seeAllFollowing(id)}
-                  loading={this.state.loadingFollowing}
-                />
-              </Grid>
-            </Grid>
-          </Grid>
-          <Hidden only="sm">
-            <Grid item xs md={1} lg />
-          </Hidden>
+          <Grid item xs sm={1} lg={2} md={1} />
         </Grid>
+
+        {
+        //   <Grid container spacing={24} style={{ margin: "8px" }}>
+        //   <Hidden only="sm">
+        //     <Grid item md={1} lg />
+        //   </Hidden>
+        //   <Grid item xs={12} lg={4} sm={6} md={5}>
+        //     <Grid container spacing={24}>
+        //       <IntroductionCard {...this.props} />
+
+        //       <ResearchaAreaCard {...this.props} />
+        //       <Grid item xs={12}>
+        //         <MiniStatsCard {...this.props} />
+        //       </Grid>
+
+        //       <ResearchCard
+        //         userData={this.props.user.userData}
+        //         userDetail={this.props.user.userDetail}
+        //         userResearch={this.props.research.userResearch}
+        //         props={this.props}
+        //         loading={this.state.loadingResearchCard}
+        //       />
+        //     </Grid>
+        //   </Grid>
+
+        //   <Grid item xs={12} lg={3} sm={6} md={5}>
+        //     <Grid container spacing={24}>
+        //       <Grid item xs={12}>
+        //         <AffiliationCard {...this.props} />
+        //       </Grid>
+
+        //       <Grid item xs={12}>
+        //         <FollowerCard
+        //           userData={this.props.user.userData}
+        //           userDetail={this.props.user.userDetail}
+        //           userFollower={this.props.user.follower}
+        //           runFollow={id => this.followUser(id)}
+        //           runUnfollow={id => this.unfollowUser(id)}
+        //           runSeeAllFollower={id => this.seeAllFollower(id)}
+        //           loading={this.state.loadingFollower}
+        //         />
+        //       </Grid>
+
+        //       <Grid item xs={12}>
+        //         <FollowingCard
+        //           userData={this.props.user.userData}
+        //           userDetail={this.props.user.userDetail}
+        //           userFollowing={this.props.user.following}
+        //           runFollow={id => this.followUser(id)}
+        //           runUnfollow={id => this.unfollowUser(id)}
+        //           runSeeAllFollowing={id => this.seeAllFollowing(id)}
+        //           loading={this.state.loadingFollowing}
+        //         />
+        //       </Grid>
+        //     </Grid>
+        //   </Grid>
+        //   <Hidden only="sm">
+        //     <Grid item xs md={1} lg />
+        //   </Hidden>
+        // </Grid>
+        }
 
         <Dialog
           fullWidth={this.state.fullWidth}
@@ -586,11 +643,41 @@ console.log(response)
           open={this.state.openShareDialog}
           close={() => this.handleShareDialogClose()}
           url={shareUrl}
-          profile={this.props && this.props.user && this.props.user.userDetail ? this.props.user.userDetail : null}
-          user={this.props.user.userData ? this.props.user.userData : this.props}
-          handleShareCount = {()=>{console.log(`shared`)}}
-          title = {this.props && this.props.user && this.props.user.userDetail && this.props.user.userDetail.name ? `ຂໍ້ມູນ${this.props.user.userDetail.prefix} ${this.props.user.userDetail.name} ${this.props.user.userDetail.lastname} - FNS Researcher Profiles` : ""}
-          description = {this.props && this.props.user && this.props.user.userDetail && this.props.user.userDetail.name ? `ປະຫວັດ ແລະ ຂໍ້ມູນນັກຄົ້ນຄວ້າຂອງ${this.props.user.userDetail.prefix} ${this.props.user.userDetail.name} ${this.props.user.userDetail.lastname} - FNS Researcher Profiles` : ""}
+          profile={
+            this.props && this.props.user && this.props.user.userDetail
+              ? this.props.user.userDetail
+              : null
+          }
+          user={
+            this.props.user.userData ? this.props.user.userData : this.props
+          }
+          handleShareCount={() => {
+            console.log(`shared`);
+          }}
+          title={
+            this.props &&
+            this.props.user &&
+            this.props.user.userDetail &&
+            this.props.user.userDetail.name
+              ? `ຂໍ້ມູນ${this.props.user.userDetail.prefix} ${
+                  this.props.user.userDetail.name
+                } ${
+                  this.props.user.userDetail.lastname
+                } - FNS Researcher Profiles`
+              : ""
+          }
+          description={
+            this.props &&
+            this.props.user &&
+            this.props.user.userDetail &&
+            this.props.user.userDetail.name
+              ? `ປະຫວັດ ແລະ ຂໍ້ມູນນັກຄົ້ນຄວ້າຂອງ${
+                  this.props.user.userDetail.prefix
+                } ${this.props.user.userDetail.name} ${
+                  this.props.user.userDetail.lastname
+                } - FNS Researcher Profiles`
+              : ""
+          }
         />
       </ProfileHeader>
     );

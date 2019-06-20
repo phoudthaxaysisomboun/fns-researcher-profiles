@@ -867,6 +867,37 @@ class Layout extends Component {
                 </ListItem>
 
                 {
+                  this.props && this.props.user && this.props.user.userData && this.props.user.userData.isAdmin ?
+                 <>
+                 <Divider/>
+                 <List
+         component="nav"
+         subheader={<ListSubheader style={{fontFamily: "'Noto Sans Lao UI', sans serif"}} component="div">ເຄື່ອງມືຜູ້ບໍລິຫານລະບົບ</ListSubheader>}
+         className={classes.root}
+       >
+         
+         <ListItem button onClick={this.handleClick}>
+           <ListItemIcon>
+             <InboxOutlined />
+           </ListItemIcon>
+           <ListItemText inset primary="Inbox" />
+           {this.state.openList ? <ExpandLessOutlined /> : <ExpandMoreOutlined />}
+         </ListItem>
+         <Collapse in={this.state.openList} timeout="auto" unmountOnExit>
+           <List component="div" disablePadding>
+             <ListItem button className={classes.nested}>
+               <ListItemIcon>
+                 <InboxOutlined />
+               </ListItemIcon>
+               <ListItemText inset primary="Starred" />
+             </ListItem>
+           </List>
+         </Collapse>
+       </List>
+                 
+                 </> : null
+                }
+                {
                     /*  collapse component */
                 //     <ListItem button onClick={this.handleClick}>
                 //   <ListItemIcon>
