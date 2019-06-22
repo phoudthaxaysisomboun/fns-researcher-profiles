@@ -40,7 +40,10 @@ import {
   CLEAR_SEARCH_PROFILES,
   LIKE,
   UNLIKE,
-  CLEAR_LIKES_USER
+  CLEAR_LIKES_USER,
+  GET_ALL_RESEARCHERS,
+  CLEAR_ALL_RESEARCHERS,
+  REMOVE_RESEARCHERS
 } from "./types";
 
 import { USER_SERVER, RESEARCHER_SERVER, RESEARCHER_PROFILES_SERVER } from "../components/utils/misc";
@@ -533,5 +536,37 @@ export function clearLike() {
   return {
     type: CLEAR_LIKES_USER,
     payload: ''
+  };
+}
+
+export function getAllResearchers() {
+  // console.log(`${RESEARCHER_SERVER}/like?researchId=${_id}`)
+  const request = axios
+    .post(`${RESEARCHER_SERVER}/researchers`)
+    .then(response => response.data);
+
+  return {
+    type: GET_ALL_RESEARCHERS,
+    payload: request
+  };
+}
+
+export function clearAllResearchers() {
+
+  return {
+    type: CLEAR_ALL_RESEARCHERS,
+    payload: ''
+  };
+}
+
+export function removeResearchers(id) {
+  // console.log(`${RESEARCHER_SERVER}/like?researchId=${_id}`)
+  const request = axios
+    .post(`${RESEARCHER_SERVER}/remove_researchers?id=${id}`)
+    .then(response => response.data);
+
+  return {
+    type: REMOVE_RESEARCHERS,
+    payload: request
   };
 }

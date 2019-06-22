@@ -1,11 +1,9 @@
 import React, { Component } from "react";
-import Header from "../components/Header_footer/Header/index";
 
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { logoutUser } from "../actions/user_actions";
 import { UPLOADS_SERVER } from "../components/utils/misc";
-import CssBaseline from "@material-ui/core/CssBaseline";
 
 import PropTypes from "prop-types";
 import classNames from "classnames";
@@ -254,8 +252,24 @@ class Layout extends Component {
   };
 
   componentDidMount() {
+    console.log(this.props.user)
+    if (this.props.user && this.props.user.userData && this.props.user.userData.isAdmin) {
+      this.setState({
+        open: true
+      })
+    }
     window.addEventListener("scroll", this.handleScroll);
   }
+
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps !== this.props) {
+      if (this.props.user.userData.isAdmin) {
+        this.setState({
+          open: true
+        })
+      }
+  }}
 
   componentWillUnmount() {
     window.removeEventListener("scroll", this.handleScroll);

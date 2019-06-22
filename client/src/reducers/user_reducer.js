@@ -38,7 +38,10 @@ import {
   CLEAR_SEARCH_PROFILES,
   LIKE,
   UNLIKE,
-  CLEAR_LIKES_USER
+  CLEAR_LIKES_USER,
+  GET_ALL_RESEARCHERS,
+  CLEAR_ALL_RESEARCHERS,
+  REMOVE_RESEARCHERS
 } from "../actions/types";
 
 export default function(state = {}, action) {
@@ -255,6 +258,21 @@ export default function(state = {}, action) {
           ...state.userData,
           likes: action.payload
         }
+      };
+    case GET_ALL_RESEARCHERS:
+      return {
+        ...state,
+        allUsers: action.payload
+      };
+    case CLEAR_ALL_RESEARCHERS:
+      return {
+        ...state,
+        allUsers: action.payload
+      };
+    case REMOVE_RESEARCHERS:
+      return {
+        ...state,
+        removedResearchers: action.payload
       };
     default:
       return state;

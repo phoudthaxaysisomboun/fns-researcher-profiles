@@ -17,6 +17,8 @@ import Feed from "./components/User/Feed";
 
 import Research from './components/Research/index'
 
+import ResearcherAdmin from './components/User/Admin/researchers'
+
 const Routes = () => {
   return (
     <Layout>
@@ -31,6 +33,9 @@ const Routes = () => {
         <Route path="/search/researchers/" exact component={Auth(ResearcherSearch, null)} />
         <Route path="/search/researches/" exact component={Auth(ResearchSearch, null)} />
         <Route path="/" exact component={Auth(Feed, true)} />
+
+        <Route path="/admin/researchers" exact component={Auth(ResearcherAdmin, true, true)} />
+
       </Switch>
     </Layout>
   );

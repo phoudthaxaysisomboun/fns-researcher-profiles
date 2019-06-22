@@ -1,0 +1,85 @@
+import React, { Component } from "react";
+import MUIDataTable from "mui-datatables";
+import { Grid } from "@material-ui/core";
+
+const options = {
+    
+    textLabels: {
+      body: {
+        noMatch: "Sorry, no matching records found",
+        toolTip: "ຮຽງຕາມ",
+      },
+      pagination: {
+        next: "ຫນ້າຕໍ່ໄປ",
+        previous: "ຫນ້າກ່ອນຫນ້າ",
+        rowsPerPage: "ແຖວຕໍ່ຫນ້າ:",
+        displayRows: "ໃນ",
+      },
+      toolbar: {
+        search: "ຄົ້ນຫາ",
+        downloadCsv: "ດາວນ໌ໂຫລດ CSV",
+        print: "ພິມ",
+        viewColumns: "ເບິ່ງຖັນ",
+        filterTable: "ກັ່ນຕອງຂໍ້ມູນ",
+      },
+      filter: {
+        all: "ທັງຫມົດ",
+        title: "ຕົວກັ່ນຕອງ",
+        reset: "ລ້າງ",
+      },
+      viewColumns: {
+        title: "ຖັນທີ່ສະແດງ",
+        titleAria: "ສະແດງ/ເສື່ອງ ຖັນຕາຕະລາງ",
+      },
+      selectedRows: {
+        text: "ແຖວທີ່ເລືອກ",
+        delete: "ລຶບ",
+        deleteAria: "ລຶບແຖວທີ່ເລືອກ",
+      },
+    }
+    
+  }
+
+const datatableData = [
+  ["Joe James", "Example Inc.", "Yonkers", "NY"],
+  ["John Walsh", "Example Inc.", "Hartford", "CT"],
+  ["Bob Herm", "Example Inc.", "Tampa", "FL"],
+  ["James Houston", "Example Inc.", "Dallas", "TX"],
+  ["Prabhakar Linwood", "Example Inc.", "Hartford", "CT"],
+  ["Kaui Ignace", "Example Inc.", "Yonkers", "NY"],
+  ["Esperanza Susanne", "Example Inc.", "Hartford", "CT"],
+  ["Christian Birgitte", "Example Inc.", "Tampa", "FL"],
+  ["Meral Elias", "Example Inc.", "Hartford", "CT"],
+  ["Deep Pau", "Example Inc.", "Yonkers", "NY"],
+  ["Sebastiana Hani", "Example Inc.", "Dallas", "TX"],
+  ["Marciano Oihana", "Example Inc.", "Yonkers", "NY"],
+  ["Brigid Ankur", "Example Inc.", "Dallas", "TX"],
+  ["Anna Siranush", "Example Inc.", "Yonkers", "NY"],
+  ["Avram Sylva", "Example Inc.", "Hartford", "CT"],
+  ["Serafima Babatunde", "Example Inc.", "Tampa", "FL"],
+  ["Gaston Festus", "Example Inc.", "Tampa", "FL"]
+];
+
+class researchers extends Component {
+  render() {
+    return (
+      <div>
+        <Grid container spacing={32}>
+          <Grid item xs={12}>
+            <MUIDataTable
+              title="Employee List"
+              data={datatableData}
+              columns={["ຊື່", "ບໍລິສັດ", "ເມືອງ", "ແຂວງ"]}
+              options={{
+                filterType: "dropdown",
+                ...options
+              }}
+            />
+          </Grid>
+        </Grid>
+      </div>
+    );
+  }
+}
+
+export default researchers;

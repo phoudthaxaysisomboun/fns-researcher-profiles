@@ -63,3 +63,9 @@ export const UNLIKE = "unlike";
 export const REMOVE_LIKE = "remove_like";
 export const CLEAR_LIKES_USER = "clear_likes_in_users";
 export const CLEAR_LIKES_RESEARCH = "clear_likes_in_researches"
+
+// Admin
+export const GET_ALL_RESEARCHERS = "get_all_researchers"
+export const CLEAR_ALL_RESEARCHERS = "clear_all_researchers"
+export const REMOVE_RESEARCHERS = "remove_researchers"
+

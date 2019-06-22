@@ -5,6 +5,7 @@ const cookieParser = require("cookie-parser");
 const app = express();
 const mongoose = require("mongoose");
 require("dotenv").config();
+const _ = require("lodash");
 
 const normalizeUrl = require("normalize-url");
 
@@ -334,7 +335,7 @@ app.get("/api/users/auth", auth, (req, res) => {
     emailIsVerified: req.user.emailIsVerified,
     accountIsVerified: req.user.accountIsVerified,
     advisor: req.user.advisor,
-    likes: req.user.likes,  
+    likes: req.user.likes,
     createdAt: req.user.createdAt
   });
 });
@@ -538,6 +539,89 @@ app.post("/api/researchers/search", (req, res) => {
   }
 });
 
+app.post("/api/researchers/researchers", auth, admin, (req, res) => {
+  let order = req.query.order ? req.query.order : "asc";
+  let sortBy = req.query.sortBy ? req.query.sortBy : "name";
+  let limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 6;
+  let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0;
+  let findArgs = {};
+
+  for (let key in req.body.filters) {
+    if (req.body.filters[key].length > 0) {
+      findArgs[key] = req.body.filters[key];
+    }
+  }
+
+  // findArgs.emailIsVerified = true;
+  // findArgs.accountIsVerified = true;
+  findArgs.active = true;
+
+  User.find(findArgs)
+    // .select("_id")
+    .populate("gender")
+    .populate({
+      path: "address.district"
+    })
+    .populate({
+      path: "address.province"
+    })
+    .populate({
+      path: "desipline.maindesipline"
+    })
+    .populate({
+      path: "desipline.subdesipline.item"
+    })
+    .populate({
+      path: "affiliation.institution"
+    })
+    .populate({
+      path: "affiliation.department"
+    })
+    .populate({
+      path: "affiliation.faculty"
+    })
+    .populate({
+      path: "placeOfBirth.country"
+    })
+    .populate({
+      path: "education.country"
+    })
+    .populate({
+      path: "teachingExperience.country"
+    })
+    .populate({
+      path: "researchExperience.country"
+    })
+    .exec((err, result) => {
+      return res.status(200).send(result);
+    });
+});
+
+app.post("/api/researchers/remove_researchers", auth, admin, (req, res) => {
+  let items = req.query.id;
+
+  let ids = req.query.id.split(",");
+  items = [];
+  items = ids.map(item => {
+    return mongoose.Types.ObjectId(item);
+  });
+
+  User.updateMany(
+    {
+      _id: {$in: items}
+    },
+    { active: false },
+    {
+      new: true
+    },
+    (err, doc) => {
+      console.log(doc)
+      if (err) return res.json({ success: false, err });
+      res.status(200).json({success: true, doc});
+    }
+  );
+});
+
 // /api/researchers/profiles?id=asdasd,asdasdas,asdasd&type=single
 app.get("/api/researchers/profiles_by_id", (req, res) => {
   let type = req.query.type;
@@ -596,7 +680,7 @@ app.get("/api/researchers/profiles_by_id", (req, res) => {
       options: { sort: { city: 1 } }
     })
     .exec((err, docs) => {
-      console.log(err)
+      console.log(err);
       return res.status(200).send(docs);
     });
 });
@@ -1707,7 +1791,7 @@ app.post("/api/research/add_like", auth, (req, res) => {
         },
         (err, doc) => {
           if (err) return res.json({ success: false, err });
-          res.status(200).json({success: true});
+          res.status(200).json({ success: true });
         }
       );
     }
@@ -1719,9 +1803,7 @@ app.post("/api/researchers/unlike", auth, (req, res) => {
     { _id: req.user._id },
     {
       $pull: {
-        likes: 
-          mongoose.Types.ObjectId(req.query.researchId)
-        
+        likes: mongoose.Types.ObjectId(req.query.researchId)
       }
     },
     {
@@ -1747,7 +1829,7 @@ app.post("/api/research/remove_like", auth, (req, res) => {
     },
     (err, doc) => {
       if (err) return res.json({ success: false, err });
-      res.status(200).json({success: true});
+      res.status(200).json({ success: true });
     }
   );
 });
