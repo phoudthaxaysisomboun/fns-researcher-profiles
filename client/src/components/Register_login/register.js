@@ -28,7 +28,7 @@ import { connect } from "react-redux";
 
 import { Link as ReactLink, withRouter } from "react-router-dom";
 
-import { getDepartments, registerUser } from "../../actions/user_actions";
+import { getDepartments, registerUser, getDegrees } from "../../actions/user_actions";
 
 const styles = {
   container: {
@@ -167,6 +167,23 @@ class Register extends Component {
           name: "department_select",
           options: [],
           labelWidth: 50
+        },
+        validation: {
+          required: true
+        },
+        valid: false,
+        touched: false,
+        validationMessage: "",
+        showlabel: true
+      },
+      degree: {
+        element: "select",
+        value: "",
+        config: {
+          label: "ວຸດທິການສຶກສາ",
+          name: "degree_select",
+          options: [],
+          labelWidth: 88
         },
         validation: {
           required: true
@@ -357,6 +374,16 @@ class Register extends Component {
 
       this.updateFields(newFormdata);
     });
+
+    this.props.dispatch(getDegrees()).then(response => {
+      const newFormdata = populateOptionFields(
+        formdata,
+        this.props.user.degrees,
+        "degree"
+      );
+
+      this.updateFields(newFormdata);
+    });
   }
 
   render() {
@@ -384,13 +411,13 @@ class Register extends Component {
               </Typography>
 
               <Grid container spacing={24} style={{ marginTop: "16px" }}>
-                <Grid item xs={6}>
+                <Grid item xs={6} style={{paddingTop: "20px"}}>
                   
  <Typography variant="inherit"
                     style={{
                       fontFamily: "'Noto Sans Lao UI', sans-serif",
                       fontWeight: "normal",
-                      fontSize: "1rem",
+                      fontSize: "12px",
                       color: 'rgba(0, 0, 0, 0.54)'
                     }}
                   >
@@ -401,6 +428,7 @@ class Register extends Component {
                     value={this.state.formdata.gender.value}
                     onChange={this.handleChange}
                     row
+                    
                   >
                  
                   
@@ -413,9 +441,10 @@ class Register extends Component {
                     />
                     <FormControlLabel
                       value="5cb2c98e1331746efcc3b1fd"
-                      control={<Radio color="primary" />}
+                      control={<Radio color="primary"  />}
                       label="ຍິງ"
                       labelPlacement="end"
+                      
                     />
                   </RadioGroup>
                   {
@@ -433,6 +462,16 @@ class Register extends Component {
                   </FormHelperText>
                   : null
                   }
+                </Grid>
+                <Grid item xs={6}>
+                <FormField
+                labelWidth={
+                  this.state.formdata.degree.config.labelWidth
+                }
+                id={"degree"}
+                formdata={this.state.formdata.degree}
+                change={element => this.updateForm(element)}
+              />
                 </Grid>
               </Grid>
               <Grid container spacing={24}>

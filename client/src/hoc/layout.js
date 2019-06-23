@@ -55,7 +55,8 @@ import {
   PersonOutlineOutlined,
   Description,
   DescriptionOutlined,
-  SearchOutlined
+  SearchOutlined,
+  BuildOutlined
 } from "@material-ui/icons";
 
 import { colorPallete } from "../components/utils/misc";
@@ -240,7 +241,7 @@ class Layout extends Component {
     mobileMoreAnchorEl: null,
     open: false,
     headerclass: "",
-    openList: false
+    openManageToolMenu: true
   };
 
   handleDrawerOpen = () => {
@@ -252,24 +253,27 @@ class Layout extends Component {
   };
 
   componentDidMount() {
-    console.log(this.props.user)
-    if (this.props.user && this.props.user.userData && this.props.user.userData.isAdmin) {
+    if (
+      this.props.user &&
+      this.props.user.userData &&
+      this.props.user.userData.isAdmin
+    ) {
       this.setState({
         open: true
-      })
+      });
     }
     window.addEventListener("scroll", this.handleScroll);
   }
-
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps !== this.props) {
       if (this.props.user.userData.isAdmin) {
         this.setState({
           open: true
-        })
+        });
       }
-  }}
+    }
+  }
 
   componentWillUnmount() {
     window.removeEventListener("scroll", this.handleScroll);
@@ -315,8 +319,8 @@ class Layout extends Component {
     this.setState({ mobileMoreAnchorEl: null });
   };
 
-  handleClick = () => {
-    this.setState(state => ({ openList: !state.openList }));
+  handleMangeListClick = () => {
+    this.setState(state => ({ openManageToolMenu: !state.openManageToolMenu }));
   };
 
   showAccountButton = () => {
@@ -813,33 +817,38 @@ class Layout extends Component {
               <Divider />
 
               <List>
-                {
-                    this.props && this.props.user && this.props.user.userData && this.props.user.userData.isAuth ?
-                    <ListItem
-                  button
-                  component={Link}
-                  to="/"
-                  selected={"/" === pathname}
-                >
-                  <ListItemIcon>
-                    {"/" === pathname ? (
-                      <Home color="primary" />
-                    ) : (
-                      <HomeOutlined />
-                    )}
-                  </ListItemIcon>
-                  <ListItemText inset primary="ຫນ້າຫລັກ" />
-                </ListItem> : null
-                }
+                {this.props &&
+                this.props.user &&
+                this.props.user.userData &&
+                this.props.user.userData.isAuth ? (
+                  <ListItem
+                    button
+                    component={Link}
+                    to="/"
+                    selected={"/" === pathname}
+                  >
+                    <ListItemIcon>
+                      {"/" === pathname ? (
+                        <Home color="primary" />
+                      ) : (
+                        <HomeOutlined />
+                      )}
+                    </ListItemIcon>
+                    <ListItemText inset primary="ຫນ້າຫລັກ" />
+                  </ListItem>
+                ) : null}
                 <ListItem
                   button
                   component={Link}
                   to="/search"
-                  selected={(pathname.startsWith("/search")) && !("?q=" === this.props.location.search)}
+                  selected={
+                    pathname.startsWith("/search") &&
+                    !("?q=" === this.props.location.search)
+                  }
                 >
-                {console.log(this.props)}
                   <ListItemIcon>
-                    {(pathname.startsWith("/search")) && !("?q=" === this.props.location.search) ? (
+                    {pathname.startsWith("/search") &&
+                    !("?q=" === this.props.location.search) ? (
                       <SearchOutlined color="primary" />
                     ) : (
                       <SearchOutlined />
@@ -851,10 +860,14 @@ class Layout extends Component {
                   button
                   component={Link}
                   to="/search/researchers?q="
-                  selected={("/search/researchers" === pathname) && ("?q=" === this.props.location.search)}
+                  selected={
+                    "/search/researchers" === pathname &&
+                    "?q=" === this.props.location.search
+                  }
                 >
                   <ListItemIcon>
-                    {("/search/researchers" === pathname) && ("?q=" === this.props.location.search) ? (
+                    {"/search/researchers" === pathname &&
+                    "?q=" === this.props.location.search ? (
                       <Person color="primary" />
                     ) : (
                       <PersonOutlineOutlined />
@@ -863,15 +876,18 @@ class Layout extends Component {
                   <ListItemText inset primary="ນັກຄົ້ນຄວ້າ" />
                 </ListItem>
 
-
                 <ListItem
                   button
                   component={Link}
                   to="/search/researches?q="
-                  selected={("/search/researches" === pathname) && ("?q=" === this.props.location.search)}
+                  selected={
+                    "/search/researches" === pathname &&
+                    "?q=" === this.props.location.search
+                  }
                 >
                   <ListItemIcon>
-                    {("/search/researches" === pathname) && ("?q=" === this.props.location.search) ? (
+                    {"/search/researches" === pathname &&
+                    "?q=" === this.props.location.search ? (
                       <Description color="primary" />
                     ) : (
                       <DescriptionOutlined />
@@ -880,63 +896,91 @@ class Layout extends Component {
                   <ListItemText inset primary="ຜົນງານຄົ້ນຄວ້າ" />
                 </ListItem>
 
+                {this.props &&
+                this.props.user &&
+                this.props.user.userData &&
+                this.props.user.userData.isAdmin ? (
+                  <>
+                    <Divider />
+                    <List
+                      component="nav"
+                      subheader={
+                        <ListSubheader
+                          style={{
+                            fontFamily: "'Noto Sans Lao UI', sans serif"
+                          }}
+                          component="div"
+                        >
+                          ເຄື່ອງມືຜູ້ບໍລິຫານລະບົບ
+                        </ListSubheader>
+                      }
+                      className={classes.root}
+                    >
+                      <ListItem button onClick={this.handleMangeListClick}>
+                        <ListItemIcon>
+                          <BuildOutlined fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText inset primary="ຈັດການ" />
+                        {this.state.openManageToolMenu ? (
+                          <ExpandLessOutlined />
+                        ) : (
+                          <ExpandMoreOutlined />
+                        )}
+                      </ListItem>
+                      <Collapse
+                        in={this.state.openManageToolMenu}
+                        timeout="auto"
+                        unmountOnExit
+                      >
+                        <List component="div" disablePadding>
+                        <ListItem
+                        button
+                        component={Link}
+                        to="/admin/researchers"
+                        selected={
+                          "/admin/researchers" === pathname
+                        }
+                         className={classes.nested}
+                      >
+                        <ListItemIcon>
+                          {"/admin/researchers" === pathname ? (
+                            <Person color="primary" />
+                          ) : (
+                            <PersonOutlineOutlined />
+                          )}
+                        </ListItemIcon>
+                        <ListItemText inset primary="ນັກຄົ້ນຄວ້າ" />
+                      </ListItem>
+                        </List>
+                      </Collapse>
+                    </List>
+                  </>
+                ) : null}
                 {
-                  this.props && this.props.user && this.props.user.userData && this.props.user.userData.isAdmin ?
-                 <>
-                 <Divider/>
-                 <List
-         component="nav"
-         subheader={<ListSubheader style={{fontFamily: "'Noto Sans Lao UI', sans serif"}} component="div">ເຄື່ອງມືຜູ້ບໍລິຫານລະບົບ</ListSubheader>}
-         className={classes.root}
-       >
-         
-         <ListItem button onClick={this.handleClick}>
-           <ListItemIcon>
-             <InboxOutlined />
-           </ListItemIcon>
-           <ListItemText inset primary="Inbox" />
-           {this.state.openList ? <ExpandLessOutlined /> : <ExpandMoreOutlined />}
-         </ListItem>
-         <Collapse in={this.state.openList} timeout="auto" unmountOnExit>
-           <List component="div" disablePadding>
-             <ListItem button className={classes.nested}>
-               <ListItemIcon>
-                 <InboxOutlined />
-               </ListItemIcon>
-               <ListItemText inset primary="Starred" />
-             </ListItem>
-           </List>
-         </Collapse>
-       </List>
-                 
-                 </> : null
-                }
-                {
-                    /*  collapse component */
-                //     <ListItem button onClick={this.handleClick}>
-                //   <ListItemIcon>
-                //     <InboxOutlined />
-                //   </ListItemIcon>
-                //   <ListItemText inset primary="Inbox" />
-                //   {this.state.openList ? (
-                //     <ExpandLessOutlined />
-                //   ) : (
-                //     <ExpandMoreOutlined />
-                //   )}
-                // </ListItem>
-                // <Collapse in={this.state.openList} timeout="auto" unmountOnExit>
-                //   <List component="div" disablePadding>
-                //     <ListItem button className={classes.nested}>
-                //       <ListItemIcon>
-                //         <InboxOutlined />
-                //       </ListItemIcon>
-                //       <ListItemText inset primary="Starred" />
-                //     </ListItem>
-                //   </List>
-                // </Collapse>
+                  /*  collapse component */
+                  //     <ListItem button onClick={this.handleClick}>
+                  //   <ListItemIcon>
+                  //     <InboxOutlined />
+                  //   </ListItemIcon>
+                  //   <ListItemText inset primary="Inbox" />
+                  //   {this.state.openList ? (
+                  //     <ExpandLessOutlined />
+                  //   ) : (
+                  //     <ExpandMoreOutlined />
+                  //   )}
+                  // </ListItem>
+                  // <Collapse in={this.state.openList} timeout="auto" unmountOnExit>
+                  //   <List component="div" disablePadding>
+                  //     <ListItem button className={classes.nested}>
+                  //       <ListItemIcon>
+                  //         <InboxOutlined />
+                  //       </ListItemIcon>
+                  //       <ListItemText inset primary="Starred" />
+                  //     </ListItem>
+                  //   </List>
+                  // </Collapse>
                 }
               </List>
-              
             </Drawer>
 
             {renderMenu}

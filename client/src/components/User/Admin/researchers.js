@@ -3,6 +3,8 @@ import classNames from "classnames";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 
+import { Link, withRouter } from "react-router-dom";
+
 import moment from "moment";
 
 import { connect } from "react-redux";
@@ -27,10 +29,16 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Button
+  Button,
+  CircularProgress
 } from "@material-ui/core";
 
-import { DeleteOutline, FilterListOutlined } from "@material-ui/icons";
+import {
+  DeleteOutline,
+  FilterListOutlined,
+  EditOutlined,
+  VisibilityOutlined
+} from "@material-ui/icons";
 
 import { lighten } from "@material-ui/core/styles/colorManipulator";
 
@@ -74,12 +82,37 @@ const rows = [
   {
     id: "name",
     numeric: false,
-    disablePadding: true,
+    disablePadding: false,
     label: "ຊື່ ແລະ ນາມສະກຸນ"
   },
-  { id: "gender", numeric: false, disablePadding: true, label: "ເພດ", },
-  { id: "department", numeric: false, disablePadding: true, label: "ພາກວິຊາ" },
-  { id: "age", numeric: true, disablePadding: false, label: "ອາຍຸ" }
+  { id: "gender.name", numeric: false, disablePadding: false, label: "ເພດ" },
+  {
+    id: "affiliation.department.name",
+    numeric: false,
+    disablePadding: false,
+    label: "ພາກວິຊາ"
+  },
+  { id: "dateOfBirth", numeric: false, disablePadding: false, label: "ອາຍຸ" },
+  {
+    id: "degree.name",
+    numeric: false,
+    disablePadding: false,
+    label: "ວຸດທິການສຶກສາ"
+  },
+  {
+    id: "researchCount",
+    numeric: false,
+    disablePadding: false,
+    label: "ຈໍານວນຜົນງານຄົ້ນຄວ້າ"
+  },
+  {
+    id: "actions",
+    numeric: false,
+    disablePadding: false,
+    label: "",
+    hideSortIcon: true,
+    active: false
+  }
 ];
 
 class EnhancedTableHead extends React.Component {
@@ -93,12 +126,11 @@ class EnhancedTableHead extends React.Component {
       order,
       orderBy,
       numSelected,
-      rowCount,
-      
+      rowCount
     } = this.props;
 
     return (
-      <TableHead>
+      <TableHead style={{backgroundColor:"#eaeaea"}}>
         <TableRow>
           <TableCell padding="checkbox">
             <Checkbox
@@ -116,19 +148,33 @@ class EnhancedTableHead extends React.Component {
                 padding={row.disablePadding ? "none" : "default"}
                 sortDirection={orderBy === row.id ? order : false}
               >
-                <Tooltip
-                  title="ຮຽງຕາມ"
-                  placement={row.numeric ? "bottom-end" : "bottom-start"}
-                  enterDelay={300}
-                >
-                  <TableSortLabel
-                    active={orderBy === row.id}
-                    direction={order}
-                    onClick={this.createSortHandler(row.id)}
-                  >
-                    {row.label}
-                  </TableSortLabel>
-                </Tooltip>
+                {!row.hideSortIcon ? (
+                  <>
+                    <Tooltip
+                      title="ຮຽງຕາມ"
+                      placement={row.numeric ? "bottom-end" : "bottom-start"}
+                      enterDelay={300}
+                    >
+                      <TableSortLabel
+                        active={orderBy === row.id}
+                        direction={order}
+                        onClick={this.createSortHandler(row.id)}
+                      >
+                        {row.label}
+                      </TableSortLabel>
+                    </Tooltip>
+                  </>
+                ) : (
+                  <>
+                    <TableSortLabel
+                      active={false}
+                      hover={false}
+                      hideSortIcon={true}
+                    >
+                      {row.label}
+                    </TableSortLabel>
+                  </>
+                )}
               </TableCell>
             ),
             this
@@ -174,49 +220,76 @@ const toolbarStyles = theme => ({
 });
 
 let EnhancedTableToolbar = props => {
-  const { numSelected, classes, openDeleteDialog  } = props;
+  const { numSelected, classes, openDeleteDialog, researchersCount } = props;
   return (
     <Toolbar
       className={classNames(classes.root, {
         [classes.highlight]: numSelected > 0
       })}
+      style={{paddingLeft: 0, paddingRight: 0, borderWidth: "1px",}}
     >
-      <div className={classes.title}>
+    <Grid container alignItems="center">
+      <Grid item xs>
+      <div >
         {numSelected > 0 ? (
-          <Typography color="inherit" variant="inherit">
+          <Typography style={{marginLeft: "24px"}} color="inherit" variant="inherit">
             ເລືອກ {numSelected} ລາຍການ
           </Typography>
         ) : (
           <Typography
             variant="inherit"
-            style={{ fontSize: "1.375rem", fontWeight: "bold" }}
+            style={{ fontSize: "1.375rem", fontWeight: "bold", paddingLeft: 0, marginLeft: 0 }}
             id="tableTitle"
+   
           >
-            ນັກຄົ້ນຄວ້າ
+            ນັກຄົ້ນຄວ້າ{" "}
+            <div
+              style={{
+                fontWeight: "normal",
+                display: "inline",
+                fontFamily: "'Roboto', sans-serif",
+                color: "#898989",
+                fontSize: "1.2rem"
+              }}
+            >
+              {researchersCount}
+            </div>
           </Typography>
         )}
       </div>
-      <div className={classes.spacer} />
-      <div className={classes.actions}>
+      </Grid>   
+      <Grid item xs={5} align="right">
+      <div className={classes.actions} >
         {numSelected > 0 ? (
           <Tooltip title="Delete">
             <IconButton
               aria-label="Delete"
               onClick={() => {
-                openDeleteDialog()
+                openDeleteDialog();
               }}
+              style={{marginRight: "8px"}}
             >
               <DeleteOutline />
             </IconButton>
           </Tooltip>
         ) : (
+          <>
           <Tooltip title="Filter list">
-            <IconButton aria-label="Filter list">
+            <IconButton aria-label="Filter list" style={{marginRight: "8px"}}>
               <FilterListOutlined />
             </IconButton>
           </Tooltip>
+          <Button variant="contained" color="primary">
+          ເພີ່ມ
+          </Button>
+          </>
         )}
       </div>
+      </Grid> 
+    </Grid>
+      
+     
+      
     </Toolbar>
   );
 };
@@ -313,36 +386,40 @@ class ResearcherAdmin extends React.Component {
     });
   }
 
+  componentWillUnmount() {
+    // this.props.dispatch(clearAllResearchers())
+  }
+
   componentDidUpdate(prevProps, prevState) {}
 
   handleOpenDeleteConfirmationDialog() {
     this.setState({
       openDeleteConfirmationDialog: true
-    })
+    });
   }
 
   handleDeleteResearchConfirmationClose() {
     this.setState({
       openDeleteConfirmationDialog: false
-    })
+    });
   }
 
   handleResearcherDeletetion = () => {
-    this.props.dispatch(removeResearchers(this.state.selected)).then(response=>{
-      console.log(response.payload.success)
-      if (response.payload.success) {
-        this.props.dispatch(getAllResearchers()).then(response => {
-        this.setState({
-          data: this.props.user.allUsers,
-          openDeleteConfirmationDialog: false,
-          selected: []
-        });
-        
+    this.props
+      .dispatch(removeResearchers(this.state.selected))
+      .then(response => {
+        console.log(response.payload.success);
+        if (response.payload.success) {
+          this.props.dispatch(getAllResearchers()).then(response => {
+            this.setState({
+              data: this.props.user.allUsers,
+              openDeleteConfirmationDialog: false,
+              selected: []
+            });
+          });
+        }
       });
-      }
-      
-    })
-  }
+  };
 
   render() {
     const { classes } = this.props;
@@ -351,142 +428,288 @@ class ResearcherAdmin extends React.Component {
       rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
     return (
-     <>
-     <Grid
-     container
-     spacing={0}
-     style={{ paddingTop: "24px", paddingBottom: "24px" }}
-   >
-     <Grid item xs sm lg md />
+      <>
+        <Grid
+          container
+          spacing={0}
+          style={{ paddingTop: "24px", paddingBottom: "24px" }}
+        >
+          <Grid item xs sm lg md />
 
-     <Grid item xs={11} sm={11} lg={11} md={11}>
-       <Paper
-         style={{
-           boxShadow: "none",
-           border: "1px solid #d8d8d8",
-           width: "100%"
-         }}
-       >
-         <EnhancedTableToolbar
-           numSelected={selected.length}
-           selected={this.state.selected}
-           openDeleteDialog = {()=>{this.handleOpenDeleteConfirmationDialog()}}
-            
-         />
-         <div className={classes.tableWrapper}>
-           <Table className={classes.table} aria-labelledby="tableTitle">
-             <EnhancedTableHead
-               numSelected={selected.length}
-               order={order}
-               orderBy={orderBy}
-               onSelectAllClick={this.handleSelectAllClick}
-               onRequestSort={this.handleRequestSort}
-               rowCount={data.length}
-               
-             />
-             <TableBody>
-               {stableSort(data, getSorting(order, orderBy))
-                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                 .map(n => {
-                   const isSelected = this.isSelected(n._id);
-                   return (
-                     <TableRow
-                       hover
-                       onClick={event => this.handleClick(event, n._id)}
-                       role="checkbox"
-                       aria-checked={isSelected}
-                       tabIndex={-1}
-                       key={n.id}
-                       selected={isSelected}
-                       
-                     >
-                       <TableCell padding="checkbox">
-                         <Checkbox color="primary" checked={isSelected} />
-                       </TableCell>
-                       <TableCell component="th" scope="row" padding="none">
-                         <Typography variant="inherit">{`${n.prefix} ${
-                           n.name
-                         } ${n.lastname}`}</Typography>
-                       </TableCell>
-                       <TableCell align="left" component="th" scope="row" padding="none">
-                       <Typography variant="inherit">{`${
-                        n.gender.name
-                      }`}</Typography>{" "}
-                        
-                       </TableCell>
-                       <TableCell align="left" component="th" scope="row" padding="none">
-                         {" "}
-                         <Typography variant="inherit">{`${
-                           n.affiliation.department.name
-                         }`}</Typography>{" "}
-                       </TableCell>
-                       <TableCell align="right" >{moment().diff(n.dateOfBirth, 'years',false)}</TableCell>
-                   
-                     </TableRow>
-                   );
-                 })}
-               {emptyRows > 0 && (
-                 <TableRow style={{ height: 49 * emptyRows }}>
-                   <TableCell colSpan={6} />
-                 </TableRow>
-               )}
-             </TableBody>
-           </Table>
-         </div>
-         <TablePagination
-           rowsPerPageOptions={[10, 15, 25]}
-           component="div"
-           count={data.length}
-           rowsPerPage={rowsPerPage}
-           page={page}
-           backIconButtonProps={{
-             "aria-label": "ຫນ້າກ່ອນຫນ້າ"
-           }}
-           nextIconButtonProps={{
-             "aria-label": "ຫນ້າຕໍ່ໄປ"
-           }}
-           onChangePage={this.handleChangePage}
-           onChangeRowsPerPage={this.handleChangeRowsPerPage}
-           labelRowsPerPage="ແຖວຕໍ່ຫນ້າ"
-           labelDisplayedRows={({ from, to, count }) =>
-             `${from}-${to} ໃນ ${count}`
-           }
-         />
-       </Paper>
-     </Grid>
-     <Grid item xs sm lg md />
-   </Grid>
-   <Dialog
-       open={this.state.openDeleteConfirmationDialog}
-       onClose={() => this.handleDeleteResearchConfirmationClose()}
-       maxWidth="xs"
-     >
-       <DialogTitle style={{ fontFamily: "'Noto Sans Lao UI', sans serif" }}>
-         ຕ້ອງການລຶບຂໍ້ມູນນີ້ແທ້ບໍ?
-       </DialogTitle>
-       <DialogContent>
-         <DialogContentText
-           style={{ fontFamily: "'Noto Sans Lao UI', sans serif" }}
-         >
-           ທ່ານກໍາລັງຈະລຶບຂໍ້ມູນນັກຄົ້ນຄວ້ານີ້.
-           ທ່ານແນ່ໃຈຫລືບໍ່ວ່າຈະລຶບຂໍ້ມູນດັ່ງກ່າວ?
-           ການກະທໍາຕໍ່ໄປນີ້ບໍ່ສາມາດແກ້ໄຂໄດ້
-         </DialogContentText>
-       </DialogContent>
-       <DialogActions>
-         <Button onClick={() => this.handleDeleteResearchConfirmationClose()}>
-           ຍົກເລີກ
-         </Button>
-         <Button
-           onClick={this.handleResearcherDeletetion}
-           style={{ color: "#f44336" }}
-           autoFocus
-         >
-           ຢືນຢັນ
-         </Button>
-       </DialogActions>
-     </Dialog>
-     </>
+          <Grid item xs={11} sm={11} lg={11} md={11}>
+            {this.props.user.allUsers ? (
+              <>
+              <EnhancedTableToolbar
+                  numSelected={selected.length}
+                  selected={this.state.selected}
+                  openDeleteDialog={() => {
+                    this.handleOpenDeleteConfirmationDialog();
+                  }}
+                  researchersCount={
+                    this.props.user.allUsers
+                      ? `(${this.props.user.allUsers.length})`
+                      : null
+                  }
+                />
+              <Paper
+                style={{
+                  boxShadow: "none",
+                  border: "1px solid #d8d8d8",
+                  
+                  borderRadius: 0
+                }}
+              >
+                
+                <div className={classes.tableWrapper}>
+                  <Table className={classes.table} aria-labelledby="tableTitle">
+                    <EnhancedTableHead
+                      numSelected={selected.length}
+                      order={order}
+                      orderBy={orderBy}
+                      onSelectAllClick={this.handleSelectAllClick}
+                      onRequestSort={this.handleRequestSort}
+                      rowCount={data.length}
+                    />
+                    <TableBody>
+                      {stableSort(data, getSorting(order, orderBy))
+                        .slice(
+                          page * rowsPerPage,
+                          page * rowsPerPage + rowsPerPage
+                        )
+                        .map(n => {
+                          const isSelected = this.isSelected(n._id);
+                          return (
+                            <TableRow
+                              hover
+                              role="checkbox"
+                              aria-checked={isSelected}
+                              tabIndex={-1}
+                              key={n.id}
+                              selected={isSelected}
+                            >
+                              <TableCell padding="checkbox">
+                                <Checkbox
+                                  color="primary"
+                                  checked={isSelected}
+                                  onClick={event =>
+                                    this.handleClick(event, n._id)
+                                  }
+                                />
+                              </TableCell>
+                              <TableCell
+                                component="th"
+                                scope="row"
+                                padding="dense"
+                              >
+                                <Typography variant="inherit">{`${n.prefix} ${
+                                  n.name
+                                } ${n.lastname}`}</Typography>
+                              </TableCell>
+                              <TableCell
+                                align="left"
+                                component="th"
+                                scope="row"
+                                padding="dense"
+                              >
+                                <Typography variant="inherit">{`${
+                                  n["gender.name"]
+                                }`}</Typography>{" "}
+                              </TableCell>
+
+                              <TableCell
+                                align="left"
+                                component="th"
+                                scope="row"
+                                padding="dense"
+                              >
+                                {" "}
+                                <Typography variant="inherit">{`${
+                                  n["affiliation.department.name"]
+                                }`}</Typography>{" "}
+                              </TableCell>
+                              <TableCell align="left" padding="dense">
+                                {moment().diff(n.dateOfBirth, "years", false)}
+                              </TableCell>
+                              <TableCell padding="dense">
+                                <Typography variant="inherit">
+                                  {n["degree.name"]
+                                    ? `${n["degree.name"]}`
+                                    : ""}
+                                </Typography>
+                              </TableCell>
+                              <TableCell
+                                padding="dense"
+                                component="th"
+                                scope="row"
+                              >
+                                {n.researchCount}
+                              </TableCell>
+                              {selected.length === 0 ? (
+                                <TableCell
+                                  align="right"
+                                  component="th"
+                                  scope="row"
+                                >
+                                  
+                                  <Tooltip title="ແກ້ໄຊ">
+                                    <IconButton
+                                      onClick={() => {
+                                        console.log("click");
+                                      }}
+                                    >
+                                      <EditOutlined fontSize="small" />
+                                    </IconButton>
+                                    
+                                  </Tooltip>
+                                  <Tooltip title="ເບິ່ງ">
+                                    <IconButton
+                                      component={Link}
+                                      to={`/profile/${n._id}`}
+                                    >
+                                      <VisibilityOutlined fontSize="small" />
+                                    </IconButton>
+                                  </Tooltip>
+                                  <Tooltip title="ລຶບ">
+                                    <IconButton
+                                      aria-label="Delete"
+                                      onClick={() => {
+                                        console.log("click");
+                                      }}
+                                    >
+                                      <DeleteOutline fontSize="small" />
+                                    </IconButton>
+                                  </Tooltip>
+                                </TableCell>
+                              ) : (
+                                <TableCell
+                                  align="right"
+                                  component="th"
+                                  scope="row"
+                                >
+                                  
+                                  <Tooltip title="ແກ້ໄຊ">
+                                    <IconButton
+                                      disabled
+                                      onClick={() => {
+                                        console.log("click");
+                                      }}
+                                    >
+                                      <EditOutlined fontSize="small" />
+                                    </IconButton>
+                                  </Tooltip>
+                                  <Tooltip title="ເບິ່ງ">
+                                    <IconButton
+                                      disabled
+                                      onClick={() => {
+                                        console.log("click");
+                                      }}
+                                    >
+                                      <VisibilityOutlined fontSize="small" />
+                                    </IconButton>
+                                  </Tooltip>
+                                  <Tooltip title="ລຶບ">
+                                    <IconButton
+                                      disabled
+                                      aria-label="Delete"
+                                      onClick={() => {
+                                        console.log("click");
+                                      }}
+                                    >
+                                      <DeleteOutline fontSize="small" />
+                                    </IconButton>
+                                  </Tooltip>
+                                </TableCell>
+                              )}
+                            </TableRow>
+                          );
+                        })}
+                      {emptyRows > 0 && (
+                        <TableRow style={{ height: 49 * emptyRows }}>
+                          <TableCell colSpan={6} />
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                </div>
+                <TablePagination
+                  rowsPerPageOptions={[10, 15, 25]}
+                  component="div"
+                  count={data.length}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  backIconButtonProps={{
+                    "aria-label": "ຫນ້າກ່ອນຫນ້າ"
+                  }}
+                  nextIconButtonProps={{
+                    "aria-label": "ຫນ້າຕໍ່ໄປ"
+                  }}
+                  onChangePage={this.handleChangePage}
+                  onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                  labelRowsPerPage="ແຖວຕໍ່ຫນ້າ"
+                  labelDisplayedRows={({ from, to, count }) =>
+                    `${from}-${to} ໃນ ${count}`
+                  }
+                />
+              </Paper>
+              </>
+            ) : (
+              <Paper
+                style={{
+                  boxShadow: "none",
+                  border: "1px solid #d8d8d8",
+                  width: "100%",
+                  borderRadius: 0
+                }}
+              >
+                <Grid
+                  container
+                  alignContent="center"
+                  alignItems="center"
+                  justify="center"
+                >
+                  <Grid item align="center">
+                    <CircularProgress style={{ padding: "24px" }} />
+                  </Grid>
+                </Grid>
+              </Paper>
+            )}
+          </Grid>
+          <Grid item xs sm lg md />
+        </Grid>
+
+        <Dialog
+          open={this.state.openDeleteConfirmationDialog}
+          onClose={() => this.handleDeleteResearchConfirmationClose()}
+          maxWidth="xs"
+        >
+          <DialogTitle style={{ fontFamily: "'Noto Sans Lao UI', sans serif" }}>
+            ຕ້ອງການລຶບຂໍ້ມູນນີ້ແທ້ບໍ?
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText
+              style={{ fontFamily: "'Noto Sans Lao UI', sans serif" }}
+            >
+              ທ່ານກໍາລັງຈະລຶບຂໍ້ມູນນັກຄົ້ນຄວ້ານີ້.
+              ທ່ານແນ່ໃຈຫລືບໍ່ວ່າຈະລຶບຂໍ້ມູນດັ່ງກ່າວ?
+              ການກະທໍາຕໍ່ໄປນີ້ບໍ່ສາມາດແກ້ໄຂໄດ້
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={() => this.handleDeleteResearchConfirmationClose()}
+            >
+              ຍົກເລີກ
+            </Button>
+            <Button
+              onClick={this.handleResearcherDeletetion}
+              style={{ color: "#f44336" }}
+              autoFocus
+            >
+              ຢືນຢັນ
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </>
     );
   }
 }
@@ -501,4 +724,6 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(withStyles(styles)(ResearcherAdmin));
+export default withRouter(
+  connect(mapStateToProps)(withStyles(styles)(ResearcherAdmin))
+);

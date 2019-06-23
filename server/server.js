@@ -552,47 +552,60 @@ app.post("/api/researchers/researchers", auth, admin, (req, res) => {
     }
   }
 
-  // findArgs.emailIsVerified = true;
-  // findArgs.accountIsVerified = true;
-  findArgs.active = true;
+  findArgs.emailIsVerified = true;
+  findArgs.accountIsVerified = true;
+  // findArgs.active = false;
 
   User.find(findArgs)
     // .select("_id")
     .populate("gender")
-    .populate({
-      path: "address.district"
-    })
-    .populate({
-      path: "address.province"
-    })
-    .populate({
-      path: "desipline.maindesipline"
-    })
-    .populate({
-      path: "desipline.subdesipline.item"
-    })
-    .populate({
-      path: "affiliation.institution"
-    })
+    .populate("degree")
+    .populate("gender")
+    .select("_id name lastname dateOfBirth prefix research degree affiliation")
+    // .populate({
+    //   path: "address.district"
+    // })
+    // .populate({
+    //   path: "address.province"
+    // })
+    // .populate({
+    //   path: "desipline.maindesipline"
+    // })
+    // .populate({
+    //   path: "desipline.subdesipline.item"
+    // })
+    // .populate({
+    //   path: "affiliation.institution"
+    // })
     .populate({
       path: "affiliation.department"
     })
-    .populate({
-      path: "affiliation.faculty"
-    })
-    .populate({
-      path: "placeOfBirth.country"
-    })
-    .populate({
-      path: "education.country"
-    })
-    .populate({
-      path: "teachingExperience.country"
-    })
-    .populate({
-      path: "researchExperience.country"
-    })
+    // .populate({
+    //   path: "affiliation.faculty"
+    // })
+    // .populate({
+    //   path: "placeOfBirth.country"
+    // })
+    // .populate({
+    //   path: "education.country"
+    // })
+    // .populate({
+    //   path: "teachingExperience.country"
+    // })
+    // .populate({
+    //   path: "researchExperience.country"
+    // })
+    // .populate({
+    //   path: "education",
+    //   options: { sort: { city: 1 } }
+    // })
     .exec((err, result) => {
+
+
+        
+
+
+
       return res.status(200).send(result);
     });
 });

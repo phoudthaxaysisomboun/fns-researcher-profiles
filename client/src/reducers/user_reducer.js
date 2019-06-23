@@ -41,7 +41,8 @@ import {
   CLEAR_LIKES_USER,
   GET_ALL_RESEARCHERS,
   CLEAR_ALL_RESEARCHERS,
-  REMOVE_RESEARCHERS
+  REMOVE_RESEARCHERS,
+  GET_DEGRESS
 } from "../actions/types";
 
 export default function(state = {}, action) {
@@ -54,6 +55,8 @@ export default function(state = {}, action) {
       return { ...state, userData: action.payload };
     case GET_DEPARTMENTS:
       return { ...state, departments: action.payload };
+    case GET_DEGRESS:
+      return { ...state, degrees: action.payload };
     case GET_USER_DETAIL:
       return { ...state, userDetail: action.payload };
     case CLEAR_USER_DETAIL:
@@ -260,9 +263,51 @@ export default function(state = {}, action) {
         }
       };
     case GET_ALL_RESEARCHERS:
+      var result = action.payload.map(function(el, index) {
+        var o = Object.assign({}, el);
+        o.researchCount = el["research"].length;
+        return o;
+      })
+
+      var flattenObject = function(ob) {
+        var toReturn = {};
+        
+        for (var i in ob) {
+          if (!ob.hasOwnProperty(i)) continue;
+          
+          if ((typeof ob[i]) == 'object') {
+            var flatObject = flattenObject(ob[i]);
+            for (var x in flatObject) {
+              if (!flatObject.hasOwnProperty(x)) continue;
+              
+              toReturn[i + '.' + x] = flatObject[x];
+            
+            }
+          } else {
+            toReturn[i] = ob[i];
+          }
+
+          // console.log(i)
+        }
+        return toReturn;
+      };
+
+      
+let data = result.map((value, index, array) => {
+  return flattenObject(value)
+})
+
+// console.log(data)
+    
+
+
+      
+      // console.log(newArray);
+
       return {
         ...state,
-        allUsers: action.payload
+        // allUsers: action.payload,
+        allUsers: data,
       };
     case CLEAR_ALL_RESEARCHERS:
       return {

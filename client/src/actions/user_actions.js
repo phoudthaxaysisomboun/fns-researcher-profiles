@@ -43,7 +43,8 @@ import {
   CLEAR_LIKES_USER,
   GET_ALL_RESEARCHERS,
   CLEAR_ALL_RESEARCHERS,
-  REMOVE_RESEARCHERS
+  REMOVE_RESEARCHERS,
+  GET_DEGRESS
 } from "./types";
 
 import { USER_SERVER, RESEARCHER_SERVER, RESEARCHER_PROFILES_SERVER } from "../components/utils/misc";
@@ -246,6 +247,17 @@ export function getDepartments() {
 
   return {
     type: GET_DEPARTMENTS,
+    payload: request
+  };
+}
+
+export function getDegrees() {
+  const request = axios
+    .get(`${USER_SERVER}/degrees`)
+    .then(response => response.data);
+
+  return {
+    type: GET_DEGRESS,
     payload: request
   };
 }
