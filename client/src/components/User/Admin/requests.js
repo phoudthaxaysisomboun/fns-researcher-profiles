@@ -47,9 +47,9 @@ import {
 import { lighten } from "@material-ui/core/styles/colorManipulator";
 
 import {
-  getAllResearchers,
-  clearAllResearchers,
-  removeResearchers
+ getRequestUser,
+ confirmUser,
+ removeUser
 } from "../../../actions/user_actions";
 // function createData(name, calories, fat, carbs, protein) {
 //   counter += 1;
@@ -319,7 +319,7 @@ const styles = theme => ({
   }
 });
 
-class ResearcherAdmin extends React.Component {
+class RequestRegisterAdmin extends React.Component {
   state = {
     order: "asc",
     orderBy: "name",
@@ -328,7 +328,7 @@ class ResearcherAdmin extends React.Component {
     page: 0,
     rowsPerPage: 10,
     openDeleteConfirmationDialog: false,
-    tabNumber: 0,
+    tabNumber: 1,
     openAddUserDialog: false
   };
 
@@ -399,9 +399,9 @@ class ResearcherAdmin extends React.Component {
   componentDidMount() {}
 
   componentWillMount() {
-    this.props.dispatch(getAllResearchers()).then(response => {
+    this.props.dispatch(getRequestUser()).then(response => {
       this.setState({
-        data: this.props.user.allUsers
+        data: this.props.user.userRegisterationRequest
       });
     });
   }
@@ -418,14 +418,6 @@ class ResearcherAdmin extends React.Component {
     });
   }
 
-  handleAddNewUser() {
-    this.props.dispatch(getAllResearchers()).then(response => {
-      this.setState({
-        data: this.props.user.allUsers,
-        openAddUserDialog: false
-      });
-    });
-  }
 
   handleDeleteResearchConfirmationClose() {
     this.setState({
@@ -433,21 +425,7 @@ class ResearcherAdmin extends React.Component {
     });
   }
 
-  handleResearcherDeletetion = () => {
-    this.props
-      .dispatch(removeResearchers(this.state.selected))
-      .then(response => {
-        console.log(response.payload.success);
-        if (response.payload.success) {
-          this.props.dispatch(getAllResearchers()).then(response => {
-            this.setState({
-              data: this.props.user.allUsers,
-              openDeleteConfirmationDialog: false,
-              selected: []
-            });
-          });
-        }
-      });
+  handleUserDeletetion = () => {
   };
 
   render() {
@@ -740,7 +718,7 @@ class ResearcherAdmin extends React.Component {
               ຍົກເລີກ
             </Button>
             <Button
-              onClick={this.handleResearcherDeletetion}
+              onClick={this.handleUserDeletetion}
               style={{ color: "#f44336" }}
               autoFocus
             >
@@ -760,7 +738,7 @@ class ResearcherAdmin extends React.Component {
   }
 }
 
-ResearcherAdmin.propTypes = {
+RequestRegisterAdmin.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
@@ -771,5 +749,5 @@ const mapStateToProps = state => {
 };
 
 export default withRouter(
-  connect(mapStateToProps)(withStyles(styles)(ResearcherAdmin))
+  connect(mapStateToProps)(withStyles(styles)(RequestRegisterAdmin))
 );

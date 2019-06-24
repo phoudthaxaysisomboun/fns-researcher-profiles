@@ -44,7 +44,10 @@ import {
   GET_ALL_RESEARCHERS,
   CLEAR_ALL_RESEARCHERS,
   REMOVE_RESEARCHERS,
-  GET_DEGRESS
+  GET_DEGRESS,
+  GET_REQUEST_USER,
+CONFIRM_USER,
+DELETE_USER,
 } from "./types";
 
 import { USER_SERVER, RESEARCHER_SERVER, RESEARCHER_PROFILES_SERVER } from "../components/utils/misc";
@@ -552,13 +555,43 @@ export function clearLike() {
 }
 
 export function getAllResearchers() {
-  // console.log(`${RESEARCHER_SERVER}/like?researchId=${_id}`)
   const request = axios
     .post(`${RESEARCHER_SERVER}/researchers`)
     .then(response => response.data);
 
   return {
     type: GET_ALL_RESEARCHERS,
+    payload: request
+  };
+}
+
+export function getRequestUser() {
+  const request = axios
+    .post(`${USER_SERVER}/register_requests`)
+    .then(response => response.data);
+    console.log(request)
+  return {
+    type: GET_REQUEST_USER,
+    payload: request
+  };
+}
+
+export function confirmUser() {
+  const request = axios
+    .post(`${USER_SERVER}/accept_registers`)
+    .then(response => response.data);
+  return {
+    type: CONFIRM_USER,
+    payload: request
+  };
+}
+
+export function removeUser() {
+  const request = axios
+    .post(`${USER_SERVER}/remove_users`)
+    .then(response => response.data);
+  return {
+    type: DELETE_USER,
     payload: request
   };
 }

@@ -42,10 +42,35 @@ import {
   GET_ALL_RESEARCHERS,
   CLEAR_ALL_RESEARCHERS,
   REMOVE_RESEARCHERS,
-  GET_DEGRESS
+  GET_DEGRESS,
+  GET_REQUEST_USER,
+  CONFIRM_USER,
+  DELETE_USER
 } from "../actions/types";
 
+
+
 export default function(state = {}, action) {
+  var flattenObject = function(ob) {
+    var toReturn = {};
+  
+    for (var i in ob) {
+      if (!ob.hasOwnProperty(i)) continue;
+  
+      if (typeof ob[i] == "object") {
+        var flatObject = flattenObject(ob[i]);
+        for (var x in flatObject) {
+          if (!flatObject.hasOwnProperty(x)) continue;
+  
+          toReturn[i + "." + x] = flatObject[x];
+        }
+      } else {
+        toReturn[i] = ob[i];
+      }
+    }
+    return toReturn;
+  };
+
   switch (action.type) {
     case LOGIN_USER:
       return { ...state, loginSuccess: action.payload };
@@ -267,47 +292,59 @@ export default function(state = {}, action) {
         var o = Object.assign({}, el);
         o.researchCount = el["research"].length;
         return o;
-      })
+      });
 
-      var flattenObject = function(ob) {
-        var toReturn = {};
-        
-        for (var i in ob) {
-          if (!ob.hasOwnProperty(i)) continue;
-          
-          if ((typeof ob[i]) == 'object') {
-            var flatObject = flattenObject(ob[i]);
-            for (var x in flatObject) {
-              if (!flatObject.hasOwnProperty(x)) continue;
-              
-              toReturn[i + '.' + x] = flatObject[x];
-            
-            }
-          } else {
-            toReturn[i] = ob[i];
-          }
+      // var flattenObject = function(ob) {
+      //   var toReturn = {};
 
-          // console.log(i)
-        }
-        return toReturn;
-      };
+      //   for (var i in ob) {
+      //     if (!ob.hasOwnProperty(i)) continue;
 
-      
-let data = result.map((value, index, array) => {
-  return flattenObject(value)
-})
+      //     if (typeof ob[i] == "object") {
+      //       var flatObject = flattenObject(ob[i]);
+      //       for (var x in flatObject) {
+      //         if (!flatObject.hasOwnProperty(x)) continue;
 
-// console.log(data)
-    
+      //         toReturn[i + "." + x] = flatObject[x];
+      //       }
+      //     } else {
+      //       toReturn[i] = ob[i];
+      //     }
+      //   }
+      //   return toReturn;
+      // };
 
-
-      
-      // console.log(newArray);
+      let data = result.map((value, index, array) => {
+        return flattenObject(value);
+      });
 
       return {
         ...state,
-        // allUsers: action.payload,
-        allUsers: data,
+        allUsers: data
+      };
+
+      case GET_REQUEST_USER:
+      
+
+      const req = action.payload.requests
+      console.log(req)
+
+      
+
+      let reqUser = req.map((value)=>{
+        return flattenObject(value);
+      })
+
+      console.log(reqUser)
+
+      // let reqUser = action.payload.requests.map((value) => {
+      //   return flattenObject(value);
+      // });
+
+      return {
+        ...state,
+        userRegisterationRequest: reqUser,
+        userRegisterationCount: action.payload.size
       };
     case CLEAR_ALL_RESEARCHERS:
       return {
@@ -318,6 +355,16 @@ let data = result.map((value, index, array) => {
       return {
         ...state,
         removedResearchers: action.payload
+      };
+    case CONFIRM_USER:
+      return {
+        ...state,
+        confirmUser: action.payload
+      };
+    case DELETE_USER:
+      return {
+        ...state,
+        deleteUser: action.payload
       };
     default:
       return state;

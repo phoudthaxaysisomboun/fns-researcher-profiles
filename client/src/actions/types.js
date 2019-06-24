@@ -70,3 +70,6 @@ export const GET_ALL_RESEARCHERS = "get_all_researchers"
 export const CLEAR_ALL_RESEARCHERS = "clear_all_researchers"
 export const REMOVE_RESEARCHERS = "remove_researchers"
 
+export const GET_REQUEST_USER = "get_request_user"
+export const CONFIRM_USER = "confirm_user"
+export const DELETE_USER = "delete_user"

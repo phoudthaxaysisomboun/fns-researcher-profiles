@@ -554,7 +554,7 @@ app.post("/api/researchers/researchers", auth, admin, (req, res) => {
 
   findArgs.emailIsVerified = true;
   findArgs.accountIsVerified = true;
-  // findArgs.active = false;
+  findArgs.active = true;
 
   User.find(findArgs)
     // .select("_id")
@@ -600,14 +600,89 @@ app.post("/api/researchers/researchers", auth, admin, (req, res) => {
     //   options: { sort: { city: 1 } }
     // })
     .exec((err, result) => {
-
-
-        
-
-
-
       return res.status(200).send(result);
     });
+});
+
+app.post("/api/users/register_requests", auth, admin, (req, res) => {
+  let order = req.query.order ? req.query.order : "asc";
+  let sortBy = req.query.sortBy ? req.query.sortBy : "name";
+  let limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 6;
+  let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0;
+  let findArgs = {};
+
+  for (let key in req.body.filters) {
+    if (req.body.filters[key].length > 0) {
+      findArgs[key] = req.body.filters[key];
+    }
+  }
+
+  findArgs.accountIsVerified = false;
+
+  User.find(findArgs)
+    .populate("gender")
+    .populate("degree")
+    .populate("gender")
+    .select("_id name lastname dateOfBirth prefix research degree affiliation email")
+    .populate({
+      path: "affiliation.department"
+    })
+    .exec((err, result) => {
+      console.log(result)
+      return res.status(200).json({
+        requests: result,
+        size: result.length
+      });
+    });
+});
+
+app.post("/api/users/accept_registers", auth, admin, (req, res) => {
+  let items = req.query.id;
+
+  let ids = req.query.id.split(",");
+  items = [];
+  items = ids.map(item => {
+    return mongoose.Types.ObjectId(item);
+  });
+
+  User.updateMany(
+    {
+      _id: { $in: items }
+    },
+    { $set: { accountIsVerified: true, active: true, emailIsVerified: true } },
+    {
+      new: true
+    },
+    (err, doc) => {
+      console.log(doc);
+      if (err) return res.json({ success: false, err });
+      res.status(200).json({ success: true, doc });
+    }
+  );
+});
+
+app.post("/api/users/remove_users", auth, admin, (req, res) => {
+  let items = req.query.id;
+
+  let ids = req.query.id.split(",");
+  items = [];
+  items = ids.map(item => {
+    return mongoose.Types.ObjectId(item);
+  });
+
+  User.remove(
+    {
+      _id: { $in: items }
+    },
+    {
+      new: true
+    },
+    (err, doc) => {
+      console.log(doc);
+      if (err) return res.json({ success: false, err });
+      res.status(200).json({ success: true, doc });
+    }
+  );
 });
 
 app.post("/api/researchers/remove_researchers", auth, admin, (req, res) => {
@@ -621,16 +696,16 @@ app.post("/api/researchers/remove_researchers", auth, admin, (req, res) => {
 
   User.updateMany(
     {
-      _id: {$in: items}
+      _id: { $in: items }
     },
     { active: false },
     {
       new: true
     },
     (err, doc) => {
-      console.log(doc)
+      console.log(doc);
       if (err) return res.json({ success: false, err });
-      res.status(200).json({success: true, doc});
+      res.status(200).json({ success: true, doc });
     }
   );
 });
