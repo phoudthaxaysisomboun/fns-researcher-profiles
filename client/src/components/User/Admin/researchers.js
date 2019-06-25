@@ -49,7 +49,8 @@ import { lighten } from "@material-ui/core/styles/colorManipulator";
 import {
   getAllResearchers,
   clearAllResearchers,
-  removeResearchers
+  removeResearchers,
+  getRequestUserCount
 } from "../../../actions/user_actions";
 // function createData(name, calories, fat, carbs, protein) {
 //   counter += 1;
@@ -224,7 +225,15 @@ const toolbarStyles = theme => ({
 });
 
 let EnhancedTableToolbar = props => {
-  const { numSelected, classes, openDeleteDialog, researchersCount, openAddUserDialog, handleAddNewUser } = props;
+  const { numSelected,selected, classes, openDeleteDialog, researchersCount, openAddUserDialog, handleAddNewUser, userId } = props;
+  let isUser = false
+  selected.map((value, index, array )=>{
+    if (value === userId) {
+      return isUser = true
+    } else {
+      return null
+    }
+  })
   return (
     <Toolbar
       className={classNames(classes.root, {
@@ -265,7 +274,10 @@ let EnhancedTableToolbar = props => {
       <Grid item xs={5} align="right">
       <div className={classes.actions} >
         {numSelected > 0 ? (
-          <Tooltip title="Delete">
+          <>
+          {
+            !isUser ?
+            <Tooltip title="ລຶບ">
             <IconButton
               aria-label="Delete"
               onClick={() => {
@@ -276,6 +288,21 @@ let EnhancedTableToolbar = props => {
               <DeleteOutline />
             </IconButton>
           </Tooltip>
+          : <Tooltip title="ລຶບ">
+          <IconButton
+            aria-label="Delete"
+            disabled
+            style={{marginRight: "8px"}}
+          >
+            <DeleteOutline />
+          </IconButton>
+        </Tooltip>
+
+          }
+          
+          
+          </>
+          
         ) : (
           <>
           <Tooltip title="Filter list">
@@ -399,11 +426,13 @@ class ResearcherAdmin extends React.Component {
   componentDidMount() {}
 
   componentWillMount() {
+    document.title = "ເຄຶ່ອງມືຈັດການນັກຄົ້ນຄວ້າ(ຂໍສະຫມັກ)-FNS Researcher Profiles"
     this.props.dispatch(getAllResearchers()).then(response => {
       this.setState({
         data: this.props.user.allUsers
       });
     });
+    this.props.dispatch(getRequestUserCount())
   }
 
   componentWillUnmount() {
@@ -463,6 +492,7 @@ class ResearcherAdmin extends React.Component {
         children={this.props.children}
         tab={this.state.tabNumber}
         changeTab={tabNumber => this.changeTab(tabNumber)}
+        requestCount = {this.props.user.userRegisterationCount}
       >
         <Grid
           container
@@ -488,6 +518,7 @@ class ResearcherAdmin extends React.Component {
                       ? `(${this.props.user.allUsers.length})`
                       : null
                   }
+                  userId = {this.props.user.userData._id}
                 />
               <Paper
                 style={{
@@ -607,7 +638,19 @@ class ResearcherAdmin extends React.Component {
                                       <VisibilityOutlined fontSize="small" />
                                     </IconButton>
                                   </Tooltip>
-                                  <Tooltip title="ລຶບ">
+                                  {
+                                    n._id === this.props.user.userData._id ?
+                                    <>
+                                    <Tooltip title="ລຶບ">
+                                    <IconButton
+                                      aria-label="Delete"
+                                      disabled
+                                    >
+                                      <DeleteOutline fontSize="small" />
+                                    </IconButton>
+                                  </Tooltip>
+                                    </> : <>
+                                    <Tooltip title="ລຶບ">
                                     <IconButton
                                       aria-label="Delete"
                                       onClick={() => {
@@ -617,6 +660,9 @@ class ResearcherAdmin extends React.Component {
                                       <DeleteOutline fontSize="small" />
                                     </IconButton>
                                   </Tooltip>
+                                    </>
+                                  }
+
                                 </TableCell>
                               ) : (
                                 <TableCell
@@ -696,7 +742,8 @@ class ResearcherAdmin extends React.Component {
                   boxShadow: "none",
                   border: "1px solid #d8d8d8",
                   width: "100%",
-                  borderRadius: 0
+                  borderRadius: 0,
+                  marginTop: "16px"
                 }}
               >
                 <Grid

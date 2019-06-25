@@ -45,23 +45,22 @@ import {
   GET_DEGRESS,
   GET_REQUEST_USER,
   CONFIRM_USER,
-  DELETE_USER
+  DELETE_USER,
+  GET_REQUEST_USER_COUNT, CANCEL_USER
 } from "../actions/types";
-
-
 
 export default function(state = {}, action) {
   var flattenObject = function(ob) {
     var toReturn = {};
-  
+
     for (var i in ob) {
       if (!ob.hasOwnProperty(i)) continue;
-  
+
       if (typeof ob[i] == "object") {
         var flatObject = flattenObject(ob[i]);
         for (var x in flatObject) {
           if (!flatObject.hasOwnProperty(x)) continue;
-  
+
           toReturn[i + "." + x] = flatObject[x];
         }
       } else {
@@ -323,27 +322,20 @@ export default function(state = {}, action) {
         allUsers: data
       };
 
-      case GET_REQUEST_USER:
-      
-
-      const req = action.payload.requests
-      console.log(req)
-
-      
-
-      let reqUser = req.map((value)=>{
+    case GET_REQUEST_USER:
+      const req = action.payload.requests;
+      let reqUser = req.map(value => {
         return flattenObject(value);
-      })
-
-      console.log(reqUser)
-
-      // let reqUser = action.payload.requests.map((value) => {
-      //   return flattenObject(value);
-      // });
-
+      });
       return {
         ...state,
         userRegisterationRequest: reqUser,
+        userRegisterationCount: action.payload.size
+      };
+    case GET_REQUEST_USER_COUNT:
+   
+      return {
+        ...state,
         userRegisterationCount: action.payload.size
       };
     case CLEAR_ALL_RESEARCHERS:
@@ -365,6 +357,11 @@ export default function(state = {}, action) {
       return {
         ...state,
         deleteUser: action.payload
+      };
+    case CANCEL_USER:
+      return {
+        ...state,
+        canceledUser: action.payload
       };
     default:
       return state;

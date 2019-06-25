@@ -48,6 +48,8 @@ import {
   GET_REQUEST_USER,
 CONFIRM_USER,
 DELETE_USER,
+GET_REQUEST_USER_COUNT,
+CANCEL_USER
 } from "./types";
 
 import { USER_SERVER, RESEARCHER_SERVER, RESEARCHER_PROFILES_SERVER } from "../components/utils/misc";
@@ -576,9 +578,19 @@ export function getRequestUser() {
   };
 }
 
-export function confirmUser() {
+export function getRequestUserCount() {
   const request = axios
-    .post(`${USER_SERVER}/accept_registers`)
+    .get(`${USER_SERVER}/register_requests_count`)
+    .then(response => response.data);
+  return {
+    type: GET_REQUEST_USER_COUNT,
+    payload: request
+  };
+}
+
+export function confirmUser(id) {
+  const request = axios
+    .post(`${USER_SERVER}/accept_registers?id=${id}`)
     .then(response => response.data);
   return {
     type: CONFIRM_USER,
@@ -586,9 +598,9 @@ export function confirmUser() {
   };
 }
 
-export function removeUser() {
+export function removeUser(id) {
   const request = axios
-    .post(`${USER_SERVER}/remove_users`)
+    .post(`${USER_SERVER}/remove_users?id=${id}`)
     .then(response => response.data);
   return {
     type: DELETE_USER,
@@ -612,6 +624,19 @@ export function removeResearchers(id) {
 
   return {
     type: REMOVE_RESEARCHERS,
+    payload: request
+  };
+}
+
+
+export function cancelUsers(id) {
+  // console.log(`${RESEARCHER_SERVER}/like?researchId=${_id}`)
+  const request = axios
+    .post(`${RESEARCHER_SERVER}/cancel_registeration?id=${id}`)
+    .then(response => response.data);
+
+  return {
+    type: CANCEL_USER,
     payload: request
   };
 }

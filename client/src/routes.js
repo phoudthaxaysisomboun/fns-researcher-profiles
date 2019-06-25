@@ -19,6 +19,8 @@ import Research from './components/Research/index'
 
 import ResearcherAdmin from './components/User/Admin/researchers'
 import RequestRegisterAdmin from './components/User/Admin/requests'
+import NewComerResearchersAdmin from './components/User/Admin/newcomer'
+import OutstandingResearchersAdmin from './components/User/Admin/outstanding'
 
 const Routes = () => {
   return (
@@ -37,6 +39,8 @@ const Routes = () => {
 
         <Route path="/admin/researchers" exact component={Auth(ResearcherAdmin, true, true)} />
         <Route path="/admin/researchers/requests" exact component={Auth(RequestRegisterAdmin, true, true)} />
+        <Route path="/admin/researchers/outstanding" exact component={Auth(OutstandingResearchersAdmin, true, true)} />
+        <Route path="/admin/researchers/newcomer" exact component={Auth(NewComerResearchersAdmin, true, true)} />
 
       </Switch>
     </Layout>

@@ -17,7 +17,7 @@ import {
   Divider, Badge
 } from "@material-ui/core";
 
-const ManageUserHeader = ({ tab, props, children }) => {
+const ManageUserHeader = ({ tab, props, children, requestCount }) => {
   return (
     <>
       <Grid
@@ -52,21 +52,37 @@ const ManageUserHeader = ({ tab, props, children }) => {
               component={Link}
             />
 
-            <Tab
+            {
+              requestCount && requestCount > 0 ?
+              <Tab
               style={{
                 fontSize: "14px",
                 fontWeight: 500,
                 textDecoration: "none"
               }}
               label={
-                <Badge color="secondary" style={{padding: "0 16px"}} badgeContent={4}>
+                <Badge color="secondary" style={{padding: "0 16px"}} badgeContent={requestCount}>
                 ຂໍສະຫມັກ
                 </Badge>
               }
               
               to={`/admin/researchers/requests`}
               component={Link}
+            /> :
+            <Tab
+              style={{
+                fontSize: "14px",
+                fontWeight: 500,
+                textDecoration: "none"
+              }}
+              label="ຂໍສະຫມັກ"
+              
+              to={`/admin/researchers/requests`}
+              component={Link}
             />
+            }
+
+            
             <Tab
               style={{
                 fontSize: "14px",

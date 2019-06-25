@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { logoutUser } from "../actions/user_actions";
+import { logoutUser, getRequestUserCount } from "../actions/user_actions";
 import { UPLOADS_SERVER } from "../components/utils/misc";
 
 import PropTypes from "prop-types";
@@ -269,8 +269,14 @@ class Layout extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (prevProps !== this.props) {
       if (this.props.user.userData.isAdmin) {
+        
         this.setState({
           open: true
+        });
+      }
+      if (prevProps.user.userData !==  this.props.user.userData) {
+        this.props.dispatch(getRequestUserCount()).then(response => {
+          console.log(response.data)
         });
       }
     }
@@ -828,27 +834,27 @@ class Layout extends Component {
                     to="/"
                     selected={"/" === pathname}
                   >
-                    
-                      {"/" === pathname ? (
-                        <>
+                    {"/" === pathname ? (
+                      <>
                         <ListItemIcon>
-                        <HomeOutlined color="primary" />
+                          <HomeOutlined color="primary" />
                         </ListItemIcon>
-                        <ListItemText primaryTypographyProps={{
-                          style:{color: "#3f51b5", fontWeight: "500"}
-
-                        }} inset primary="ຫນ້າຫລັກ" />
-                        </>
-                      ) : (
-                        <>
+                        <ListItemText
+                          primaryTypographyProps={{
+                            style: { color: "#3f51b5", fontWeight: "500" }
+                          }}
+                          inset
+                          primary="ຫນ້າຫລັກ"
+                        />
+                      </>
+                    ) : (
+                      <>
                         <ListItemIcon>
-                        <HomeOutlined />
+                          <HomeOutlined />
                         </ListItemIcon>
                         <ListItemText inset primary="ຫນ້າຫລັກ" />
-                        </>
-                      )}
-                    
-                    
+                      </>
+                    )}
                   </ListItem>
                 ) : null}
                 <ListItem
@@ -860,27 +866,28 @@ class Layout extends Component {
                     !("?q=" === this.props.location.search)
                   }
                 >
-                  
-                    {pathname.startsWith("/search") &&
-                    !("?q=" === this.props.location.search) ? (
-                      <>
+                  {pathname.startsWith("/search") &&
+                  !("?q=" === this.props.location.search) ? (
+                    <>
                       <ListItemIcon>
-                      <SearchOutlined color="primary"  />
+                        <SearchOutlined color="primary" />
                       </ListItemIcon>
-                      <ListItemText primaryTypographyProps={{
-                        style:{color: "#3f51b5", fontWeight: "500"}
-                      }} inset primary="ຄົ້ນຫາ" />
-                      </>
-                    ) : (
-                      <>
+                      <ListItemText
+                        primaryTypographyProps={{
+                          style: { color: "#3f51b5", fontWeight: "500" }
+                        }}
+                        inset
+                        primary="ຄົ້ນຫາ"
+                      />
+                    </>
+                  ) : (
+                    <>
                       <ListItemIcon>
-                      <SearchOutlined />
+                        <SearchOutlined />
                       </ListItemIcon>
                       <ListItemText inset primary="ຄົ້ນຫາ" />
-                      </>
-                    )}
-                 
-                  
+                    </>
+                  )}
                 </ListItem>
                 <ListItem
                   button
@@ -891,21 +898,28 @@ class Layout extends Component {
                     "?q=" === this.props.location.search
                   }
                 >
-                  
-                    {"/search/researchers" === pathname &&
-                    "?q=" === this.props.location.search ? (
-                      <><ListItemIcon>
-                      <PersonOutlineOutlined color="primary" /></ListItemIcon><ListItemText inset primary="ນັກຄົ້ນຄວ້າ" primaryTypographyProps={{
-                    style:{color: "#3f51b5", fontWeight: "500"}
-                  }}/>
-                      </>
-                    ) : (
-                      <><ListItemIcon>
-                      <PersonOutlineOutlined /></ListItemIcon><ListItemText inset primary="ນັກຄົ້ນຄວ້າ" />
-                      </>
-                    )}
-                  
-                  
+                  {"/search/researchers" === pathname &&
+                  "?q=" === this.props.location.search ? (
+                    <>
+                      <ListItemIcon>
+                        <PersonOutlineOutlined color="primary" />
+                      </ListItemIcon>
+                      <ListItemText
+                        inset
+                        primary="ນັກຄົ້ນຄວ້າ"
+                        primaryTypographyProps={{
+                          style: { color: "#3f51b5", fontWeight: "500" }
+                        }}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <ListItemIcon>
+                        <PersonOutlineOutlined />
+                      </ListItemIcon>
+                      <ListItemText inset primary="ນັກຄົ້ນຄວ້າ" />
+                    </>
+                  )}
                 </ListItem>
 
                 <ListItem
@@ -917,27 +931,28 @@ class Layout extends Component {
                     "?q=" === this.props.location.search
                   }
                 >
-                  
-                    {"/search/researches" === pathname &&
-                    "?q=" === this.props.location.search ? (
-                      <>
+                  {"/search/researches" === pathname &&
+                  "?q=" === this.props.location.search ? (
+                    <>
                       <ListItemIcon>
-                      <DescriptionOutlined color="primary" />
+                        <DescriptionOutlined color="primary" />
                       </ListItemIcon>
-                      <ListItemText inset primaryTypographyProps={{
-                        style:{color: "#3f51b5", fontWeight: "500"}
-                      }} primary="ຜົນງານຄົ້ນຄວ້າ" />
-                      </>
-                    ) : (
-                      <>
+                      <ListItemText
+                        inset
+                        primaryTypographyProps={{
+                          style: { color: "#3f51b5", fontWeight: "500" }
+                        }}
+                        primary="ຜົນງານຄົ້ນຄວ້າ"
+                      />
+                    </>
+                  ) : (
+                    <>
                       <ListItemIcon>
-                      <DescriptionOutlined />
+                        <DescriptionOutlined />
                       </ListItemIcon>
                       <ListItemText inset primary="ຜົນງານຄົ້ນຄວ້າ" />
-                      </>
-                    )}
-                
-                  
+                    </>
+                  )}
                 </ListItem>
 
                 {this.props &&
@@ -977,38 +992,55 @@ class Layout extends Component {
                         unmountOnExit
                       >
                         <List component="div" disablePadding>
-                        <ListItem
-                        button
-                        component={Link}
-                        to="/admin/researchers"
-                        selected={
-                          "/admin/researchers" === pathname
-                        }
-                         className={classes.nested}
-                      >
-                       
-                          {"/admin/researchers" === pathname ? (
-                            <>
-                      <ListItemIcon>
-                      <Badge variant="dot" color="secondary">
-                      <PersonOutlineOutlined color="primary" />
-                      </Badge>
-                      </ListItemIcon>
-                      <ListItemText inset primaryTypographyProps={{
-                        style:{color: "#3f51b5", fontWeight: "500"}
-                      }}  primary="ນັກຄົ້ນຄວ້າ" />
-                      </>
-                          ) : (
-                            <>
-                            <ListItemIcon>
-                            <Badge badgeContent={4} variant="dot" color="secondary">
-                      <PersonOutlineOutlined /></Badge>
-                      </ListItemIcon>
-                      <ListItemText inset primary="ນັກຄົ້ນຄວ້າ" />
-                      </>
-                          )}
-                      
-                      </ListItem>
+                          <ListItem
+                            button
+                            component={Link}
+                            to="/admin/researchers"
+                            selected={pathname.startsWith("/admin/researchers")}
+                            className={classes.nested}
+                          >
+                            { pathname.startsWith("/admin/researchers") ? (
+                              <>
+                                <ListItemIcon>
+                                  {this.props &&
+                                  this.props.user &&
+                                  this.props.user.userRegisterationCount &&
+                                  this.props.user.userRegisterationCount > 0 ? (
+                                    <Badge badgeContent={this.props.user.userRegisterationCount} variant="dot" color="secondary">
+                                      <PersonOutlineOutlined color="primary" />
+                                    </Badge>
+                                  ) : (
+                                    <PersonOutlineOutlined color="primary" />
+                                  )}
+                                </ListItemIcon>
+                                <ListItemText
+                                  inset
+                                  primaryTypographyProps={{
+                                    style: {
+                                      color: "#3f51b5",
+                                      fontWeight: "500"
+                                    }
+                                  }}
+                                  primary="ນັກຄົ້ນຄວ້າ"
+                                />
+                              </>
+                            ) : (
+                              <>
+                              <ListItemIcon>
+                              {
+                              this.props.user.userRegisterationCount
+                                 > 0 ? (
+                                <Badge badgeContent={this.props.user.userRegisterationCount} variant="dot" color="secondary">
+                                  <PersonOutlineOutlined />
+                                </Badge>
+                              ) : (
+                                <PersonOutlineOutlined  />
+                              )}
+                            </ListItemIcon>
+                                <ListItemText inset primary="ນັກຄົ້ນຄວ້າ" />
+                              </>
+                            )}
+                          </ListItem>
                         </List>
                       </Collapse>
                     </List>

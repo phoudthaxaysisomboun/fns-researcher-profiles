@@ -71,5 +71,7 @@ export const CLEAR_ALL_RESEARCHERS = "clear_all_researchers"
 export const REMOVE_RESEARCHERS = "remove_researchers"
 
 export const GET_REQUEST_USER = "get_request_user"
+export const GET_REQUEST_USER_COUNT = "get_request_user_count"
 export const CONFIRM_USER = "confirm_user"
+export const CANCEL_USER = "cancel_user"
 export const DELETE_USER = "delete_user"

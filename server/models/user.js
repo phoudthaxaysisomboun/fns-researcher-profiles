@@ -204,11 +204,13 @@ const userSchema = mongoose.Schema({
     },
     outstanding: {
         isOutstanding: {type: Boolean},
-        date: {type: Date}
+        date: {type: Date},
+        description: {type: String, maxlength: 500},
     },
     newResearcher: {
         isNewResearcher: {type: Boolean},
-        date: {type: Date}
+        date: {type: Date},
+        description: {type: String, maxlength: 500},
     },
     canceledRegisteration: {
         type: Boolean,

@@ -618,19 +618,40 @@ app.post("/api/users/register_requests", auth, admin, (req, res) => {
   }
 
   findArgs.accountIsVerified = false;
+  findArgs.canceledRegisteration = false;
+  
 
   User.find(findArgs)
     .populate("gender")
     .populate("degree")
     .populate("gender")
-    .select("_id name lastname dateOfBirth prefix research degree affiliation email")
+    .select("_id name lastname dateOfBirth prefix research degree affiliation email createdAt emailIsVerified")
     .populate({
       path: "affiliation.department"
     })
     .exec((err, result) => {
-      console.log(result)
       return res.status(200).json({
         requests: result,
+        size: result.length
+      });
+    });
+});
+
+app.get("/api/users/register_requests_count", auth, admin, (req, res) => {
+  let findArgs = {};
+
+  // for (let key in req.body.filters) {
+  //   if (req.body.filters[key].length > 0) {
+  //     findArgs[key] = req.body.filters[key];
+  //   }
+  // }
+
+  findArgs.accountIsVerified = false;
+  findArgs.canceledRegisteration = false;
+
+  User.find(findArgs)
+    .exec((err, result) => {
+      return res.status(200).json({
         size: result.length
       });
     });
@@ -654,7 +675,30 @@ app.post("/api/users/accept_registers", auth, admin, (req, res) => {
       new: true
     },
     (err, doc) => {
-      console.log(doc);
+      if (err) return res.json({ success: false, err });
+      res.status(200).json({ success: true, doc });
+    }
+  );
+});
+
+app.post("/api/users/cancel_registeration", auth, admin, (req, res) => {
+  let items = req.query.id;
+
+  let ids = req.query.id.split(",");
+  items = [];
+  items = ids.map(item => {
+    return mongoose.Types.ObjectId(item);
+  });
+
+  User.updateMany(
+    {
+      _id: { $in: items }
+    },
+    { $set: { canceledRegisteration: false, active: false, emailIsVerified: true, accountIsVerified: false } },
+    {
+      new: true
+    },
+    (err, doc) => {
       if (err) return res.json({ success: false, err });
       res.status(200).json({ success: true, doc });
     }
@@ -670,15 +714,11 @@ app.post("/api/users/remove_users", auth, admin, (req, res) => {
     return mongoose.Types.ObjectId(item);
   });
 
-  User.remove(
+  User.deleteMany(
     {
       _id: { $in: items }
     },
-    {
-      new: true
-    },
     (err, doc) => {
-      console.log(doc);
       if (err) return res.json({ success: false, err });
       res.status(200).json({ success: true, doc });
     }
@@ -703,7 +743,6 @@ app.post("/api/researchers/remove_researchers", auth, admin, (req, res) => {
       new: true
     },
     (err, doc) => {
-      console.log(doc);
       if (err) return res.json({ success: false, err });
       res.status(200).json({ success: true, doc });
     }
@@ -768,7 +807,6 @@ app.get("/api/researchers/profiles_by_id", (req, res) => {
       options: { sort: { city: 1 } }
     })
     .exec((err, docs) => {
-      console.log(err);
       return res.status(200).send(docs);
     });
 });
@@ -1632,7 +1670,6 @@ app.post("/api/research/search", (req, res) => {
         User.find(findArgs)
           .select("_id")
           .exec((err, result) => {
-            console.log(findArgs);
             (rFindArgs.author = findArgs), console.log(ids);
 
             Research.find({
@@ -1701,8 +1738,6 @@ app.post("/api/research/researches", (req, res) => {
       findArgs[key] = req.body.filters[key];
     }
   }
-
-  console.log(findArgs);
 
   res.status(200);
 });
