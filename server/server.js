@@ -637,6 +637,89 @@ app.post("/api/users/register_requests", auth, admin, (req, res) => {
     });
 });
 
+
+app.get("/api/researchers/outstanding_researchers", auth, admin, (req, res) => {
+  let order = req.query.order ? req.query.order : "asc";
+  let sortBy = req.query.sortBy ? req.query.sortBy : "name";
+  let limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 6;
+  let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0;
+  let findArgs = {};
+
+  for (let key in req.body.filters) {
+    if (req.body.filters[key].length > 0) {
+      findArgs[key] = req.body.filters[key];
+    }
+  }
+
+  findArgs.emailIsVerified = true;
+  findArgs.accountIsVerified = true;
+  findArgs.active = true;
+
+
+  findArgs["outstanding.isOutstanding"] = true
+
+  User.find(findArgs)
+    .populate("gender")
+    .populate("degree")
+    .populate("gender")
+    .select("_id name lastname dateOfBirth prefix research degree affiliation outstanding")
+    .populate({
+      path: "affiliation.department"
+    })
+    .exec((err, result) => {
+      return res.status(200).json({
+        outstandingResearcher: result,
+        size: result.length
+      });
+    });
+});
+
+
+
+
+
+app.get("/api/researchers/new_researchers", auth, admin, (req, res) => {
+  let order = req.query.order ? req.query.order : "asc";
+  let sortBy = req.query.sortBy ? req.query.sortBy : "name";
+  let limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 6;
+  let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0;
+  let findArgs = {};
+
+  for (let key in req.body.filters) {
+    if (req.body.filters[key].length > 0) {
+      findArgs[key] = req.body.filters[key];
+    }
+  }
+
+  findArgs.emailIsVerified = true;
+  findArgs.accountIsVerified = true;
+  findArgs.active = true;
+
+
+  findArgs["newResearcher.isNewResearcher"] = true
+
+  User.find(findArgs)
+    .populate("gender")
+    .populate("degree")
+    .populate("gender")
+    .select("_id name lastname dateOfBirth prefix research degree affiliation newResearcher")
+    .populate({
+      path: "affiliation.department"
+    })
+    .exec((err, result) => {
+      return res.status(200).json({
+        newResearcher: result,
+        size: result.length
+      });
+    });
+});
+
+
+
+
+
+
+
 app.get("/api/users/register_requests_count", auth, admin, (req, res) => {
   let findArgs = {};
 
@@ -671,6 +754,111 @@ app.post("/api/users/accept_registers", auth, admin, (req, res) => {
       _id: { $in: items }
     },
     { $set: { accountIsVerified: true, active: true, emailIsVerified: true } },
+    {
+      new: true
+    },
+    (err, doc) => {
+      if (err) return res.json({ success: false, err });
+      res.status(200).json({ success: true, doc });
+    }
+  );
+});
+
+app.post("/api/researchers/add_outstanding_researchers", auth, admin, (req, res) => {
+  let items = req.query.id;
+
+  let ids = req.query.id.split(",");
+  items = [];
+  items = ids.map(item => {
+    return mongoose.Types.ObjectId(item);
+  });
+
+
+
+  User.updateMany(
+    {
+      _id: { $in: items }
+    },
+    { $set: { "outstanding.isOutstanding": true, "outstanding.date": req.query.date, "outstanding.description": req.query.description } },
+    {
+      new: true
+    },
+    (err, doc) => {
+      if (err) return res.json({ success: false, err });
+      res.status(200).json({ success: true, doc });
+    }
+  );
+});
+
+
+app.post("/api/researchers/add_new_researchers", auth, admin, (req, res) => {
+  let items = req.query.id;
+
+  let ids = req.query.id.split(",");
+  items = [];
+  items = ids.map(item => {
+    return mongoose.Types.ObjectId(item);
+  });
+
+
+
+  User.updateMany(
+    {
+      _id: { $in: items }
+    },
+    { $set: { "newResearcher.isNewResearcher": true, "newResearcher.date": req.query.date, "newResearcher.description": req.query.description } },
+    {
+      new: true
+    },
+    (err, doc) => {
+      if (err) return res.json({ success: false, err });
+      res.status(200).json({ success: true, doc });
+    }
+  );
+});
+
+app.post("/api/researchers/remove_outstanding_researchers", auth, admin, (req, res) => {
+  let items = req.query.id;
+
+  let ids = req.query.id.split(",");
+  items = [];
+  items = ids.map(item => {
+    return mongoose.Types.ObjectId(item);
+  });
+
+
+
+  User.updateMany(
+    {
+      _id: { $in: items }
+    },
+    { $set: { "outstanding.isOutstanding": false, "outstanding.date": null, "outstanding.description": null} },
+    {
+      new: true
+    },
+    (err, doc) => {
+      if (err) return res.json({ success: false, err });
+      res.status(200).json({ success: true, doc });
+    }
+  );
+});
+
+app.post("/api/researchers/remove_new_researchers", auth, admin, (req, res) => {
+  let items = req.query.id;
+
+  let ids = req.query.id.split(",");
+  items = [];
+  items = ids.map(item => {
+    return mongoose.Types.ObjectId(item);
+  });
+
+
+
+  User.updateMany(
+    {
+      _id: { $in: items }
+    },
+    { $set: { "newResearcher.isNewResearcher": false, "newResearcher.date": null, "newResearcher.description": null} },
     {
       new: true
     },
