@@ -75,3 +75,12 @@ export const GET_REQUEST_USER_COUNT = "get_request_user_count"
 export const CONFIRM_USER = "confirm_user"
 export const CANCEL_USER = "cancel_user"
 export const DELETE_USER = "delete_user"
+
+export const GET_OUTSTANDING_RESEARCHER = "get_outstanding_researcher"
+export const GET_NOT_OUTSTANDING_RESEARCHER = "get_not_outstanding_researcher"
+export const GET_NEW_RESEARCHER = "get_new_researcher"
+export const ADD_OUTSTANDING_RESEARCHER = "add_outstanding_researcher"
+export const REMOVE_OUTSTANDING_RESEARCHER = "remove_outstanding_researcher"
+export const ADD_NEW_RESEARCHER = "add_new_researcher"
+export const REMOVE_NEW_RESEARCHER = "remove_new_researcher"
+

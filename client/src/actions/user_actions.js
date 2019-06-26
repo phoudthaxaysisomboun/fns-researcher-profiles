@@ -46,13 +46,24 @@ import {
   REMOVE_RESEARCHERS,
   GET_DEGRESS,
   GET_REQUEST_USER,
-CONFIRM_USER,
-DELETE_USER,
-GET_REQUEST_USER_COUNT,
-CANCEL_USER
+  CONFIRM_USER,
+  DELETE_USER,
+  GET_REQUEST_USER_COUNT,
+  CANCEL_USER,
+  GET_OUTSTANDING_RESEARCHER,
+  GET_NEW_RESEARCHER,
+  ADD_OUTSTANDING_RESEARCHER,
+  REMOVE_OUTSTANDING_RESEARCHER,
+  ADD_NEW_RESEARCHER,
+  REMOVE_NEW_RESEARCHER,
+  GET_NOT_OUTSTANDING_RESEARCHER
 } from "./types";
 
-import { USER_SERVER, RESEARCHER_SERVER, RESEARCHER_PROFILES_SERVER } from "../components/utils/misc";
+import {
+  USER_SERVER,
+  RESEARCHER_SERVER,
+  RESEARCHER_PROFILES_SERVER
+} from "../components/utils/misc";
 
 export function loginUser(dataToSubmit) {
   const request = axios
@@ -315,9 +326,7 @@ export function updateWebsite(_id, website) {
 
 export function updateGender(_id, gender) {
   const request = axios
-    .post(
-      `${RESEARCHER_SERVER}/update_gender?userId=${_id}&gender=${gender}`
-    )
+    .post(`${RESEARCHER_SERVER}/update_gender?userId=${_id}&gender=${gender}`)
     .then(response => response.data);
 
   return {
@@ -327,7 +336,9 @@ export function updateGender(_id, gender) {
 }
 
 export function updateAddress(_id, village, district, province) {
-  console.log(`${RESEARCHER_SERVER}/update_address?userId=${_id}&village=${village}&district=${district}&province=${province}`)
+  console.log(
+    `${RESEARCHER_SERVER}/update_address?userId=${_id}&village=${village}&district=${district}&province=${province}`
+  );
   const request = axios
     .post(
       `${RESEARCHER_SERVER}/update_address?userId=${_id}&village=${village}&district=${district}&province=${province}`
@@ -377,10 +388,17 @@ export function updatePlaceOfBirth(_id, village, district, province, country) {
     type: UPDATE_USER_PLACE_OF_BIRTH,
     payload: request
   };
-
 }
-export function addEducation(userId, institution, fieldOfStudy, degree, start, end, city, country) {
-
+export function addEducation(
+  userId,
+  institution,
+  fieldOfStudy,
+  degree,
+  start,
+  end,
+  city,
+  country
+) {
   const request = axios
     .post(
       `${RESEARCHER_SERVER}/addEducation?userId=${userId}&institution=${institution}&fieldOfStudy=${fieldOfStudy}&degree=${degree}&start=${start}&end=${end}&city=${city}&country=${country}`
@@ -393,8 +411,17 @@ export function addEducation(userId, institution, fieldOfStudy, degree, start, e
   };
 }
 
-export function editEducation(userId, institution, fieldOfStudy, degree, start, end, city, country, id) {
-
+export function editEducation(
+  userId,
+  institution,
+  fieldOfStudy,
+  degree,
+  start,
+  end,
+  city,
+  country,
+  id
+) {
   const request = axios
     .post(
       `${RESEARCHER_SERVER}/updateEducation?userId=${userId}&institution=${institution}&fieldOfStudy=${fieldOfStudy}&degree=${degree}&start=${start}&end=${end}&city=${city}&country=${country}&id=${id}`
@@ -408,13 +435,10 @@ export function editEducation(userId, institution, fieldOfStudy, degree, start, 
 }
 
 export function removeEducation(userId, id) {
-
   const request = axios
-    .post(
-      `${RESEARCHER_SERVER}/removeEducation?userId=${userId}&id=${id}`
-    )
+    .post(`${RESEARCHER_SERVER}/removeEducation?userId=${userId}&id=${id}`)
     .then(response => response.data);
-console.log(`${RESEARCHER_SERVER}/removeEducation?userId=${userId}&id=${id}`)
+  console.log(`${RESEARCHER_SERVER}/removeEducation?userId=${userId}&id=${id}`);
   return {
     type: REMOVE_EDUCATION,
     payload: request
@@ -449,11 +473,9 @@ export function updateMinorEthnicity(_id, minor_ethnicity) {
 }
 
 export function getProvince() {
-  console.log(`${USER_SERVER}/provinces`)
+  console.log(`${USER_SERVER}/provinces`);
   const request = axios
-    .get(
-      `${USER_SERVER}/provinces`
-    )
+    .get(`${USER_SERVER}/provinces`)
     .then(response => response.data);
 
   return {
@@ -463,11 +485,9 @@ export function getProvince() {
 }
 
 export function getDistrict(provinceId) {
-  console.log(`${USER_SERVER}/districts_by_province?province=${provinceId}`)
+  console.log(`${USER_SERVER}/districts_by_province?province=${provinceId}`);
   const request = axios
-    .get(
-      `${USER_SERVER}/districts_by_province?province=${provinceId}`
-    )
+    .get(`${USER_SERVER}/districts_by_province?province=${provinceId}`)
     .then(response => response.data);
 
   return {
@@ -478,12 +498,10 @@ export function getDistrict(provinceId) {
 
 export function getCountry() {
   const request = axios
-    .get(
-      `${USER_SERVER}/countries`
-    )
+    .get(`${USER_SERVER}/countries`)
     .then(response => response.data);
-    
-    console.log( `${USER_SERVER}/countries`)
+
+  console.log(`${USER_SERVER}/countries`);
 
   return {
     type: GET_COUNTRY,
@@ -492,11 +510,8 @@ export function getCountry() {
 }
 
 export function getProfileAndResearchCount() {
-
   const request = axios
-    .get(
-      `${RESEARCHER_PROFILES_SERVER}/count`
-    )
+    .get(`${RESEARCHER_PROFILES_SERVER}/count`)
     .then(response => response.data);
   return {
     type: GET_PROFILE_RESEARCH_COUNT,
@@ -505,11 +520,8 @@ export function getProfileAndResearchCount() {
 }
 
 export function searchProfiles(search) {
-
   const request = axios
-    .post(
-      `${RESEARCHER_SERVER}/search?search=${search}`
-    )
+    .post(`${RESEARCHER_SERVER}/search?search=${search}`)
     .then(response => response.data);
   return {
     type: SEARCH_PROFILES,
@@ -524,9 +536,8 @@ export function clearSearchProfiles() {
   };
 }
 
-
 export function like(_id) {
-  console.log(`${RESEARCHER_SERVER}/like?researchId=${_id}`)
+  console.log(`${RESEARCHER_SERVER}/like?researchId=${_id}`);
   const request = axios
     .post(`${RESEARCHER_SERVER}/like?researchId=${_id}`)
     .then(response => response.data);
@@ -538,7 +549,7 @@ export function like(_id) {
 }
 
 export function unlike(_id) {
-  console.log(`${RESEARCHER_SERVER}/unlike?researchId=${_id}`)
+  console.log(`${RESEARCHER_SERVER}/unlike?researchId=${_id}`);
   const request = axios
     .post(`${RESEARCHER_SERVER}/unlike?researchId=${_id}`)
     .then(response => response.data);
@@ -552,7 +563,7 @@ export function unlike(_id) {
 export function clearLike() {
   return {
     type: CLEAR_LIKES_USER,
-    payload: ''
+    payload: ""
   };
 }
 
@@ -571,9 +582,41 @@ export function getRequestUser() {
   const request = axios
     .post(`${USER_SERVER}/register_requests`)
     .then(response => response.data);
-    console.log(request)
+  console.log(request);
   return {
     type: GET_REQUEST_USER,
+    payload: request
+  };
+}
+
+export function getOutstandingResearcher() {
+  const request = axios
+    .get(`${RESEARCHER_SERVER}/outstanding_researchers`)
+    .then(response => response.data);
+  console.log(request);
+  return {
+    type: GET_OUTSTANDING_RESEARCHER,
+    payload: request
+  };
+}
+export function getNotOutstandingResearcher() {
+  const request = axios
+    .get(`${RESEARCHER_SERVER}/not_outstanding_researchers`)
+    .then(response => response.data);
+  console.log(request);
+  return {
+    type: GET_NOT_OUTSTANDING_RESEARCHER,
+    payload: request
+  };
+}
+
+export function getNewResearcher() {
+  const request = axios
+    .get(`${RESEARCHER_SERVER}/new_researchers`)
+    .then(response => response.data);
+  console.log(request);
+  return {
+    type: GET_NEW_RESEARCHER,
     payload: request
   };
 }
@@ -608,11 +651,50 @@ export function removeUser(id) {
   };
 }
 
-export function clearAllResearchers() {
+export function addNewcomerResearcher(id) {
+  const request = axios
+    .post(`${RESEARCHER_SERVER}/add_new_researchers?id=${id}`)
+    .then(response => response.data);
+  return {
+    type: ADD_NEW_RESEARCHER,
+    payload: request
+  };
+}
 
+export function addOutstandingResearcher(id) {
+  const request = axios
+    .post(`${RESEARCHER_SERVER}/add_outstanding_researchers?id=${id}`)
+    .then(response => response.data);
+  return {
+    type: ADD_OUTSTANDING_RESEARCHER,
+    payload: request
+  };
+}
+
+
+export function removeOutstandingResearcher(id) {
+  const request = axios
+    .post(`${RESEARCHER_SERVER}/remove_outstanding_researchers?id=${id}`)
+    .then(response => response.data);
+  return {
+    type: REMOVE_OUTSTANDING_RESEARCHER,
+    payload: request
+  };
+}
+export function removeNewcomerResearcher(id) {
+  const request = axios
+    .post(`${RESEARCHER_SERVER}/remove_new_researchers?id=${id}`)
+    .then(response => response.data);
+  return {
+    type: REMOVE_NEW_RESEARCHER,
+    payload: request
+  };
+}
+
+export function clearAllResearchers() {
   return {
     type: CLEAR_ALL_RESEARCHERS,
-    payload: ''
+    payload: ""
   };
 }
 
@@ -627,7 +709,6 @@ export function removeResearchers(id) {
     payload: request
   };
 }
-
 
 export function cancelUsers(id) {
   // console.log(`${RESEARCHER_SERVER}/like?researchId=${_id}`)

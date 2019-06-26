@@ -5,11 +5,11 @@ import { withStyles } from "@material-ui/core/styles";
 
 import { Link, withRouter } from "react-router-dom";
 
+import AddOutstandingResearcherDialog from "../Admin/Dialog/add_outstanding_reseacher";
+
 import moment from "moment";
 
 import ManageUserHeader from "../../../hoc/manage_user_header";
-
-import AddUserDialog from "../Admin/Dialog/add_user";
 
 import { connect } from "react-redux";
 
@@ -50,10 +50,9 @@ import {
 import { lighten } from "@material-ui/core/styles/colorManipulator";
 
 import {
-  getRequestUser,
-  confirmUser,
-  removeUser,
-  cancelUsers
+  getOutstandingResearcher,
+  addOutstandingResearcher,
+  removeOutstandingResearcher
 } from "../../../actions/user_actions";
 // function createData(name, calories, fat, carbs, protein) {
 //   counter += 1;
@@ -88,29 +87,17 @@ function getSorting(order, orderBy) {
 
 const rows = [
   {
-    id: "email",
-    numeric: false,
-    disablePadding: false,
-    label: "ອີເມລ"
-  },
-  {
     id: "name",
     numeric: false,
     disablePadding: false,
     label: "ຊື່ ແລະ ນາມສະກຸນ"
   },
-  { id: "gender.name", numeric: false, disablePadding: false, label: "ເພດ" },
+
   {
     id: "affiliation.department.name",
     numeric: false,
     disablePadding: false,
     label: "ພາກວິຊາ"
-  },
-  {
-    id: "dateOfBirth",
-    numeric: false,
-    disablePadding: false,
-    label: "ວ.ດ.ປ ເກີດ"
   },
   {
     id: "degree.name",
@@ -119,10 +106,16 @@ const rows = [
     label: "ວຸດທິການສຶກສາ"
   },
   {
-    id: "createdAt",
+    id: "outstanding.date",
     numeric: false,
     disablePadding: false,
-    label: "ວັນສະຫມັກ"
+    label: "ວັນໄດ້ຮັບ"
+  },
+  {
+    id: "outstanding.description",
+    numeric: false,
+    disablePadding: false,
+    label: "ລາຍລະອຽດ"
   }
 ];
 
@@ -235,9 +228,8 @@ let EnhancedTableToolbar = props => {
     numSelected,
     classes,
     openDeleteDialog,
-    requestCount,
-    handleCancelUser,
-    handleConfirmUser
+    outstanding,
+    openAddResearcherDialog
   } = props;
 
   // <Toolbar
@@ -279,7 +271,7 @@ let EnhancedTableToolbar = props => {
                 }}
                 id="tableTitle"
               >
-                ຜູ້ຮ້ອງຂໍສະຫມັກສະມາຊິກ{" "}
+                ນັກຄົ້ນຄວ້າດີເດັ່ນ{" "}
                 <div
                   style={{
                     fontWeight: "normal",
@@ -289,7 +281,7 @@ let EnhancedTableToolbar = props => {
                     fontSize: "16px"
                   }}
                 >
-                  {requestCount}
+                  {outstanding}
                 </div>
               </Typography>
             )}
@@ -299,42 +291,43 @@ let EnhancedTableToolbar = props => {
           <div className={classes.actions}>
             {numSelected > 0 ? (
               <>
-              <Tooltip title="ຍົກເລີກການສະຫມັກ">
-                <IconButton
-                onClick={() => {
-                  handleCancelUser();
-                }}
-                  style={{ marginRight: "0px" }}
-                >
-                  <CloseOutlined />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="ລຶບ">
-                <IconButton
-                  onClick={() => {
-                    openDeleteDialog();
-                  }}
-                  style={{ marginRight: "8px" }}
-                >
-                  <DeleteOutline />
-                </IconButton>
-              </Tooltip>
-              <Button variant="contained" color="primary" onClick={() => {
-                handleConfirmUser();
-              }} style={{ marginRight: "16px" }}>
-              ຢືນຢັນ
-              </Button>
+                {numSelected > 1 ? null : (
+                  <Tooltip title="ແກ້ໄຂ">
+                    <IconButton style={{ marginRight: "0px" }}>
+                      <EditOutlined />
+                    </IconButton>
+                  </Tooltip>
+                )}
+                <Tooltip title="ລຶບ">
+                  <IconButton
+                    onClick={() => {
+                      openDeleteDialog();
+                    }}
+                    style={{ marginRight: "16px" }}
+                  >
+                    <DeleteOutline />
+                  </IconButton>
+                </Tooltip>
               </>
             ) : (
               <>
                 <Tooltip title="Filter list">
                   <IconButton
                     aria-label="Filter list"
-                    style={{ marginRight: "0px" }}
+                    style={{ marginRight: "8px" }}
                   >
                     <FilterListOutlined />
                   </IconButton>
                 </Tooltip>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => {
+                    openAddResearcherDialog()
+                  }}
+                >
+                  ເພີ່ມ
+                </Button>
               </>
             )}
           </div>
@@ -443,10 +436,11 @@ class OutstandingResearchersAdmin extends React.Component {
   componentDidMount() {}
 
   componentWillMount() {
-    document.title = "ເຄຶ່ອງມືຈັດການນັກຄົ້ນຄວ້າ(ນັກຄົ້ນຄວ້າ)-FNS Researcher Profiles"
-    this.props.dispatch(getRequestUser()).then(response => {
+    document.title =
+      "ເຄຶ່ອງມືຈັດການນັກຄົ້ນຄວ້າ (ນັກຄົ້ນຄວ້າດີເດັ່ນ)-FNS Researcher Profiles";
+    this.props.dispatch(getOutstandingResearcher()).then(response => {
       this.setState({
-        data: this.props.user.userRegisterationRequest
+        data: this.props.user.outstandingResearcher
       });
     });
   }
@@ -463,21 +457,21 @@ class OutstandingResearchersAdmin extends React.Component {
     });
   }
 
-  handleDeleteResearchConfirmationClose() {
+  handleRemoveOutstandingConfirmationClose() {
     this.setState({
       openDeleteConfirmationDialog: false
     });
   }
 
-  handleUserDeletetion = () => {
+  handleRemoveOutstandingResearcher = () => {
     this.props
-      .dispatch(removeUser(this.state.selected))
+      .dispatch(removeOutstandingResearcher(this.state.selected))
       .then(response => {
         console.log(response.payload.success);
         if (response.payload.success) {
-          this.props.dispatch(getRequestUser()).then(response => {
+          this.props.dispatch(getOutstandingResearcher()).then(response => {
             this.setState({
-              data: this.props.user.userRegisterationRequest,
+              data: this.props.user.outstandingResearcher,
               openDeleteConfirmationDialog: false,
               selected: []
             });
@@ -486,34 +480,17 @@ class OutstandingResearchersAdmin extends React.Component {
       });
   };
 
-  handleConfirmUser = () => {
+  handleAddOutstandingResearcher = () => {
     this.props
-      .dispatch(confirmUser(this.state.selected))
+      .dispatch(addOutstandingResearcher(this.state.selected))
       .then(response => {
         console.log(response.payload.success);
         if (response.payload.success) {
-          this.props.dispatch(getRequestUser()).then(response => {
+          this.props.dispatch(getOutstandingResearcher()).then(response => {
             this.setState({
-              data: this.props.user.userRegisterationRequest,
-              openDeleteConfirmationDialog: false,
-              selected: []
-            });
-          });
-        }
-      });
-  };
-
-  handleCancelUser = () => {
-    this.props
-      .dispatch(confirmUser(this.state.selected))
-      .then(response => {
-        console.log(response.payload.success);
-        if (response.payload.success) {
-          this.props.dispatch(getRequestUser()).then(response => {
-            this.setState({
-              data: this.props.user.userRegisterationRequest,
-              openDeleteConfirmationDialog: false,
-              selected: []
+              data: this.props.user.outstandingResearcher
+              // openDeleteConfirmationDialog: false,
+              // selected: []
             });
           });
         }
@@ -543,7 +520,7 @@ class OutstandingResearchersAdmin extends React.Component {
             <Grid item xs sm lg md />
 
             <Grid item xs={11} sm={11} lg={11} md={11}>
-              {this.props.user.userRegisterationRequest ? (
+              {this.props.user.outstandingResearcher ? (
                 <>
                   <EnhancedTableToolbar
                     numSelected={selected.length}
@@ -551,15 +528,15 @@ class OutstandingResearchersAdmin extends React.Component {
                     openDeleteDialog={() => {
                       this.handleOpenDeleteConfirmationDialog();
                     }}
-                    handleConfirmUser={() => {
-                      this.handleConfirmUser();
+                    handleAddOutstanding={() => {
+                      this.handleAddOutstandingResearcher();
                     }}
-                    handleCancelUser={() => {
-                      this.handleCancelUser();
+                    openAddResearcherDialog={() => {
+                      this.handleOpenAddUserDialog();
                     }}
-                    requestCount={
-                      this.props.user.userRegisterationCount
-                        ? `(${this.props.user.userRegisterationCount})`
+                    outstanding={
+                      this.props.user.outstandingResearcherCount
+                        ? `(${this.props.user.outstandingResearcherCount})`
                         : null
                     }
                   />
@@ -571,167 +548,143 @@ class OutstandingResearchersAdmin extends React.Component {
                       borderRadius: 0
                     }}
                   >
-                  {
-                    this.props.user.userRegisterationCount > 0 ?
-                    <>
-                    
-                    <div className={classes.tableWrapper}>
-                      <Table
-                        className={classes.table}
-                        aria-labelledby="tableTitle"
-                      >
-                        <EnhancedTableHead
-                          numSelected={selected.length}
-                          order={order}
-                          orderBy={orderBy}
-                          onSelectAllClick={this.handleSelectAllClick}
-                          onRequestSort={this.handleRequestSort}
-                          rowCount={data.length}
-                        />
-                        <TableBody>
-                          {stableSort(data, getSorting(order, orderBy))
-                            .slice(
-                              page * rowsPerPage,
-                              page * rowsPerPage + rowsPerPage
-                            )
-                            .map(n => {
-                              const isSelected = this.isSelected(n._id);
-                              return (
-                                <TableRow
-                                  hover
-                                  role="checkbox"
-                                  aria-checked={isSelected}
-                                  tabIndex={-1}
-                                  key={n.id}
-                                  selected={isSelected}
-                                  onClick={event =>
-                                    this.handleClick(event, n._id)
-                                  }
-                                >
-                                
-                                  <TableCell padding="checkbox">
-                                    <Checkbox
-                                      color="primary"
-                                      checked={isSelected}
+                    {this.props.user.userRegisterationCount > 0 ? (
+                      <>
+                        <div className={classes.tableWrapper}>
+                          <Table
+                            className={classes.table}
+                            aria-labelledby="tableTitle"
+                          >
+                            <EnhancedTableHead
+                              numSelected={selected.length}
+                              order={order}
+                              orderBy={orderBy}
+                              onSelectAllClick={this.handleSelectAllClick}
+                              onRequestSort={this.handleRequestSort}
+                              rowCount={data.length}
+                            />
+                            <TableBody>
+                              {stableSort(data, getSorting(order, orderBy))
+                                .slice(
+                                  page * rowsPerPage,
+                                  page * rowsPerPage + rowsPerPage
+                                )
+                                .map(n => {
+                                  const isSelected = this.isSelected(n._id);
+                                  return (
+                                    <TableRow
+                                      hover
+                                      role="checkbox"
+                                      aria-checked={isSelected}
+                                      tabIndex={-1}
+                                      key={n.id}
+                                      selected={isSelected}
                                       onClick={event =>
                                         this.handleClick(event, n._id)
                                       }
-                                    />
-                                  </TableCell>
-                                  <TableCell
-                                    component="th"
-                                    scope="row"
-                                    padding="dense"
-                                  >
-                                    <Typography variant="inherit">
-                                      {`${n.email}`}
-                                      {
-                                        n.emailIsVerified ?
-                                        <>{" "}
-                                        <div
-                                          style={{
-                                            fontWeight: "normal",
-                                            display: "inline"
-                                          }}
-                                        >
-                                        <CheckCircleOutlineOutlined style={{padding: 0, position: "relative", top: '3px', color:"#388e3c", fontSize: "16px"}}/>
-                                        </div></> :
-                                        null
-                                      }
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell
-                                    component="th"
-                                    scope="row"
-                                    padding="dense"
-                                  >
-                                    <Typography variant="inherit">{`${
-                                      n.prefix
-                                    } ${n.name} ${n.lastname}`}</Typography>
-                                  </TableCell>
-                                  <TableCell
-                                    align="left"
-                                    component="th"
-                                    scope="row"
-                                    padding="dense"
-                                  >
-                                    <Typography variant="inherit">{`${
-                                      n["gender.name"]
-                                    }`}</Typography>{" "}
-                                  </TableCell>
+                                    >
+                                      <TableCell padding="checkbox">
+                                        <Checkbox
+                                          color="primary"
+                                          checked={isSelected}
+                                          onClick={event =>
+                                            this.handleClick(event, n._id)
+                                          }
+                                        />
+                                      </TableCell>
 
-                                  <TableCell
-                                    align="left"
-                                    component="th"
-                                    scope="row"
-                                    padding="dense"
-                                  >
-                                    {" "}
-                                    <Typography variant="inherit">{`${
-                                      n["affiliation.department.name"]
-                                    }`}</Typography>{" "}
-                                  </TableCell>
-                                  <TableCell align="left" padding="dense">
-                                    {moment(n.dateOfBirth).format("DD/MM/YYYY")}
-                                  </TableCell>
-                                  <TableCell padding="dense">
-                                    <Typography variant="inherit">
-                                      {n["degree.name"]
-                                        ? `${n["degree.name"]}`
-                                        : ""}
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell align="left" padding="dense">
-                                    {moment(n.createdAt).format("DD/MM/YYYY")}
-                                  </TableCell>
+                                      <TableCell
+                                        component="th"
+                                        scope="row"
+                                        padding="dense"
+                                      >
+                                        <Typography variant="inherit">{`${
+                                          n.prefix
+                                        } ${n.name} ${n.lastname}`}</Typography>
+                                      </TableCell>
+
+                                      <TableCell
+                                        align="left"
+                                        component="th"
+                                        scope="row"
+                                        padding="dense"
+                                      >
+                                        {" "}
+                                        <Typography variant="inherit">{`${
+                                          n["affiliation.department.name"]
+                                        }`}</Typography>{" "}
+                                      </TableCell>
+                                      <TableCell align="left" padding="dense">
+                                        <Typography variant="inherit">{`${
+                                          n["degree.name"]
+                                        }`}</Typography>
+                                      </TableCell>
+
+                                      <TableCell align="left" padding="dense">
+                                        {moment(n["outstanding.date"]).format(
+                                          "DD/MM/YYYY"
+                                        )}
+                                      </TableCell>
+                                      <TableCell padding="dense">
+                                        <Typography variant="inherit">
+                                          {n["outstanding.description"]}
+                                        </Typography>
+                                      </TableCell>
+                                    </TableRow>
+                                  );
+                                })}
+                              {emptyRows > 0 && (
+                                <TableRow style={{ height: 49 * emptyRows }}>
+                                  <TableCell colSpan={6} />
                                 </TableRow>
-                              );
-                            })}
-                          {emptyRows > 0 && (
-                            <TableRow style={{ height: 49 * emptyRows }}>
-                              <TableCell colSpan={6} />
-                            </TableRow>
-                          )}
-                        </TableBody>
-                      </Table>
-                    </div>
-                    <TablePagination
-                      rowsPerPageOptions={[5, 10, 20]}
-                      component="div"
-                      count={data.length}
-                      rowsPerPage={rowsPerPage}
-                      page={page}
-                      backIconButtonProps={{
-                        "aria-label": "ຫນ້າກ່ອນຫນ້າ"
-                      }}
-                      nextIconButtonProps={{
-                        "aria-label": "ຫນ້າຕໍ່ໄປ"
-                      }}
-                      onChangePage={this.handleChangePage}
-                      onChangeRowsPerPage={this.handleChangeRowsPerPage}
-                      labelRowsPerPage="ແຖວຕໍ່ຫນ້າ"
-                      labelDisplayedRows={({ from, to, count }) =>
-                        `${from}-${to} ໃນ ${count}`
-                      }
-                    />
-                    </> : <>
-                    
-                    <Grid
-                    container
-                    alignContent="center"
-                    alignItems="center"
-                    justify="center"
-                    style={{marginTop: "16px"}}
-                  >
-                    <Grid item align="center">
-                      <Typography variant="inherit" style={{ padding: "24px", color: "rgba(0, 0, 0, 0.54)", fontSize: "0.75rem" }} >
-                      ບໍ່ມີຂໍ້ມູນ
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                    </>
-                  }
-                    
+                              )}
+                            </TableBody>
+                          </Table>
+                        </div>
+                        <TablePagination
+                          rowsPerPageOptions={[5, 10, 20]}
+                          component="div"
+                          count={data.length}
+                          rowsPerPage={rowsPerPage}
+                          page={page}
+                          backIconButtonProps={{
+                            "aria-label": "ຫນ້າກ່ອນຫນ້າ"
+                          }}
+                          nextIconButtonProps={{
+                            "aria-label": "ຫນ້າຕໍ່ໄປ"
+                          }}
+                          onChangePage={this.handleChangePage}
+                          onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                          labelRowsPerPage="ແຖວຕໍ່ຫນ້າ"
+                          labelDisplayedRows={({ from, to, count }) =>
+                            `${from}-${to} ໃນ ${count}`
+                          }
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <Grid
+                          container
+                          alignContent="center"
+                          alignItems="center"
+                          justify="center"
+                          style={{ marginTop: "16px" }}
+                        >
+                          <Grid item align="center">
+                            <Typography
+                              variant="inherit"
+                              style={{
+                                padding: "24px",
+                                color: "rgba(0, 0, 0, 0.54)",
+                                fontSize: "0.75rem"
+                              }}
+                            >
+                              ບໍ່ມີຂໍ້ມູນ
+                            </Typography>
+                          </Grid>
+                        </Grid>
+                      </>
+                    )}
                   </Paper>
                 </>
               ) : (
@@ -761,9 +714,11 @@ class OutstandingResearchersAdmin extends React.Component {
           </Grid>
         </ManageUserHeader>
 
+        <AddOutstandingResearcherDialog open={this.state.openAddUserDialog} close={()=>this.handleAddUserDialogClose()} />
+
         <Dialog
           open={this.state.openDeleteConfirmationDialog}
-          onClose={() => this.handleDeleteResearchConfirmationClose()}
+          onClose={() => this.handleRemoveOutstandingConfirmationClose()}
           maxWidth="xs"
         >
           <DialogTitle style={{ fontFamily: "'Noto Sans Lao UI', sans serif" }}>
@@ -773,19 +728,19 @@ class OutstandingResearchersAdmin extends React.Component {
             <DialogContentText
               style={{ fontFamily: "'Noto Sans Lao UI', sans serif" }}
             >
-              ທ່ານກໍາລັງຈະລຶບຂໍ້ມູນຜູ້ສະຫມັກນີ້.
+              ທ່ານກໍາລັງຈະເອົານັກຄົ້ນຄວ້າດັ່ງກ່າວນີ້ອອກຈາລາຍຊື່ນັກຄົ້ນຄວ້າດີເດັ່ນ.
               ທ່ານແນ່ໃຈຫລືບໍ່ວ່າຈະລຶບຂໍ້ມູນດັ່ງກ່າວ?
               ການກະທໍາຕໍ່ໄປນີ້ບໍ່ສາມາດແກ້ໄຂໄດ້
             </DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button
-              onClick={() => this.handleDeleteResearchConfirmationClose()}
+              onClick={() => this.handleRemoveOutstandingConfirmationClose()}
             >
               ຍົກເລີກ
             </Button>
             <Button
-              onClick={this.handleUserDeletetion}
+              onClick={this.handleRemoveOutstandingResearcher}
               style={{ color: "#f44336" }}
               autoFocus
             >
@@ -793,7 +748,6 @@ class OutstandingResearchersAdmin extends React.Component {
             </Button>
           </DialogActions>
         </Dialog>
-
       </>
     );
   }

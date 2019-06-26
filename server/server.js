@@ -557,52 +557,78 @@ app.post("/api/researchers/researchers", auth, admin, (req, res) => {
   findArgs.active = true;
 
   User.find(findArgs)
-    // .select("_id")
     .populate("gender")
     .populate("degree")
     .populate("gender")
     .select("_id name lastname dateOfBirth prefix research degree affiliation")
-    // .populate({
-    //   path: "address.district"
-    // })
-    // .populate({
-    //   path: "address.province"
-    // })
-    // .populate({
-    //   path: "desipline.maindesipline"
-    // })
-    // .populate({
-    //   path: "desipline.subdesipline.item"
-    // })
-    // .populate({
-    //   path: "affiliation.institution"
-    // })
     .populate({
       path: "affiliation.department"
     })
-    // .populate({
-    //   path: "affiliation.faculty"
-    // })
-    // .populate({
-    //   path: "placeOfBirth.country"
-    // })
-    // .populate({
-    //   path: "education.country"
-    // })
-    // .populate({
-    //   path: "teachingExperience.country"
-    // })
-    // .populate({
-    //   path: "researchExperience.country"
-    // })
-    // .populate({
-    //   path: "education",
-    //   options: { sort: { city: 1 } }
-    // })
     .exec((err, result) => {
       return res.status(200).send(result);
     });
 });
+
+app.get(
+  "/api/researchers/not_outstanding_researchers",
+  auth,
+  admin,
+  (req, res) => {
+    let order = req.query.order ? req.query.order : "asc";
+    let sortBy = req.query.sortBy ? req.query.sortBy : "name";
+    let limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 6;
+    let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0;
+    let findArgs = {};
+
+    for (let key in req.body.filters) {
+      if (req.body.filters[key].length > 0) {
+        findArgs[key] = req.body.filters[key];
+      }
+    }
+
+    findArgs.emailIsVerified = true;
+    findArgs.accountIsVerified = true;
+    findArgs.active = true;
+
+    findArgs["outstanding.isOutstanding"] = true;
+
+    User.find({
+      emailIsVerified: true,
+      accountIsVerified: true,
+      active: true,
+      "outstanding.isOutstanding": true
+    })
+      .select("_id")
+      .exec((err, result) => {
+        let _ids = result.map((value, index, array) => {
+          return value["_id"];
+        });
+
+        User.find({
+          _id: { $nin: _ids },
+          emailIsVerified: true,
+          accountIsVerified: true,
+          active: true
+        })
+
+          .populate("gender")
+          .populate("degree")
+          .populate("gender")
+          .select(
+            "_id name lastname dateOfBirth prefix research degree affiliation outstanding"
+          )
+          .populate({
+            path: "affiliation.department"
+          })
+          .exec((err, result) => {
+            return res.status(200).json({
+              notOutstandingResearcher: result,
+              size: result.length
+            });
+          });
+      });
+  }
+);
 
 app.post("/api/users/register_requests", auth, admin, (req, res) => {
   let order = req.query.order ? req.query.order : "asc";
@@ -619,13 +645,14 @@ app.post("/api/users/register_requests", auth, admin, (req, res) => {
 
   findArgs.accountIsVerified = false;
   findArgs.canceledRegisteration = false;
-  
 
   User.find(findArgs)
     .populate("gender")
     .populate("degree")
     .populate("gender")
-    .select("_id name lastname dateOfBirth prefix research degree affiliation email createdAt emailIsVerified")
+    .select(
+      "_id name lastname dateOfBirth prefix research degree affiliation email createdAt emailIsVerified"
+    )
     .populate({
       path: "affiliation.department"
     })
@@ -636,7 +663,6 @@ app.post("/api/users/register_requests", auth, admin, (req, res) => {
       });
     });
 });
-
 
 app.get("/api/researchers/outstanding_researchers", auth, admin, (req, res) => {
   let order = req.query.order ? req.query.order : "asc";
@@ -655,14 +681,15 @@ app.get("/api/researchers/outstanding_researchers", auth, admin, (req, res) => {
   findArgs.accountIsVerified = true;
   findArgs.active = true;
 
-
-  findArgs["outstanding.isOutstanding"] = true
+  findArgs["outstanding.isOutstanding"] = true;
 
   User.find(findArgs)
     .populate("gender")
     .populate("degree")
     .populate("gender")
-    .select("_id name lastname dateOfBirth prefix research degree affiliation outstanding")
+    .select(
+      "_id name lastname dateOfBirth prefix research degree affiliation outstanding"
+    )
     .populate({
       path: "affiliation.department"
     })
@@ -673,10 +700,6 @@ app.get("/api/researchers/outstanding_researchers", auth, admin, (req, res) => {
       });
     });
 });
-
-
-
-
 
 app.get("/api/researchers/new_researchers", auth, admin, (req, res) => {
   let order = req.query.order ? req.query.order : "asc";
@@ -695,14 +718,15 @@ app.get("/api/researchers/new_researchers", auth, admin, (req, res) => {
   findArgs.accountIsVerified = true;
   findArgs.active = true;
 
-
-  findArgs["newResearcher.isNewResearcher"] = true
+  findArgs["newResearcher.isNewResearcher"] = true;
 
   User.find(findArgs)
     .populate("gender")
     .populate("degree")
     .populate("gender")
-    .select("_id name lastname dateOfBirth prefix research degree affiliation newResearcher")
+    .select(
+      "_id name lastname dateOfBirth prefix research degree affiliation newResearcher"
+    )
     .populate({
       path: "affiliation.department"
     })
@@ -713,12 +737,6 @@ app.get("/api/researchers/new_researchers", auth, admin, (req, res) => {
       });
     });
 });
-
-
-
-
-
-
 
 app.get("/api/users/register_requests_count", auth, admin, (req, res) => {
   let findArgs = {};
@@ -732,12 +750,11 @@ app.get("/api/users/register_requests_count", auth, admin, (req, res) => {
   findArgs.accountIsVerified = false;
   findArgs.canceledRegisteration = false;
 
-  User.find(findArgs)
-    .exec((err, result) => {
-      return res.status(200).json({
-        size: result.length
-      });
+  User.find(findArgs).exec((err, result) => {
+    return res.status(200).json({
+      size: result.length
     });
+  });
 });
 
 app.post("/api/users/accept_registers", auth, admin, (req, res) => {
@@ -764,32 +781,40 @@ app.post("/api/users/accept_registers", auth, admin, (req, res) => {
   );
 });
 
-app.post("/api/researchers/add_outstanding_researchers", auth, admin, (req, res) => {
-  let items = req.query.id;
+app.post(
+  "/api/researchers/add_outstanding_researchers",
+  auth,
+  admin,
+  (req, res) => {
+    let items = req.query.id;
 
-  let ids = req.query.id.split(",");
-  items = [];
-  items = ids.map(item => {
-    return mongoose.Types.ObjectId(item);
-  });
+    let ids = req.query.id.split(",");
+    items = [];
+    items = ids.map(item => {
+      return mongoose.Types.ObjectId(item);
+    });
 
-
-
-  User.updateMany(
-    {
-      _id: { $in: items }
-    },
-    { $set: { "outstanding.isOutstanding": true, "outstanding.date": req.query.date, "outstanding.description": req.query.description } },
-    {
-      new: true
-    },
-    (err, doc) => {
-      if (err) return res.json({ success: false, err });
-      res.status(200).json({ success: true, doc });
-    }
-  );
-});
-
+    User.updateMany(
+      {
+        _id: { $in: items }
+      },
+      {
+        $set: {
+          "outstanding.isOutstanding": true,
+          "outstanding.date": req.query.date,
+          "outstanding.description": req.query.description
+        }
+      },
+      {
+        new: true
+      },
+      (err, doc) => {
+        if (err) return res.json({ success: false, err });
+        res.status(200).json({ success: true, doc });
+      }
+    );
+  }
+);
 
 app.post("/api/researchers/add_new_researchers", auth, admin, (req, res) => {
   let items = req.query.id;
@@ -800,13 +825,17 @@ app.post("/api/researchers/add_new_researchers", auth, admin, (req, res) => {
     return mongoose.Types.ObjectId(item);
   });
 
-
-
   User.updateMany(
     {
       _id: { $in: items }
     },
-    { $set: { "newResearcher.isNewResearcher": true, "newResearcher.date": req.query.date, "newResearcher.description": req.query.description } },
+    {
+      $set: {
+        "newResearcher.isNewResearcher": true,
+        "newResearcher.date": req.query.date,
+        "newResearcher.description": req.query.description
+      }
+    },
     {
       new: true
     },
@@ -817,31 +846,40 @@ app.post("/api/researchers/add_new_researchers", auth, admin, (req, res) => {
   );
 });
 
-app.post("/api/researchers/remove_outstanding_researchers", auth, admin, (req, res) => {
-  let items = req.query.id;
+app.post(
+  "/api/researchers/remove_outstanding_researchers",
+  auth,
+  admin,
+  (req, res) => {
+    let items = req.query.id;
 
-  let ids = req.query.id.split(",");
-  items = [];
-  items = ids.map(item => {
-    return mongoose.Types.ObjectId(item);
-  });
+    let ids = req.query.id.split(",");
+    items = [];
+    items = ids.map(item => {
+      return mongoose.Types.ObjectId(item);
+    });
 
-
-
-  User.updateMany(
-    {
-      _id: { $in: items }
-    },
-    { $set: { "outstanding.isOutstanding": false, "outstanding.date": null, "outstanding.description": null} },
-    {
-      new: true
-    },
-    (err, doc) => {
-      if (err) return res.json({ success: false, err });
-      res.status(200).json({ success: true, doc });
-    }
-  );
-});
+    User.updateMany(
+      {
+        _id: { $in: items }
+      },
+      {
+        $set: {
+          "outstanding.isOutstanding": false,
+          "outstanding.date": null,
+          "outstanding.description": null
+        }
+      },
+      {
+        new: true
+      },
+      (err, doc) => {
+        if (err) return res.json({ success: false, err });
+        res.status(200).json({ success: true, doc });
+      }
+    );
+  }
+);
 
 app.post("/api/researchers/remove_new_researchers", auth, admin, (req, res) => {
   let items = req.query.id;
@@ -852,13 +890,17 @@ app.post("/api/researchers/remove_new_researchers", auth, admin, (req, res) => {
     return mongoose.Types.ObjectId(item);
   });
 
-
-
   User.updateMany(
     {
       _id: { $in: items }
     },
-    { $set: { "newResearcher.isNewResearcher": false, "newResearcher.date": null, "newResearcher.description": null} },
+    {
+      $set: {
+        "newResearcher.isNewResearcher": false,
+        "newResearcher.date": null,
+        "newResearcher.description": null
+      }
+    },
     {
       new: true
     },
@@ -882,7 +924,14 @@ app.post("/api/users/cancel_registeration", auth, admin, (req, res) => {
     {
       _id: { $in: items }
     },
-    { $set: { canceledRegisteration: false, active: false, emailIsVerified: true, accountIsVerified: false } },
+    {
+      $set: {
+        canceledRegisteration: false,
+        active: false,
+        emailIsVerified: true,
+        accountIsVerified: false
+      }
+    },
     {
       new: true
     },

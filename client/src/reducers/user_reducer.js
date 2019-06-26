@@ -46,7 +46,15 @@ import {
   GET_REQUEST_USER,
   CONFIRM_USER,
   DELETE_USER,
-  GET_REQUEST_USER_COUNT, CANCEL_USER
+  GET_REQUEST_USER_COUNT,
+  CANCEL_USER,
+  GET_OUTSTANDING_RESEARCHER,
+  GET_NEW_RESEARCHER,
+  ADD_OUTSTANDING_RESEARCHER,
+  REMOVE_OUTSTANDING_RESEARCHER,
+  ADD_NEW_RESEARCHER,
+  REMOVE_NEW_RESEARCHER,
+  GET_NOT_OUTSTANDING_RESEARCHER
 } from "../actions/types";
 
 export default function(state = {}, action) {
@@ -60,7 +68,6 @@ export default function(state = {}, action) {
         var flatObject = flattenObject(ob[i]);
         for (var x in flatObject) {
           if (!flatObject.hasOwnProperty(x)) continue;
-
           toReturn[i + "." + x] = flatObject[x];
         }
       } else {
@@ -293,26 +300,6 @@ export default function(state = {}, action) {
         return o;
       });
 
-      // var flattenObject = function(ob) {
-      //   var toReturn = {};
-
-      //   for (var i in ob) {
-      //     if (!ob.hasOwnProperty(i)) continue;
-
-      //     if (typeof ob[i] == "object") {
-      //       var flatObject = flattenObject(ob[i]);
-      //       for (var x in flatObject) {
-      //         if (!flatObject.hasOwnProperty(x)) continue;
-
-      //         toReturn[i + "." + x] = flatObject[x];
-      //       }
-      //     } else {
-      //       toReturn[i] = ob[i];
-      //     }
-      //   }
-      //   return toReturn;
-      // };
-
       let data = result.map((value, index, array) => {
         return flattenObject(value);
       });
@@ -332,8 +319,38 @@ export default function(state = {}, action) {
         userRegisterationRequest: reqUser,
         userRegisterationCount: action.payload.size
       };
+    case GET_OUTSTANDING_RESEARCHER:
+      console.log(action.payload)
+      const outstanding = action.payload.outstandingResearcher;
+      let outstandingResearcher = outstanding.map(value => {
+        return flattenObject(value);
+      });
+      return {
+        ...state,
+        outstandingResearcher: outstandingResearcher,
+        outstandingResearcherCount: action.payload.size
+      };
+    case GET_NOT_OUTSTANDING_RESEARCHER:
+      const notOutstanding = action.payload.notOutstandingResearcher;
+      let notOutstandingResearcher = notOutstanding.map(value => {
+        return flattenObject(value);
+      });
+      return {
+        ...state,
+        notOutstandingResearcher: notOutstandingResearcher,
+        notOutstandingResearcherCount: action.payload.size
+      };
+    case GET_NEW_RESEARCHER:
+      const newcomer = action.payload.newResearcher;
+      let newResearcher = newcomer.map(value => {
+        return flattenObject(value);
+      });
+      return {
+        ...state,
+        newResearcher: newResearcher,
+        newResearcherCount: action.payload.size
+      };
     case GET_REQUEST_USER_COUNT:
-   
       return {
         ...state,
         userRegisterationCount: action.payload.size
@@ -347,6 +364,26 @@ export default function(state = {}, action) {
       return {
         ...state,
         removedResearchers: action.payload
+      };
+    case ADD_OUTSTANDING_RESEARCHER:
+      return {
+        ...state,
+        newOutstandingResearcher: action.payload
+      };
+    case ADD_NEW_RESEARCHER:
+      return {
+        ...state,
+        newlyNewResearcher: action.payload
+      };
+    case REMOVE_OUTSTANDING_RESEARCHER:
+      return {
+        ...state,
+        removedOutstandingResearcher: action.payload
+      };
+    case REMOVE_NEW_RESEARCHER:
+      return {
+        ...state,
+        removedNewResearcher: action.payload
       };
     case CONFIRM_USER:
       return {
