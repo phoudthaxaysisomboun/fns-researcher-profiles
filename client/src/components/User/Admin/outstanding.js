@@ -11,6 +11,15 @@ import moment from "moment";
 
 import ManageUserHeader from "../../../hoc/manage_user_header";
 
+import FormField from "../../utils/Form/formfield";
+
+import {
+  update,
+  generateData,
+  isFormValid,
+  populateOptionFields
+} from "../../utils/Form/formActions";
+
 import { connect } from "react-redux";
 
 import {
@@ -52,12 +61,9 @@ import { lighten } from "@material-ui/core/styles/colorManipulator";
 import {
   getOutstandingResearcher,
   addOutstandingResearcher,
-  removeOutstandingResearcher
+  removeOutstandingResearcher,
+  getNotOutstandingResearcher
 } from "../../../actions/user_actions";
-// function createData(name, calories, fat, carbs, protein) {
-//   counter += 1;
-//   return { id: counter, name, calories, fat, carbs, protein };
-// }
 
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -229,7 +235,9 @@ let EnhancedTableToolbar = props => {
     classes,
     openDeleteDialog,
     outstanding,
-    openAddResearcherDialog
+    openAddResearcherDialog,
+    openEditOutstandingDialog,
+    selected
   } = props;
 
   // <Toolbar
@@ -292,11 +300,22 @@ let EnhancedTableToolbar = props => {
             {numSelected > 0 ? (
               <>
                 {numSelected > 1 ? null : (
+                  <>
                   <Tooltip title="ແກ້ໄຂ">
                     <IconButton style={{ marginRight: "0px" }}>
-                      <EditOutlined />
+                      <EditOutlined onClick={() => {
+                        openEditOutstandingDialog();
+                      }}/>
                     </IconButton>
                   </Tooltip>
+                  <Tooltip title="ເບິ່ງ">
+                    <IconButton component={Link}
+                    to={`/profile/${selected[0]}`} style={{ marginRight: "0px" }}>
+                      <VisibilityOutlined />
+                    </IconButton>
+                  </Tooltip>
+                  
+                  </>
                 )}
                 <Tooltip title="ລຶບ">
                   <IconButton
@@ -323,7 +342,7 @@ let EnhancedTableToolbar = props => {
                   variant="contained"
                   color="primary"
                   onClick={() => {
-                    openAddResearcherDialog()
+                    openAddResearcherDialog();
                   }}
                 >
                   ເພີ່ມ
@@ -359,15 +378,68 @@ const styles = theme => ({
 class OutstandingResearchersAdmin extends React.Component {
   state = {
     order: "desc",
-    orderBy: "createdAt",
+    orderBy: "outstanding.date",
     selected: [],
     data: [],
     page: 0,
-    rowsPerPage: 5,
+    rowsPerPage: 10,
     openDeleteConfirmationDialog: false,
     tabNumber: 2,
-    openAddUserDialog: false
+    openAddUserDialog: false,
+    openEditOutstandingResearcherDialog: false,
+    formError: false,
+    formErrorMessage: "ມີບາງຂໍ້ມູນບໍ່ຖືກຕ້ອງກະລຸນາກວດສອບຂໍ້ມູນຄືນ",
+    formSuccess: false,
+    formdata: {
+      date: {
+        element: "date",
+        value: "",
+        config: {
+          label: "ວັນໄດ້ຮັບ",
+          name: "date_input",
+          type: "date",
+          autofocus: true
+        },
+        validation: {
+          required: true
+        },
+        valid: false,
+        touched: true,
+        validationMessage: ""
+      },
+      description: {
+        element: "input",
+        value: "",
+        config: {
+          name: "abstract_input",
+          type: "text",
+          label: "ຄໍາອະທິບາຍ",
+
+          placeholder: "",
+          multiline: true,
+          rows: 3
+        },
+        validation: {
+          required: false
+        },
+        valid: true,
+        touched: true,
+        validationMessage: ""
+      }
+    }
   };
+
+  handleOpenEditOutstandingResearcherDialog() {
+    this.setState({
+      openEditOutstandingResearcherDialog: true
+    })
+  }
+
+  handleCloseEditOutstandingResearcherDialog() {
+    this.setState({
+      openEditOutstandingResearcherDialog: false
+    })
+  }
 
   handleRequestSort = (event, property) => {
     const orderBy = property;
@@ -400,7 +472,7 @@ class OutstandingResearchersAdmin extends React.Component {
     this.setState({ selected: [] });
   };
 
-  handleClick = (event, id) => {
+  handleClick = (event, id, date, description) => {
     const { selected } = this.state;
     const selectedIndex = selected.indexOf(id);
     let newSelected = [];
@@ -420,7 +492,15 @@ class OutstandingResearchersAdmin extends React.Component {
 
     this.setState({ selected: newSelected });
 
-    console.log(this.state.selected);
+    const newFormdata = {
+      ...this.state.formdata
+    };
+    
+    newFormdata["date"].value = moment(date).format("YYYY-MM-DD");
+    newFormdata["description"].value = description ? description : "";
+    this.setState({ formdata: newFormdata });
+
+    console.log(this.state.formdata)
   };
 
   handleChangePage = (event, page) => {
@@ -449,7 +529,16 @@ class OutstandingResearchersAdmin extends React.Component {
     // this.props.dispatch(clearAllResearchers())
   }
 
-  componentDidUpdate(prevProps, prevState) {}
+  componentDidUpdate(prevProps, prevState) {
+    const prevOutstanding = prevProps.user.outstandingResearcher;
+    const currOutstanding = this.props.user.outstandingResearcher;
+
+    if (prevOutstanding !== currOutstanding) {
+      this.setState({
+        data: currOutstanding
+      });
+    }
+  }
 
   handleOpenDeleteConfirmationDialog() {
     this.setState({
@@ -475,6 +564,7 @@ class OutstandingResearchersAdmin extends React.Component {
               openDeleteConfirmationDialog: false,
               selected: []
             });
+            this.props.dispatch(getNotOutstandingResearcher());
           });
         }
       });
@@ -496,6 +586,77 @@ class OutstandingResearchersAdmin extends React.Component {
         }
       });
   };
+
+
+  updateForm = element => {
+    const newFormdata = update(element, this.state.formdata, "register");
+    this.setState({
+      formError: false,
+      formdata: newFormdata
+    });
+  };
+
+  submitForm = event => {
+    event.preventDefault();
+
+    let formIsValid = isFormValid(this.state.formdata, "outstandingResearcher");
+
+    if (this.state.formdata.date.value.trim() !== ""){
+      formIsValid = true
+    }
+
+    const myDate = moment(this.state.formdata.date.value).format("YYYY-MM-DD hh:mm:ss")
+    
+    if (
+      formIsValid
+    ) {
+
+      this.props
+        .dispatch(addOutstandingResearcher(this.state.selected, myDate, this.state.formdata.description.value))
+        .then(response => {
+          if (response.payload.success) {
+            this.setState({
+              formError: false,
+              formSuccess: true
+            });
+            this.setState({
+              openEditOutstandingResearcherDialog: false,
+            })
+
+            this.props.dispatch(getOutstandingResearcher()).then(response=>{
+              this.setState({
+                data: this.props.user.outstandingResearcher,
+                selected: []
+              })
+              this.props.dispatch(getNotOutstandingResearcher()).then(()=>{
+                
+              })
+            })
+
+            
+          } else {
+            console.log(response.payload);
+            this.setState({
+              formError: true,
+              formErrorMessage: "ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂເປັນນັກຄົ້ນຄວ້າດີເດັ່ນໄດ້"
+            });
+          }
+        })
+        .catch(e => {
+          this.setState({
+            formError: true,
+            formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂເປັນນັກຄົ້ນຄວ້າດີເດັ່ນໄດ້ (error: ${e})`
+          });
+        });
+    } else {
+      this.setState({
+        formError: true,
+        formErrorMessage: "ມີບາງຂໍ້ມູນບໍ່ຖືກຕ້ອງກະລຸນາກວດສອບຂໍ້ມູນຄືນ"
+      });
+    }
+  };
+
+
 
   render() {
     const { classes } = this.props;
@@ -533,6 +694,9 @@ class OutstandingResearchersAdmin extends React.Component {
                     }}
                     openAddResearcherDialog={() => {
                       this.handleOpenAddUserDialog();
+                    }}
+                    openEditOutstandingDialog={() => {
+                      this.handleOpenEditOutstandingResearcherDialog();
                     }}
                     outstanding={
                       this.props.user.outstandingResearcherCount
@@ -580,7 +744,7 @@ class OutstandingResearchersAdmin extends React.Component {
                                       key={n.id}
                                       selected={isSelected}
                                       onClick={event =>
-                                        this.handleClick(event, n._id)
+                                        this.handleClick(event, n._id, n["outstanding.date"], n["outstanding.description"])
                                       }
                                     >
                                       <TableCell padding="checkbox">
@@ -588,7 +752,7 @@ class OutstandingResearchersAdmin extends React.Component {
                                           color="primary"
                                           checked={isSelected}
                                           onClick={event =>
-                                            this.handleClick(event, n._id)
+                                            this.handleClick(event, n._id, n["outstanding.date"], n["outstanding.description"])
                                           }
                                         />
                                       </TableCell>
@@ -615,9 +779,11 @@ class OutstandingResearchersAdmin extends React.Component {
                                         }`}</Typography>{" "}
                                       </TableCell>
                                       <TableCell align="left" padding="dense">
-                                        <Typography variant="inherit">{`${
-                                          n["degree.name"]
-                                        }`}</Typography>
+                                        <Typography variant="inherit">
+                                          {n["degree.name"]
+                                            ? `${n["degree.name"]}`
+                                            : null}
+                                        </Typography>
                                       </TableCell>
 
                                       <TableCell align="left" padding="dense">
@@ -642,7 +808,7 @@ class OutstandingResearchersAdmin extends React.Component {
                           </Table>
                         </div>
                         <TablePagination
-                          rowsPerPageOptions={[5, 10, 20]}
+                          rowsPerPageOptions={[10, 15, 20]}
                           component="div"
                           count={data.length}
                           rowsPerPage={rowsPerPage}
@@ -714,7 +880,10 @@ class OutstandingResearchersAdmin extends React.Component {
           </Grid>
         </ManageUserHeader>
 
-        <AddOutstandingResearcherDialog open={this.state.openAddUserDialog} close={()=>this.handleAddUserDialogClose()} />
+        <AddOutstandingResearcherDialog
+          open={this.state.openAddUserDialog}
+          close={() => this.handleAddUserDialogClose()}
+        />
 
         <Dialog
           open={this.state.openDeleteConfirmationDialog}
@@ -747,6 +916,62 @@ class OutstandingResearchersAdmin extends React.Component {
               ຢືນຢັນ
             </Button>
           </DialogActions>
+        </Dialog>
+
+        <Dialog
+          open={this.state.openEditOutstandingResearcherDialog}
+          onClose={() => this.handleCloseEditOutstandingResearcherDialog()}
+          maxWidth="xs"
+        >
+          <DialogTitle style={{ fontFamily: "'Noto Sans Lao UI', sans serif" }}>
+            ແກ້ໄຂນັກຄົ້ນຄວ້າດີເດັ່ນ
+          </DialogTitle>
+          <DialogContent>
+            <form onSubmit={event => this.submitForm(event)}>
+              <Grid container spacing={24}>
+                <Grid item xs={12} style={{ paddingTop: 0 }}>
+                  <FormField
+                    id={"date"}
+                    formdata={this.state.formdata.date}
+                    change={element => this.updateForm(element)}
+                  />
+                </Grid>
+                <Grid item xs={12} style={{ paddingTop: 0 }}>
+                  <FormField
+                    id={"description"}
+                    formdata={this.state.formdata.description}
+                    change={element => this.updateForm(element)}
+                  />
+                </Grid>
+              </Grid>
+              <Grid container spacing={24} style={{ marginTop: "24px" }}>
+                <Grid
+                  item
+                  xs={6}
+                  align="left"
+                  style={{ display: "flex", alignItems: "center" }}
+                />
+
+                <Grid item xs={6} align="right">
+                  <Button
+                    onClick={() => this.handleCloseEditOutstandingResearcherDialog()}
+                    style={{ marginRight: "8px" }}
+                  >
+                    ຍົກເລີກ
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    href="/register"
+                    onClick={event => this.submitForm(event)}
+                    type="submit"
+                  >
+                    ບັນທຶກ
+                  </Button>
+                </Grid>
+              </Grid>
+            </form>
+          </DialogContent>
         </Dialog>
       </>
     );

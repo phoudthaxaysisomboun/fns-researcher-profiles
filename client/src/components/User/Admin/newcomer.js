@@ -5,11 +5,20 @@ import { withStyles } from "@material-ui/core/styles";
 
 import { Link, withRouter } from "react-router-dom";
 
+import AddNewResearcherDialog from "../Admin/Dialog/add_new_researcher_dialog";
+
 import moment from "moment";
 
 import ManageUserHeader from "../../../hoc/manage_user_header";
 
-import AddUserDialog from "../Admin/Dialog/add_user";
+import FormField from "../../utils/Form/formfield";
+
+import {
+  update,
+  generateData,
+  isFormValid,
+  populateOptionFields
+} from "../../utils/Form/formActions";
 
 import { connect } from "react-redux";
 
@@ -50,15 +59,11 @@ import {
 import { lighten } from "@material-ui/core/styles/colorManipulator";
 
 import {
-  getRequestUser,
-  confirmUser,
-  removeUser,
-  cancelUsers
+  getNewResearcher,
+  addNewcomerResearcher,
+  removeNewcomerResearcher,
+  getNotNewResearcher
 } from "../../../actions/user_actions";
-// function createData(name, calories, fat, carbs, protein) {
-//   counter += 1;
-//   return { id: counter, name, calories, fat, carbs, protein };
-// }
 
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -88,29 +93,17 @@ function getSorting(order, orderBy) {
 
 const rows = [
   {
-    id: "email",
-    numeric: false,
-    disablePadding: false,
-    label: "ອີເມລ"
-  },
-  {
     id: "name",
     numeric: false,
     disablePadding: false,
     label: "ຊື່ ແລະ ນາມສະກຸນ"
   },
-  { id: "gender.name", numeric: false, disablePadding: false, label: "ເພດ" },
+
   {
     id: "affiliation.department.name",
     numeric: false,
     disablePadding: false,
     label: "ພາກວິຊາ"
-  },
-  {
-    id: "dateOfBirth",
-    numeric: false,
-    disablePadding: false,
-    label: "ວ.ດ.ປ ເກີດ"
   },
   {
     id: "degree.name",
@@ -119,10 +112,16 @@ const rows = [
     label: "ວຸດທິການສຶກສາ"
   },
   {
-    id: "createdAt",
+    id: "newResearcher.date",
     numeric: false,
     disablePadding: false,
-    label: "ວັນສະຫມັກ"
+    label: "ວັນໄດ້ຮັບ"
+  },
+  {
+    id: "newResearcher.description",
+    numeric: false,
+    disablePadding: false,
+    label: "ລາຍລະອຽດ"
   }
 ];
 
@@ -235,9 +234,10 @@ let EnhancedTableToolbar = props => {
     numSelected,
     classes,
     openDeleteDialog,
-    requestCount,
-    handleCancelUser,
-    handleConfirmUser
+    newResearcher,
+    openAddResearcherDialog,
+    opennewResearcherDialog,
+    selected
   } = props;
 
   // <Toolbar
@@ -279,7 +279,7 @@ let EnhancedTableToolbar = props => {
                 }}
                 id="tableTitle"
               >
-                ຜູ້ຮ້ອງຂໍສະຫມັກສະມາຊິກ{" "}
+                ນັກຄົ້ນຄວ້າຫນ້າໃຫມ່{" "}
                 <div
                   style={{
                     fontWeight: "normal",
@@ -289,7 +289,7 @@ let EnhancedTableToolbar = props => {
                     fontSize: "16px"
                   }}
                 >
-                  {requestCount}
+                  {newResearcher}
                 </div>
               </Typography>
             )}
@@ -299,42 +299,54 @@ let EnhancedTableToolbar = props => {
           <div className={classes.actions}>
             {numSelected > 0 ? (
               <>
-              <Tooltip title="ຍົກເລີກການສະຫມັກ">
-                <IconButton
-                onClick={() => {
-                  handleCancelUser();
-                }}
-                  style={{ marginRight: "0px" }}
-                >
-                  <CloseOutlined />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="ລຶບ">
-                <IconButton
-                  onClick={() => {
-                    openDeleteDialog();
-                  }}
-                  style={{ marginRight: "8px" }}
-                >
-                  <DeleteOutline />
-                </IconButton>
-              </Tooltip>
-              <Button variant="contained" color="primary" onClick={() => {
-                handleConfirmUser();
-              }} style={{ marginRight: "16px" }}>
-              ຢືນຢັນ
-              </Button>
+                {numSelected > 1 ? null : (
+                  <>
+                  <Tooltip title="ແກ້ໄຂ">
+                    <IconButton style={{ marginRight: "0px" }}>
+                      <EditOutlined onClick={() => {
+                        opennewResearcherDialog();
+                      }}/>
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="ເບິ່ງ">
+                    <IconButton component={Link}
+                    to={`/profile/${selected[0]}`} style={{ marginRight: "0px" }}>
+                      <VisibilityOutlined />
+                    </IconButton>
+                  </Tooltip>
+                  
+                  </>
+                )}
+                <Tooltip title="ລຶບ">
+                  <IconButton
+                    onClick={() => {
+                      openDeleteDialog();
+                    }}
+                    style={{ marginRight: "16px" }}
+                  >
+                    <DeleteOutline />
+                  </IconButton>
+                </Tooltip>
               </>
             ) : (
               <>
                 <Tooltip title="Filter list">
                   <IconButton
                     aria-label="Filter list"
-                    style={{ marginRight: "0px" }}
+                    style={{ marginRight: "8px" }}
                   >
                     <FilterListOutlined />
                   </IconButton>
                 </Tooltip>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => {
+                    openAddResearcherDialog();
+                  }}
+                >
+                  ເພີ່ມ
+                </Button>
               </>
             )}
           </div>
@@ -363,18 +375,71 @@ const styles = theme => ({
   }
 });
 
-class NewComerResearchersAdmin extends React.Component {
+class NewResearcherAdmin extends React.Component {
   state = {
     order: "desc",
-    orderBy: "createdAt",
+    orderBy: "newResearcher.date",
     selected: [],
     data: [],
     page: 0,
-    rowsPerPage: 5,
+    rowsPerPage: 10,
     openDeleteConfirmationDialog: false,
     tabNumber: 3,
-    openAddUserDialog: false
+    openAddUserDialog: false,
+    openEditNewResearcherDialog: false,
+    formError: false,
+    formErrorMessage: "ມີບາງຂໍ້ມູນບໍ່ຖືກຕ້ອງກະລຸນາກວດສອບຂໍ້ມູນຄືນ",
+    formSuccess: false,
+    formdata: {
+      date: {
+        element: "date",
+        value: "",
+        config: {
+          label: "ວັນໄດ້ຮັບ",
+          name: "date_input",
+          type: "date",
+          autofocus: true
+        },
+        validation: {
+          required: true
+        },
+        valid: false,
+        touched: true,
+        validationMessage: ""
+      },
+      description: {
+        element: "input",
+        value: "",
+        config: {
+          name: "abstract_input",
+          type: "text",
+          label: "ຄໍາອະທິບາຍ",
+
+          placeholder: "",
+          multiline: true,
+          rows: 3
+        },
+        validation: {
+          required: false
+        },
+        valid: true,
+        touched: true,
+        validationMessage: ""
+      }
+    }
   };
+
+  handleOpenEditNewResearcherDialog() {
+    this.setState({
+      openEditNewResearcherDialog: true
+    })
+  }
+
+  handleCloseNewResearcherDialog() {
+    this.setState({
+      openEditNewResearcherDialog: false
+    })
+  }
 
   handleRequestSort = (event, property) => {
     const orderBy = property;
@@ -407,7 +472,7 @@ class NewComerResearchersAdmin extends React.Component {
     this.setState({ selected: [] });
   };
 
-  handleClick = (event, id) => {
+  handleClick = (event, id, date, description) => {
     const { selected } = this.state;
     const selectedIndex = selected.indexOf(id);
     let newSelected = [];
@@ -427,7 +492,15 @@ class NewComerResearchersAdmin extends React.Component {
 
     this.setState({ selected: newSelected });
 
-    console.log(this.state.selected);
+    const newFormdata = {
+      ...this.state.formdata
+    };
+    
+    newFormdata["date"].value = moment(date).format("YYYY-MM-DD");
+    newFormdata["description"].value = description ? description : "";
+    this.setState({ formdata: newFormdata });
+
+    console.log(this.state.formdata)
   };
 
   handleChangePage = (event, page) => {
@@ -443,10 +516,11 @@ class NewComerResearchersAdmin extends React.Component {
   componentDidMount() {}
 
   componentWillMount() {
-    document.title = "ເຄຶ່ອງມືຈັດການນັກຄົ້ນຄວ້າ(ນັກຄົ້ນຄວ້າ)-FNS Researcher Profiles"
-    this.props.dispatch(getRequestUser()).then(response => {
+    document.title =
+      "ເຄຶ່ອງມືຈັດການນັກຄົ້ນຄວ້າ (ນັກຄົ້ນຄວ້າຫນ້າໃຫມ່)-FNS Researcher Profiles";
+    this.props.dispatch(getNewResearcher()).then(response => {
       this.setState({
-        data: this.props.user.userRegisterationRequest
+        data: this.props.user.newResearcher
       });
     });
   }
@@ -455,7 +529,16 @@ class NewComerResearchersAdmin extends React.Component {
     // this.props.dispatch(clearAllResearchers())
   }
 
-  componentDidUpdate(prevProps, prevState) {}
+  componentDidUpdate(prevProps, prevState) {
+    const prevNew = prevProps.user.newResearcher;
+    const currNew = this.props.user.newResearcher;
+
+    if (prevNew !== currNew) {
+      this.setState({
+        data: currNew
+      });
+    }
+  }
 
   handleOpenDeleteConfirmationDialog() {
     this.setState({
@@ -463,62 +546,117 @@ class NewComerResearchersAdmin extends React.Component {
     });
   }
 
-  handleDeleteResearchConfirmationClose() {
+  handleRemoveNewResearcherConfirmationClose() {
     this.setState({
       openDeleteConfirmationDialog: false
     });
   }
 
-  handleUserDeletetion = () => {
+  handleRemoveNewResearcher = () => {
     this.props
-      .dispatch(removeUser(this.state.selected))
+      .dispatch(removeNewcomerResearcher(this.state.selected))
       .then(response => {
         console.log(response.payload.success);
         if (response.payload.success) {
-          this.props.dispatch(getRequestUser()).then(response => {
+          this.props.dispatch(getNewResearcher()).then(response => {
             this.setState({
-              data: this.props.user.userRegisterationRequest,
+              data: this.props.user.newResearcher,
               openDeleteConfirmationDialog: false,
               selected: []
+            });
+            this.props.dispatch(getNewResearcher());
+          });
+        }
+      });
+  };
+
+  handleAddNewResearcher = () => {
+    this.props
+      .dispatch(addNewcomerResearcher(this.state.selected))
+      .then(response => {
+        console.log(response.payload.success);
+        if (response.payload.success) {
+          this.props.dispatch(getNewResearcher()).then(response => {
+            this.setState({
+              data: this.props.user.newResearcher
+              // openDeleteConfirmationDialog: false,
+              // selected: []
             });
           });
         }
       });
   };
 
-  handleConfirmUser = () => {
-    this.props
-      .dispatch(confirmUser(this.state.selected))
-      .then(response => {
-        console.log(response.payload.success);
-        if (response.payload.success) {
-          this.props.dispatch(getRequestUser()).then(response => {
-            this.setState({
-              data: this.props.user.userRegisterationRequest,
-              openDeleteConfirmationDialog: false,
-              selected: []
-            });
-          });
-        }
-      });
+
+  updateForm = element => {
+    const newFormdata = update(element, this.state.formdata, "newResearcher");
+    this.setState({
+      formError: false,
+      formdata: newFormdata
+    });
   };
 
-  handleCancelUser = () => {
-    this.props
-      .dispatch(confirmUser(this.state.selected))
-      .then(response => {
-        console.log(response.payload.success);
-        if (response.payload.success) {
-          this.props.dispatch(getRequestUser()).then(response => {
+  submitForm = event => {
+    event.preventDefault();
+
+    let formIsValid = isFormValid(this.state.formdata, "newResearcher");
+
+    if (this.state.formdata.date.value.trim() !== ""){
+      formIsValid = true
+    }
+
+    const myDate = moment(this.state.formdata.date.value).format("YYYY-MM-DD hh:mm:ss")
+    
+    if (
+      formIsValid
+    ) {
+
+      this.props
+        .dispatch(addNewcomerResearcher(this.state.selected, myDate, this.state.formdata.description.value))
+        .then(response => {
+          if (response.payload.success) {
             this.setState({
-              data: this.props.user.userRegisterationRequest,
-              openDeleteConfirmationDialog: false,
-              selected: []
+              formError: false,
+              formSuccess: true
             });
+            this.setState({
+              openEditNewResearcherDialog: false,
+            })
+
+            this.props.dispatch(getNewResearcher()).then(response=>{
+              this.setState({
+                data: this.props.user.newResearcher,
+                selected: []
+              })
+              this.props.dispatch(getNotNewResearcher()).then(()=>{
+                
+              })
+            })
+
+            
+          } else {
+            console.log(response.payload);
+            this.setState({
+              formError: true,
+              formErrorMessage: "ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂເປັນນັກຄົ້ນຄວ້າຫນ້າໃຫມ່ໄດ້"
+            });
+          }
+        })
+        .catch(e => {
+          this.setState({
+            formError: true,
+            formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂເປັນນັກຄົ້ນຄວ້າຫນ້າໃຫມ່ໄດ້ (error: ${e})`
           });
-        }
+        });
+    } else {
+      this.setState({
+        formError: true,
+        formErrorMessage: "ມີບາງຂໍ້ມູນບໍ່ຖືກຕ້ອງກະລຸນາກວດສອບຂໍ້ມູນຄືນ"
       });
+    }
   };
+
+
 
   render() {
     const { classes } = this.props;
@@ -543,7 +681,7 @@ class NewComerResearchersAdmin extends React.Component {
             <Grid item xs sm lg md />
 
             <Grid item xs={11} sm={11} lg={11} md={11}>
-              {this.props.user.userRegisterationRequest ? (
+              {this.props.user.newResearcher ? (
                 <>
                   <EnhancedTableToolbar
                     numSelected={selected.length}
@@ -551,15 +689,18 @@ class NewComerResearchersAdmin extends React.Component {
                     openDeleteDialog={() => {
                       this.handleOpenDeleteConfirmationDialog();
                     }}
-                    handleConfirmUser={() => {
-                      this.handleConfirmUser();
+                    handleAddNew={() => {
+                      this.handleAddNewResearcher();
                     }}
-                    handleCancelUser={() => {
-                      this.handleCancelUser();
+                    openAddResearcherDialog={() => {
+                      this.handleOpenAddUserDialog();
                     }}
-                    requestCount={
-                      this.props.user.userRegisterationCount
-                        ? `(${this.props.user.userRegisterationCount})`
+                    opennewResearcherDialog={() => {
+                      this.handleOpenEditNewResearcherDialog();
+                    }}
+                    newResearcher={
+                      this.props.user.newResearcherCount
+                        ? `(${this.props.user.newResearcherCount})`
                         : null
                     }
                   />
@@ -571,167 +712,145 @@ class NewComerResearchersAdmin extends React.Component {
                       borderRadius: 0
                     }}
                   >
-                  {
-                    this.props.user.userRegisterationCount > 0 ?
-                    <>
-                    
-                    <div className={classes.tableWrapper}>
-                      <Table
-                        className={classes.table}
-                        aria-labelledby="tableTitle"
-                      >
-                        <EnhancedTableHead
-                          numSelected={selected.length}
-                          order={order}
-                          orderBy={orderBy}
-                          onSelectAllClick={this.handleSelectAllClick}
-                          onRequestSort={this.handleRequestSort}
-                          rowCount={data.length}
-                        />
-                        <TableBody>
-                          {stableSort(data, getSorting(order, orderBy))
-                            .slice(
-                              page * rowsPerPage,
-                              page * rowsPerPage + rowsPerPage
-                            )
-                            .map(n => {
-                              const isSelected = this.isSelected(n._id);
-                              return (
-                                <TableRow
-                                  hover
-                                  role="checkbox"
-                                  aria-checked={isSelected}
-                                  tabIndex={-1}
-                                  key={n.id}
-                                  selected={isSelected}
-                                  onClick={event =>
-                                    this.handleClick(event, n._id)
-                                  }
-                                >
-                                
-                                  <TableCell padding="checkbox">
-                                    <Checkbox
-                                      color="primary"
-                                      checked={isSelected}
+                    {this.props.user.newResearcher.length > 0 ? (
+                      <>
+                        <div className={classes.tableWrapper}>
+                          <Table
+                            className={classes.table}
+                            aria-labelledby="tableTitle"
+                          >
+                            <EnhancedTableHead
+                              numSelected={selected.length}
+                              order={order}
+                              orderBy={orderBy}
+                              onSelectAllClick={this.handleSelectAllClick}
+                              onRequestSort={this.handleRequestSort}
+                              rowCount={data.length}
+                            />
+                            <TableBody>
+                              {stableSort(data, getSorting(order, orderBy))
+                                .slice(
+                                  page * rowsPerPage,
+                                  page * rowsPerPage + rowsPerPage
+                                )
+                                .map(n => {
+                                  const isSelected = this.isSelected(n._id);
+                                  return (
+                                    <TableRow
+                                      hover
+                                      role="checkbox"
+                                      aria-checked={isSelected}
+                                      tabIndex={-1}
+                                      key={n.id}
+                                      selected={isSelected}
                                       onClick={event =>
-                                        this.handleClick(event, n._id)
+                                        this.handleClick(event, n._id, n["newResearcher.date"], n["newResearcher.description"])
                                       }
-                                    />
-                                  </TableCell>
-                                  <TableCell
-                                    component="th"
-                                    scope="row"
-                                    padding="dense"
-                                  >
-                                    <Typography variant="inherit">
-                                      {`${n.email}`}
-                                      {
-                                        n.emailIsVerified ?
-                                        <>{" "}
-                                        <div
-                                          style={{
-                                            fontWeight: "normal",
-                                            display: "inline"
-                                          }}
-                                        >
-                                        <CheckCircleOutlineOutlined style={{padding: 0, position: "relative", top: '3px', color:"#388e3c", fontSize: "16px"}}/>
-                                        </div></> :
-                                        null
-                                      }
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell
-                                    component="th"
-                                    scope="row"
-                                    padding="dense"
-                                  >
-                                    <Typography variant="inherit">{`${
-                                      n.prefix
-                                    } ${n.name} ${n.lastname}`}</Typography>
-                                  </TableCell>
-                                  <TableCell
-                                    align="left"
-                                    component="th"
-                                    scope="row"
-                                    padding="dense"
-                                  >
-                                    <Typography variant="inherit">{`${
-                                      n["gender.name"]
-                                    }`}</Typography>{" "}
-                                  </TableCell>
+                                    >
+                                      <TableCell padding="checkbox">
+                                        <Checkbox
+                                          color="primary"
+                                          checked={isSelected}
+                                          onClick={event =>
+                                            this.handleClick(event, n._id, n["newResearcher.date"], n["newResearcher.description"])
+                                          }
+                                        />
+                                      </TableCell>
 
-                                  <TableCell
-                                    align="left"
-                                    component="th"
-                                    scope="row"
-                                    padding="dense"
-                                  >
-                                    {" "}
-                                    <Typography variant="inherit">{`${
-                                      n["affiliation.department.name"]
-                                    }`}</Typography>{" "}
-                                  </TableCell>
-                                  <TableCell align="left" padding="dense">
-                                    {moment(n.dateOfBirth).format("DD/MM/YYYY")}
-                                  </TableCell>
-                                  <TableCell padding="dense">
-                                    <Typography variant="inherit">
-                                      {n["degree.name"]
-                                        ? `${n["degree.name"]}`
-                                        : ""}
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell align="left" padding="dense">
-                                    {moment(n.createdAt).format("DD/MM/YYYY")}
-                                  </TableCell>
+                                      <TableCell
+                                        component="th"
+                                        scope="row"
+                                        padding="dense"
+                                      >
+                                        <Typography variant="inherit">{`${
+                                          n.prefix
+                                        } ${n.name} ${n.lastname}`}</Typography>
+                                      </TableCell>
+
+                                      <TableCell
+                                        align="left"
+                                        component="th"
+                                        scope="row"
+                                        padding="dense"
+                                      >
+                                        {" "}
+                                        <Typography variant="inherit">{`${
+                                          n["affiliation.department.name"]
+                                        }`}</Typography>{" "}
+                                      </TableCell>
+                                      <TableCell align="left" padding="dense">
+                                        <Typography variant="inherit">
+                                          {n["degree.name"]
+                                            ? `${n["degree.name"]}`
+                                            : null}
+                                        </Typography>
+                                      </TableCell>
+
+                                      <TableCell align="left" padding="dense">
+                                        {moment(n["newResearcher.date"]).format(
+                                          "DD/MM/YYYY"
+                                        )}
+                                      </TableCell>
+                                      <TableCell padding="dense">
+                                        <Typography variant="inherit">
+                                          {n["newResearcher.description"]}
+                                        </Typography>
+                                      </TableCell>
+                                    </TableRow>
+                                  );
+                                })}
+                              {emptyRows > 0 && (
+                                <TableRow style={{ height: 49 * emptyRows }}>
+                                  <TableCell colSpan={6} />
                                 </TableRow>
-                              );
-                            })}
-                          {emptyRows > 0 && (
-                            <TableRow style={{ height: 49 * emptyRows }}>
-                              <TableCell colSpan={6} />
-                            </TableRow>
-                          )}
-                        </TableBody>
-                      </Table>
-                    </div>
-                    <TablePagination
-                      rowsPerPageOptions={[5, 10, 20]}
-                      component="div"
-                      count={data.length}
-                      rowsPerPage={rowsPerPage}
-                      page={page}
-                      backIconButtonProps={{
-                        "aria-label": "ຫນ້າກ່ອນຫນ້າ"
-                      }}
-                      nextIconButtonProps={{
-                        "aria-label": "ຫນ້າຕໍ່ໄປ"
-                      }}
-                      onChangePage={this.handleChangePage}
-                      onChangeRowsPerPage={this.handleChangeRowsPerPage}
-                      labelRowsPerPage="ແຖວຕໍ່ຫນ້າ"
-                      labelDisplayedRows={({ from, to, count }) =>
-                        `${from}-${to} ໃນ ${count}`
-                      }
-                    />
-                    </> : <>
-                    
-                    <Grid
-                    container
-                    alignContent="center"
-                    alignItems="center"
-                    justify="center"
-                    style={{marginTop: "16px"}}
-                  >
-                    <Grid item align="center">
-                      <Typography variant="inherit" style={{ padding: "24px", color: "rgba(0, 0, 0, 0.54)", fontSize: "0.75rem" }} >
-                      ບໍ່ມີຂໍ້ມູນ
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                    </>
-                  }
-                    
+                              )}
+                            </TableBody>
+                          </Table>
+                        </div>
+                        <TablePagination
+                          rowsPerPageOptions={[10, 15, 20]}
+                          component="div"
+                          count={data.length}
+                          rowsPerPage={rowsPerPage}
+                          page={page}
+                          backIconButtonProps={{
+                            "aria-label": "ຫນ້າກ່ອນຫນ້າ"
+                          }}
+                          nextIconButtonProps={{
+                            "aria-label": "ຫນ້າຕໍ່ໄປ"
+                          }}
+                          onChangePage={this.handleChangePage}
+                          onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                          labelRowsPerPage="ແຖວຕໍ່ຫນ້າ"
+                          labelDisplayedRows={({ from, to, count }) =>
+                            `${from}-${to} ໃນ ${count}`
+                          }
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <Grid
+                          container
+                          alignContent="center"
+                          alignItems="center"
+                          justify="center"
+                          style={{ marginTop: "16px" }}
+                        >
+                          <Grid item align="center">
+                            <Typography
+                              variant="inherit"
+                              style={{
+                                padding: "24px",
+                                color: "rgba(0, 0, 0, 0.54)",
+                                fontSize: "0.75rem"
+                              }}
+                            >
+                              ບໍ່ມີຂໍ້ມູນ
+                            </Typography>
+                          </Grid>
+                        </Grid>
+                      </>
+                    )}
                   </Paper>
                 </>
               ) : (
@@ -761,9 +880,14 @@ class NewComerResearchersAdmin extends React.Component {
           </Grid>
         </ManageUserHeader>
 
+        <AddNewResearcherDialog
+          open={this.state.openAddUserDialog}
+          close={() => this.handleAddUserDialogClose()}
+        />
+
         <Dialog
           open={this.state.openDeleteConfirmationDialog}
-          onClose={() => this.handleDeleteResearchConfirmationClose()}
+          onClose={() => this.handleRemoveNewResearcherConfirmationClose()}
           maxWidth="xs"
         >
           <DialogTitle style={{ fontFamily: "'Noto Sans Lao UI', sans serif" }}>
@@ -773,19 +897,19 @@ class NewComerResearchersAdmin extends React.Component {
             <DialogContentText
               style={{ fontFamily: "'Noto Sans Lao UI', sans serif" }}
             >
-              ທ່ານກໍາລັງຈະລຶບຂໍ້ມູນຜູ້ສະຫມັກນີ້.
+              ທ່ານກໍາລັງຈະເອົານັກຄົ້ນຄວ້າດັ່ງກ່າວນີ້ອອກຈາລາຍຊື່ນັກຄົ້ນຄວ້າຫນ້າໃຫມ່.
               ທ່ານແນ່ໃຈຫລືບໍ່ວ່າຈະລຶບຂໍ້ມູນດັ່ງກ່າວ?
               ການກະທໍາຕໍ່ໄປນີ້ບໍ່ສາມາດແກ້ໄຂໄດ້
             </DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button
-              onClick={() => this.handleDeleteResearchConfirmationClose()}
+              onClick={() => this.handleRemoveNewResearcherConfirmationClose()}
             >
               ຍົກເລີກ
             </Button>
             <Button
-              onClick={this.handleUserDeletetion}
+              onClick={this.handleRemoveNewResearcher}
               style={{ color: "#f44336" }}
               autoFocus
             >
@@ -794,12 +918,67 @@ class NewComerResearchersAdmin extends React.Component {
           </DialogActions>
         </Dialog>
 
+        <Dialog
+          open={this.state.openEditNewResearcherDialog}
+          onClose={() => this.handleCloseNewResearcherDialog()}
+          maxWidth="xs"
+        >
+          <DialogTitle style={{ fontFamily: "'Noto Sans Lao UI', sans serif" }}>
+            ແກ້ໄຂນັກຄົ້ນຄວ້າຫນ້າໃຫມ່
+          </DialogTitle>
+          <DialogContent>
+            <form onSubmit={event => this.submitForm(event)}>
+              <Grid container spacing={24}>
+                <Grid item xs={12} style={{ paddingTop: 0 }}>
+                  <FormField
+                    id={"date"}
+                    formdata={this.state.formdata.date}
+                    change={element => this.updateForm(element)}
+                  />
+                </Grid>
+                <Grid item xs={12} style={{ paddingTop: 0 }}>
+                  <FormField
+                    id={"description"}
+                    formdata={this.state.formdata.description}
+                    change={element => this.updateForm(element)}
+                  />
+                </Grid>
+              </Grid>
+              <Grid container spacing={24} style={{ marginTop: "24px" }}>
+                <Grid
+                  item
+                  xs={6}
+                  align="left"
+                  style={{ display: "flex", alignItems: "center" }}
+                />
+
+                <Grid item xs={6} align="right">
+                  <Button
+                    onClick={() => this.handleCloseNewResearcherDialog()}
+                    style={{ marginRight: "8px" }}
+                  >
+                    ຍົກເລີກ
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    href="/register"
+                    onClick={event => this.submitForm(event)}
+                    type="submit"
+                  >
+                    ບັນທຶກ
+                  </Button>
+                </Grid>
+              </Grid>
+            </form>
+          </DialogContent>
+        </Dialog>
       </>
     );
   }
 }
 
-NewComerResearchersAdmin.propTypes = {
+NewResearcherAdmin.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
@@ -810,5 +989,5 @@ const mapStateToProps = state => {
 };
 
 export default withRouter(
-  connect(mapStateToProps)(withStyles(styles)(NewComerResearchersAdmin))
+  connect(mapStateToProps)(withStyles(styles)(NewResearcherAdmin))
 );

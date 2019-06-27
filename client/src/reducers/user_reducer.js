@@ -54,7 +54,8 @@ import {
   REMOVE_OUTSTANDING_RESEARCHER,
   ADD_NEW_RESEARCHER,
   REMOVE_NEW_RESEARCHER,
-  GET_NOT_OUTSTANDING_RESEARCHER
+  GET_NOT_OUTSTANDING_RESEARCHER,
+  GET_NOT_NEW_RESEARCHER
 } from "../actions/types";
 
 export default function(state = {}, action) {
@@ -339,6 +340,16 @@ export default function(state = {}, action) {
         ...state,
         notOutstandingResearcher: notOutstandingResearcher,
         notOutstandingResearcherCount: action.payload.size
+      };
+    case GET_NOT_NEW_RESEARCHER:
+      const notNew = action.payload.notNewResearcher;
+      let notNewResearcher = notNew.map(value => {
+        return flattenObject(value);
+      });
+      return {
+        ...state,
+        notNewResearcher: notNewResearcher,
+        notNewResearcherCount: action.payload.size
       };
     case GET_NEW_RESEARCHER:
       const newcomer = action.payload.newResearcher;

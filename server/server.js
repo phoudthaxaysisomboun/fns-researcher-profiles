@@ -570,6 +570,67 @@ app.post("/api/researchers/researchers", auth, admin, (req, res) => {
 });
 
 app.get(
+  "/api/researchers/not_new_researchers",
+  auth,
+  admin,
+  (req, res) => {
+    let order = req.query.order ? req.query.order : "asc";
+    let sortBy = req.query.sortBy ? req.query.sortBy : "name";
+    let limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 6;
+    let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0;
+    let findArgs = {};
+
+    for (let key in req.body.filters) {
+      if (req.body.filters[key].length > 0) {
+        findArgs[key] = req.body.filters[key];
+      }
+    }
+
+    findArgs.emailIsVerified = true;
+    findArgs.accountIsVerified = true;
+    findArgs.active = true;
+
+    findArgs["newResearcher.isOutstanding"] = true;
+
+    User.find({
+      emailIsVerified: true,
+      accountIsVerified: true,
+      active: true,
+      "newResearcher.isOutstanding": true
+    })
+      .select("_id")
+      .exec((err, result) => {
+        let _ids = result.map((value, index, array) => {
+          return value["_id"];
+        });
+
+        User.find({
+          _id: { $nin: _ids },
+          emailIsVerified: true,
+          accountIsVerified: true,
+          active: true
+        })
+
+          .populate("gender")
+          .populate("degree")
+          .populate("gender")
+          .select(
+            "_id name lastname dateOfBirth prefix research degree affiliation outstanding"
+          )
+          .populate({
+            path: "affiliation.department"
+          })
+          .exec((err, result) => {
+            return res.status(200).json({
+              notNewResearcher: result,
+              size: result.length
+            });
+          });
+      });
+  }
+);
+
+app.get(
   "/api/researchers/not_outstanding_researchers",
   auth,
   admin,

@@ -57,7 +57,9 @@ import {
   Description,
   DescriptionOutlined,
   SearchOutlined,
-  BuildOutlined
+  BuildOutlined,
+  SettingsApplicationsOutlined,
+
 } from "@material-ui/icons";
 
 import { colorPallete } from "../components/utils/misc";
@@ -269,14 +271,13 @@ class Layout extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (prevProps !== this.props) {
       if (this.props.user.userData.isAdmin) {
-        
         this.setState({
           open: true
         });
       }
-      if (prevProps.user.userData !==  this.props.user.userData) {
+      if (prevProps.user.userData !== this.props.user.userData) {
         this.props.dispatch(getRequestUserCount()).then(response => {
-          console.log(response.data)
+          console.log(response.data);
         });
       }
     }
@@ -977,7 +978,9 @@ class Layout extends Component {
                     >
                       <ListItem button onClick={this.handleMangeListClick}>
                         <ListItemIcon>
-                          <BuildOutlined fontSize="small" />
+                        
+
+                          <SettingsApplicationsOutlined />
                         </ListItemIcon>
                         <ListItemText inset primary="ຈັດການ" />
                         {this.state.openManageToolMenu ? (
@@ -999,14 +1002,20 @@ class Layout extends Component {
                             selected={pathname.startsWith("/admin/researchers")}
                             className={classes.nested}
                           >
-                            { pathname.startsWith("/admin/researchers") ? (
+                            {pathname.startsWith("/admin/researchers") ? (
                               <>
                                 <ListItemIcon>
                                   {this.props &&
                                   this.props.user &&
                                   this.props.user.userRegisterationCount &&
                                   this.props.user.userRegisterationCount > 0 ? (
-                                    <Badge badgeContent={this.props.user.userRegisterationCount} variant="dot" color="secondary">
+                                    <Badge
+                                      badgeContent={
+                                        this.props.user.userRegisterationCount
+                                      }
+                                      variant="dot"
+                                      color="secondary"
+                                    >
                                       <PersonOutlineOutlined color="primary" />
                                     </Badge>
                                   ) : (
@@ -1026,17 +1035,22 @@ class Layout extends Component {
                               </>
                             ) : (
                               <>
-                              <ListItemIcon>
-                              {
-                              this.props.user.userRegisterationCount
-                                 > 0 ? (
-                                <Badge badgeContent={this.props.user.userRegisterationCount} variant="dot" color="secondary">
-                                  <PersonOutlineOutlined />
-                                </Badge>
-                              ) : (
-                                <PersonOutlineOutlined  />
-                              )}
-                            </ListItemIcon>
+                                <ListItemIcon>
+                                  {this.props.user.userRegisterationCount >
+                                  0 ? (
+                                    <Badge
+                                      badgeContent={
+                                        this.props.user.userRegisterationCount
+                                      }
+                                      variant="dot"
+                                      color="secondary"
+                                    >
+                                      <PersonOutlineOutlined />
+                                    </Badge>
+                                  ) : (
+                                    <PersonOutlineOutlined />
+                                  )}
+                                </ListItemIcon>
                                 <ListItemText inset primary="ນັກຄົ້ນຄວ້າ" />
                               </>
                             )}

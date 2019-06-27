@@ -102,22 +102,22 @@ const rows = [
     id: "degree.name",
     numeric: false,
     disablePadding: false,
-    label: "ວຸດທິການສຶກສາ"
+    label: "ວຸດທິ"
   },
   {
     id: "researchCount",
     numeric: false,
     disablePadding: false,
-    label: "ຈໍານວນຜົນງານຄົ້ນຄວ້າ"
+    label: "ຈໍານວນຜົນງານ"
   },
-  {
-    id: "actions",
-    numeric: false,
-    disablePadding: false,
-    label: "",
-    hideSortIcon: true,
-    active: false
-  }
+  // {
+  //   id: "actions",
+  //   numeric: false,
+  //   disablePadding: false,
+  //   label: "",
+  //   hideSortIcon: true,
+  //   active: false
+  // }
 ];
 
 class EnhancedTableHead extends React.Component {
@@ -276,7 +276,31 @@ let EnhancedTableToolbar = props => {
         {numSelected > 0 ? (
           <>
           {
-            !isUser ?
+            !isUser ? <>
+
+            {
+              numSelected === 1 ?
+              <>
+              <Tooltip title="ແກ້ໄຂ">
+            <IconButton
+              onClick={() => {
+                console.log("click")
+              }}
+              style={{marginRight: "0px"}}
+            >
+              <EditOutlined />
+            </IconButton>
+              </Tooltip>
+              <Tooltip title="ເບິ່ງ">
+            <IconButton
+             component={Link} to={`/profile/${selected[0]}`}
+              style={{marginRight: "0px"}}
+            >
+              <VisibilityOutlined />
+            </IconButton>
+              </Tooltip>
+              </> : null
+            }
             <Tooltip title="ລຶບ">
             <IconButton
               aria-label="Delete"
@@ -287,7 +311,7 @@ let EnhancedTableToolbar = props => {
             >
               <DeleteOutline />
             </IconButton>
-          </Tooltip>
+          </Tooltip> </>
           : <Tooltip title="ລຶບ">
           <IconButton
             aria-label="Delete"
@@ -426,7 +450,7 @@ class ResearcherAdmin extends React.Component {
   componentDidMount() {}
 
   componentWillMount() {
-    document.title = "ເຄຶ່ອງມືຈັດການນັກຄົ້ນຄວ້າ(ຂໍສະຫມັກ)-FNS Researcher Profiles"
+    document.title = "ເຄຶ່ອງມືຈັດການນັກຄົ້ນຄວ້າ (ນັກຄົ້ນຄວ້າ) - FNS Researcher Profiles"
     this.props.dispatch(getAllResearchers()).then(response => {
       this.setState({
         data: this.props.user.allUsers
@@ -555,6 +579,9 @@ class ResearcherAdmin extends React.Component {
                               tabIndex={-1}
                               key={n.id}
                               selected={isSelected}
+                              onClick={event =>
+                                this.handleClick(event, n._id)
+                              }
                             >
                               <TableCell padding="checkbox">
                                 <Checkbox
@@ -613,97 +640,7 @@ class ResearcherAdmin extends React.Component {
                               >
                                 {n.researchCount}
                               </TableCell>
-                              {selected.length === 0 ? (
-                                <TableCell
-                                  align="right"
-                                  component="th"
-                                  scope="row"
-                                >
-                                  
-                                  <Tooltip title="ແກ້ໄຊ">
-                                    <IconButton
-                                      onClick={() => {
-                                        console.log("click");
-                                      }}
-                                    >
-                                      <EditOutlined fontSize="small" />
-                                    </IconButton>
-                                    
-                                  </Tooltip>
-                                  <Tooltip title="ເບິ່ງ">
-                                    <IconButton
-                                      component={Link}
-                                      to={`/profile/${n._id}`}
-                                    >
-                                      <VisibilityOutlined fontSize="small" />
-                                    </IconButton>
-                                  </Tooltip>
-                                  {
-                                    n._id === this.props.user.userData._id ?
-                                    <>
-                                    <Tooltip title="ລຶບ">
-                                    <IconButton
-                                      aria-label="Delete"
-                                      disabled
-                                    >
-                                      <DeleteOutline fontSize="small" />
-                                    </IconButton>
-                                  </Tooltip>
-                                    </> : <>
-                                    <Tooltip title="ລຶບ">
-                                    <IconButton
-                                      aria-label="Delete"
-                                      onClick={() => {
-                                        console.log("click");
-                                      }}
-                                    >
-                                      <DeleteOutline fontSize="small" />
-                                    </IconButton>
-                                  </Tooltip>
-                                    </>
-                                  }
-
-                                </TableCell>
-                              ) : (
-                                <TableCell
-                                  align="right"
-                                  component="th"
-                                  scope="row"
-                                >
-                                  
-                                  <Tooltip title="ແກ້ໄຊ">
-                                    <IconButton
-                                      disabled
-                                      onClick={() => {
-                                        console.log("click");
-                                      }}
-                                    >
-                                      <EditOutlined fontSize="small" />
-                                    </IconButton>
-                                  </Tooltip>
-                                  <Tooltip title="ເບິ່ງ">
-                                    <IconButton
-                                      disabled
-                                      onClick={() => {
-                                        console.log("click");
-                                      }}
-                                    >
-                                      <VisibilityOutlined fontSize="small" />
-                                    </IconButton>
-                                  </Tooltip>
-                                  <Tooltip title="ລຶບ">
-                                    <IconButton
-                                      disabled
-                                      aria-label="Delete"
-                                      onClick={() => {
-                                        console.log("click");
-                                      }}
-                                    >
-                                      <DeleteOutline fontSize="small" />
-                                    </IconButton>
-                                  </Tooltip>
-                                </TableCell>
-                              )}
+                              
                             </TableRow>
                           );
                         })}

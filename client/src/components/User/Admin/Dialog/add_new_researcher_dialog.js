@@ -39,10 +39,9 @@ import { CloseOutlined } from "@material-ui/icons";
 import { lighten } from "@material-ui/core/styles/colorManipulator";
 
 import {
-  getNotOutstandingResearcher,
-  addOutstandingResearcher,
-  getRequestUserCount,
-  getOutstandingResearcher
+  getNotNewResearcher,
+  addNewcomerResearcher,
+  getNewResearcher
 } from "../../../../actions/user_actions";
 
 function desc(a, b, orderBy) {
@@ -203,7 +202,7 @@ let EnhancedTableToolbar = props => {
     numSelected,
     selected,
     classes,
-    openAddOutstandingResearcherDialog,
+    openAddNewResearcherDialog,
     userId
   } = props;
   let isUser = false;
@@ -246,10 +245,10 @@ let EnhancedTableToolbar = props => {
                       color="primary"
                       style={{ marginRight: "16px" }}
                       onClick={() => {
-                        openAddOutstandingResearcherDialog();
+                        openAddNewResearcherDialog();
                       }}
                     >
-                      ເພີ່ມເປັນນັກຄົ້ນຄວ້າດີເດັ່ນ
+                      ເພີ່ມເປັນນັກຄົ້ນຄວ້າຫນ້າໃຫມ່
                     </Button>
                   </>
                 ) : null}
@@ -281,7 +280,7 @@ const styles = theme => ({
   }
 });
 
-class AddOutstandingResearcherDialog extends React.Component {
+class AddNewResearcherDialog extends React.Component {
   state = {
     order: "asc",
     orderBy: "name",
@@ -289,7 +288,7 @@ class AddOutstandingResearcherDialog extends React.Component {
     data: [],
     page: 0,
     rowsPerPage: 5,
-    openAddOutstandingResearcherDialog: false,
+    openAddNewResearcherDialog: false,
     formError: false,
     formErrorMessage: "ມີບາງຂໍ້ມູນບໍ່ຖືກຕ້ອງກະລຸນາກວດສອບຂໍ້ມູນຄືນ",
     formSuccess: false,
@@ -342,14 +341,14 @@ class AddOutstandingResearcherDialog extends React.Component {
     this.setState({ order, orderBy });
   };
 
-  handleOpenAddOutstandingDialog() {
+  handleOpenAddNewDialog() {
     this.setState({
-      openAddOutstandingResearcherDialog: true
+      openAddNewResearcherDialog: true
     });
   }
-  handleCloseAddOutstandingDialog() {
+  handleCloseAddNewDialog() {
     this.setState({
-      openAddOutstandingResearcherDialog: false
+      openAddNewResearcherDialog: false
     });
   }
 
@@ -395,12 +394,11 @@ class AddOutstandingResearcherDialog extends React.Component {
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   componentWillMount() {
-    this.props.dispatch(getNotOutstandingResearcher()).then(response => {
+    this.props.dispatch(getNotNewResearcher()).then(response => {
       this.setState({
-        data: this.props.user.notOutstandingResearcher
+        data: this.props.user.notNewResearcher
       });
     });
-    this.props.dispatch(getRequestUserCount());
   }
 
   componentWillUnmount() {
@@ -408,22 +406,21 @@ class AddOutstandingResearcherDialog extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const prevNotOutstanding = prevProps.user.notOutstandingResearcher;
-    const currNotOutstanding = this.props.user.notOutstandingResearcher;
+    const prevNotNew = prevProps.user.notNewResearcher;
+    const currNotnew = this.props.user.notNewResearcher;
 
-    console.log(prevNotOutstanding);
-    console.log(currNotOutstanding);
-    if (prevNotOutstanding !== currNotOutstanding) {
+
+    if (prevNotNew !== currNotnew) {
       this.setState({
-        data: currNotOutstanding
+        data: currNotnew
       });
     }
   }
 
   handleAddNewUser() {
-    this.props.dispatch(getNotOutstandingResearcher()).then(response => {
+    this.props.dispatch(getNotNewResearcher()).then(response => {
       this.setState({
-        data: this.props.user.notOutstandingResearcher,
+        data: this.props.user.notNewResearcher,
         openAddUserDialog: false
       });
     });
@@ -442,7 +439,7 @@ class AddOutstandingResearcherDialog extends React.Component {
 
     let formIsValid = isFormValid(
       this.state.formdata,
-      "addOutstandingResearcher"
+      "addNewResearcher"
     );
     if (this.state.formdata.date.value.trim() !== "") {
       formIsValid = true;
@@ -455,7 +452,7 @@ class AddOutstandingResearcherDialog extends React.Component {
     if (formIsValid) {
       this.props
         .dispatch(
-          addOutstandingResearcher(
+          addNewcomerResearcher(
             this.state.selected,
             myDate,
             this.state.formdata.description.value
@@ -468,14 +465,14 @@ class AddOutstandingResearcherDialog extends React.Component {
               formSuccess: true
             });
             this.setState({
-              openAddOutstandingResearcherDialog: false,
+              openAddNewResearcherDialog: false,
               openAddUserDialog: false
             });
 
-            this.props.dispatch(getOutstandingResearcher()).then(response => {
-              this.props.dispatch(getNotOutstandingResearcher()).then(() => {
+            this.props.dispatch(getNewResearcher()).then(response => {
+              this.props.dispatch(getNotNewResearcher()).then(() => {
                 this.setState({
-                  data: this.props.user.notOutstandingResearcher,
+                  data: this.props.user.notNewResearcher,
                   selected: []
                 });
               });
@@ -487,14 +484,14 @@ class AddOutstandingResearcherDialog extends React.Component {
             this.setState({
               formError: true,
               formErrorMessage:
-                "ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດເພີ່ມເປັນນັກຄົ້ນຄວ້າດີເດັ່ນໄດ້"
+                "ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດເພີ່ມເປັນນັກຄົ້ນຫນ້າໃຫມ່ໄດ້"
             });
           }
         })
         .catch(e => {
           this.setState({
             formError: true,
-            formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດເພີ່ມເປັນນັກຄົ້ນຄວ້າດີເດັ່ນໄດ້ (error: ${e})`
+            formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດເພີ່ມເປັນນັກຄົ້ນຄວ້າຫນ້າໃຫມ່ໄດ້ (error: ${e})`
           });
         });
     } else {
@@ -544,20 +541,20 @@ class AddOutstandingResearcherDialog extends React.Component {
             </Grid>
           </DialogTitle>
           <DialogContent style={{ padding: "24px", paddingTop: 0 }}>
-            {this.props.user.notOutstandingResearcher ? (
+            {this.props.user.notNewResearcher ? (
               <>
                 <EnhancedTableToolbar
                   numSelected={selected.length}
                   selected={this.state.selected}
-                  openAddOutstandingResearcherDialog={() => {
-                    this.handleOpenAddOutstandingDialog();
+                  openAddNewResearcherDialog={() => {
+                    this.handleOpenAddNewDialog();
                   }}
                   openAddUserDialog={() => {
                     this.handleOpenAddUserDialog();
                   }}
                   researchersCount={
                     this.props.user.allUsers
-                      ? `(${this.props.user.notOutstandingResearcher.length})`
+                      ? `(${this.props.user.notNewResearcher.length})`
                       : null
                   }
                   userId={this.props.user.userData._id}
@@ -686,14 +683,14 @@ class AddOutstandingResearcherDialog extends React.Component {
                 </Paper>
 
                 <Dialog
-                  open={this.state.openAddOutstandingResearcherDialog}
-                  onClose={() => this.handleCloseAddOutstandingDialog()}
+                  open={this.state.openAddNewResearcherDialog}
+                  onClose={() => this.handleCloseAddNewDialog()}
                   maxWidth="xs"
                 >
                   <DialogTitle
                     style={{ fontFamily: "'Noto Sans Lao UI', sans serif" }}
                   >
-                    ເພີ່ມນັກຄົ້ນຄວ້າດີເດັ່ນ
+                    ເພີ່ມນັກຄົ້ນຄວ້າຫນ້າໃຫມ່
                   </DialogTitle>
                   <DialogContent>
                     <form onSubmit={event => this.submitForm(event)}>
@@ -728,7 +725,7 @@ class AddOutstandingResearcherDialog extends React.Component {
                         <Grid item xs={6} align="right">
                           <Button
                             onClick={() =>
-                              this.handleCloseAddOutstandingDialog()
+                              this.handleCloseAddNewDialog()
                             }
                             style={{ marginRight: "8px" }}
                           >
@@ -778,7 +775,7 @@ class AddOutstandingResearcherDialog extends React.Component {
   }
 }
 
-AddOutstandingResearcherDialog.propTypes = {
+AddNewResearcherDialog.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
@@ -789,5 +786,5 @@ const mapStateToProps = state => {
 };
 
 export default withRouter(
-  connect(mapStateToProps)(withStyles(styles)(AddOutstandingResearcherDialog))
+  connect(mapStateToProps)(withStyles(styles)(AddNewResearcherDialog))
 );

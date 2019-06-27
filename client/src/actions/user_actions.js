@@ -56,7 +56,8 @@ import {
   REMOVE_OUTSTANDING_RESEARCHER,
   ADD_NEW_RESEARCHER,
   REMOVE_NEW_RESEARCHER,
-  GET_NOT_OUTSTANDING_RESEARCHER
+  GET_NOT_OUTSTANDING_RESEARCHER,
+  GET_NOT_NEW_RESEARCHER
 } from "./types";
 
 import {
@@ -609,6 +610,16 @@ export function getNotOutstandingResearcher() {
     payload: request
   };
 }
+export function getNotNewResearcher() {
+  const request = axios
+    .get(`${RESEARCHER_SERVER}/not_new_researchers`)
+    .then(response => response.data);
+  console.log(request);
+  return {
+    type: GET_NOT_NEW_RESEARCHER,
+    payload: request
+  };
+}
 
 export function getNewResearcher() {
   const request = axios
@@ -651,9 +662,9 @@ export function removeUser(id) {
   };
 }
 
-export function addNewcomerResearcher(id) {
+export function addNewcomerResearcher(id, date, description) {
   const request = axios
-    .post(`${RESEARCHER_SERVER}/add_new_researchers?id=${id}`)
+    .post(`${RESEARCHER_SERVER}/add_new_researchers?id=${id}&date=${date}&description=${description}`)
     .then(response => response.data);
   return {
     type: ADD_NEW_RESEARCHER,
@@ -661,9 +672,9 @@ export function addNewcomerResearcher(id) {
   };
 }
 
-export function addOutstandingResearcher(id) {
+export function addOutstandingResearcher(id, date, description) {
   const request = axios
-    .post(`${RESEARCHER_SERVER}/add_outstanding_researchers?id=${id}`)
+    .post(`${RESEARCHER_SERVER}/add_outstanding_researchers?id=${id}&date=${date}&description=${description}`)
     .then(response => response.data);
   return {
     type: ADD_OUTSTANDING_RESEARCHER,
