@@ -395,16 +395,15 @@ class Register extends Component {
           style={{ marginTop: "40px", marginBottom: "40px" }}
         >
           <Grid item lg md sm xs />
-          <Grid item lg={5} md={7} sm={9} xs={11}>
+          <Grid item lg={6} md={7} sm={9} xs={11}>
             <Paper style={styles.container} elevation={0}>
               <Typography
-                variant="h5"
-                component="h3"
+                variant="inherit"
+
                 style={{
-                  fontSize: "1.75rem",
-                  fontWeight: "500",
-                  fontFamily: "'Noto Sans Lao UI', sans-serif",
-                  textAlign: "center"
+fontSize: "1.25rem",
+    fontWeight: "700",
+    textAlign: "center"
                 }}
               >
                 ສະຫມັກສະມາຊິກ

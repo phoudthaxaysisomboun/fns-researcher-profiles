@@ -9,7 +9,8 @@ import {
   CLEAR_FEED,
   ADD_LIKE,
   REMOVE_LIKE,
-  CLEAR_LIKES_RESEARCH
+  CLEAR_LIKES_RESEARCH,
+  GET_ALL_RESEARCHES_ADMIN
 } from "../actions/types";
 
 import mergeByKey from "array-merge-by-key";
@@ -55,6 +56,21 @@ export default function(state = {}, action) {
       return {
         ...state,
         clearLikeSuccess: action.payload.success
+      };
+    case GET_ALL_RESEARCHES_ADMIN:
+      var allResearches = action.payload.allResearches.map(function(el, index) {
+        var o = Object.assign({}, el);
+        o.uploaderName = o["uploader"].name;
+        o.researchTypeName = o["researchType"].name
+        o.publicationTypeName = o["publicationType"].name
+        
+        return o;
+      });
+
+      return {
+        ...state,
+        allResearches,
+        allResearchesCount: action.payload.size
       };
     default:
       return state;

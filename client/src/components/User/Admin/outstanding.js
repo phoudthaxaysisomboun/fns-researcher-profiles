@@ -712,7 +712,7 @@ class OutstandingResearchersAdmin extends React.Component {
                       borderRadius: 0
                     }}
                   >
-                    {this.props.user.userRegisterationCount > 0 ? (
+                    {this.props.user.outstandingResearcherCount > 0 ? (
                       <>
                         <div className={classes.tableWrapper}>
                           <Table

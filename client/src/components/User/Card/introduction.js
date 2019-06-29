@@ -18,8 +18,8 @@ const IntroductionCard = props => {
   const isAuth = user.isAuth;
   var isOwner = false;
 
-  if (isAuth) {
-    if ((user._id === profile._id) || user.isAdmin) {
+  if (isAuth || user.isAdmin) {
+    if (user._id === profile._id || user.isAdmin) {
       isOwner = true;
     } else {
       isOwner = false;
@@ -29,52 +29,121 @@ const IntroductionCard = props => {
   const renderItems = () => {
     return (
       
-      <Grid container spacing={8} style={{ padding: "16px" }}>
-      <Typography variant="inherit">
-        <AutoLinkText text={profile.profileDescription} />
-      </Typography>
-    </Grid>
-    )
-  }
+        isOwner ?
+        <Grid item xs={12}>
+        <Paper style={{ boxShadow: "none", border: "1px solid #d8d8d8" }}>
+          <Grid container style={{ padding: "16px", paddingBottom: 0 }}>
+            <Grid item xs={6}>
+              <Typography
+                variant="inherit"
+                style={{
+                  fontSize: "1.375rem",
+                  marginBottom: "8px",
+                  fontWeight: "bold"
+                }}
+              >
+                ແນະນໍາ
+              </Typography>
+            </Grid>
+            <Grid item xs={6} align="right">
+              {props.user.userDetail && (isOwner || user.isAdmin) ? (
+                <IconButton style={{ padding: 0 }}>
+                  <EditOutlined fontSize="small" />
+                </IconButton>
+              ) : null}
+            </Grid>
+          </Grid>
+          <Grid container style={{ padding: "16px" }}>
+            {props.user.userDetail.profileDescription.trim() !== "" ? (
+              <Typography variant="inherit">
+                <AutoLinkText text={profile.profileDescription} />
+              </Typography>
+            ) : (
+              <>
+                {isOwner ? (
+                  <Typography
+                    variant="inherit"
+                    style={{
+                      textAlign: "center",
+                      width: "100%",
+                      color: "rgb(137, 137, 137)"
+                    }}
+                  >
+                    ຍັງບໍ່ມີຂໍ້ມູນເທື່ອຄລິກປຸມ່ແກ້ໄຂດ້ານເທິງເພື່ອເພີ່ມຂໍ້ມູນ
+                  </Typography>
+                ) : null}
+              </>
+            )}
+          </Grid>
+        </Paper>
+      </Grid>
+      : <>
+      {
+        props.user.userDetail.profileDescription.trim() !== "" ?
+        <Grid item xs={12}>
+        <Paper style={{ boxShadow: "none", border: "1px solid #d8d8d8" }}>
+          <Grid container style={{ padding: "16px", paddingBottom: 0 }}>
+            <Grid item xs={6}>
+              <Typography
+                variant="inherit"
+                style={{
+                  fontSize: "1.375rem",
+                  marginBottom: "8px",
+                  fontWeight: "bold"
+                }}
+              >
+                ແນະນໍາ
+              </Typography>
+            </Grid>
+            <Grid item xs={6} align="right">
+              
+            </Grid>
+          </Grid>
+          <Grid container style={{ padding: "16px" }}>
+          <Typography variant="inherit">
+          <AutoLinkText text={profile.profileDescription} />
+        </Typography>
+          </Grid>
+        </Paper>
+      </Grid> : null
+      }
+      </>
+      
+    );
+  };
 
   const renderNoData = () => {
     return (
-      <LinearProgress style={{margin: "16px"}} />
-    )
-  }
-
-  return (
-    
-    <Grid item xs={12}>
-    
-    <Paper style={{ boxShadow: "none", border: "1px solid #d8d8d8" }}>
-    <Grid container style={{padding: "16px", paddingBottom: 0}}>
-      <Grid item xs={6}>
-        <Typography
-          variant="inherit"
-          style={{
-            fontSize: "1.375rem",
-            marginBottom: "8px",
-            fontWeight: "bold"
-          }}
-        >
-          ແນະນໍາ
-        </Typography>
+      <Grid item xs={12}>
+        <Paper style={{ boxShadow: "none", border: "1px solid #d8d8d8" }}>
+          <Grid container style={{ padding: "16px", paddingBottom: 0 }}>
+            <Grid item xs={6}>
+              <Typography
+                variant="inherit"
+                style={{
+                  fontSize: "1.375rem",
+                  marginBottom: "8px",
+                  fontWeight: "bold"
+                }}
+              >
+                ແນະນໍາ
+              </Typography>
+            </Grid>
+            <Grid item xs={6} align="right">
+              {props.user.userDetail && (isOwner || user.isAdmin) ? (
+                <IconButton style={{ padding: 0 }}>
+                  <EditOutlined fontSize="small" />
+                </IconButton>
+              ) : null}
+            </Grid>
+          </Grid>
+          <LinearProgress style={{ margin: "16px" }} />
+        </Paper>
       </Grid>
-      <Grid item xs={6} align="right">
-        {props.user.userDetail && (isOwner || user.isAdmin) ? (
-          <IconButton style={{ padding: 0 }}>
-            <EditOutlined fontSize="small" />
-          </IconButton>
-        ) : null}
-      </Grid>
-    </Grid>
-    {props.user.userDetail ? renderItems() : renderNoData()}
-      
-    </Paper>
-  </Grid>
+    );
+  };
 
-  );
+  return props.user.userDetail ? renderItems() : renderNoData();
 };
 
 export default IntroductionCard;

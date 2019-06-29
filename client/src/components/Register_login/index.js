@@ -8,7 +8,10 @@ import { Paper, Typography, Grid } from "@material-ui/core";
 const styles = {
   container: {
     padding: "26px",
-    border: "1px solid #d8d8d8"
+    border: "1px solid #d8d8d8",
+    maxWidth: "480px",
+    marginLeft: 'auto',
+    marginRight: "auto"
   },
   font: {
     fontFamily: "'Noto Sans Lao UI', sans-serif",
@@ -20,10 +23,10 @@ const styles = {
 
 const ResgisterLogin = () => {
   return (
-    <Grid container spacing={0} style={{marginTop: "40px",marginBottom: "40px"}}>
+    <Grid container justify="center" spacing={0} style={{marginTop: "40px",marginBottom: "40px"}}>
       <Grid item lg md sm xs/>
-      <Grid item lg={3} md={5}  sm={7} xs={11}>
-        <Paper style={styles.container} elevation={0}>
+      <Grid item lg={4} md={6}  sm={9} xs={11}>
+        <Paper style={styles.container} elevation={0} >
           <embed
             height="100px"
             width="100%"

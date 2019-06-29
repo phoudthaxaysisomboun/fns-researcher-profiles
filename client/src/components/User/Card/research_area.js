@@ -20,7 +20,7 @@ const ResearchaAreaCard = props => {
   var isOwner = false
   const isAuth =  user.isAuth
 
-  if (isAuth) {
+  if (isAuth || user.isAdmin) {
     if ((user._id === profile._id) || user.isAdmin){
       isOwner = true
     } else {
@@ -30,7 +30,10 @@ const ResearchaAreaCard = props => {
 
   const renderItems = () => {
     return (
-      props.user.userDetail && props.user.userDetail.researchArea.length != 0 ?
+      isOwner ?
+      <>
+      
+
       <Grid item xs={12}>
       
       <Paper style={{ boxShadow: "none", border: "1px solid #d8d8d8" }}>
@@ -55,8 +58,62 @@ const ResearchaAreaCard = props => {
           ) : null}
         </Grid>
       </Grid>
-        <Grid container spacing={8} style={{ padding: "16px" }}>
+        <Grid container style={{ padding: "16px" }}>
+        {
+          props.user.userDetail && props.user.userDetail.researchArea.length !== 0 ? 
+          <>
           {
+            profile.researchArea.map((data, i) => {
+              return (
+                <Chip
+                  key={i}
+                  label={data.label}
+                  variant="outlined"
+                  style={{ fontSize: "14px", margin: "4px" }}
+                />
+              );
+            })
+          }</> : <Typography
+          variant="inherit"
+          style={{
+            textAlign: "center",
+            width: "100%",
+            color: "rgb(137, 137, 137)"
+          }}
+        >
+          ຍັງບໍ່ມີຂໍ້ມູນເທື່ອຄລິກປຸມ່ແກ້ໄຂດ້ານເທິງເພື່ອເພີ່ມຂໍ້ມູນ
+        </Typography>}
+        </Grid>
+      </Paper>
+      </Grid>
+      </> : <>
+      {
+        props.user.userDetail && props.user.userDetail.researchArea.length !== 0 ?
+        <>
+        
+        <Grid item xs={12}>
+      
+      <Paper style={{ boxShadow: "none", border: "1px solid #d8d8d8" }}>
+      <Grid container style={{padding: "16px", paddingBottom: 0}}>
+        <Grid item xs={6}>
+          <Typography
+            variant="inherit"
+            style={{
+              fontSize: "1.375rem",
+              marginBottom: "8px",
+              fontWeight: "bold"
+            }}
+          >
+            ຂົງເຂດການຄົ້ນຄວ້າ
+          </Typography>
+        </Grid>
+        <Grid item xs={6} align="right">
+          
+        </Grid>
+      </Grid>
+        <Grid container style={{ padding: "16px" }}>
+        {
+          
             profile.researchArea.map((data, i) => {
               return (
                 <Chip
@@ -71,7 +128,11 @@ const ResearchaAreaCard = props => {
         </Grid>
       </Paper>
       </Grid>
-      : null
+        
+        </> : null
+      }
+      
+      </>
     )
   }
 

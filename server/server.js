@@ -569,6 +569,47 @@ app.post("/api/researchers/researchers", auth, admin, (req, res) => {
     });
 });
 
+app.get("/api/research/all_researches", auth, admin, (req, res) => {
+  let order = req.query.order ? req.query.order : "asc";
+  let sortBy = req.query.sortBy ? req.query.sortBy : "name";
+  let limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 6;
+  let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0;
+  let findArgs = {};
+
+  for (let key in req.body.filters) {
+    if (req.body.filters[key].length > 0) {
+      findArgs[key] = req.body.filters[key];
+    }
+  }
+
+  // findArgs.emailIsVerified = true;
+  // findArgs.accountIsVerified = true;
+  // findArgs.active = true;
+
+  Research.find(findArgs)
+    .select("_id title date likes comments shares citations reads downloads")
+    .populate({
+      path: "uploader",
+      model: "User",
+      select: ["name", "lastname", "prefix"]
+    })
+    .populate({
+      path: "author",
+      model: "User",
+      select: ["name", "lastname", "prefix"]
+    })
+    .populate("researchType")
+    .populate("publicationType")
+ 
+    .exec((err, result) => {
+      return res.status(200).json({
+        allResearches: result,
+        size: result.length
+      });
+
+    });
+});
+
 app.get(
   "/api/researchers/not_new_researchers",
   auth,

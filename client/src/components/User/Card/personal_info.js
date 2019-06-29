@@ -92,7 +92,7 @@ const PersonalInfoCard = ({
               ວຸດທິການສຶກສາ
             </Grid>
             <Grid item xs={8} style={{ fontSize: "1rem", color: "#202124" }}>
-              {profile.degree.name ? profile.degree.name : null}
+              {profile.degree && profile.degree.name ? profile.degree.name : null}
             </Grid>
             <Grid item xs={1} align="right">
               <IconButton

@@ -11,7 +11,8 @@ import {
   CLEAR_FEED,
   ADD_LIKE,
   REMOVE_LIKE,
-  CLEAR_LIKES_RESEARCH
+  CLEAR_LIKES_RESEARCH,
+  GET_ALL_RESEARCHES_ADMIN
 } from "./types";
 
 import { RESEARCH_SERVER, RESEARCHER_SERVER } from "../components/utils/misc";
@@ -112,6 +113,18 @@ export function removeLike(_id) {
 
   return {
     type: REMOVE_LIKE,
+    payload: request
+  };
+}
+
+
+export function getAllResearches() {
+  const request = axios
+    .get(`${RESEARCH_SERVER}/all_researches`)
+    .then(response => response.data);
+
+  return {
+    type: GET_ALL_RESEARCHES_ADMIN,
     payload: request
   };
 }

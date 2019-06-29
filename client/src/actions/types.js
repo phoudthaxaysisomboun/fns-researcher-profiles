@@ -85,3 +85,6 @@ export const REMOVE_OUTSTANDING_RESEARCHER = "remove_outstanding_researcher"
 export const ADD_NEW_RESEARCHER = "add_new_researcher"
 export const REMOVE_NEW_RESEARCHER = "remove_new_researcher"
 
+
+export const GET_ALL_RESEARCHES_ADMIN = "get_all_researches_admin"
+

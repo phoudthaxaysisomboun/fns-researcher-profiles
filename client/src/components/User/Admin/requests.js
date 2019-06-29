@@ -116,7 +116,7 @@ const rows = [
     id: "degree.name",
     numeric: false,
     disablePadding: false,
-    label: "ວຸດທິການສຶກສາ"
+    label: "ວຸດທິ"
   },
   {
     id: "createdAt",
