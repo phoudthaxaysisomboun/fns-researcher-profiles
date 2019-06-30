@@ -569,6 +569,54 @@ app.post("/api/researchers/researchers", auth, admin, (req, res) => {
     });
 });
 
+app.post("/api/researchers/reports/all_researchers", auth, admin, (req, res) => {
+  let order = req.query.order ? req.query.order : "asc";
+  let sortBy = req.query.sortBy ? req.query.sortBy : "name";
+  let limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 6;
+  let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0;
+
+  let from = req.query.from ? req.query.from : null
+  let to = req.query.from ? req.query.to : null
+  let department = req.query.department ? req.query.department : null
+  let findArgs = {};
+
+  for (let key in req.body.filters) {
+    if (req.body.filters[key].length > 0) {
+      findArgs[key] = req.body.filters[key];
+    }
+  }
+
+  if ((from != null) && (to != null)) {
+    findArgs["createdAt"] = {
+      $gte: from,
+      $lte: to
+    }
+  }
+
+  if (department != null) {
+    findArgs["affiliation.department"] = department
+  }
+
+  findArgs.emailIsVerified = true;
+  findArgs.accountIsVerified = true;
+  findArgs.active = true;
+
+  User.find(findArgs)
+    .populate("gender")
+    .populate("degree")
+    .select("_id dateOfBirth")
+    .populate({
+      path: "affiliation.department"
+    })
+    .exec((err, result) => {
+      if (err) return res.status(400).send(err)
+      return res.status(200).json({
+        allResearchersReports: result,
+        size: result.length
+      });
+    });
+});
+
 app.get("/api/research/all_researches", auth, admin, (req, res) => {
   let order = req.query.order ? req.query.order : "asc";
   let sortBy = req.query.sortBy ? req.query.sortBy : "name";
@@ -609,6 +657,9 @@ app.get("/api/research/all_researches", auth, admin, (req, res) => {
 
     });
 });
+
+
+
 
 app.get(
   "/api/researchers/not_new_researchers",
@@ -1104,7 +1155,8 @@ app.get("/api/researchers/profiles_by_id", (req, res) => {
   User.find({
     _id: { $in: items },
     emailIsVerified: true,
-    accountIsVerified: true
+    accountIsVerified: true,
+    active: true
   })
     .populate("gender")
     .populate("degree")

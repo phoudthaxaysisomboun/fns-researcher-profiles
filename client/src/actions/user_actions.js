@@ -57,7 +57,8 @@ import {
   ADD_NEW_RESEARCHER,
   REMOVE_NEW_RESEARCHER,
   GET_NOT_OUTSTANDING_RESEARCHER,
-  GET_NOT_NEW_RESEARCHER
+  GET_NOT_NEW_RESEARCHER,
+  GET_ALL_RESEARCHERS_REPORTS
 } from "./types";
 
 import {
@@ -638,6 +639,16 @@ export function getRequestUserCount() {
     .then(response => response.data);
   return {
     type: GET_REQUEST_USER_COUNT,
+    payload: request
+  };
+}
+
+export function getAllResearchersReports() {
+  const request = axios
+    .post(`${RESEARCHER_SERVER}/reports/all_researchers`)
+    .then(response => response.data);
+  return {
+    type: GET_ALL_RESEARCHERS_REPORTS,
     payload: request
   };
 }

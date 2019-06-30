@@ -1,4 +1,6 @@
-import React from "react";
+import React, { Component } from "react";
+import RsearcherReportsHeader from "../../../../../hoc/researcher_reports_header";
+
 import classNames from "classnames";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
@@ -7,11 +9,10 @@ import { Link, withRouter } from "react-router-dom";
 
 import moment from "moment";
 
-import ManageUserHeader from "../../../hoc/manage_user_header";
-
-import AddUserDialog from "../Admin/Dialog/add_user";
-
 import { connect } from "react-redux";
+
+import { getAllResearchersReports } from "../../../../../actions/user_actions";
+
 
 import {
   Grid,
@@ -46,16 +47,11 @@ import {
 
 import { lighten } from "@material-ui/core/styles/colorManipulator";
 
-import {
-  getAllResearchers,
-  clearAllResearchers,
-  removeResearchers,
-  getRequestUserCount
-} from "../../../actions/user_actions";
-// function createData(name, calories, fat, carbs, protein) {
-//   counter += 1;
-//   return { id: counter, name, calories, fat, carbs, protein };
-// }
+import ReactExport from "react-data-export";
+
+const ExcelFile = ReactExport.ExcelFile;
+const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
+const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -69,13 +65,13 @@ function desc(a, b, orderBy) {
 
 function stableSort(array, cmp) {
   const stabilizedThis = array.map((el, index) => [el, index]);
+
   stabilizedThis.sort((a, b) => {
     const order = cmp(a[0], b[0]);
     if (order !== 0) return order;
     return a[1] - b[1];
   });
-
-  
+  // console.log(stabilizedThis.map(el => el[0]))
   return stabilizedThis.map(el => el[0]);
 }
 
@@ -87,30 +83,70 @@ function getSorting(order, orderBy) {
 
 const rows = [
   {
-    id: "name",
+    id: "no",
     numeric: false,
     disablePadding: false,
-    label: "ຊື່ ແລະ ນາມສະກຸນ"
+    label: "ລ/ດ"
   },
-  { id: "gender.name", numeric: false, disablePadding: false, label: "ເພດ" },
   {
-    id: "affiliation.department.name",
+    id: "department",
     numeric: false,
     disablePadding: false,
     label: "ພາກວິຊາ"
   },
-  { id: "dateOfBirth", numeric: false, disablePadding: false, label: "ອາຍຸ" },
   {
-    id: "degree.name",
+    id: "bachelorCount",
     numeric: false,
     disablePadding: false,
-    label: "ວຸດທິ"
+    label: "ປະລິນຍາຕີ"
   },
   {
-    id: "researchCount",
+    id: "masterCount",
     numeric: false,
     disablePadding: false,
-    label: "ຈໍານວນຜົນງານ"
+    label: "ປະລິນຍາໂທ"
+  },
+  {
+    id: "doctorialCount",
+    numeric: false,
+    disablePadding: false,
+    label: "ປະລິນຍາເອກ"
+  },
+  {
+    id: "femaleCount",
+    numeric: false,
+    disablePadding: false,
+    label: "ຍິງ"
+  },
+  {
+    id: "maleCount",
+    numeric: false,
+    disablePadding: false,
+    label: "ຊາຍ"
+  },
+  {
+    id: "age18to30Count",
+    numeric: false,
+    disablePadding: false,
+    label: "18-30"
+  },
+  {
+    id: "age31to45Count",
+    numeric: false,
+    disablePadding: false,
+    label: "31-45"
+  },
+  {
+    id: "age46to65Count",
+    numeric: false,
+    disablePadding: false,
+    label: "46-65"
+  },
+  {
+    id: "allCount",
+    numeric: false,
+    disablePadding: false,
+    label: "ທັງຫມົດ"
   }
   // {
   //   id: "actions",
@@ -139,14 +175,6 @@ class EnhancedTableHead extends React.Component {
     return (
       <TableHead>
         <TableRow>
-          <TableCell padding="checkbox">
-            <Checkbox
-              indeterminate={numSelected > 0 && numSelected < rowCount}
-              checked={numSelected === rowCount}
-              onChange={onSelectAllClick}
-              color="primary"
-            />
-          </TableCell>
           {rows.map(
             row => (
               <TableCell
@@ -234,7 +262,7 @@ let EnhancedTableToolbar = props => {
     openDeleteDialog,
     researchersCount,
     openAddUserDialog,
-    handleAddNewUser,
+    data,
     userId
   } = props;
   let isUser = false;
@@ -278,7 +306,7 @@ let EnhancedTableToolbar = props => {
                 }}
                 id="tableTitle"
               >
-                ນັກຄົ້ນຄວ້າ{" "}
+                ຈໍານວນນັກຄົ້ນຄວ້າ{" "}
                 <div
                   style={{
                     fontWeight: "normal",
@@ -337,38 +365,38 @@ let EnhancedTableToolbar = props => {
                   </>
                 ) : (
                   <>
-                  {numSelected === 1 ? (
-                    <>
-                      <Tooltip title="ແກ້ໄຂ">
-                        <IconButton
-                          onClick={() => {
-                            console.log("click");
-                          }}
-                          style={{ marginRight: "0px" }}
-                        >
-                          <EditOutlined />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="ເບິ່ງ">
-                        <IconButton
-                          component={Link}
-                          to={`/profile/${selected[0]}`}
-                          style={{ marginRight: "0px" }}
-                        >
-                          <VisibilityOutlined />
-                        </IconButton>
-                      </Tooltip>
-                    </>
-                  ) : null}
-                  <Tooltip title="ລຶບ">
-                    <IconButton
-                      aria-label="Delete"
-                      disabled
-                      style={{ marginRight: "8px" }}
-                    >
-                      <DeleteOutline />
-                    </IconButton>
-                  </Tooltip>
+                    {numSelected === 1 ? (
+                      <>
+                        <Tooltip title="ແກ້ໄຂ">
+                          <IconButton
+                            onClick={() => {
+                              console.log("click");
+                            }}
+                            style={{ marginRight: "0px" }}
+                          >
+                            <EditOutlined />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="ເບິ່ງ">
+                          <IconButton
+                            component={Link}
+                            to={`/profile/${selected[0]}`}
+                            style={{ marginRight: "0px" }}
+                          >
+                            <VisibilityOutlined />
+                          </IconButton>
+                        </Tooltip>
+                      </>
+                    ) : null}
+                    <Tooltip title="ລຶບ">
+                      <IconButton
+                        aria-label="Delete"
+                        disabled
+                        style={{ marginRight: "8px" }}
+                      >
+                        <DeleteOutline />
+                      </IconButton>
+                    </Tooltip>
                   </>
                 )}
               </>
@@ -382,15 +410,25 @@ let EnhancedTableToolbar = props => {
                     <FilterListOutlined />
                   </IconButton>
                 </Tooltip>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => {
-                    openAddUserDialog();
-                  }}
-                >
-                  ເພີ່ມ
-                </Button>
+                <ExcelFile name="ຈໍານວນນັກຄົ້ນຄວ້າ" element={<Button variant="contained" >Download Data</Button>}>
+                <ExcelSheet data={data} name="ຈໍານວນນັກຄົ້ນຄວ້າ">
+                    <ExcelColumn name="Saysettha OT" label="ລ/ດ" value={(col) => 1}/>
+                    <ExcelColumn label="ປະລິນຍາຕີ" value="bachelorCount"/>
+                    <ExcelColumn label="ປະລິນຍາໂທ" value="masterCount"/>
+                    <ExcelColumn label="ປະລິນຍາເອກ" value="doctorialCount"/>
+                    <ExcelColumn label="ຍິງ" value="femaleCount"/>
+                    <ExcelColumn label="ຊາຍ" value="maleCount"/>
+                    <ExcelColumn label="18-30" value="age18to30Count"/>
+                    <ExcelColumn label="31-45" value="age31to45Count"/>
+                    <ExcelColumn label="46-65" value="age46to65Count"/>
+                    <ExcelColumn label="ທັງຫມົດ" value="allCount"/>
+                    {
+                      // <ExcelColumn label="Marital Status"
+                      //            value={(col) => col.is_married ? "Married" : "Single"}/>
+                    }
+                </ExcelSheet>
+                
+            </ExcelFile>
               </>
             )}
           </div>
@@ -419,19 +457,16 @@ const styles = theme => ({
   }
 });
 
-class ResearcherAdmin extends React.Component {
+class AllResearcherReports extends Component {
   state = {
+    tabNumber: 0,
     order: "asc",
-    orderBy: "name",
+    orderBy: "bachelorCount",
     selected: [],
     data: [],
     page: 0,
-    rowsPerPage: 10,
-    openDeleteConfirmationDialog: false,
-    tabNumber: 0,
-    openAddUserDialog: false
+    rowsPerPage: 1
   };
-
   handleRequestSort = (event, property) => {
     const orderBy = property;
     let order = "desc";
@@ -442,18 +477,6 @@ class ResearcherAdmin extends React.Component {
 
     this.setState({ order, orderBy });
   };
-
-  handleAddUserDialogClose() {
-    this.setState({
-      openAddUserDialog: false
-    });
-  }
-
-  handleOpenAddUserDialog() {
-    this.setState({
-      openAddUserDialog: true
-    });
-  }
 
   handleSelectAllClick = event => {
     if (event.target.checked) {
@@ -496,61 +519,23 @@ class ResearcherAdmin extends React.Component {
 
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
-  componentDidMount() {}
-
   componentWillMount() {
-    document.title =
-      "ເຄຶ່ອງມືຈັດການນັກຄົ້ນຄວ້າ (ນັກຄົ້ນຄວ້າ) - FNS Researcher Profiles";
-    this.props.dispatch(getAllResearchers()).then(response => {
+    this.props.dispatch(getAllResearchersReports()).then(response => {
       this.setState({
-        data: this.props.user.allUsers
-      });
-    });
-    this.props.dispatch(getRequestUserCount());
-  }
-
-  componentWillUnmount() {
-    // this.props.dispatch(clearAllResearchers())
-  }
-
-  componentDidUpdate(prevProps, prevState) {}
-
-  handleOpenDeleteConfirmationDialog() {
-    this.setState({
-      openDeleteConfirmationDialog: true
-    });
-  }
-
-  handleAddNewUser() {
-    this.props.dispatch(getAllResearchers()).then(response => {
-      this.setState({
-        data: this.props.user.allUsers,
-        openAddUserDialog: false
+        data: this.props.user.allResearchersReports
       });
     });
   }
 
-  handleDeleteResearchConfirmationClose() {
-    this.setState({
-      openDeleteConfirmationDialog: false
-    });
-  }
+  handleRequestSort = (event, property) => {
+    const orderBy = property;
+    let order = "desc";
 
-  handleResearcherDeletetion = () => {
-    this.props
-      .dispatch(removeResearchers(this.state.selected))
-      .then(response => {
-        console.log(response.payload.success);
-        if (response.payload.success) {
-          this.props.dispatch(getAllResearchers()).then(response => {
-            this.setState({
-              data: this.props.user.allUsers,
-              openDeleteConfirmationDialog: false,
-              selected: []
-            });
-          });
-        }
-      });
+    if (this.state.orderBy === property && this.state.order === "desc") {
+      order = "asc";
+    }
+
+    this.setState({ order, orderBy });
   };
 
   render() {
@@ -558,15 +543,13 @@ class ResearcherAdmin extends React.Component {
     const { data, order, orderBy, selected, rowsPerPage, page } = this.state;
     const emptyRows =
       rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
-
     return (
       <>
-        <ManageUserHeader
+        <RsearcherReportsHeader
           props={this.props}
           children={this.props.children}
           tab={this.state.tabNumber}
           changeTab={tabNumber => this.changeTab(tabNumber)}
-          requestCount={this.props.user.userRegisterationCount}
         >
           <Grid
             container
@@ -576,30 +559,20 @@ class ResearcherAdmin extends React.Component {
             <Grid item xs sm lg md />
 
             <Grid item xs={11} sm={11} lg={11} md={11}>
-              {this.props.user.allUsers ? (
+              {this.props.user.allResearchersReports ? (
                 <>
                   <EnhancedTableToolbar
                     numSelected={selected.length}
                     selected={this.state.selected}
-                    openDeleteDialog={() => {
-                      this.handleOpenDeleteConfirmationDialog();
-                    }}
-                    openAddUserDialog={() => {
-                      this.handleOpenAddUserDialog();
-                    }}
-                    researchersCount={
-                      this.props.user.allUsers
-                        ? `(${this.props.user.allUsers.length})`
-                        : null
-                    }
-                    userId={this.props.user.userData._id}
+                    data = {this.state.data}
                   />
                   <Paper
                     style={{
                       boxShadow: "none",
                       border: "1px solid #d8d8d8",
 
-                      borderRadius: 0
+                      borderRadius: 0,
+                      borderBottom: 0
                     }}
                   >
                     <div className={classes.tableWrapper}>
@@ -616,33 +589,22 @@ class ResearcherAdmin extends React.Component {
                           rowCount={data.length}
                         />
                         <TableBody>
+                          {console.log(this.state.data)}
                           {stableSort(data, getSorting(order, orderBy))
                             .slice(
                               page * rowsPerPage,
                               page * rowsPerPage + rowsPerPage
                             )
-                            .map(n => {
+                            .map((n, index) => {
                               const isSelected = this.isSelected(n._id);
                               return (
-                                <TableRow
-                                  hover
-                                  role="checkbox"
-                                  aria-checked={isSelected}
-                                  tabIndex={-1}
-                                  key={n.id}
-                                  selected={isSelected}
-                                  onClick={event =>
-                                    this.handleClick(event, n._id)
-                                  }
-                                >
-                                  <TableCell padding="checkbox">
-                                    <Checkbox
-                                      color="primary"
-                                      checked={isSelected}
-                                      onClick={event =>
-                                        this.handleClick(event, n._id)
-                                      }
-                                    />
+                                <TableRow tabIndex={-1} key={n.id}>
+                                  <TableCell
+                                    component="th"
+                                    scope="row"
+                                    padding="dense"
+                                  >
+                                    {index + 1}
                                   </TableCell>
                                   <TableCell
                                     component="th"
@@ -650,51 +612,89 @@ class ResearcherAdmin extends React.Component {
                                     padding="dense"
                                   >
                                     <Typography variant="inherit">{`${
-                                      n.prefix
-                                    } ${n.name} ${n.lastname}`}</Typography>
+                                      n.bachelorCount
+                                    }`}</Typography>
                                   </TableCell>
                                   <TableCell
-                                    align="left"
                                     component="th"
                                     scope="row"
                                     padding="dense"
                                   >
                                     <Typography variant="inherit">{`${
-                                      n["gender.name"]
-                                    }`}</Typography>{" "}
+                                      n.bachelorCount
+                                    }`}</Typography>
                                   </TableCell>
-
                                   <TableCell
-                                    align="left"
                                     component="th"
                                     scope="row"
                                     padding="dense"
                                   >
-                                    {" "}
                                     <Typography variant="inherit">{`${
-                                      n["affiliation.department.name"]
-                                    }`}</Typography>{" "}
-                                  </TableCell>
-                                  <TableCell align="left" padding="dense">
-                                    {moment().diff(
-                                      n.dateOfBirth,
-                                      "years",
-                                      false
-                                    )}
-                                  </TableCell>
-                                  <TableCell padding="dense">
-                                    <Typography variant="inherit">
-                                      {n["degree.name"]
-                                        ? `${n["degree.name"]}`
-                                        : ""}
-                                    </Typography>
+                                      n.masterCount
+                                    }`}</Typography>
                                   </TableCell>
                                   <TableCell
-                                    padding="dense"
                                     component="th"
                                     scope="row"
+                                    padding="dense"
                                   >
-                                    {n.researchCount}
+                                    <Typography variant="inherit">{`${
+                                      n.doctorialCount
+                                    }`}</Typography>
+                                  </TableCell>
+                                  <TableCell
+                                    component="th"
+                                    scope="row"
+                                    padding="dense"
+                                  >
+                                    <Typography variant="inherit">{`${
+                                      n.femaleCount
+                                    }`}</Typography>
+                                  </TableCell>
+                                  <TableCell
+                                    component="th"
+                                    scope="row"
+                                    padding="dense"
+                                  >
+                                    <Typography variant="inherit">{`${
+                                      n.maleCount
+                                    }`}</Typography>
+                                  </TableCell>
+                                  <TableCell
+                                    component="th"
+                                    scope="row"
+                                    padding="dense"
+                                  >
+                                    <Typography variant="inherit">{`${
+                                      n.age18to30Count
+                                    }`}</Typography>
+                                  </TableCell>
+                                  <TableCell
+                                    component="th"
+                                    scope="row"
+                                    padding="dense"
+                                  >
+                                    <Typography variant="inherit">{`${
+                                      n.age31to45Count
+                                    }`}</Typography>
+                                  </TableCell>
+                                  <TableCell
+                                    component="th"
+                                    scope="row"
+                                    padding="dense"
+                                  >
+                                    <Typography variant="inherit">{`${
+                                      n.age46to65Count
+                                    }`}</Typography>
+                                  </TableCell>
+                                  <TableCell
+                                    component="th"
+                                    scope="row"
+                                    padding="dense"
+                                  >
+                                    <Typography variant="inherit">{`${
+                                      n.allCount
+                                    }`}</Typography>
                                   </TableCell>
                                 </TableRow>
                               );
@@ -707,25 +707,28 @@ class ResearcherAdmin extends React.Component {
                         </TableBody>
                       </Table>
                     </div>
-                    <TablePagination
-                      rowsPerPageOptions={[10, 15, 25]}
-                      component="div"
-                      count={data.length}
-                      rowsPerPage={rowsPerPage}
-                      page={page}
-                      backIconButtonProps={{
-                        "aria-label": "ຫນ້າກ່ອນຫນ້າ"
-                      }}
-                      nextIconButtonProps={{
-                        "aria-label": "ຫນ້າຕໍ່ໄປ"
-                      }}
-                      onChangePage={this.handleChangePage}
-                      onChangeRowsPerPage={this.handleChangeRowsPerPage}
-                      labelRowsPerPage="ແຖວຕໍ່ຫນ້າ"
-                      labelDisplayedRows={({ from, to, count }) =>
-                        `${from}-${to} ໃນ ${count}`
-                      }
-                    />
+                    
+                    {
+                      //   <TablePagination
+                      //   rowsPerPageOptions={[10, 15, 25]}
+                      //   component="div"
+                      //   count={data.length}
+                      //   rowsPerPage={rowsPerPage}
+                      //   page={page}
+                      //   backIconButtonProps={{
+                      //     "aria-label": "ຫນ້າກ່ອນຫນ້າ"
+                      //   }}
+                      //   nextIconButtonProps={{
+                      //     "aria-label": "ຫນ້າຕໍ່ໄປ"
+                      //   }}
+                      //   onChangePage={this.handleChangePage}
+                      //   onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                      //   labelRowsPerPage="ແຖວຕໍ່ຫນ້າ"
+                      //   labelDisplayedRows={({ from, to, count }) =>
+                      //     `${from}-${to} ໃນ ${count}`
+                      //   }
+                      // />
+                    }
                   </Paper>
                 </>
               ) : (
@@ -753,54 +756,13 @@ class ResearcherAdmin extends React.Component {
             </Grid>
             <Grid item xs sm lg md />
           </Grid>
-        </ManageUserHeader>
-
-        <Dialog
-          open={this.state.openDeleteConfirmationDialog}
-          onClose={() => this.handleDeleteResearchConfirmationClose()}
-          maxWidth="xs"
-        >
-          <DialogTitle style={{ fontFamily: "'Noto Sans Lao UI', sans serif" }}>
-            ຕ້ອງການລຶບຂໍ້ມູນນີ້ແທ້ບໍ?
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText
-              style={{ fontFamily: "'Noto Sans Lao UI', sans serif" }}
-            >
-              ທ່ານກໍາລັງຈະລຶບຂໍ້ມູນນັກຄົ້ນຄວ້ານີ້.
-              ທ່ານແນ່ໃຈຫລືບໍ່ວ່າຈະລຶບຂໍ້ມູນດັ່ງກ່າວ?
-              ການກະທໍາຕໍ່ໄປນີ້ບໍ່ສາມາດແກ້ໄຂໄດ້
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              onClick={() => this.handleDeleteResearchConfirmationClose()}
-            >
-              ຍົກເລີກ
-            </Button>
-            <Button
-              onClick={this.handleResearcherDeletetion}
-              style={{ color: "#f44336" }}
-              autoFocus
-            >
-              ຢືນຢັນ
-            </Button>
-          </DialogActions>
-        </Dialog>
-
-        <AddUserDialog
-          open={this.state.openAddUserDialog}
-          close={() => this.handleAddUserDialogClose()}
-          save={() => {
-            this.handleAddNewUser();
-          }}
-        />
+        </RsearcherReportsHeader>
       </>
     );
   }
 }
 
-ResearcherAdmin.propTypes = {
+AllResearcherReports.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
@@ -809,7 +771,6 @@ const mapStateToProps = state => {
     user: state.user
   };
 };
-
 export default withRouter(
-  connect(mapStateToProps)(withStyles(styles)(ResearcherAdmin))
+  connect(mapStateToProps)(withStyles(styles)(AllResearcherReports))
 );

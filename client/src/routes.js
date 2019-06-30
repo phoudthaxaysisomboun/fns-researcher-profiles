@@ -23,6 +23,8 @@ import NewComerResearchersAdmin from './components/User/Admin/newcomer'
 import OutstandingResearchersAdmin from './components/User/Admin/outstanding'
 import ResearchesAdmin from './components/User/Admin/researches'
 
+import AllResearcherReports from './components/User/Admin/Reports/Researcher'
+
 const Routes = () => {
   return (
     <Layout>
@@ -43,6 +45,8 @@ const Routes = () => {
         <Route path="/admin/researchers/requests" exact component={Auth(RequestRegisterAdmin, true, true)} />
         <Route path="/admin/researchers/outstanding" exact component={Auth(OutstandingResearchersAdmin, true, true)} />
         <Route path="/admin/researchers/newcomer" exact component={Auth(NewComerResearchersAdmin, true, true)} />
+
+        <Route path="/admin/reports/researchers" exact component={Auth(AllResearcherReports, true, true)} />
 
       </Switch>
     </Layout>
