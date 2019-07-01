@@ -58,7 +58,7 @@ import {
   REMOVE_NEW_RESEARCHER,
   GET_NOT_OUTSTANDING_RESEARCHER,
   GET_NOT_NEW_RESEARCHER,
-  GET_ALL_RESEARCHERS_REPORTS
+  GET_ALL_RESEARCHERS_REPORTS,CLEAR_ALL_RESEARCHERS_REPORTS
 } from "./types";
 
 import {
@@ -643,16 +643,27 @@ export function getRequestUserCount() {
   };
 }
 
-export function getAllResearchersReports() {
+export function getAllResearchersReports(department, from, to) {
+  console.log(department)
+
   const request = axios
-    .post(`${RESEARCHER_SERVER}/reports/all_researchers`)
+    .post(`${RESEARCHER_SERVER}/reports/all_researchers?department=${department}&from=${from}&to=${to}`)
     .then(response => response.data);
-  return {
-    type: GET_ALL_RESEARCHERS_REPORTS,
-    payload: request
-  };
+    return {
+      type: GET_ALL_RESEARCHERS_REPORTS,
+      payload: request
+    };
+  
+  
 }
 
+
+export function clearAllResearchersReports() {
+  return {
+    type: CLEAR_ALL_RESEARCHERS_REPORTS,
+    payload: ''
+  };
+}
 export function confirmUser(id) {
   const request = axios
     .post(`${USER_SERVER}/accept_registers?id=${id}`)

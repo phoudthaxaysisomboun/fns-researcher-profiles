@@ -258,28 +258,28 @@ class Layout extends Component {
   };
 
   componentDidMount() {
-    // if (
-    //   this.props.user &&
-    //   this.props.user.userData &&
-    //   this.props.user.userData.isAdmin
-    // ) {
-    //   this.setState({
-    //     open: true
-    //   });
-    // }
+    if (
+      this.props.user &&
+      this.props.user.userData &&
+      this.props.user.userData.isAdmin
+    ) {
+      this.setState({
+        open: true
+      });
+    }
     window.addEventListener("scroll", this.handleScroll);
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps !== this.props) {
       if (this.props.user.userData.isAdmin) {
-        this.setState({
-          open: true
-        });
+        // this.setState({
+        //   open: true
+        // });
       }
       if (prevProps.user.userData !== this.props.user.userData) {
         this.props.dispatch(getRequestUserCount()).then(response => {
-          console.log(response.data);
+          // console.log(response.data);
         });
       }
     }

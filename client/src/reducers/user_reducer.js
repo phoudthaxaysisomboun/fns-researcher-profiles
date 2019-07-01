@@ -56,7 +56,8 @@ import {
   REMOVE_NEW_RESEARCHER,
   GET_NOT_OUTSTANDING_RESEARCHER,
   GET_NOT_NEW_RESEARCHER,
-  GET_ALL_RESEARCHERS_REPORTS
+  GET_ALL_RESEARCHERS_REPORTS,
+  CLEAR_ALL_RESEARCHERS_REPORTS
 } from "../actions/types";
 import { access } from "fs";
 
@@ -415,6 +416,11 @@ export default function(state = {}, action) {
         ...state,
         canceledUser: action.payload
       };
+    case CLEAR_ALL_RESEARCHERS_REPORTS:
+      return {
+        ...state,
+        allResearchersReports: action.payload
+      };
     case GET_ALL_RESEARCHERS_REPORTS:
       let bachelorCount = 0
       let masterCount = 0
@@ -434,10 +440,11 @@ export default function(state = {}, action) {
 
       var allResearchersReports = [{}]
 
-         action.payload.allResearchersReports.map(function(el, index) {
+      if (action.payload.allResearchersReports) {
+        action.payload.allResearchersReports.map(function(el, index) {
           var o = Object.assign({}, el);
           
-
+  
          if (o["degree"]) {
           
           bachelorCount = o["degree"]._id === "5d0bab397ba3dd53b44d06df" ? bachelorCount + 1 : bachelorCount
@@ -445,26 +452,26 @@ export default function(state = {}, action) {
           doctorialCount = o["degree"]._id === "5d0bab637ba3dd53b44d06e1" ? doctorialCount + 1 : doctorialCount
          }
          
-
+  
          if (o["gender"]) {
           
           maleCount = o["gender"]._id === "5cb2c97c1331746efcc3b1fb" ? maleCount + 1 : maleCount
           femaleCount = o["gender"]._id === "5cb2c98e1331746efcc3b1fd" ? femaleCount + 1 : femaleCount
           
          }
-
+  
          if (o["dateOfBirth"]) {
           
           age18to30Count = (moment().diff(o.dateOfBirth,"years", false) >= 18) &&  (moment().diff(o.dateOfBirth,"years", false) <= 30) ? age18to30Count + 1 : age18to30Count
          
           age31to45Count= (moment().diff(o.dateOfBirth,"years", false) >= 31) &&  (moment().diff(o.dateOfBirth,"years", false) <= 45) ? age31to45Count + 1 : age31to45Count
-
+  
           age46to65Count= (moment().diff(o.dateOfBirth,"years", false) >= 46) &&  (moment().diff(o.dateOfBirth,"years", false) <= 65) ? age46to65Count + 1 : age46to65Count
          }
           
           return null;
         });
-
+  
         allResearchersReports[0].bachelorCount = bachelorCount
         allResearchersReports[0].masterCount = masterCount
         allResearchersReports[0].doctorialCount = doctorialCount
@@ -475,6 +482,7 @@ export default function(state = {}, action) {
         allResearchersReports[0].age46to65Count = age46to65Count
         allResearchersReports[0].allCount = action.payload.size
         allResearchersReports[0]._id = 1
+      }
 
       return {
         ...state,
