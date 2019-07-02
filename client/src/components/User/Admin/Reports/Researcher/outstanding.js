@@ -3,20 +3,9 @@ import classNames from "classnames";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 
-import Chart from 'react-apexcharts'
+import Chart from "react-apexcharts";
 
 import { Link, withRouter } from "react-router-dom";
-
-import {
-    XYPlot,
-    XAxis,
-    YAxis,
-    VerticalGridLines,
-    HorizontalGridLines,
-    VerticalBarSeries,
-    VerticalBarSeriesCanvas,
-    LabelSeries
-  } from "react-vis"
 
 import moment from "moment";
 
@@ -55,17 +44,15 @@ import {
   TextField
 } from "@material-ui/core";
 
-import {
-    SaveAltOutlined
-} from "@material-ui/icons";
+import { SaveAltOutlined } from "@material-ui/icons";
 
 import { lighten } from "@material-ui/core/styles/colorManipulator";
 
 import {
-
   clearAllResearchersListsReports,
   getAllResearchersListsReports,
-  getDepartments
+  getDepartments,
+  getOutstandingReports
 } from "../../../../../actions/user_actions";
 // function createData(name, calories, fat, carbs, protein) {
 //   counter += 1;
@@ -77,16 +64,6 @@ import ReactExport from "react-data-export";
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
-const ExcelRow = ReactExport.ExcelFile.ExcelRow;
-
-const greenData = [{x: 'A', y: 10}, {x: 'B', y: 5}, {x: 'C', y: 15}];
-
-const blueData = [{x: 'A', y: 12}, {x: 'B', y: 2}, {x: 'C', y: 11}];
-
-const labelData = greenData.map((d, idx) => ({
-  x: d.x,
-  y: Math.max(greenData[idx].y, blueData[idx].y)
-}));
 
 
 function desc(a, b, orderBy) {
@@ -117,28 +94,26 @@ function getSorting(order, orderBy) {
 }
 
 const rows = [
-    {
-        id: "no",
-        numeric: false,
-        disablePadding: false,
-        label: "ລ/ດ",
+  {
+    id: "no",
+    numeric: false,
+    disablePadding: false,
+    label: "ລ/ດ",
     hideSortIcon: true,
     active: false
-      },
+  },
   {
     id: "name",
     numeric: false,
     disablePadding: false,
     label: "ຊື່ ແລະ ນາມສະກຸນ"
   },
-  { id: "gender.name", numeric: false, disablePadding: false, label: "ເພດ" },
   {
     id: "affiliation.department",
     numeric: false,
     disablePadding: false,
     label: "ພາກວິຊາ"
   },
-  { id: "dateOfBirth", numeric: false, disablePadding: false, label: "ອາຍຸ" },
   {
     id: "degree",
     numeric: false,
@@ -146,10 +121,16 @@ const rows = [
     label: "ວຸດທິ"
   },
   {
-    id: "research",
+    id: "outstanding.date",
     numeric: false,
     disablePadding: false,
-    label: "ຈໍານວນຜົນງານ"
+    label: "ວັນໄດ້ຮັບ"
+  },
+  {
+    id: "outstanding.description",
+    numeric: false,
+    disablePadding: false,
+    label: "ລາຍລະອຽດ"
   }
   // {
   //   id: "actions",
@@ -167,10 +148,7 @@ class EnhancedTableHead extends React.Component {
   };
 
   render() {
-    const {
-      order,
-      orderBy,
-    } = this.props;
+    const { order, orderBy } = this.props;
 
     return (
       <TableHead>
@@ -255,14 +233,13 @@ const toolbarStyles = theme => ({
 });
 
 class EnhancedTableToolbar extends React.Component {
-  
   render() {
     const {
-        numSelected,
-        selected,
-        classes,
-        researchersCount,
-        departments,
+      numSelected,
+      selected,
+      classes,
+      researchersCount,
+      departments,
       data,
       selectedValue,
       handleDepartmentChange,
@@ -272,180 +249,178 @@ class EnhancedTableToolbar extends React.Component {
       handleEndBlur,
       handleStartChange,
       handleStartBlur
-      } = this.props;
+    } = this.props;
     return (
-        <Toolbar
-          className={classNames(classes.root, {
-            [classes.highlight]: numSelected > 0
-          })}
-          style={{ paddingLeft: 0, paddingRight: 0, borderWidth: "1px" }}
+      <Toolbar
+        className={classNames(classes.root, {
+          [classes.highlight]: numSelected > 0
+        })}
+        style={{ paddingLeft: 0, paddingRight: 0, borderWidth: "1px" }}
+      >
+        <Grid
+          container
+          alignItems="center"
+          style={{ marginTop: "16px", marginBottom: "16px" }}
         >
-          <Grid
-            container
-            alignItems="center"
-            style={{ marginTop: "16px", marginBottom: "16px" }}
-          >
-            <Grid item xs>
-              <div>
+          <Grid item xs>
+            <div>
               <Typography
-              variant="inherit"
-              style={{
-                fontSize: "20px",
-                fontWeight: "500",
-                paddingLeft: 0,
-                marginLeft: 0
-              }}
-              id="tableTitle"
-            >
-              ລາຍຊື່ນັກຄົ້ນຄວ້າ{" "}
-              <div
+                variant="inherit"
                 style={{
-                  fontWeight: "normal",
-                  display: "inline",
-                  fontFamily: "'Roboto', sans-serif",
-                  color: "#898989",
-                  fontSize: "16px"
+                  fontSize: "20px",
+                  fontWeight: "500",
+                  paddingLeft: 0,
+                  marginLeft: 0
                 }}
+                id="tableTitle"
               >
-                {researchersCount}
-              </div>
-            </Typography>
-              </div>
-            </Grid>
-            <Grid item xs={8} align="right">
-              <div className={classes.actions}>
-              <FormControl
-            style={{
-              minWidth: 120,
-              textAlign: "-webkit-left",
-              marginRight: "8px"
-            }}
-          >
-            <TextField
-              id="standard-name"
-              label="ແຕ່"
-              value={startValue}
-              onChange={event => {
-                handleStartChange(event);
-              }}
-              onBlur={event => {
-                handleStartBlur(event);
-              }}
-              type="date"
-              margin="none"
-            />
-          </FormControl>
-          <FormControl
-            style={{
-              minWidth: 120,
-              textAlign: "-webkit-left",
-              marginRight: "8px"
-            }}
-          >
-            <TextField
-              id="standard-name"
-              label="ຮອດ"
-              value={endValue}
-              onChange={event => {
-                handleEndChange(event);
-              }}
-              onBlur={event => {
-                handleEndBlur(event);
-              }}
-              type="date"
-              margin="none"
-            />
-          </FormControl>
-
-          <FormControl
-            style={{
-              minWidth: 120,
-              textAlign: "-webkit-left",
-              marginRight: "8px"
-            }}
-          >
-            <InputLabel shrink htmlFor="age-label-placeholder">
-              ພາກວິຊາ
-            </InputLabel>
-            <Select
-              value={selectedValue}
-              onChange={event => {
-                handleDepartmentChange(event);
-              }}
-              style={{ borderBottom: 0, marginTop: "16px" }}
-              input={
-                <Input
+                ລາຍຊື່ນັກຄົ້ນຄວ້າດີເດັ່ນ{" "}
+                <div
                   style={{
-                    fontFamily: "'Noto Sans Lao UI', sans serif",
-                    borderBottom: 0
-                  }}
-                  id="age-label-placeholder"
-                />
-              }
-              displayEmpty
-            >
-              <MenuItem
-                style={{
-                  fontFamily: "'Noto Sans Lao UI', sans serif",
-                  borderBottom: 0
-                }}
-                value=""
-              >
-                <em
-                  style={{
-                    fontFamily: "'Noto Sans Lao UI', sans serif",
-                    fontStyle: "normal"
+                    fontWeight: "normal",
+                    display: "inline",
+                    fontFamily: "'Roboto', sans-serif",
+                    color: "#898989",
+                    fontSize: "16px"
                   }}
                 >
-                  ທັງຫມົດ
-                </em>
-              </MenuItem>
-              {departments.map((value, index, id) => (
-                <MenuItem
-                  style={{
-                    fontFamily: "'Noto Sans Lao UI', sans serif"
-                  }}
-                  value={value._id}
-                >
-                  <Typography variant="inherit">
-                    {value.name}
-                  </Typography>{" "}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <ExcelFile
-            name="ລາຍຊື່ນັກຄົ້ນຄວ້າ"
-            element={
-              <Tooltip title="ດາວໂຫລດຟາຍລ໌ Excel">
-                <IconButton style={{ marginRight: "0px" }}>
-                  <SaveAltOutlined />
-                </IconButton>
-              </Tooltip>
-            }
-          >
-            <ExcelSheet data={data} name="ລາຍຊື່ນັກຄົ້ນຄວ້າ">
-             
-              <ExcelColumn label="ລ/ດ" value="no" />
-              <ExcelColumn label="ຊື່ ແລະ ນາມສະກຸນ" value="myName" />
-              <ExcelColumn label="ເພດ" value="gender.name" />
-              <ExcelColumn label="ພາກວິຊາ" value="affiliation.department" />
-              <ExcelColumn label="ອາຍຸ" value="age" />
-              <ExcelColumn label="ວຸດທິ" value="degree" />
-              <ExcelColumn label="ຈໍານວນຜົນງານ" value="research" />
-              {
-                // <ExcelColumn label="Marital Status"
-                //            value={(col) => col.is_married ? "Married" : "Single"}/>
-              }
-            </ExcelSheet>
-          </ExcelFile>
-              </div>
-            </Grid>
+                  {researchersCount}
+                </div>
+              </Typography>
+            </div>
           </Grid>
-        </Toolbar>
-      );
+          <Grid item xs={8} align="right">
+            <div className={classes.actions}>
+              <FormControl
+                style={{
+                  minWidth: 120,
+                  textAlign: "-webkit-left",
+                  marginRight: "8px"
+                }}
+              >
+                <TextField
+                  id="standard-name"
+                  label="ແຕ່"
+                  value={startValue}
+                  onChange={event => {
+                    handleStartChange(event);
+                  }}
+                  onBlur={event => {
+                    handleStartBlur(event);
+                  }}
+                  type="date"
+                  margin="none"
+                />
+              </FormControl>
+              <FormControl
+                style={{
+                  minWidth: 120,
+                  textAlign: "-webkit-left",
+                  marginRight: "8px"
+                }}
+              >
+                <TextField
+                  id="standard-name"
+                  label="ຮອດ"
+                  value={endValue}
+                  onChange={event => {
+                    handleEndChange(event);
+                  }}
+                  onBlur={event => {
+                    handleEndBlur(event);
+                  }}
+                  type="date"
+                  margin="none"
+                />
+              </FormControl>
+
+              <FormControl
+                style={{
+                  minWidth: 120,
+                  textAlign: "-webkit-left",
+                  marginRight: "8px"
+                }}
+              >
+                <InputLabel shrink htmlFor="age-label-placeholder">
+                  ພາກວິຊາ
+                </InputLabel>
+                <Select
+                  value={selectedValue}
+                  onChange={event => {
+                    handleDepartmentChange(event);
+                  }}
+                  style={{ borderBottom: 0, marginTop: "16px" }}
+                  input={
+                    <Input
+                      style={{
+                        fontFamily: "'Noto Sans Lao UI', sans serif",
+                        borderBottom: 0
+                      }}
+                      id="age-label-placeholder"
+                    />
+                  }
+                  displayEmpty
+                >
+                  <MenuItem
+                    style={{
+                      fontFamily: "'Noto Sans Lao UI', sans serif",
+                      borderBottom: 0
+                    }}
+                    value=""
+                  >
+                    <em
+                      style={{
+                        fontFamily: "'Noto Sans Lao UI', sans serif",
+                        fontStyle: "normal"
+                      }}
+                    >
+                      ທັງຫມົດ
+                    </em>
+                  </MenuItem>
+                  {departments.map((value, index, id) => (
+                    <MenuItem
+                      style={{
+                        fontFamily: "'Noto Sans Lao UI', sans serif"
+                      }}
+                      value={value._id}
+                    >
+                      <Typography variant="inherit">{value.name}</Typography>{" "}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <ExcelFile
+                name="ລາຍຊື່ນັກຄົ້ນຄວ້າດີເດັ່ນ"
+                element={
+                  <Tooltip title="ດາວໂຫລດຟາຍລ໌ Excel">
+                    <IconButton style={{ marginRight: "0px" }}>
+                      <SaveAltOutlined />
+                    </IconButton>
+                  </Tooltip>
+                }
+              >
+                <ExcelSheet data={data} name="ລາຍຊື່ນັກຄົ້ນຄວ້າດີເດັ່ນ">
+                  <ExcelColumn label="ລ/ດ" value="no" />
+                  <ExcelColumn label="ຊື່ ແລະ ນາມສະກຸນ" value="myName" />
+           
+                  <ExcelColumn label="ພາກວິຊາ" value="affiliation.department" />
+
+                  <ExcelColumn label="ວຸດທິ" value="degree" />
+                  <ExcelColumn label="ວັນໄດ້ຮັບ" value="outstandingDate" />
+                  <ExcelColumn label="ລາຍລະອຽດ" value="outstanding.description" />
+                  {
+                    // <ExcelColumn label="Marital Status"
+                    //            value={(col) => col.is_married ? "Married" : "Single"}/>
+                  }
+                </ExcelSheet>
+              </ExcelFile>
+            </div>
+          </Grid>
+        </Grid>
+      </Toolbar>
+    );
   }
-};
+}
 
 EnhancedTableToolbar.propTypes = {
   classes: PropTypes.object.isRequired,
@@ -466,38 +441,19 @@ const styles = theme => ({
   }
 });
 
-class AllResearchersList extends React.Component {
+class OutstandingResearchersList extends React.Component {
   state = {
-    order: "asc",
-    orderBy: "name",
+    order: "desc",
+    orderBy: "outstanding.date",
     selected: [],
     data: [],
     page: 0,
     rowsPerPage: 10,
-    tabNumber: 1,
+    tabNumber: 2,
     department: "",
     departmentText: "ທັງຫມົດ",
     start: moment("1996-05-11").format("YYYY-MM-DD"),
-    end: moment().format("YYYY-MM-DD"),
-    useCanvas: false,
-    options: {
-        chart: {
-          id: 'apexchart-example'
-        },
-        xaxis: {
-          categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998]
-        }
-      },
-      series: [{
-        name: 'series-1',
-        data: [30, 40, 45, 50, 49, 60, 70, 91]
-      }, 
-      {
-        name: 'series-2',
-        data: [16, 85, 41, 63, 49, 25, 62, 85]
-      }
-    ]
-    
+    end: moment().format("YYYY-MM-DD")
   };
 
   handleRequestSort = (event, property) => {
@@ -532,7 +488,7 @@ class AllResearchersList extends React.Component {
   };
 
   handleClick = (event, id) => {
-    this.props.history.push(`/profile/${id}`)
+    this.props.history.push(`/profile/${id}`);
   };
 
   handleChangePage = (event, page) => {
@@ -548,21 +504,23 @@ class AllResearchersList extends React.Component {
   componentDidMount() {}
 
   componentWillMount() {
-    document.title = "ລາຍງານລາຍຊື່ນັກຄົ້ນຄວ້າ - FNS Researcher Profiles";
+    document.title = "ລາຍງານນັກຄົ້ນຄວ້າດີເດັ່ນ - FNS Researcher Profiles";
     this.props.dispatch(getDepartments());
+
+
     this.props
       .dispatch(
-        getAllResearchersListsReports(
-          this.state.orderBy,
-          this.state.order,
-          "",
-          "",
-          ""
+        getOutstandingReports(
+            this.state.orderBy,
+            this.state.order,
+            this.state.department,
+            this.state.start,
+            this.state.end
         )
       )
       .then(response => {
         this.setState({
-          data: this.props.user.allResearchersListsReports
+          data: this.props.user.outstandingReports
         });
       });
   }
@@ -572,43 +530,43 @@ class AllResearchersList extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-      const prevDepartment = prevState.department;
+    const prevDepartment = prevState.department;
     const currDepartment = this.state.department;
     if (prevDepartment !== currDepartment) {
-        // this.props.dispatch(clearAllResearchersListsReports());
-        this.props
+      // this.props.dispatch(clearAllResearchersListsReports());
+      this.props
         .dispatch(
-          getAllResearchersListsReports(
+          getOutstandingReports(
             this.state.orderBy,
             this.state.order,
             this.state.department,
             this.state.start,
-            this.state.end,
+            this.state.end
           )
         )
         .then(response => {
           this.setState({
-            data: this.props.user.allResearchersListsReports
+            data: this.props.user.outstandingReports
           });
         });
-      }
+    }
     if (
       prevState.order !== this.state.order ||
       prevState.orderBy !== this.state.orderBy
     ) {
       this.props
         .dispatch(
-          getAllResearchersListsReports(
+          getOutstandingReports(
             this.state.orderBy,
             this.state.order,
             this.state.department,
             this.state.start,
-            this.state.end,
+            this.state.end
           )
         )
         .then(response => {
           this.setState({
-            data: this.props.user.allResearchersListsReports
+            data: this.props.user.outstandingReports
           });
         });
     }
@@ -636,20 +594,20 @@ class AllResearchersList extends React.Component {
 
     // this.props.dispatch(clearAllResearchersListsReports());
     this.props
-    .dispatch(
-      getAllResearchersListsReports(
-        this.state.orderBy,
-        this.state.order,
-        this.state.department,
-        this.state.start,
-        this.state.end,
+      .dispatch(
+        getOutstandingReports(
+          this.state.orderBy,
+          this.state.order,
+          this.state.department,
+          this.state.start,
+          this.state.end
+        )
       )
-    )
-    .then(response => {
-      this.setState({
-        data: this.props.user.allResearchersListsReports
+      .then(response => {
+        this.setState({
+          data: this.props.user.outstandingReports
+        });
       });
-    });
   };
 
   handleStartChange = event => {
@@ -666,20 +624,20 @@ class AllResearchersList extends React.Component {
 
     // this.props.dispatch(clearAllResearchersListsReports());
     this.props
-    .dispatch(
-      getAllResearchersListsReports(
-        this.state.orderBy,
-        this.state.order,
-        this.state.department,
-        this.state.start,
-        this.state.end,
+      .dispatch(
+        getOutstandingReports(
+          this.state.orderBy,
+          this.state.order,
+          this.state.department,
+          this.state.start,
+          this.state.end
+        )
       )
-    )
-    .then(response => {
-      this.setState({
-        data: this.props.user.allResearchersListsReports
+      .then(response => {
+        this.setState({
+          data: this.props.user.outstandingReports
+        });
       });
-    });
   };
 
   render() {
@@ -687,10 +645,6 @@ class AllResearchersList extends React.Component {
     const { data, order, orderBy, selected, rowsPerPage, page } = this.state;
     const emptyRows =
       rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
-
-      const {useCanvas} = this.state;
-    const content = useCanvas ? 'TOGGLE TO SVG' : 'TOGGLE TO CANVAS';
-    const BarSeries = useCanvas ? VerticalBarSeriesCanvas : VerticalBarSeries;
 
     return (
       <>
@@ -708,12 +662,11 @@ class AllResearchersList extends React.Component {
             <Grid item xs sm lg md />
 
             <Grid item xs={11} sm={11} lg={11} md={11}>
-              {this.props.user.allResearchersListsReports ? (
+              {this.props.user.outstandingReports ? (
                 <>
                   <EnhancedTableToolbar
                     numSelected={selected.length}
                     selected={this.state.selected}
-                    
                     openDeleteDialog={() => {
                       this.handleOpenDeleteConfirmationDialog();
                     }}
@@ -721,8 +674,8 @@ class AllResearchersList extends React.Component {
                       this.handleOpenAddUserDialog();
                     }}
                     researchersCount={
-                      this.props.user.allResearchersListsReportsCount
-                        ? `(${this.props.user.allResearchersListsReportsCount})`
+                      this.props.user.outstandingReportsCount
+                        ? `(${this.props.user.outstandingReportsCount})`
                         : null
                     }
                     selectedValue={this.state.department}
@@ -791,16 +744,7 @@ class AllResearchersList extends React.Component {
                                       n.prefix
                                     } ${n.name} ${n.lastname}`}</Typography>
                                   </TableCell>
-                                  <TableCell
-                                    align="left"
-                                    component="th"
-                                    scope="row"
-                                    padding="dense"
-                                  >
-                                    <Typography variant="inherit">{`${
-                                      n["gender.name"]
-                                    }`}</Typography>{" "}
-                                  </TableCell>
+                             
 
                                   <TableCell
                                     align="left"
@@ -813,18 +757,10 @@ class AllResearchersList extends React.Component {
                                       n["affiliation.department"]
                                     }`}</Typography>{" "}
                                   </TableCell>
-                                  <TableCell align="left" padding="dense">
-                                    {moment().diff(
-                                      n.dateOfBirth,
-                                      "years",
-                                      false
-                                    )}
-                                  </TableCell>
+                                  
                                   <TableCell padding="dense">
                                     <Typography variant="inherit">
-                                      {n["degree"]
-                                        ? `${n["degree"]}`
-                                        : ""}
+                                      {n["degree"] ? `${n["degree"]}` : ""}
                                     </Typography>
                                   </TableCell>
                                   <TableCell
@@ -832,7 +768,14 @@ class AllResearchersList extends React.Component {
                                     component="th"
                                     scope="row"
                                   >
-                                    {n["research"]}
+                                    {n["outstanding.date"]}
+                                  </TableCell>
+                                  <TableCell
+                                    padding="dense"
+                                    component="th"
+                                    scope="row"
+                                  >
+                                    {n["outstanding.description"]}
                                   </TableCell>
                                 </TableRow>
                               );
@@ -888,35 +831,16 @@ class AllResearchersList extends React.Component {
                   </Grid>
                 </Paper>
               )}
-
-              <div>
-              <Chart options={this.state.options} series={this.state.series} props type="bar" width={500} height={320} />
-              <Button
-                onClick={() => this.setState({useCanvas: !useCanvas})}
-               
-              >Use Canvas</Button>
-              <XYPlot xType="ordinal" width={500} height={300} xDistance={100}>
-                <VerticalGridLines />
-                <HorizontalGridLines />
-                <XAxis />
-                <YAxis />
-                <BarSeries className="vertical-bar-series-example" data={greenData} />
-                <BarSeries data={blueData} />
-                <LabelSeries data={labelData} getLabel={d => d.x} />
-              </XYPlot>
-            </div>
             </Grid>
             <Grid item xs sm lg md />
           </Grid>
-
-         
         </RsearcherReportsHeader>
       </>
     );
   }
 }
 
-AllResearchersList.propTypes = {
+OutstandingResearchersList.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
@@ -927,5 +851,5 @@ const mapStateToProps = state => {
 };
 
 export default withRouter(
-  connect(mapStateToProps)(withStyles(styles)(AllResearchersList))
+  connect(mapStateToProps)(withStyles(styles)(OutstandingResearchersList))
 );

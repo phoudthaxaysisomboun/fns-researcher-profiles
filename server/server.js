@@ -672,6 +672,115 @@ app.post("/api/researchers/reports/all_researchers_lists", auth, admin, (req, re
   });
 });
 
+
+app.post("/api/researchers/reports/outstanding", auth, admin, (req, res) => {
+  let order = req.query.order ? req.query.order : "asc";
+  let sortBy = req.query.sortBy ? req.query.sortBy : "name";
+  let limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 6;
+  let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0;
+
+  let from = req.query.from ? req.query.from : null
+  let to = req.query.from ? req.query.to : null
+  let department = req.query.department ? req.query.department : null
+  let findArgs = {};
+
+  console.log(sortBy)
+
+  for (let key in req.body.filters) {
+    if (req.body.filters[key].length > 0) {
+      findArgs[key] = req.body.filters[key];
+    }
+  }
+
+  if ((from != null) && (to != null)) {
+    findArgs["outstanding.date"] = {
+      $gte: from,
+      $lte: to
+    }
+  }
+
+  if (department != null) {
+    findArgs["affiliation.department"] = department
+  }
+
+  findArgs["outstanding.isOutstanding"] = true;
+
+  findArgs.emailIsVerified = true;
+  findArgs.accountIsVerified = true;
+  findArgs.active = true;
+
+  User.find(findArgs)
+  .populate("gender")
+  .populate("degree")
+  .sort([[sortBy, order]])
+  .populate("gender")
+  .select("_id name lastname dateOfBirth prefix research degree affiliation outstanding")
+  .populate({
+    path: "affiliation.department"
+  })
+  .exec((err, result) => {
+    return res.status(200).json({
+      outstandingReports: result,
+      size: result.length
+    });
+  });
+});
+
+app.post("/api/researchers/reports/new_researcher", auth, admin, (req, res) => {
+  let order = req.query.order ? req.query.order : "asc";
+  let sortBy = req.query.sortBy ? req.query.sortBy : "name";
+  let limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 6;
+  let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0;
+
+  let from = req.query.from ? req.query.from : null
+  let to = req.query.from ? req.query.to : null
+  let department = req.query.department ? req.query.department : null
+  let findArgs = {};
+
+  console.log(sortBy)
+
+  for (let key in req.body.filters) {
+    if (req.body.filters[key].length > 0) {
+      findArgs[key] = req.body.filters[key];
+    }
+  }
+
+  if ((from != null) && (to != null)) {
+    findArgs["newResearcher.date"] = {
+      $gte: from,
+      $lte: to
+    }
+  }
+
+  if (department != null) {
+    findArgs["affiliation.department"] = department
+  }
+
+  findArgs["newResearcher.isNewResearcher"] = true;
+
+  findArgs.emailIsVerified = true;
+  findArgs.accountIsVerified = true;
+  findArgs.active = true;
+
+  User.find(findArgs)
+  .populate("gender")
+  .populate("degree")
+  .sort([[sortBy, order]])
+  .populate("gender")
+  .select("_id name lastname dateOfBirth prefix research degree affiliation newResearcher")
+  .populate({
+    path: "affiliation.department"
+  })
+  .exec((err, result) => {
+    return res.status(200).json({
+      newResearcherReports: result,
+      size: result.length
+    });
+  });
+});
+
+
+
 app.get("/api/research/all_researches", auth, admin, (req, res) => {
   let order = req.query.order ? req.query.order : "asc";
   let sortBy = req.query.sortBy ? req.query.sortBy : "name";
@@ -737,13 +846,13 @@ app.get(
     findArgs.accountIsVerified = true;
     findArgs.active = true;
 
-    findArgs["newResearcher.isOutstanding"] = true;
+    findArgs["newResearcher.isNewResearcher"] = true;
 
     User.find({
       emailIsVerified: true,
       accountIsVerified: true,
       active: true,
-      "newResearcher.isOutstanding": true
+      "newResearcher.isNewResearcher": true
     })
       .select("_id")
       .exec((err, result) => {
@@ -762,7 +871,7 @@ app.get(
           .populate("degree")
           .populate("gender")
           .select(
-            "_id name lastname dateOfBirth prefix research degree affiliation outstanding"
+            "_id name lastname dateOfBirth prefix research degree affiliation newResearcher"
           )
           .populate({
             path: "affiliation.department"

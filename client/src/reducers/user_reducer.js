@@ -59,12 +59,12 @@ import {
   GET_ALL_RESEARCHERS_REPORTS,
   CLEAR_ALL_RESEARCHERS_REPORTS,
   GET_ALL_RESEARCHERS_LISTS_REPORTS,
-  CLEAR_ALL_RESEARCHERS_LISTS_REPORTS
+  CLEAR_ALL_RESEARCHERS_LISTS_REPORTS,
+  GET_OUTSTANDING_REPORTS,
+  GET_NEWCOMER_REPORTS
 } from "../actions/types";
-import { access } from "fs";
 
 import moment from "moment";
-import { ControlCamera } from "@material-ui/icons";
 
 export default function(state = {}, action) {
   var flattenObject = function(ob) {
@@ -538,6 +538,70 @@ export default function(state = {}, action) {
         ...state,
         allResearchersListsReports,
         allResearchersListsReportsCount: action.payload.size
+      };
+      case GET_OUTSTANDING_REPORTS:
+
+      console.log(action.payload)
+        var outstandingReports
+
+        if (action.payload.outstandingReports) {
+          outstandingReports = action.payload.outstandingReports.map(function(el, index) {
+            var o = Object.assign({}, el);
+            o["no"] = index + 1
+            o["myName"] = `${o.prefix} ${o.name} ${o.lastname}`
+            o["gender.name"] = o.gender.name;
+            o["affiliation.department"] = o["affiliation"].department.name
+            o["age"] = moment().diff(
+              o["dateOfBirth"],
+              "years",
+              false
+            )
+            o["degree"] = o.degree ? o["degree"].name  : ""
+            o["research"] = o["research"].length
+            o["outstanding.date"] = o["outstanding"].date
+            o["outstandingDate"] = moment(o["outstanding"].date).format("DD/MM/YYYY")
+            o["outstanding.description"] = o["outstanding"].description
+
+        
+            return o;
+          });
+        }
+
+      return {
+        ...state,
+        outstandingReports,
+        outstandingReportsCount: action.payload.size
+      };
+      case GET_NEWCOMER_REPORTS:
+        var newResearcherReports
+
+        if (action.payload.newResearcherReports) {
+          newResearcherReports = action.payload.newResearcherReports.map(function(el, index) {
+            var o = Object.assign({}, el);
+            o["no"] = index + 1
+            o["myName"] = `${o.prefix} ${o.name} ${o.lastname}`
+            o["gender.name"] = o.gender.name;
+            o["affiliation.department"] = o["affiliation"].department.name
+            o["age"] = moment().diff(
+              o["dateOfBirth"],
+              "years",
+              false
+            )
+            o["degree"] = o.degree ? o["degree"].name  : ""
+            o["research"] = o["research"].length
+            o["newResearcher.date"] = o["newResearcher"].date
+            o["newResearcherDate"] = moment(o["newResearcher"].date).format("DD/MM/YYYY")
+            o["newResearcher.description"] = o["newResearcher"].description
+
+        
+            return o;
+          });
+        }
+
+      return {
+        ...state,
+        newResearcherReports,
+        newResearcherReportsCount: action.payload.size
       };
       case CLEAR_ALL_RESEARCHERS_LISTS_REPORTS:
 

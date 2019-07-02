@@ -61,7 +61,9 @@ import {
   GET_ALL_RESEARCHERS_REPORTS,
   CLEAR_ALL_RESEARCHERS_REPORTS,
   GET_ALL_RESEARCHERS_LISTS_REPORTS,
-  CLEAR_ALL_RESEARCHERS_LISTS_REPORTS
+  CLEAR_ALL_RESEARCHERS_LISTS_REPORTS,
+  GET_OUTSTANDING_REPORTS,
+  GET_NEWCOMER_REPORTS
 } from "./types";
 
 import {
@@ -672,9 +674,36 @@ export function getAllResearchersListsReports(sortBy, order, department, from, t
   };
 }
 
+
+export function getOutstandingReports(sortBy, order, department, from, to) {
+
+  const request = axios
+    .post(
+      `${RESEARCHER_SERVER}/reports/outstanding?sortBy=${sortBy}&order=${order}&department=${department}&from=${from}&to=${to}`
+    )
+    .then(response => response.data);
+  return {
+    type: GET_OUTSTANDING_REPORTS,
+    payload: request
+  };
+}
+
+export function getNewResearcherReports(sortBy, order, department, from, to) {
+
+  const request = axios
+    .post(
+      `${RESEARCHER_SERVER}/reports/new_researcher?sortBy=${sortBy}&order=${order}&department=${department}&from=${from}&to=${to}`
+    )
+    .then(response => response.data);
+  return {
+    type: GET_NEWCOMER_REPORTS,
+    payload: request
+  };
+}
+
 export function clearAllResearchersListsReports() {
   return {
-    type: clearAllResearchersListsReports,
+    type: CLEAR_ALL_RESEARCHERS_LISTS_REPORTS,
     payload: ""
   };
 }
