@@ -57,11 +57,14 @@ import {
   GET_NOT_OUTSTANDING_RESEARCHER,
   GET_NOT_NEW_RESEARCHER,
   GET_ALL_RESEARCHERS_REPORTS,
-  CLEAR_ALL_RESEARCHERS_REPORTS
+  CLEAR_ALL_RESEARCHERS_REPORTS,
+  GET_ALL_RESEARCHERS_LISTS_REPORTS,
+  CLEAR_ALL_RESEARCHERS_LISTS_REPORTS
 } from "../actions/types";
 import { access } from "fs";
 
-import moment from "moment"
+import moment from "moment";
+import { ControlCamera } from "@material-ui/icons";
 
 export default function(state = {}, action) {
   var flattenObject = function(ob) {
@@ -326,7 +329,7 @@ export default function(state = {}, action) {
         userRegisterationCount: action.payload.size
       };
     case GET_OUTSTANDING_RESEARCHER:
-      console.log(action.payload)
+      console.log(action.payload);
       const outstanding = action.payload.outstandingResearcher;
       let outstandingResearcher = outstanding.map(value => {
         return flattenObject(value);
@@ -422,15 +425,14 @@ export default function(state = {}, action) {
         allResearchersReports: action.payload
       };
     case GET_ALL_RESEARCHERS_REPORTS:
-      let bachelorCount = 0
-      let masterCount = 0
-      let doctorialCount = 0
-      let maleCount = 0
-      let femaleCount = 0
-      let age18to30Count = 0
-      let age31to45Count = 0
-      let age46to65Count = 0
-
+      let bachelorCount = 0;
+      let masterCount = 0;
+      let doctorialCount = 0;
+      let maleCount = 0;
+      let femaleCount = 0;
+      let age18to30Count = 0;
+      let age31to45Count = 0;
+      let age46to65Count = 0;
 
       // moment().diff(
       //   n.dateOfBirth,
@@ -438,55 +440,111 @@ export default function(state = {}, action) {
       //   false
       // )
 
-      var allResearchersReports = [{}]
+      var allResearchersReports = [{}];
 
       if (action.payload.allResearchersReports) {
         action.payload.allResearchersReports.map(function(el, index) {
           var o = Object.assign({}, el);
-          
-  
-         if (o["degree"]) {
-          
-          bachelorCount = o["degree"]._id === "5d0bab397ba3dd53b44d06df" ? bachelorCount + 1 : bachelorCount
-          masterCount = o["degree"]._id === "5d0bab527ba3dd53b44d06e0" ? masterCount + 1 : masterCount
-          doctorialCount = o["degree"]._id === "5d0bab637ba3dd53b44d06e1" ? doctorialCount + 1 : doctorialCount
-         }
-         
-  
-         if (o["gender"]) {
-          
-          maleCount = o["gender"]._id === "5cb2c97c1331746efcc3b1fb" ? maleCount + 1 : maleCount
-          femaleCount = o["gender"]._id === "5cb2c98e1331746efcc3b1fd" ? femaleCount + 1 : femaleCount
-          
-         }
-  
-         if (o["dateOfBirth"]) {
-          
-          age18to30Count = (moment().diff(o.dateOfBirth,"years", false) >= 18) &&  (moment().diff(o.dateOfBirth,"years", false) <= 30) ? age18to30Count + 1 : age18to30Count
-         
-          age31to45Count= (moment().diff(o.dateOfBirth,"years", false) >= 31) &&  (moment().diff(o.dateOfBirth,"years", false) <= 45) ? age31to45Count + 1 : age31to45Count
-  
-          age46to65Count= (moment().diff(o.dateOfBirth,"years", false) >= 46) &&  (moment().diff(o.dateOfBirth,"years", false) <= 65) ? age46to65Count + 1 : age46to65Count
-         }
-          
+
+          if (o["degree"]) {
+            bachelorCount =
+              o["degree"]._id === "5d0bab397ba3dd53b44d06df"
+                ? bachelorCount + 1
+                : bachelorCount;
+            masterCount =
+              o["degree"]._id === "5d0bab527ba3dd53b44d06e0"
+                ? masterCount + 1
+                : masterCount;
+            doctorialCount =
+              o["degree"]._id === "5d0bab637ba3dd53b44d06e1"
+                ? doctorialCount + 1
+                : doctorialCount;
+          }
+
+          if (o["gender"]) {
+            maleCount =
+              o["gender"]._id === "5cb2c97c1331746efcc3b1fb"
+                ? maleCount + 1
+                : maleCount;
+            femaleCount =
+              o["gender"]._id === "5cb2c98e1331746efcc3b1fd"
+                ? femaleCount + 1
+                : femaleCount;
+          }
+
+          if (o["dateOfBirth"]) {
+            age18to30Count =
+              moment().diff(o.dateOfBirth, "years", false) >= 18 &&
+              moment().diff(o.dateOfBirth, "years", false) <= 30
+                ? age18to30Count + 1
+                : age18to30Count;
+
+            age31to45Count =
+              moment().diff(o.dateOfBirth, "years", false) >= 31 &&
+              moment().diff(o.dateOfBirth, "years", false) <= 45
+                ? age31to45Count + 1
+                : age31to45Count;
+
+            age46to65Count =
+              moment().diff(o.dateOfBirth, "years", false) >= 46 &&
+              moment().diff(o.dateOfBirth, "years", false) <= 65
+                ? age46to65Count + 1
+                : age46to65Count;
+          }
+
           return null;
         });
-  
-        allResearchersReports[0].bachelorCount = bachelorCount
-        allResearchersReports[0].masterCount = masterCount
-        allResearchersReports[0].doctorialCount = doctorialCount
-        allResearchersReports[0].maleCount = maleCount
-        allResearchersReports[0].femaleCount = femaleCount
-        allResearchersReports[0].age18to30Count = age18to30Count
-        allResearchersReports[0].age31to45Count = age31to45Count
-        allResearchersReports[0].age46to65Count = age46to65Count
-        allResearchersReports[0].allCount = action.payload.size
-        allResearchersReports[0]._id = 1
+
+        allResearchersReports[0].bachelorCount = bachelorCount;
+        allResearchersReports[0].masterCount = masterCount;
+        allResearchersReports[0].doctorialCount = doctorialCount;
+        allResearchersReports[0].maleCount = maleCount;
+        allResearchersReports[0].femaleCount = femaleCount;
+        allResearchersReports[0].age18to30Count = age18to30Count;
+        allResearchersReports[0].age31to45Count = age31to45Count;
+        allResearchersReports[0].age46to65Count = age46to65Count;
+        allResearchersReports[0].allCount = action.payload.size;
+        allResearchersReports[0]._id = 1;
       }
 
       return {
         ...state,
-        allResearchersReports,
+        allResearchersReports
+      };
+      case GET_ALL_RESEARCHERS_LISTS_REPORTS:
+        var allResearchersListsReports
+
+        if (action.payload.allResearchersListsReports) {
+          allResearchersListsReports = action.payload.allResearchersListsReports.map(function(el, index) {
+            var o = Object.assign({}, el);
+            o["no"] = index + 1
+            o["myName"] = `${o.prefix} ${o.name} ${o.lastname}`
+            o["gender.name"] = o.gender.name;
+            o["affiliation.department"] = o["affiliation"].department.name
+            o["age"] = moment().diff(
+              o["dateOfBirth"],
+              "years",
+              false
+            )
+            o["degree"] = o.degree ? o["degree"].name  : ""
+            o["research"] = o["research"].length
+
+        
+            return o;
+          });
+        }
+
+      return {
+        ...state,
+        allResearchersListsReports,
+        allResearchersListsReportsCount: action.payload.size
+      };
+      case CLEAR_ALL_RESEARCHERS_LISTS_REPORTS:
+
+      return {
+        ...state,
+        allResearchersListsReports: action.payload,
+        allResearchersListsReportsCount: action.payload
       };
     default:
       return state;

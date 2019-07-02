@@ -58,7 +58,10 @@ import {
   REMOVE_NEW_RESEARCHER,
   GET_NOT_OUTSTANDING_RESEARCHER,
   GET_NOT_NEW_RESEARCHER,
-  GET_ALL_RESEARCHERS_REPORTS,CLEAR_ALL_RESEARCHERS_REPORTS
+  GET_ALL_RESEARCHERS_REPORTS,
+  CLEAR_ALL_RESEARCHERS_REPORTS,
+  GET_ALL_RESEARCHERS_LISTS_REPORTS,
+  CLEAR_ALL_RESEARCHERS_LISTS_REPORTS
 } from "./types";
 
 import {
@@ -644,24 +647,42 @@ export function getRequestUserCount() {
 }
 
 export function getAllResearchersReports(department, from, to) {
-  console.log(department)
 
   const request = axios
-    .post(`${RESEARCHER_SERVER}/reports/all_researchers?department=${department}&from=${from}&to=${to}`)
+    .post(
+      `${RESEARCHER_SERVER}/reports/all_researchers?department=${department}&from=${from}&to=${to}`
+    )
     .then(response => response.data);
-    return {
-      type: GET_ALL_RESEARCHERS_REPORTS,
-      payload: request
-    };
-  
-  
+  return {
+    type: GET_ALL_RESEARCHERS_REPORTS,
+    payload: request
+  };
 }
 
+export function getAllResearchersListsReports(sortBy, order, department, from, to) {
+
+  const request = axios
+    .post(
+      `${RESEARCHER_SERVER}/reports/all_researchers_lists?sortBy=${sortBy}&order=${order}&department=${department}&from=${from}&to=${to}`
+    )
+    .then(response => response.data);
+  return {
+    type: GET_ALL_RESEARCHERS_LISTS_REPORTS,
+    payload: request
+  };
+}
+
+export function clearAllResearchersListsReports() {
+  return {
+    type: clearAllResearchersListsReports,
+    payload: ""
+  };
+}
 
 export function clearAllResearchersReports() {
   return {
     type: CLEAR_ALL_RESEARCHERS_REPORTS,
-    payload: ''
+    payload: ""
   };
 }
 export function confirmUser(id) {
@@ -686,7 +707,9 @@ export function removeUser(id) {
 
 export function addNewcomerResearcher(id, date, description) {
   const request = axios
-    .post(`${RESEARCHER_SERVER}/add_new_researchers?id=${id}&date=${date}&description=${description}`)
+    .post(
+      `${RESEARCHER_SERVER}/add_new_researchers?id=${id}&date=${date}&description=${description}`
+    )
     .then(response => response.data);
   return {
     type: ADD_NEW_RESEARCHER,
@@ -696,14 +719,15 @@ export function addNewcomerResearcher(id, date, description) {
 
 export function addOutstandingResearcher(id, date, description) {
   const request = axios
-    .post(`${RESEARCHER_SERVER}/add_outstanding_researchers?id=${id}&date=${date}&description=${description}`)
+    .post(
+      `${RESEARCHER_SERVER}/add_outstanding_researchers?id=${id}&date=${date}&description=${description}`
+    )
     .then(response => response.data);
   return {
     type: ADD_OUTSTANDING_RESEARCHER,
     payload: request
   };
 }
-
 
 export function removeOutstandingResearcher(id) {
   const request = axios

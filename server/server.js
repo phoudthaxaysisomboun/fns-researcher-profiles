@@ -580,7 +580,7 @@ app.post("/api/researchers/reports/all_researchers", auth, admin, (req, res) => 
   let department = req.query.department ? req.query.department : null
   let findArgs = {};
 
-  
+ 
 
   for (let key in req.body.filters) {
     if (req.body.filters[key].length > 0) {
@@ -632,6 +632,8 @@ app.post("/api/researchers/reports/all_researchers_lists", auth, admin, (req, re
   let department = req.query.department ? req.query.department : null
   let findArgs = {};
 
+  console.log(sortBy)
+
   for (let key in req.body.filters) {
     if (req.body.filters[key].length > 0) {
       findArgs[key] = req.body.filters[key];
@@ -644,8 +646,6 @@ app.post("/api/researchers/reports/all_researchers_lists", auth, admin, (req, re
       $lte: to
     }
   }
-
-  console.log(sortBy)
 
   if (department != null) {
     findArgs["affiliation.department"] = department
@@ -667,7 +667,7 @@ app.post("/api/researchers/reports/all_researchers_lists", auth, admin, (req, re
   .exec((err, result) => {
     return res.status(200).json({
       allResearchersListsReports: result,
-      allResearchersListsReportsCount: result.length
+      size: result.length
     });
   });
 });

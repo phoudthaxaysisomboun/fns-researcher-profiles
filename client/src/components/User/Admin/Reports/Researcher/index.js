@@ -574,7 +574,7 @@ class AllResearcherReports extends Component {
 
   handleDepartmentChange = event => {
     this.setState({
-      deparment: event.target.value,
+      department: event.target.value,
       departmentText: event.nativeEvent.srcElement.innerText
     });
     console.log("click");
