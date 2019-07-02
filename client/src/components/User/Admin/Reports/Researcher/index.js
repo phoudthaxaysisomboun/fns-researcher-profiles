@@ -7,7 +7,7 @@ import { withStyles } from "@material-ui/core/styles";
 
 import { Link, withRouter } from "react-router-dom";
 
-import ReactDOM from "react-dom";
+
 
 import moment from "moment";
 
@@ -162,14 +162,6 @@ const rows = [
     disablePadding: false,
     label: "ທັງຫມົດ"
   }
-  // {
-  //   id: "actions",
-  //   numeric: false,
-  //   disablePadding: false,
-  //   label: "",
-  //   hideSortIcon: true,
-  //   active: false
-  // }
 ];
 
 class EnhancedTableHead extends React.Component {
@@ -267,24 +259,13 @@ class EnhancedTableToolbar extends React.Component {
     labelWidth: 0
   };
 
-  componentDidMount() {
-    // this.setState({
-    //   labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth,
-    // });
-  }
-
-
-
   render() {
     const {
       numSelected,
-      selected,
       classes,
-      openDeleteDialog,
       researchersCount,
       departments,
       data,
-      userId,
       selectedValue,
       handleDepartmentChange,
       endValue,
@@ -292,16 +273,9 @@ class EnhancedTableToolbar extends React.Component {
       handleEndChange,
       handleEndBlur,
       handleStartChange,
-      handleStartBlur,
+      handleStartBlur
     } = this.props;
-    let isUser = false;
-    selected.map((value, index, array) => {
-      if (value === userId) {
-        return (isUser = true);
-      } else {
-        return null;
-      }
-    });
+   
 
     return (
       <Toolbar
@@ -317,253 +291,165 @@ class EnhancedTableToolbar extends React.Component {
         >
           <Grid item xs>
             <div>
-              {numSelected > 0 ? (
-                <Typography
-                  style={{ marginLeft: "24px" }}
-                  color="inherit"
-                  variant="inherit"
-                >
-                  ເລືອກ {numSelected} ລາຍການ
-                </Typography>
-              ) : (
-                <Typography
-                  variant="inherit"
-                  style={{
-                    fontSize: "20px",
-                    fontWeight: "500",
-                    paddingLeft: 0,
-                    marginLeft: 0
-                  }}
-                  id="tableTitle"
-                >
-                  ຈໍານວນນັກຄົ້ນຄວ້າ{" "}
-                  <div
-                    style={{
-                      fontWeight: "normal",
-                      display: "inline",
-                      fontFamily: "'Roboto', sans-serif",
-                      color: "#898989",
-                      fontSize: "16px"
-                    }}
-                  >
-                    {researchersCount}
-                  </div>
-                </Typography>
-              )}
+            <Typography
+            variant="inherit"
+            style={{
+              fontSize: "20px",
+              fontWeight: "500",
+              paddingLeft: 0,
+              marginLeft: 0
+            }}
+            id="tableTitle"
+          >
+            ຈໍານວນນັກຄົ້ນຄວ້າ{" "}
+            <div
+              style={{
+                fontWeight: "normal",
+                display: "inline",
+                fontFamily: "'Roboto', sans-serif",
+                color: "#898989",
+                fontSize: "16px"
+              }}
+            >
+              {researchersCount}
+            </div>
+          </Typography>
             </div>
           </Grid>
           <Grid item xs={6} align="right">
             <div className={classes.actions}>
-              {numSelected > 0 ? (
-                <>
-                  {!isUser ? (
-                    <>
-                      {numSelected === 1 ? (
-                        <>
-                          <Tooltip title="ແກ້ໄຂ">
-                            <IconButton
-                              onClick={() => {
-                                console.log("click");
-                              }}
-                              style={{ marginRight: "0px" }}
-                            >
-                              <EditOutlined />
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip title="ເບິ່ງ">
-                            <IconButton
-                              component={Link}
-                              to={`/profile/${selected[0]}`}
-                              style={{ marginRight: "0px" }}
-                            >
-                              <VisibilityOutlined />
-                            </IconButton>
-                          </Tooltip>
-                        </>
-                      ) : null}
-                      <Tooltip title="ລຶບ">
-                        <IconButton
-                          aria-label="Delete"
-                          onClick={() => {
-                            openDeleteDialog();
-                          }}
-                          style={{ marginRight: "8px" }}
-                        >
-                          <DeleteOutline />
-                        </IconButton>
-                      </Tooltip>{" "}
-                    </>
-                  ) : (
-                    <>
-                      {numSelected === 1 ? (
-                        <>
-                          <Tooltip title="ແກ້ໄຂ">
-                            <IconButton
-                              onClick={() => {
-                                console.log("click");
-                              }}
-                              style={{ marginRight: "0px" }}
-                            >
-                              <EditOutlined />
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip title="ເບິ່ງ">
-                            <IconButton
-                              component={Link}
-                              to={`/profile/${selected[0]}`}
-                              style={{ marginRight: "0px" }}
-                            >
-                              <VisibilityOutlined />
-                            </IconButton>
-                          </Tooltip>
-                        </>
-                      ) : null}
-                      <Tooltip title="ລຶບ">
-                        <IconButton
-                          aria-label="Delete"
-                          disabled
-                          style={{ marginRight: "8px" }}
-                        >
-                          <DeleteOutline />
-                        </IconButton>
-                      </Tooltip>
-                    </>
-                  )}
-                </>
-              ) : (
-                <>
-                  {
-                    //   <Tooltip title="Filter list">
-                    //   <IconButton
-                    //     aria-label="Filter list"
-                    //     style={{ marginRight: "8px" }}
-                    //   >
-                    //     <FilterListOutlined />
-                    //   </IconButton>
-                    // </Tooltip>
-                  }
-                  <FormControl
-                  style={{ minWidth: 120, textAlign: "-webkit-left", marginRight: "8px" }}
-                >
-                  <TextField
-                  id="standard-name"
-                  label="ແຕ່"
-                  value={startValue}
-                  onChange={event => {
-                    handleStartChange(event);
+            <FormControl
+            style={{
+              minWidth: 120,
+              textAlign: "-webkit-left",
+              marginRight: "8px"
+            }}
+          >
+            <TextField
+              id="standard-name"
+              label="ແຕ່"
+              value={startValue}
+              onChange={event => {
+                handleStartChange(event);
+              }}
+              onBlur={event => {
+                handleStartBlur(event);
+              }}
+              type="date"
+              margin="none"
+            />
+          </FormControl>
+          <FormControl
+            style={{
+              minWidth: 120,
+              textAlign: "-webkit-left",
+              marginRight: "8px"
+            }}
+          >
+            <TextField
+              id="standard-name"
+              label="ຮອດ"
+              value={endValue}
+              onChange={event => {
+                handleEndChange(event);
+              }}
+              onBlur={event => {
+                handleEndBlur(event);
+              }}
+              type="date"
+              margin="none"
+            />
+          </FormControl>
+
+          <FormControl
+            style={{
+              minWidth: 120,
+              textAlign: "-webkit-left",
+              marginRight: "8px"
+            }}
+          >
+            <InputLabel shrink htmlFor="age-label-placeholder">
+              ພາກວິຊາ
+            </InputLabel>
+            <Select
+              value={selectedValue}
+              onChange={event => {
+                handleDepartmentChange(event);
+              }}
+              style={{ borderBottom: 0, marginTop: "16px" }}
+              input={
+                <Input
+                  style={{
+                    fontFamily: "'Noto Sans Lao UI', sans serif",
+                    borderBottom: 0
                   }}
-                onBlur = {event=>{
-                  handleStartBlur(event)
-                }}
-                 type="date"
-                  margin="none"
+                  id="age-label-placeholder"
                 />
-                </FormControl>
-                  <FormControl
-                  style={{ minWidth: 120, textAlign: "-webkit-left", marginRight: "8px" }}
-                >
-                  
-                  <TextField
-                  id="standard-name"
-                  label="ຮອດ"
-                  value={endValue}
-                  onChange={event => {
-                    handleEndChange(event);
+              }
+              displayEmpty
+            >
+              <MenuItem
+                style={{
+                  fontFamily: "'Noto Sans Lao UI', sans serif",
+                  borderBottom: 0
+                }}
+                value=""
+              >
+                <em
+                  style={{
+                    fontFamily: "'Noto Sans Lao UI', sans serif",
+                    fontStyle: "normal"
                   }}
-                onBlur = {event=>{
-                  handleEndBlur(event)
-                }}
-                 type="date"
-                  margin="none"
-                />
-                </FormControl>
-                  
-                  <FormControl
-                    style={{ minWidth: 120, textAlign: "-webkit-left", marginRight: "8px" }}
-                  >
-                    <InputLabel shrink htmlFor="age-label-placeholder">
-                      ພາກວິຊາ
-                    </InputLabel>
-                    <Select
-                      value={selectedValue}
-                      onChange={event => {
-                        handleDepartmentChange(event);
-                      }}
-                      style={{ borderBottom: 0, marginTop: "16px" }}
-                      input={
-                        <Input
-                          style={{
-                            fontFamily: "'Noto Sans Lao UI', sans serif", borderBottom: 0
-                          }}
-                          id="age-label-placeholder"
-                        />
-                      }
-                      displayEmpty
-                    >
-                      <MenuItem
-                        style={{ fontFamily: "'Noto Sans Lao UI', sans serif", borderBottom: 0 }}
-                        value=""
-                      >
-                        <em
-                          style={{
-                            fontFamily: "'Noto Sans Lao UI', sans serif",
-                            fontStyle: "normal"
-                          }}
-                        >
-                          ທັງຫມົດ
-                        </em>
-                      </MenuItem>
-                      {
-                        departments ?
-                        <>{departments.map((value, index, id) => (
-                          <MenuItem
-                            style={{
-                              fontFamily: "'Noto Sans Lao UI', sans serif"
-                            }}
-                            value={value._id}
-                          >
-                            <Typography variant="inherit">
-                              {value.name}
-                            </Typography>{" "}
-                          </MenuItem>
-                        ))}</> : null
-                      }
-                    </Select>
-                  </FormControl>
-                  <ExcelFile
-                    name="ຈໍານວນນັກຄົ້ນຄວ້າ"
-                    element={
-                      <Tooltip title="ດາວໂຫລດຟາຍລ໌ Excel">
-                        <IconButton style={{ marginRight: "0px" }}>
-                          <SaveAltOutlined />
-                        </IconButton>
-                      </Tooltip>
-                    }
-                  >
-                    <ExcelSheet data={data} name="ຈໍານວນນັກຄົ້ນຄວ້າ">
-                      <ExcelColumn
-                        name="Saysettha OT"
-                        label="ລ/ດ"
-                        value={col => 1}
-                      />
-                      <ExcelColumn label="ພາກວິຊາ" value="deparment" />
-                      <ExcelColumn label="ປະລິນຍາຕີ" value="bachelorCount" />
-                      <ExcelColumn label="ປະລິນຍາໂທ" value="masterCount" />
-                      <ExcelColumn label="ປະລິນຍາເອກ" value="doctorialCount" />
-                      <ExcelColumn label="ຍິງ" value="femaleCount" />
-                      <ExcelColumn label="ຊາຍ" value="maleCount" />
-                      <ExcelColumn label="18-30" value="age18to30Count" />
-                      <ExcelColumn label="31-45" value="age31to45Count" />
-                      <ExcelColumn label="46-65" value="age46to65Count" />
-                      <ExcelColumn label="ທັງຫມົດ" value="allCount" />
-                      {
-                        // <ExcelColumn label="Marital Status"
-                        //            value={(col) => col.is_married ? "Married" : "Single"}/>
-                      }
-                    </ExcelSheet>
-                  </ExcelFile>
-                </>
-              )}
+                >
+                  ທັງຫມົດ
+                </em>
+              </MenuItem>
+              {departments.map((value, index, id) => (
+                <MenuItem
+                  style={{
+                    fontFamily: "'Noto Sans Lao UI', sans serif"
+                  }}
+                  value={value._id}
+                >
+                  <Typography variant="inherit">
+                    {value.name}
+                  </Typography>{" "}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <ExcelFile
+            name="ຈໍານວນນັກຄົ້ນຄວ້າ"
+            element={
+              <Tooltip title="ດາວໂຫລດຟາຍລ໌ Excel">
+                <IconButton style={{ marginRight: "0px" }}>
+                  <SaveAltOutlined />
+                </IconButton>
+              </Tooltip>
+            }
+          >
+            <ExcelSheet data={data} name="ຈໍານວນນັກຄົ້ນຄວ້າ">
+              <ExcelColumn
+                name="Saysettha OT"
+                label="ລ/ດ"
+                value={col => 1}
+              />
+              <ExcelColumn label="ພາກວິຊາ" value="deparment" />
+              <ExcelColumn label="ປະລິນຍາຕີ" value="bachelorCount" />
+              <ExcelColumn label="ປະລິນຍາໂທ" value="masterCount" />
+              <ExcelColumn label="ປະລິນຍາເອກ" value="doctorialCount" />
+              <ExcelColumn label="ຍິງ" value="femaleCount" />
+              <ExcelColumn label="ຊາຍ" value="maleCount" />
+              <ExcelColumn label="18-30" value="age18to30Count" />
+              <ExcelColumn label="31-45" value="age31to45Count" />
+              <ExcelColumn label="46-65" value="age46to65Count" />
+              <ExcelColumn label="ທັງຫມົດ" value="allCount" />
+              {
+                // <ExcelColumn label="Marital Status"
+                //            value={(col) => col.is_married ? "Married" : "Single"}/>
+              }
+            </ExcelSheet>
+          </ExcelFile>
             </div>
           </Grid>
         </Grid>
@@ -659,20 +545,20 @@ class AllResearcherReports extends Component {
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   componentWillMount() {
+    this.props.dispatch(getDepartments());
     this.props
       .dispatch(getAllResearchersReports("", this.state.start, this.state.end))
       .then(response => {
-        
-        const newdata = this.props.user.allResearchersReports
+        const newdata = this.props.user.allResearchersReports;
 
-        newdata[0].deparment = this.state.departmentText
+        newdata[0].deparment = this.state.departmentText;
 
         this.setState({
           data: newdata
         });
       });
 
-    this.props.dispatch(getDepartments());
+    
   }
 
   handleRequestSort = (event, property) => {
@@ -687,77 +573,110 @@ class AllResearcherReports extends Component {
   };
 
   handleDepartmentChange = event => {
-    // this.setState({ deparment: event.target.value, departmentText: event.nativeEvent.srcElement.innerText });
+    this.setState({
+      deparment: event.target.value,
+      departmentText: event.nativeEvent.srcElement.innerText
+    });
+    console.log("click");
   };
 
   handleEndChange = event => {
-    this.setState({ end: event.target.value});
-
-    if (!(this.state.end > moment().format("YYYY-MM-DD")) && !(this.state.end < this.state.start)) {
-      this.props.dispatch(clearAllResearchersReports());
-      this.props
-        .dispatch(getAllResearchersReports(this.state.deparment, this.state.start, this.state.end))
-        .then(response => {
-          const newdata = this.props.user.allResearchersReports
-
-        newdata[0].deparment = this.state.departmentText
-
-        this.setState({
-          data: newdata
-        });
-        });
-    }
+    this.setState({ end: event.target.value });
   };
 
   handleEndBlur = event => {
-    if ((this.state.end > moment().format("YYYY-MM-DD")) || (this.state.end < this.state.start)) {
-      this.setState({ end: moment().format("YYYY-MM-DD")});
+    if (
+      this.state.end > moment().format("YYYY-MM-DD") ||
+      this.state.end < this.state.start
+    ) {
+      this.setState({ end: moment().format("YYYY-MM-DD") });
     }
-  };
 
-  handleStartChange = event => {
-    this.setState({ start: event.target.value});
+    this.props.dispatch(clearAllResearchersReports());
+    this.props
+      .dispatch(
+        getAllResearchersReports(
+          this.state.deparment,
+          this.state.start,
+          this.state.end
+        )
+      )
+      .then(response => {
+        const newdata = this.props.user.allResearchersReports;
 
-    if (!(this.state.start > moment().format("YYYY-MM-DD")) && !(this.state.start > this.state.end)) {
-      this.props.dispatch(clearAllResearchersReports());
-      this.props
-        .dispatch(getAllResearchersReports(this.state.deparment, this.state.start, this.state.end))
-        .then(response => {
-          const newdata = this.props.user.allResearchersReports
-
-        newdata[0].deparment = this.state.departmentText
+        newdata[0].deparment = this.state.departmentText;
 
         this.setState({
           data: newdata
         });
-        });
-    }
+      });
+  };
+
+  handleStartChange = event => {
+    this.setState({ start: event.target.value });
   };
 
   handleStartBlur = event => {
-    if ((this.state.start > moment().format("YYYY-MM-DD")) || (this.state.start > this.state.end)) {
-      this.setState({ start: moment().format("YYYY-MM-DD")});
+    if (
+      this.state.start > moment().format("YYYY-MM-DD") ||
+      this.state.start > this.state.end
+    ) {
+      this.setState({ start: moment().format("YYYY-MM-DD") });
     }
+
+    this.props.dispatch(clearAllResearchersReports());
+    this.props
+      .dispatch(
+        getAllResearchersReports(
+          this.state.deparment,
+          this.state.start,
+          this.state.end
+        )
+      )
+      .then(response => {
+        const newdata = this.props.user.allResearchersReports;
+
+        newdata[0].deparment = this.state.departmentText;
+
+        this.setState({
+          data: newdata
+        });
+    });
   };
-
-
 
   componentDidUpdate(prevProps, prevState) {
     const prevDepartment = prevState.deparment;
     const currDepartment = this.state.deparment;
 
+    console.log(prevState.start)
+
+    // const prevStart = prevState.start
+    // const currStart = this.state.start
+    // const prevEnd = prevState.end
+    // const currEnd = this.state.end
+
+    // if ((prevStart !== currStart) || (prevEnd !== currEnd)) {
+    //   console.log("date changes yay!")
+    // }
+
     if (prevDepartment !== currDepartment) {
       this.props.dispatch(clearAllResearchersReports());
       this.props
-        .dispatch(getAllResearchersReports(this.state.deparment, this.state.start, this.state.end))
+        .dispatch(
+          getAllResearchersReports(
+            this.state.deparment,
+            this.state.start,
+            this.state.end
+          )
+        )
         .then(response => {
-          const newdata = this.props.user.allResearchersReports
+          const newdata = this.props.user.allResearchersReports;
 
-        newdata[0].deparment = this.state.departmentText
+          newdata[0].deparment = this.state.departmentText;
 
-        this.setState({
-          data: newdata
-        });
+          this.setState({
+            data: newdata
+          });
         });
     }
   }
@@ -796,18 +715,10 @@ class AllResearcherReports extends Component {
                     }
                     endValue={this.state.end}
                     startValue={this.state.start}
-                    handleEndChange={event =>
-                      this.handleEndChange(event)
-                    }
-                    handleEndBlur={event =>
-                      this.handleEndBlur(event)
-                    }
-                    handleStartChange={event =>
-                      this.handleStartChange(event)
-                    }
-                    handleStartBlur={event =>
-                      this.handleStartBlur(event)
-                    }
+                    handleEndChange={event => this.handleEndChange(event)}
+                    handleEndBlur={event => this.handleEndBlur(event)}
+                    handleStartChange={event => this.handleStartChange(event)}
+                    handleStartBlur={event => this.handleStartBlur(event)}
                   />
                   <Paper
                     style={{
@@ -838,7 +749,7 @@ class AllResearcherReports extends Component {
                               page * rowsPerPage + rowsPerPage
                             )
                             .map((n, index) => {
-                              const isSelected = this.isSelected(n._id);
+                  
                               return (
                                 <TableRow tabIndex={-1} key={n.id}>
                                   <TableCell
