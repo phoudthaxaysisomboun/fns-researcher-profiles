@@ -47,8 +47,15 @@ const ResearcherReportsHeader = ({ tab, props, children, requestCount }) => {
           >
             <Tab
               style={{ fontWeight: 500, fontSize: "14px" }}
-              label="ທັງຫມົດ"
-              to={`/admin/reports/researchers`}
+              label="ຈໍານວນ"
+              to={`/admin/reports/researchers/numbers`}
+              component={Link}
+            />
+
+            <Tab
+              style={{ fontWeight: 500, fontSize: "14px" }}
+              label="ລາຍຊື່"
+              to={`/admin/reports/researchers/lists`}
               component={Link}
             />
 

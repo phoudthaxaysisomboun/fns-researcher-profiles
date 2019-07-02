@@ -580,6 +580,8 @@ app.post("/api/researchers/reports/all_researchers", auth, admin, (req, res) => 
   let department = req.query.department ? req.query.department : null
   let findArgs = {};
 
+  
+
   for (let key in req.body.filters) {
     if (req.body.filters[key].length > 0) {
       findArgs[key] = req.body.filters[key];
@@ -604,6 +606,7 @@ app.post("/api/researchers/reports/all_researchers", auth, admin, (req, res) => 
   User.find(findArgs)
     .populate("gender")
     .populate("degree")
+    .sort([[sortBy, order]])
     .select("_id dateOfBirth")
     .populate({
       path: "affiliation.department"
@@ -615,6 +618,58 @@ app.post("/api/researchers/reports/all_researchers", auth, admin, (req, res) => 
         size: result.length
       });
     });
+});
+
+
+app.post("/api/researchers/reports/all_researchers_lists", auth, admin, (req, res) => {
+  let order = req.query.order ? req.query.order : "asc";
+  let sortBy = req.query.sortBy ? req.query.sortBy : "name";
+  let limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 6;
+  let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0;
+
+  let from = req.query.from ? req.query.from : null
+  let to = req.query.from ? req.query.to : null
+  let department = req.query.department ? req.query.department : null
+  let findArgs = {};
+
+  for (let key in req.body.filters) {
+    if (req.body.filters[key].length > 0) {
+      findArgs[key] = req.body.filters[key];
+    }
+  }
+
+  if ((from != null) && (to != null)) {
+    findArgs["createdAt"] = {
+      $gte: from,
+      $lte: to
+    }
+  }
+
+  console.log(sortBy)
+
+  if (department != null) {
+    findArgs["affiliation.department"] = department
+  }
+
+  findArgs.emailIsVerified = true;
+  findArgs.accountIsVerified = true;
+  findArgs.active = true;
+
+  User.find(findArgs)
+  .populate("gender")
+  .populate("degree")
+  .sort([[sortBy, order]])
+  .populate("gender")
+  .select("_id name lastname dateOfBirth prefix research degree affiliation")
+  .populate({
+    path: "affiliation.department"
+  })
+  .exec((err, result) => {
+    return res.status(200).json({
+      allResearchersListsReports: result,
+      allResearchersListsReportsCount: result.length
+    });
+  });
 });
 
 app.get("/api/research/all_researches", auth, admin, (req, res) => {
