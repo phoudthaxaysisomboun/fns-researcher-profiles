@@ -466,6 +466,8 @@ const styles = theme => ({
   }
 });
 
+
+
 class AllResearchersList extends React.Component {
   state = {
     order: "asc",

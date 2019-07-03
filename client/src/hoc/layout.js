@@ -1199,7 +1199,7 @@ class Layout extends Component {
                           <ListItem
                             button
                             component={Link}
-                            to="/admin/reports/researches"
+                            to="/admin/reports/researches/numbers"
                             selected={pathname.startsWith("/admin/reports/researches")}
                             className={classes.nested}
                           >

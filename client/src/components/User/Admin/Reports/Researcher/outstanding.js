@@ -768,7 +768,7 @@ class OutstandingResearchersList extends React.Component {
                                     component="th"
                                     scope="row"
                                   >
-                                    {n["outstanding.date"]}
+                                    {moment(n["outstanding.date"]).format("DD/MM/YYY")}
                                   </TableCell>
                                   <TableCell
                                     padding="dense"

@@ -8,6 +8,7 @@ require("dotenv").config();
 const _ = require("lodash");
 
 const normalizeUrl = require("normalize-url");
+const moment = require("moment");
 
 mongoose.Promise = global.Promise;
 mongoose.connect(process.env.DATABASE);
@@ -569,109 +570,206 @@ app.post("/api/researchers/researchers", auth, admin, (req, res) => {
     });
 });
 
-app.post("/api/researchers/reports/all_researchers", auth, admin, (req, res) => {
-  let order = req.query.order ? req.query.order : "asc";
-  let sortBy = req.query.sortBy ? req.query.sortBy : "name";
-  let limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 6;
-  let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0;
+app.post(
+  "/api/researchers/reports/all_researchers",
+  auth,
+  admin,
+  (req, res) => {
+    let order = req.query.order ? req.query.order : "asc";
+    let sortBy = req.query.sortBy ? req.query.sortBy : "name";
+    let limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 6;
+    let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0;
 
-  let from = req.query.from ? req.query.from : null
-  let to = req.query.from ? req.query.to : null
-  let department = req.query.department ? req.query.department : null
-  let findArgs = {};
+    let from = req.query.from ? req.query.from : null;
+    let to = req.query.from ? req.query.to : null;
+    let department = req.query.department ? req.query.department : null;
+    let findArgs = {};
 
- 
-
-  for (let key in req.body.filters) {
-    if (req.body.filters[key].length > 0) {
-      findArgs[key] = req.body.filters[key];
+    for (let key in req.body.filters) {
+      if (req.body.filters[key].length > 0) {
+        findArgs[key] = req.body.filters[key];
+      }
     }
-  }
 
-  if ((from != null) && (to != null)) {
-    findArgs["createdAt"] = {
-      $gte: from,
-      $lte: to
+    if (from != null && to != null) {
+      findArgs["createdAt"] = {
+        $gte: from,
+        $lte: to
+      };
     }
-  }
 
-  if (department != null) {
-    findArgs["affiliation.department"] = department
-  }
+    if (department != null) {
+      findArgs["affiliation.department"] = department;
+    }
 
-  findArgs.emailIsVerified = true;
-  findArgs.accountIsVerified = true;
-  findArgs.active = true;
+    findArgs.emailIsVerified = true;
+    findArgs.accountIsVerified = true;
+    findArgs.active = true;
 
-  User.find(findArgs)
-    .populate("gender")
-    .populate("degree")
-    .sort([[sortBy, order]])
-    .select("_id dateOfBirth")
-    .populate({
-      path: "affiliation.department"
-    })
-    .exec((err, result) => {
-      if (err) return res.status(400).send(err)
-      return res.status(200).json({
-        allResearchersReports: result,
-        size: result.length
+    User.find(findArgs)
+      .populate("gender")
+      .populate("degree")
+      .sort([[sortBy, order]])
+      .select("_id dateOfBirth")
+      .populate({
+        path: "affiliation.department"
+      })
+      .exec((err, result) => {
+        if (err) return res.status(400).send(err);
+        return res.status(200).json({
+          allResearchersReports: result,
+          size: result.length
+        });
       });
-    });
-});
+  }
+);
 
+app.post(
+  "/api/researchers/reports/all_researchers_lists",
+  auth,
+  admin,
+  (req, res) => {
+    let order = req.query.order ? req.query.order : "asc";
+    let sortBy = req.query.sortBy ? req.query.sortBy : "name";
+    let limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 6;
+    let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0;
 
-app.post("/api/researchers/reports/all_researchers_lists", auth, admin, (req, res) => {
-  let order = req.query.order ? req.query.order : "asc";
-  let sortBy = req.query.sortBy ? req.query.sortBy : "name";
-  let limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 6;
-  let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0;
+    let from = req.query.from ? req.query.from : null;
+    let to = req.query.from ? req.query.to : null;
+    let department = req.query.department ? req.query.department : null;
+    let findArgs = {};
 
-  let from = req.query.from ? req.query.from : null
-  let to = req.query.from ? req.query.to : null
-  let department = req.query.department ? req.query.department : null
-  let findArgs = {};
+    console.log(sortBy);
 
-  console.log(sortBy)
-
-  for (let key in req.body.filters) {
-    if (req.body.filters[key].length > 0) {
-      findArgs[key] = req.body.filters[key];
+    for (let key in req.body.filters) {
+      if (req.body.filters[key].length > 0) {
+        findArgs[key] = req.body.filters[key];
+      }
     }
-  }
 
-  if ((from != null) && (to != null)) {
-    findArgs["createdAt"] = {
-      $gte: from,
-      $lte: to
+    if (from != null && to != null) {
+      findArgs["createdAt"] = {
+        $gte: from,
+        $lte: to
+      };
     }
+    console.log(department);
+    if (department != null) {
+      findArgs["affiliation.department"] = mongoose.Types.ObjectId(department);
+    }
+
+    findArgs.emailIsVerified = true;
+    findArgs.accountIsVerified = true;
+    findArgs.active = true;
+
+    if (department != null) {
+      findArgs["affiliation.department"] = mongoose.Types.ObjectId(department);
+
+      User.aggregate([
+        // { $unwind: '$affiliation'},
+        {
+          $match: {
+            emailIsVerified: true,
+            accountIsVerified: true,
+            active: true,
+            "affiliation.department": mongoose.Types.ObjectId(department)
+          }
+        },
+        // {
+        //   $project: {
+        //     item: 1,
+        //     // age18to30: {
+        //     //   $cond: [
+        //     //     {
+        //     //       $and: [
+        //     //         {
+        //     //           $gte: [
+        //     //             "$dateOfBirth",
+        //     //             moment()
+        //     //               .subtract(18, "years")
+        //     //               .format("YYYY-MM-DD HH:mm:ss"),
+        //     //               "$dateOfBirth", 0
+        //     //           ]
+        //     //         },
+        //     //         { $lt: ["$dateOfBirth",
+        //     //         moment()
+        //     //           .subtract(30, "years")
+        //     //           .format("YYYY-MM-DD HH:mm:ss"),
+        //     //           "$dateOfBirth", 0] }
+        //     //       ]
+        //     //     }
+        //     //   ]
+        //     // },
+           
+        //   }
+        // },
+        {
+          $group: {
+            _id: "$affiliation.department",
+            name : { $addToSet: '$dateOfBirth' },
+            // age18to30: {$group: {age: "$dateOfBirth", count: {$sum: 1}}},
+            count: { $sum: 1 },
+            // age18to31Count: {$sum: '$age18to30'},
+          }
+        }
+        //  { $lookup: {from: 'users', localField: 'affiliation.department', foreignField: 'departments.name', as: 'department'} }
+      ]).exec((err, doc) => {
+        Department.populate(doc, { path: "_id" }, function(
+          err,
+          populatedTransactions
+        ) {
+          console.log(populatedTransactions);
+        });
+      });
+    } else {
+      User.aggregate([
+        // { $unwind: '$affiliation'},
+        { $match: findArgs },
+        {
+          $group: {
+            _id: "$affiliation.department",
+            count: { $sum: 1 },
+            dateOfBirth : { $addToSet: '$dateOfBirth' },
+            gender: {$addToSet: '$gender'}
+          }
+        }
+        //  { $lookup: {from: 'users', localField: 'affiliation.department', foreignField: 'departments.name', as: 'department'} }
+      ]).exec((err, doc) => {
+        Department.populate(doc, { path: "_id" }, function(
+          err,
+          populatedTransactions
+        ) {
+
+          Gender.populate(doc, { path: "_id" }, function(
+            err,
+            populatedTransactions
+          ) {
+            console.log(populatedTransactions);
+          });
+          console.log(populatedTransactions);
+        });
+      });
+    }
+
+    User.find(findArgs)
+      .populate("gender")
+      .populate("degree")
+      .sort([[sortBy, order]])
+      .populate("gender")
+      .select(
+        "_id name lastname dateOfBirth prefix research degree affiliation"
+      )
+      .populate({
+        path: "affiliation.department"
+      })
+      .exec((err, result) => {
+        return res.status(200).json({
+          allResearchersListsReports: result,
+          size: result.length
+        });
+      });
   }
-
-  if (department != null) {
-    findArgs["affiliation.department"] = department
-  }
-
-  findArgs.emailIsVerified = true;
-  findArgs.accountIsVerified = true;
-  findArgs.active = true;
-
-  User.find(findArgs)
-  .populate("gender")
-  .populate("degree")
-  .sort([[sortBy, order]])
-  .populate("gender")
-  .select("_id name lastname dateOfBirth prefix research degree affiliation")
-  .populate({
-    path: "affiliation.department"
-  })
-  .exec((err, result) => {
-    return res.status(200).json({
-      allResearchersListsReports: result,
-      size: result.length
-    });
-  });
-});
-
+);
 
 app.post("/api/researchers/reports/outstanding", auth, admin, (req, res) => {
   let order = req.query.order ? req.query.order : "asc";
@@ -679,12 +777,12 @@ app.post("/api/researchers/reports/outstanding", auth, admin, (req, res) => {
   let limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 6;
   let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0;
 
-  let from = req.query.from ? req.query.from : null
-  let to = req.query.from ? req.query.to : null
-  let department = req.query.department ? req.query.department : null
+  let from = req.query.from ? req.query.from : null;
+  let to = req.query.from ? req.query.to : null;
+  let department = req.query.department ? req.query.department : null;
   let findArgs = {};
 
-  console.log(sortBy)
+  console.log(sortBy);
 
   for (let key in req.body.filters) {
     if (req.body.filters[key].length > 0) {
@@ -692,15 +790,15 @@ app.post("/api/researchers/reports/outstanding", auth, admin, (req, res) => {
     }
   }
 
-  if ((from != null) && (to != null)) {
+  if (from != null && to != null) {
     findArgs["outstanding.date"] = {
       $gte: from,
       $lte: to
-    }
+    };
   }
 
   if (department != null) {
-    findArgs["affiliation.department"] = department
+    findArgs["affiliation.department"] = department;
   }
 
   findArgs["outstanding.isOutstanding"] = true;
@@ -710,20 +808,22 @@ app.post("/api/researchers/reports/outstanding", auth, admin, (req, res) => {
   findArgs.active = true;
 
   User.find(findArgs)
-  .populate("gender")
-  .populate("degree")
-  .sort([[sortBy, order]])
-  .populate("gender")
-  .select("_id name lastname dateOfBirth prefix research degree affiliation outstanding")
-  .populate({
-    path: "affiliation.department"
-  })
-  .exec((err, result) => {
-    return res.status(200).json({
-      outstandingReports: result,
-      size: result.length
+    .populate("gender")
+    .populate("degree")
+    .sort([[sortBy, order]])
+    .populate("gender")
+    .select(
+      "_id name lastname dateOfBirth prefix research degree affiliation outstanding"
+    )
+    .populate({
+      path: "affiliation.department"
+    })
+    .exec((err, result) => {
+      return res.status(200).json({
+        outstandingReports: result,
+        size: result.length
+      });
     });
-  });
 });
 
 app.post("/api/researchers/reports/new_researcher", auth, admin, (req, res) => {
@@ -732,12 +832,12 @@ app.post("/api/researchers/reports/new_researcher", auth, admin, (req, res) => {
   let limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 6;
   let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0;
 
-  let from = req.query.from ? req.query.from : null
-  let to = req.query.from ? req.query.to : null
-  let department = req.query.department ? req.query.department : null
+  let from = req.query.from ? req.query.from : null;
+  let to = req.query.from ? req.query.to : null;
+  let department = req.query.department ? req.query.department : null;
   let findArgs = {};
 
-  console.log(sortBy)
+  console.log(sortBy);
 
   for (let key in req.body.filters) {
     if (req.body.filters[key].length > 0) {
@@ -745,15 +845,15 @@ app.post("/api/researchers/reports/new_researcher", auth, admin, (req, res) => {
     }
   }
 
-  if ((from != null) && (to != null)) {
+  if (from != null && to != null) {
     findArgs["newResearcher.date"] = {
       $gte: from,
       $lte: to
-    }
+    };
   }
 
   if (department != null) {
-    findArgs["affiliation.department"] = department
+    findArgs["affiliation.department"] = department;
   }
 
   findArgs["newResearcher.isNewResearcher"] = true;
@@ -763,23 +863,23 @@ app.post("/api/researchers/reports/new_researcher", auth, admin, (req, res) => {
   findArgs.active = true;
 
   User.find(findArgs)
-  .populate("gender")
-  .populate("degree")
-  .sort([[sortBy, order]])
-  .populate("gender")
-  .select("_id name lastname dateOfBirth prefix research degree affiliation newResearcher")
-  .populate({
-    path: "affiliation.department"
-  })
-  .exec((err, result) => {
-    return res.status(200).json({
-      newResearcherReports: result,
-      size: result.length
+    .populate("gender")
+    .populate("degree")
+    .sort([[sortBy, order]])
+    .populate("gender")
+    .select(
+      "_id name lastname dateOfBirth prefix research degree affiliation newResearcher"
+    )
+    .populate({
+      path: "affiliation.department"
+    })
+    .exec((err, result) => {
+      return res.status(200).json({
+        newResearcherReports: result,
+        size: result.length
+      });
     });
-  });
 });
-
-
 
 app.get("/api/research/all_researches", auth, admin, (req, res) => {
   let order = req.query.order ? req.query.order : "asc";
@@ -812,79 +912,70 @@ app.get("/api/research/all_researches", auth, admin, (req, res) => {
     })
     .populate("researchType")
     .populate("publicationType")
- 
+
     .exec((err, result) => {
       return res.status(200).json({
         allResearches: result,
         size: result.length
       });
-
     });
 });
 
+app.get("/api/researchers/not_new_researchers", auth, admin, (req, res) => {
+  let order = req.query.order ? req.query.order : "asc";
+  let sortBy = req.query.sortBy ? req.query.sortBy : "name";
+  let limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 6;
+  let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0;
+  let findArgs = {};
 
-
-
-app.get(
-  "/api/researchers/not_new_researchers",
-  auth,
-  admin,
-  (req, res) => {
-    let order = req.query.order ? req.query.order : "asc";
-    let sortBy = req.query.sortBy ? req.query.sortBy : "name";
-    let limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 6;
-    let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0;
-    let findArgs = {};
-
-    for (let key in req.body.filters) {
-      if (req.body.filters[key].length > 0) {
-        findArgs[key] = req.body.filters[key];
-      }
+  for (let key in req.body.filters) {
+    if (req.body.filters[key].length > 0) {
+      findArgs[key] = req.body.filters[key];
     }
-
-    findArgs.emailIsVerified = true;
-    findArgs.accountIsVerified = true;
-    findArgs.active = true;
-
-    findArgs["newResearcher.isNewResearcher"] = true;
-
-    User.find({
-      emailIsVerified: true,
-      accountIsVerified: true,
-      active: true,
-      "newResearcher.isNewResearcher": true
-    })
-      .select("_id")
-      .exec((err, result) => {
-        let _ids = result.map((value, index, array) => {
-          return value["_id"];
-        });
-
-        User.find({
-          _id: { $nin: _ids },
-          emailIsVerified: true,
-          accountIsVerified: true,
-          active: true
-        })
-
-          .populate("gender")
-          .populate("degree")
-          .populate("gender")
-          .select(
-            "_id name lastname dateOfBirth prefix research degree affiliation newResearcher"
-          )
-          .populate({
-            path: "affiliation.department"
-          })
-          .exec((err, result) => {
-            return res.status(200).json({
-              notNewResearcher: result,
-              size: result.length
-            });
-          });
-      });
   }
-);
+
+  findArgs.emailIsVerified = true;
+  findArgs.accountIsVerified = true;
+  findArgs.active = true;
+
+  findArgs["newResearcher.isNewResearcher"] = true;
+
+  User.find({
+    emailIsVerified: true,
+    accountIsVerified: true,
+    active: true,
+    "newResearcher.isNewResearcher": true
+  })
+    .select("_id")
+    .exec((err, result) => {
+      let _ids = result.map((value, index, array) => {
+        return value["_id"];
+      });
+
+      User.find({
+        _id: { $nin: _ids },
+        emailIsVerified: true,
+        accountIsVerified: true,
+        active: true
+      })
+
+        .populate("gender")
+        .populate("degree")
+        .populate("gender")
+        .select(
+          "_id name lastname dateOfBirth prefix research degree affiliation newResearcher"
+        )
+        .populate({
+          path: "affiliation.department"
+        })
+        .exec((err, result) => {
+          return res.status(200).json({
+            notNewResearcher: result,
+            size: result.length
+          });
+        });
+    });
+});
 
 app.get(
   "/api/researchers/not_outstanding_researchers",
