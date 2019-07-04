@@ -700,15 +700,15 @@ app.post(
         //     //     }
         //     //   ]
         //     // },
-           
+
         //   }
         // },
         {
           $group: {
             _id: "$affiliation.department",
-            name : { $addToSet: '$dateOfBirth' },
+            name: { $addToSet: "$dateOfBirth" },
             // age18to30: {$group: {age: "$dateOfBirth", count: {$sum: 1}}},
-            count: { $sum: 1 },
+            count: { $sum: 1 }
             // age18to31Count: {$sum: '$age18to30'},
           }
         }
@@ -722,31 +722,74 @@ app.post(
         });
       });
     } else {
+
+      console.log(moment()
+      )
       User.aggregate([
         // { $unwind: '$affiliation'},
+
         { $match: findArgs },
+        {
+          $project: {
+            affiliation: 1,
+            name: 1,
+            age18to30: {
+              // Set to 1 if value > 10
+              $cond: [
+                {
+                  $and: [
+                    // {
+                    //   $lte: [
+                    //     "$dateOfBirth",
+                    //     moment()
+                    //       .subtract(18, "years")
+                      
+                    //   ]
+                    // },
+                    {
+                      $gte: [
+                        "$dateOfBirth",
+                        moment()
+                          
+                       
+                      ]
+                    }
+                  ]
+                },
+                1,
+                0
+              ]
+            },
+            moreThan10: {  // Set to 1 if value > 10
+              $cond: [ { $eq: [ "$isActive", true ] }, 1, 0]
+          }
+          }
+        },
         {
           $group: {
             _id: "$affiliation.department",
             count: { $sum: 1 },
-            dateOfBirth : { $addToSet: '$dateOfBirth' },
-            gender: {$addToSet: '$gender'}
+            // dateOfBirth : { $addToSet: '$dateOfBirth' },
+            // gender: {$addToSet: '$gender'}
+            age18to30: { $sum: "$age18to30" },
+            moreThan10: { $sum: "$moreThan10" }
+            // countBigger: { $sum: "$moreThan10" }
           }
-        }
+        },
+        { $sort: { count: -1 } }
         //  { $lookup: {from: 'users', localField: 'affiliation.department', foreignField: 'departments.name', as: 'department'} }
       ]).exec((err, doc) => {
         Department.populate(doc, { path: "_id" }, function(
           err,
-          populatedTransactions
+          populatedDepartment
         ) {
-
-          Gender.populate(doc, { path: "_id" }, function(
-            err,
-            populatedTransactions
-          ) {
-            console.log(populatedTransactions);
-          });
-          console.log(populatedTransactions);
+          // Gender.populate(doc, { path: "gender" }, function(
+          //   err,
+          //   populatedTransactions
+          // ) {
+          //   console.log(populatedTransactions);
+          // });
+          console.log(doc);
         });
       });
     }
