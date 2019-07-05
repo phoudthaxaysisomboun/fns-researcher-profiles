@@ -125,17 +125,7 @@ const SearchHeader = ({
   return (
     <Grid container>
       <Grid item xs={12}>
-        <Paper
-          style={{
-            paddingTop: "24px",
-            borderRadius: 0,
-            boxShadow: "none",
-            border: "1px solid #d8d8d8",
-            borderLeft: 0,
-            borderRight: 0,
-            borderTop: "0"
-          }}
-        >
+        
           <Grid container justify="center" style={{ paddingBottom: "14px" }}>
             <Typography
               variant="inherit"
@@ -175,7 +165,13 @@ const SearchHeader = ({
           </Grid>
           <Grid container>
             <Grid item xs sm lg md />
-            <Grid item xs={11} sm={11} lg={5} md={8}>
+            <Grid item xs={11} sm={11} lg={5} md={8} style={{ paddingTop: "24px",
+            borderRadius: 0,
+            boxShadow: "none",
+            border: "1px solid #d8d8d8",
+            borderLeft: 0,
+            borderRight: 0,
+            borderTop: "0"}}>
               <Grid container justify="center">
                 <form
                   onSubmit={() => {
@@ -226,11 +222,7 @@ const SearchHeader = ({
                     }
                   </Paper>
                 </form>
-              </Grid>
-            </Grid>
-            <Grid item xs sm lg md />
-          </Grid>
-          <Grid container>
+                <Grid container>
             <Grid item xs={12}>
               <Tabs
                 value={tabValue}
@@ -265,7 +257,12 @@ const SearchHeader = ({
               </Tabs>
             </Grid>
           </Grid>
-        </Paper>
+              </Grid>
+            </Grid>
+            <Grid item xs sm lg md />
+          </Grid>
+          
+   
       </Grid>
 
       {children}

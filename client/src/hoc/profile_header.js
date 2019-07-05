@@ -322,20 +322,16 @@ const ProfileHeader = ({
   return (
     <Grid container>
       <Grid item xs={12}>
-        <Paper
-          style={{
-            paddingTop: "24px",
-            borderRadius: 0,
+
+
+      <Grid container>
+            <Grid item xs sm lg md />
+            <Grid item xs={10} sm={10} lg={8} md={10} style={{paddingTop: "24px",borderRadius: 0,
             boxShadow: "none",
             border: "1px solid #d8d8d8",
             borderLeft: 0,
             borderRight: 0,
-            borderTop: "0"
-          }}
-        >
-          <Grid container>
-            <Grid item xs sm lg md />
-            <Grid item xs={10} sm={10} lg={8} md={10}>
+            borderTop: "0"}}>
               <Grid container spacing={24}>
                 <Grid align="left" style={{ width: "96px", margin: "12px" }}>
                   {profile.profileImage &&
@@ -419,50 +415,51 @@ const ProfileHeader = ({
                   {isAuth ? renderFollowButton() : null}
                 </Grid>
               </Grid>
+              <Grid container>
+              <Grid item xs={12}>
+                <Tabs
+                  value={tab}
+                  indicatorColor="primary"
+                  textColor="primary"
+                  centered
+                  style={{ marginTop: "16px" }}
+                >
+                  <Tab
+                    style={{ fontSize: "16px", fontWeight: 500 }}
+                    label="ໂດຍລວມ"
+                    to={`/profile/${profile._id}`}
+                    component={ReactLink}
+                  />
+  
+                  <Tab
+                    style={{
+                      fontSize: "16px",
+                      fontWeight: 500,
+                      textDecoration: "none"
+                    }}
+                    label="ປະຫວັດລະອຽດ"
+                    to={`/profile/${profile._id}/info`}
+                    component={ReactLink}
+                  />
+  
+                  <Tab
+                    style={{ fontSize: "16px", fontWeight: 500 }}
+                    label="ຜົນງານຄົ້ນຄວ້າ"
+                  />
+                  {isOwner || userData.isAdmin ? (
+                    <Tab
+                      style={{ fontSize: "16px", fontWeight: 500 }}
+                      label="ສະຖິຕິ"
+                    />
+                  ) : null}
+                </Tabs>
+              </Grid>
+            </Grid>
             </Grid>
             <Grid item xs sm lg md />
           </Grid>
-          <Grid container>
-            <Grid item xs={12}>
-              <Tabs
-                value={tab}
-                indicatorColor="primary"
-                textColor="primary"
-                centered
-                style={{ marginTop: "16px" }}
-              >
-                <Tab
-                  style={{ fontSize: "16px", fontWeight: 500 }}
-                  label="ໂດຍລວມ"
-                  to={`/profile/${profile._id}`}
-                  component={ReactLink}
-                />
-
-                <Tab
-                  style={{
-                    fontSize: "16px",
-                    fontWeight: 500,
-                    textDecoration: "none"
-                  }}
-                  label="ປະຫວັດລະອຽດ"
-                  to={`/profile/${profile._id}/info`}
-                  component={ReactLink}
-                />
-
-                <Tab
-                  style={{ fontSize: "16px", fontWeight: 500 }}
-                  label="ຜົນງານຄົ້ນຄວ້າ"
-                />
-                {isOwner || userData.isAdmin ? (
-                  <Tab
-                    style={{ fontSize: "16px", fontWeight: 500 }}
-                    label="ສະຖິຕິ"
-                  />
-                ) : null}
-              </Tabs>
-            </Grid>
-          </Grid>
-        </Paper>
+        
+          
       </Grid>
 
       {children}

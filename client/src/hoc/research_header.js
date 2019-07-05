@@ -219,20 +219,18 @@ const ResearchHeader = ({
   return (
     <Grid container>
       <Grid item xs={12}>
-        <Paper
-          style={{
-            paddingTop: "24px",
-            borderRadius: 0,
-            boxShadow: "none",
-            border: "1px solid #d8d8d8",
-            borderLeft: 0,
-            borderRight: 0,
-            borderTop: "0"
-          }}
-        >
+     
           <Grid container>
             <Grid item xs sm={1} lg={2} md={1} />
-            <Grid item xs={10} sm={10} lg={8} md={10}>
+            <Grid item xs={10} sm={10} lg={8} md={10} style={{
+              paddingTop: "24px",
+              borderRadius: 0,
+              boxShadow: "none",
+              border: "1px solid #d8d8d8",
+              borderLeft: 0,
+              borderRight: 0,
+              borderTop: "0"
+            }}>
               <Grid container spacing={24}>
                 <Grid item lg md sm xs>
                   {research ? (
@@ -735,10 +733,7 @@ const ResearchHeader = ({
                   </IconButton>
                 </Grid>
               </Grid>
-            </Grid>
-            <Grid item xs sm={1} lg={2} md={1} />
-          </Grid>
-          <Grid container>
+              <Grid container>
             <Grid item xs={12}>
               <Tabs
                 value={0}
@@ -772,7 +767,10 @@ const ResearchHeader = ({
               </Tabs>
             </Grid>
           </Grid>
-        </Paper>
+            </Grid>
+            <Grid item xs sm={1} lg={2} md={1} />
+          </Grid>
+          
       </Grid>
 
       {children}

@@ -722,67 +722,120 @@ app.post(
         });
       });
     } else {
-
-      console.log(moment()
-      )
+      console.log(moment());
       User.aggregate([
         // { $unwind: '$affiliation'},
 
         { $match: findArgs },
-        {
-          $project: {
-            affiliation: 1,
-            name: 1,
-            age18to30: {
-              // Set to 1 if value > 10
-              $cond: [
-                {
-                  $and: [
-                    // {
-                    //   $lte: [
-                    //     "$dateOfBirth",
-                    //     moment()
-                    //       .subtract(18, "years")
-                      
-                    //   ]
-                    // },
-                    {
-                      $gte: [
-                        "$dateOfBirth",
-                        moment()
-                          
-                       
-                      ]
-                    }
-                  ]
-                },
-                1,
-                0
-              ]
-            },
-            moreThan10: {  // Set to 1 if value > 10
-              $cond: [ { $eq: [ "$isActive", true ] }, 1, 0]
-          }
-          }
-        },
+        // {
+        //   $project: {
+        //     affiliation: 1,
+        //     name: 1,
+        //     isActive: 1,
+        //     emailIsVerified: 1,
+        //     age18to30: {
+        //       // Set to 1 if value > 10
+        //       $cond: [
+        //         {
+        //           $and: [
+        //             // {
+        //             //   $lte: [
+        //             //     "$dateOfBirth",
+        //             //     moment()
+        //             //       .subtract(18, "years")
+
+        //             //   ]
+        //             // },
+        //             {
+        //               $gte: ["$dateOfBirth", moment()]
+        //             }
+        //           ]
+        //         },
+        //         1,
+        //         0
+        //       ]
+        //     },
+        //     moreThan10: {
+        //       // Set to 1 if value > 10
+        //       $cond: [{ $eq: ["$isActive", true] }, 1, 0]
+        //     }
+        //   }
+        // },
         {
           $group: {
             _id: "$affiliation.department",
-            count: { $sum: 1 },
-            // dateOfBirth : { $addToSet: '$dateOfBirth' },
+            countByDepartment: { $sum: 1 },
+            // isActive : { $addToSet: '$active' },
+            degree : { $addToSet: '$degree' },
+            gender : { $addToSet: '$gender' },
+            // dateOfBirth2 : { $addToSet: moment()
+            //   .subtract(18, "years").toDate() },
             // gender: {$addToSet: '$gender'}
-            age18to30: { $sum: "$age18to30" },
-            moreThan10: { $sum: "$moreThan10" }
+            // age18to30: { $sum: "$age18to30" },
+            // moreThan10: { $sum: "$moreThan10" },
+            age18to30: {
+              $sum: {
+                $cond: [
+                  {
+                    $and: [
+                      { $lte: ["$dateOfBirth", moment()
+                      .subtract(18, "years").toDate()] },
+                      { $gte: ["$dateOfBirth", moment()
+                      .subtract(30, "years").toDate()] },
+                      // { $eq: ["$emailIsVerified", true] }
+                    ]
+                  },
+                  1,
+                  0
+                ]
+              }
+            },
+            age31to45: {
+              $sum: {
+                $cond: [
+                  {
+                    $and: [
+                      { $lte: ["$dateOfBirth", moment()
+                      .subtract(31, "years").toDate()] },
+                      { $gte: ["$dateOfBirth", moment()
+                      .subtract(45, "years").toDate()] },
+                      // { $eq: ["$emailIsVerified", true] }
+                    ]
+                  },
+                  1,
+                  0
+                ]
+              }
+            },
+            age46to65: {
+              $sum: {
+                $cond: [
+                  {
+                    $and: [
+                      { $lte: ["$dateOfBirth", moment()
+                      .subtract(46, "years").toDate()] },
+                      { $gte: ["$dateOfBirth", moment()
+                      .subtract(65, "years").toDate()] },
+                      // { $eq: ["$emailIsVerified", true] }
+                    ]
+                  },
+                  1,
+                  0
+                ]
+              }
+            }
             // countBigger: { $sum: "$moreThan10" }
           }
         },
         { $sort: { count: -1 } }
         //  { $lookup: {from: 'users', localField: 'affiliation.department', foreignField: 'departments.name', as: 'department'} }
       ]).exec((err, doc) => {
+        // console.log(doc);
         Department.populate(doc, { path: "_id" }, function(
           err,
           populatedDepartment
         ) {
+          
           // Gender.populate(doc, { path: "gender" }, function(
           //   err,
           //   populatedTransactions

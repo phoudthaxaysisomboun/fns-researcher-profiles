@@ -171,11 +171,12 @@ const styles = theme => ({
     transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
-    })
+    }),
+    zIndex: theme.zIndex.drawer + 1
   },
   appBarShift: {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: drawerWidth,
+    // width: `calc(100% - ${drawerWidth}px)`,
+    // marginLeft: drawerWidth,
     transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen
@@ -190,7 +191,8 @@ const styles = theme => ({
   },
   drawer: {
     width: drawerWidth,
-    flexShrink: 0
+    flexShrink: 0,
+    border: 0
   },
   drawerPaper: {
     width: drawerWidth
@@ -250,7 +252,7 @@ class Layout extends Component {
   };
 
   handleDrawerOpen = () => {
-    this.setState({ open: true });
+    this.setState({ open: this.state.open ? false : true});
   };
 
   handleDrawerClose = () => {
@@ -644,18 +646,16 @@ class Layout extends Component {
                 {!this.props.location.pathname.startsWith("/search") ? (
                   <>
                     <IconButton
-                      //   className={classes.menuButton}
-
-                      color="inherit"
-                      aria-label="Open drawer"
-                      onClick={this.handleDrawerOpen}
-                      className={classNames(
-                        classes.menuButtonMain,
-                        open && classes.hide
-                      )}
-                    >
-                      <MenuIcon />
-                    </IconButton>
+                          onClick={this.handleDrawerOpen}
+                          className={classNames(
+                            classes.menuButtonMain,
+                            
+                          )}
+                          color="inherit"
+                          aria-label="Open drawer"
+                        >
+                          <MenuIcon />
+                        </IconButton>
                   </>
                 ) : null}
                 {!this.props.location.pathname.startsWith("/search") ? (
@@ -716,17 +716,17 @@ class Layout extends Component {
                       style={{ flexGrow: "1", margin: 0 }}
                     >
                       <Grid item xs={2} align="left">
-                        <IconButton
-                          onClick={this.handleDrawerOpen}
-                          className={classNames(
-                            classes.menuButtonMain,
-                            open && classes.hide
-                          )}
-                          color="inherit"
-                          aria-label="Open drawer"
-                        >
-                          <MenuIcon />
-                        </IconButton>
+                      <IconButton
+                      onClick={this.handleDrawerOpen}
+                      className={classNames(
+                        classes.menuButtonMain,
+                        
+                      )}
+                      color="inherit"
+                      aria-label="Open drawer"
+                    >
+                      <MenuIcon />
+                    </IconButton>
                       </Grid>
 
                       <Grid item xs={8} alignContent="center">
@@ -818,17 +818,14 @@ class Layout extends Component {
               classes={{
                 paper: classes.drawerPaper
               }}
+              style={{
+                border: "0 !important"
+              }}
             >
               <div className={classes.drawerHeader}>
-                <IconButton onClick={this.handleDrawerClose}>
-                  {theme.direction === "ltr" ? (
-                    <ChevronLeftOutlined />
-                  ) : (
-                    <ChevronRightOutlined />
-                  )}
-                </IconButton>
+               
               </div>
-              <Divider />
+              
 
               <List>
                 {this.props &&
@@ -840,6 +837,7 @@ class Layout extends Component {
                     component={Link}
                     to="/"
                     selected={"/" === pathname}
+                    style={{borderTopRightRadius: "23px", borderBottomRightRadius: "23px"}}
                   >
                     {"/" === pathname ? (
                       <>
@@ -872,6 +870,7 @@ class Layout extends Component {
                     pathname.startsWith("/search") &&
                     !("?q=" === this.props.location.search)
                   }
+                  style={{borderTopRightRadius: "23px", borderBottomRightRadius: "23px"}}
                 >
                   {pathname.startsWith("/search") &&
                   !("?q=" === this.props.location.search) ? (
@@ -897,6 +896,7 @@ class Layout extends Component {
                   )}
                 </ListItem>
                 <ListItem
+                style={{borderTopRightRadius: "23px", borderBottomRightRadius: "23px"}}
                   button
                   component={Link}
                   to="/search/researchers?q="
@@ -937,6 +937,7 @@ class Layout extends Component {
                     "/search/researches" === pathname &&
                     "?q=" === this.props.location.search
                   }
+                  style={{borderTopRightRadius: "23px", borderBottomRightRadius: "23px"}}
                 >
                   {"/search/researches" === pathname &&
                   "?q=" === this.props.location.search ? (
@@ -968,6 +969,7 @@ class Layout extends Component {
                   <ListItem
                   button
                   component={Link}
+                  style={{borderTopRightRadius: "23px", borderBottomRightRadius: "23px"}}
                   to={`/profile/${this.props.user.userData._id}`}
                   selected={
                     `/profile/${this.props.user.userData._id}` === pathname
@@ -1004,7 +1006,7 @@ class Layout extends Component {
                 this.props.user.userData &&
                 this.props.user.userData.isAdmin ? (
                   <>
-                    <Divider />
+                    <Divider style={{marginTop: "4px", marginBottom: "4px"}}/>
                     <List
                       component="nav"
                       subheader={
@@ -1019,7 +1021,7 @@ class Layout extends Component {
                       }
                       className={classes.root}
                     >
-                      <ListItem button onClick={this.handleMangeListClick}>
+                      <ListItem style={{borderTopRightRadius: "23px", borderBottomRightRadius: "23px"}} button onClick={this.handleMangeListClick}>
                         <ListItemIcon>
                         
 
@@ -1039,6 +1041,7 @@ class Layout extends Component {
                       >
                         <List component="div" disablePadding>
                           <ListItem
+                          style={{borderTopRightRadius: "23px", borderBottomRightRadius: "23px"}}
                             button
                             component={Link}
                             to="/admin/researchers"
@@ -1101,6 +1104,7 @@ class Layout extends Component {
                         </List>
                         <List component="div" disablePadding>
                           <ListItem
+                          style={{borderTopRightRadius: "23px", borderBottomRightRadius: "23px"}}
                             button
                             component={Link}
                             to="/admin/researches"
@@ -1143,7 +1147,7 @@ class Layout extends Component {
                       
                       className={classes.root}
                     >
-                      <ListItem button onClick={this.handleReportsClick}>
+                      <ListItem style={{borderTopRightRadius: "23px", borderBottomRightRadius: "23px"}} button onClick={this.handleReportsClick}>
                         <ListItemIcon>
                         
 
@@ -1165,6 +1169,7 @@ class Layout extends Component {
                           <ListItem
                             button
                             component={Link}
+                            style={{borderTopRightRadius: "23px", borderBottomRightRadius: "23px"}}
                             to="/admin/reports/researchers/numbers"
                             selected={pathname.startsWith("/admin/reports/researchers")}
                             className={classes.nested}
@@ -1197,6 +1202,7 @@ class Layout extends Component {
                         </List>
                         <List component="div" disablePadding>
                           <ListItem
+                          style={{borderTopRightRadius: "23px", borderBottomRightRadius: "23px"}}
                             button
                             component={Link}
                             to="/admin/reports/researches/numbers"
