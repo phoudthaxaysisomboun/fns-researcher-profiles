@@ -6,8 +6,6 @@ import { connect } from "react-redux";
 import { Grid } from "@material-ui/core";
 import { SearchOutlined } from "@material-ui/icons";
 
-import ProfileCard from "../Home/Card/profile";
-
 import { getProfileAndResearchCount } from "../../actions/user_actions";
 
 class Home extends Component {

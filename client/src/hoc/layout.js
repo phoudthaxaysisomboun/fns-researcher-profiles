@@ -245,7 +245,7 @@ class Layout extends Component {
   state = {
     anchorEl: null,
     mobileMoreAnchorEl: null,
-    open: false,
+    open: true,
     headerclass: "",
     openManageToolMenu: true,
     openReportsToolMenu: true,
@@ -972,11 +972,11 @@ class Layout extends Component {
                   style={{borderTopRightRadius: "23px", borderBottomRightRadius: "23px"}}
                   to={`/profile/${this.props.user.userData._id}`}
                   selected={
-                    `/profile/${this.props.user.userData._id}` === pathname
+                     pathname.startsWith(`/profile/${this.props.user.userData._id}`)
                   }
                 >
-                {console.log(this.props)}
-                  {`/profile/${this.props.user.userData._id}` === pathname? (
+          
+                  {pathname.startsWith(`/profile/${this.props.user.userData._id}`)? (
                     <>
                       <ListItemIcon>
                         <AccountCircleOutlined color="primary" />
@@ -1006,7 +1006,7 @@ class Layout extends Component {
                 this.props.user.userData &&
                 this.props.user.userData.isAdmin ? (
                   <>
-                    <Divider style={{marginTop: "4px", marginBottom: "4px"}}/>
+                    <Divider style={{marginTop: "16px", marginBottom: "8px"}}/>
                     <List
                       component="nav"
                       subheader={

@@ -124,7 +124,7 @@ const SearchHeader = ({
 }) => {
   return (
     <Grid container>
-      <Grid item xs={12}>
+      <Grid item xs={12} style={{paddingTop:"16px"}}>
         
           <Grid container justify="center" style={{ paddingBottom: "14px" }}>
             <Typography

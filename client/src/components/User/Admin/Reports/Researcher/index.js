@@ -7,7 +7,7 @@ import { withStyles } from "@material-ui/core/styles";
 
 import { withRouter } from "react-router-dom";
 
-
+import Chart from "react-apexcharts";
 
 import moment from "moment";
 
@@ -66,6 +66,7 @@ import ReactExport from "react-data-export";
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
+const ExcelRow = ReactExport.ExcelFile.ExcelRow;
 
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -79,13 +80,12 @@ function desc(a, b, orderBy) {
 
 function stableSort(array, cmp) {
   const stabilizedThis = array.map((el, index) => [el, index]);
-
   stabilizedThis.sort((a, b) => {
     const order = cmp(a[0], b[0]);
     if (order !== 0) return order;
     return a[1] - b[1];
   });
-  // console.log(stabilizedThis.map(el => el[0]))
+
   return stabilizedThis.map(el => el[0]);
 }
 
@@ -103,7 +103,7 @@ const rows = [
     label: "ລ/ດ"
   },
   {
-    id: "department",
+    id: "deapartmentName",
     numeric: false,
     disablePadding: false,
     label: "ພາກວິຊາ"
@@ -157,7 +157,7 @@ const rows = [
     label: "46-65"
   },
   {
-    id: "allCount",
+    id: "countByDepartment",
     numeric: false,
     disablePadding: false,
     label: "ທັງຫມົດ"
@@ -275,7 +275,6 @@ class EnhancedTableToolbar extends React.Component {
       handleStartChange,
       handleStartBlur
     } = this.props;
-   
 
     return (
       <Toolbar
@@ -291,165 +290,163 @@ class EnhancedTableToolbar extends React.Component {
         >
           <Grid item xs>
             <div>
-            <Typography
-            variant="inherit"
-            style={{
-              fontSize: "20px",
-              fontWeight: "500",
-              paddingLeft: 0,
-              marginLeft: 0
-            }}
-            id="tableTitle"
-          >
-            ຈໍານວນນັກຄົ້ນຄວ້າ{" "}
-            <div
-              style={{
-                fontWeight: "normal",
-                display: "inline",
-                fontFamily: "'Roboto', sans-serif",
-                color: "#898989",
-                fontSize: "16px"
-              }}
-            >
-              {researchersCount}
-            </div>
-          </Typography>
+              <Typography
+                variant="inherit"
+                style={{
+                  fontSize: "20px",
+                  fontWeight: "500",
+                  paddingLeft: 0,
+                  marginLeft: 0
+                }}
+                id="tableTitle"
+              >
+                ຈໍານວນນັກຄົ້ນຄວ້າ{" "}
+                <div
+                  style={{
+                    fontWeight: "normal",
+                    display: "inline",
+                    fontFamily: "'Roboto', sans-serif",
+                    color: "#898989",
+                    fontSize: "16px"
+                  }}
+                >
+                  {researchersCount}
+                </div>
+              </Typography>
             </div>
           </Grid>
           <Grid item xs={6} align="right">
             <div className={classes.actions}>
-            <FormControl
-            style={{
-              minWidth: 120,
-              textAlign: "-webkit-left",
-              marginRight: "8px"
-            }}
-          >
-            <TextField
-              id="standard-name"
-              label="ແຕ່"
-              value={startValue}
-              onChange={event => {
-                handleStartChange(event);
-              }}
-              onBlur={event => {
-                handleStartBlur(event);
-              }}
-              type="date"
-              margin="none"
-            />
-          </FormControl>
-          <FormControl
-            style={{
-              minWidth: 120,
-              textAlign: "-webkit-left",
-              marginRight: "8px"
-            }}
-          >
-            <TextField
-              id="standard-name"
-              label="ຮອດ"
-              value={endValue}
-              onChange={event => {
-                handleEndChange(event);
-              }}
-              onBlur={event => {
-                handleEndBlur(event);
-              }}
-              type="date"
-              margin="none"
-            />
-          </FormControl>
-
-          <FormControl
-            style={{
-              minWidth: 120,
-              textAlign: "-webkit-left",
-              marginRight: "8px"
-            }}
-          >
-            <InputLabel shrink htmlFor="age-label-placeholder">
-              ພາກວິຊາ
-            </InputLabel>
-            <Select
-              value={selectedValue}
-              onChange={event => {
-                handleDepartmentChange(event);
-              }}
-              style={{ borderBottom: 0, marginTop: "16px" }}
-              input={
-                <Input
-                  style={{
-                    fontFamily: "'Noto Sans Lao UI', sans serif",
-                    borderBottom: 0
-                  }}
-                  id="age-label-placeholder"
-                />
-              }
-              displayEmpty
-            >
-              <MenuItem
+              <FormControl
                 style={{
-                  fontFamily: "'Noto Sans Lao UI', sans serif",
-                  borderBottom: 0
+                  minWidth: 120,
+                  textAlign: "-webkit-left",
+                  marginRight: "8px"
                 }}
-                value=""
               >
-                <em
-                  style={{
-                    fontFamily: "'Noto Sans Lao UI', sans serif",
-                    fontStyle: "normal"
+                <TextField
+                  id="standard-name"
+                  label="ແຕ່"
+                  value={startValue}
+                  onChange={event => {
+                    handleStartChange(event);
                   }}
-                >
-                  ທັງຫມົດ
-                </em>
-              </MenuItem>
-              {departments.map((value, index, id) => (
-                <MenuItem
-                  style={{
-                    fontFamily: "'Noto Sans Lao UI', sans serif"
+                  onBlur={event => {
+                    handleStartBlur(event);
                   }}
-                  value={value._id}
+                  type="date"
+                  margin="none"
+                />
+              </FormControl>
+              <FormControl
+                style={{
+                  minWidth: 120,
+                  textAlign: "-webkit-left",
+                  marginRight: "8px"
+                }}
+              >
+                <TextField
+                  id="standard-name"
+                  label="ຮອດ"
+                  value={endValue}
+                  onChange={event => {
+                    handleEndChange(event);
+                  }}
+                  onBlur={event => {
+                    handleEndBlur(event);
+                  }}
+                  type="date"
+                  margin="none"
+                />
+              </FormControl>
+
+              <FormControl
+                style={{
+                  minWidth: 120,
+                  textAlign: "-webkit-left",
+                  marginRight: "8px"
+                }}
+              >
+                <InputLabel shrink htmlFor="age-label-placeholder">
+                  ພາກວິຊາ
+                </InputLabel>
+                <Select
+                  value={selectedValue}
+                  onChange={event => {
+                    handleDepartmentChange(event);
+                  }}
+                  style={{ borderBottom: 0, marginTop: "16px" }}
+                  input={
+                    <Input
+                      style={{
+                        fontFamily: "'Noto Sans Lao UI', sans serif",
+                        borderBottom: 0
+                      }}
+                      id="age-label-placeholder"
+                    />
+                  }
+                  displayEmpty
                 >
-                  <Typography variant="inherit">
-                    {value.name}
-                  </Typography>{" "}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <ExcelFile
-            name="ຈໍານວນນັກຄົ້ນຄວ້າ"
-            element={
-              <Tooltip title="ດາວໂຫລດຟາຍລ໌ Excel">
-                <IconButton style={{ marginRight: "0px" }}>
-                  <SaveAltOutlined />
-                </IconButton>
-              </Tooltip>
-            }
-          >
-            <ExcelSheet data={data} name="ຈໍານວນນັກຄົ້ນຄວ້າ">
-              <ExcelColumn
-                name="Saysettha OT"
-                label="ລ/ດ"
-                value={col => 1}
-              />
-              <ExcelColumn label="ພາກວິຊາ" value="deparment" />
-              <ExcelColumn label="ປະລິນຍາຕີ" value="bachelorCount" />
-              <ExcelColumn label="ປະລິນຍາໂທ" value="masterCount" />
-              <ExcelColumn label="ປະລິນຍາເອກ" value="doctorialCount" />
-              <ExcelColumn label="ຍິງ" value="femaleCount" />
-              <ExcelColumn label="ຊາຍ" value="maleCount" />
-              <ExcelColumn label="18-30" value="age18to30Count" />
-              <ExcelColumn label="31-45" value="age31to45Count" />
-              <ExcelColumn label="46-65" value="age46to65Count" />
-              <ExcelColumn label="ທັງຫມົດ" value="allCount" />
-              {
-                // <ExcelColumn label="Marital Status"
-                //            value={(col) => col.is_married ? "Married" : "Single"}/>
-              }
-            </ExcelSheet>
-          </ExcelFile>
+                  <MenuItem
+                    style={{
+                      fontFamily: "'Noto Sans Lao UI', sans serif",
+                      borderBottom: 0
+                    }}
+                    value=""
+                  >
+                    <em
+                      style={{
+                        fontFamily: "'Noto Sans Lao UI', sans serif",
+                        fontStyle: "normal"
+                      }}
+                    >
+                      ທັງຫມົດ
+                    </em>
+                  </MenuItem>
+                  {departments.map((value, index, id) => (
+                    <MenuItem
+                      style={{
+                        fontFamily: "'Noto Sans Lao UI', sans serif"
+                      }}
+                      value={value._id}
+                    >
+                      <Typography variant="inherit">{value.name}</Typography>{" "}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <ExcelFile
+                filename={`ລາຍງານຈໍານວນນັກຄົ້ນຄວ້າ ຄວທ (${moment(
+                  startValue
+                ).format("DD/MM/YYYY")}-${moment(endValue).format(
+                  "DD/MM/YYYY"
+                )})`}
+                element={
+                  <Tooltip title="ດາວໂຫລດຟາຍລ໌ Excel">
+                    <IconButton style={{ marginRight: "0px" }}>
+                      <SaveAltOutlined />
+                    </IconButton>
+                  </Tooltip>
+                }
+              >
+                <ExcelSheet data={data} name="ຈໍານວນນັກຄົ້ນຄວ້າ ຄວທ">
+                  <ExcelColumn name="Saysettha OT" label="ລ/ດ" value="no" />
+                  <ExcelColumn label="ພາກວິຊາ" value="deapartmentName" />
+                  <ExcelColumn label="ປະລິນຍາຕີ" value="bachelorCount" />
+                  <ExcelColumn label="ປະລິນຍາໂທ" value="masterCount" />
+                  <ExcelColumn label="ປະລິນຍາເອກ" value="doctorialCount" />
+                  <ExcelColumn label="ຍິງ" value="femaleCount" />
+                  <ExcelColumn label="ຊາຍ" value="maleCount" />
+                  <ExcelColumn label="18-30" value="age18to30Count" />
+                  <ExcelColumn label="31-45" value="age31to45Count" />
+                  <ExcelColumn label="46-65" value="age46to65Count" />
+                  <ExcelColumn label="ທັງຫມົດ" value="countByDepartment" />
+                  {
+                    // <ExcelColumn label="Marital Status"
+                    //            value={(col) => col.is_married ? "Married" : "Single"}/>
+                  }
+                </ExcelSheet>
+              </ExcelFile>
             </div>
           </Grid>
         </Grid>
@@ -481,15 +478,98 @@ class AllResearcherReports extends Component {
   state = {
     tabNumber: 0,
     order: "asc",
-    orderBy: "bachelorCount",
+    orderBy: "",
     selected: [],
     data: [],
     page: 0,
     rowsPerPage: 1,
-    deparment: "",
+    department: "",
     departmentText: "ທັງຫມົດ",
     start: moment("1996-05-11").format("YYYY-MM-DD"),
-    end: moment().format("YYYY-MM-DD")
+    end: moment().format("YYYY-MM-DD"),
+    options: {
+      chart: {
+        id: "apexchart-example",
+
+        width: "100%",
+        height: "300"
+      },
+      // xaxis: {
+      //   categories: departmentName
+      // },
+      labels: [],
+      dataLabels: {
+        formatter: function(val, opts) {
+          return opts.w.config.series[opts.seriesIndex];
+        }
+      },
+      responsive: [
+        {
+          breakpoint: 480,
+          options: {
+            chart: {
+              width: 200
+            },
+            legend: {
+              position: "bottom"
+            }
+          }
+        }
+      ],
+      theme: {
+        mode: "light",
+        palette: "palette2",
+        monochrome: {
+          enabled: false,
+          color: "#255aee",
+          shadeTo: "light",
+          shadeIntensity: 0.65
+        }
+      }
+    },
+    series: [],
+
+    optionsDegree: {
+      chart: {
+        id: "apexchart-example",
+
+        width: "100%",
+        
+      },
+      // xaxis: {
+      //   categories: departmentName
+      // },
+      labels: ["ປະລິນຍາຕີ", "ປະລິນຍາໂທ", "ປະລິນຍາເອກ"],
+      dataLabels: {
+        formatter: function(val, opts) {
+          return opts.w.config.series[opts.seriesIndex];
+        }
+      },
+      responsive: [
+        {
+          breakpoint: 480,
+          options: {
+            chart: {
+              width: 200
+            },
+            legend: {
+              position: "bottom"
+            }
+          }
+        }
+      ],
+      theme: {
+        mode: "light",
+        palette: "palette3",
+        monochrome: {
+          enabled: false,
+          color: "#255aee",
+          shadeTo: "light",
+          shadeIntensity: 0.65
+        }
+      }
+    },
+    seriesDegree: []
   };
 
   handleRequestSort = (event, property) => {
@@ -530,8 +610,6 @@ class AllResearcherReports extends Component {
     }
 
     this.setState({ selected: newSelected });
-
-    console.log(this.state.selected);
   };
 
   handleChangePage = (event, page) => {
@@ -549,16 +627,41 @@ class AllResearcherReports extends Component {
     this.props
       .dispatch(getAllResearchersReports("", this.state.start, this.state.end))
       .then(response => {
-        const newdata = this.props.user.allResearchersReports;
+       
+        this.setState({
+          data: this.props.user.allResearchersReports,
+          rowsPerPage: this.props.user.allResearchersReports.length
+        });
 
-        newdata[0].deparment = this.state.departmentText;
+        let departmentName = [];
+        let countByDepartment = [];
+
+        let countByDegree = []
+
+        this.state.data.map(function(el, index, array) {
+          var o = Object.assign({}, el);
+          if (o["deapartmentName"] !== "ລວມ") {
+            departmentName.push(o.deapartmentName);
+            countByDepartment.push(o["countByDepartment"]);
+            
+            console.log(o["doctorialCount"])
+          } else {
+            countByDegree[0] = o["bachelorCount"]
+            countByDegree[1] = o["masterCount"]
+            countByDegree[2] = o["doctorialCount"]
+          }
+          return null;
+        });
+       
+        let newlabelData = { ...this.state.options };
+        newlabelData["labels"] = departmentName;
 
         this.setState({
-          data: newdata
+          options: newlabelData,
+          series: countByDepartment,
+          seriesDegree: countByDegree
         });
       });
-
-    
   }
 
   handleRequestSort = (event, property) => {
@@ -591,23 +694,18 @@ class AllResearcherReports extends Component {
     ) {
       this.setState({ end: moment().format("YYYY-MM-DD") });
     }
-
-    this.props.dispatch(clearAllResearchersReports());
     this.props
       .dispatch(
         getAllResearchersReports(
-          this.state.deparment,
+          this.state.department,
           this.state.start,
           this.state.end
         )
       )
       .then(response => {
-        const newdata = this.props.user.allResearchersReports;
-
-        newdata[0].deparment = this.state.departmentText;
-
         this.setState({
-          data: newdata
+          data: this.props.user.allResearchersReports,
+          rowsPerPage: this.props.user.allResearchersReports.length
         });
       });
   };
@@ -624,31 +722,25 @@ class AllResearcherReports extends Component {
       this.setState({ start: moment().format("YYYY-MM-DD") });
     }
 
-    this.props.dispatch(clearAllResearchersReports());
     this.props
       .dispatch(
         getAllResearchersReports(
-          this.state.deparment,
+          this.state.department,
           this.state.start,
           this.state.end
         )
       )
       .then(response => {
-        const newdata = this.props.user.allResearchersReports;
-
-        newdata[0].deparment = this.state.departmentText;
-
         this.setState({
-          data: newdata
+          data: this.props.user.allResearchersReports,
+          rowsPerPage: this.props.user.allResearchersReports.length
         });
-    });
+      });
   };
 
   componentDidUpdate(prevProps, prevState) {
-    const prevDepartment = prevState.deparment;
-    const currDepartment = this.state.deparment;
-
-    console.log(prevState.start)
+    const prevDepartment = prevState.department;
+    const currDepartment = this.state.department;
 
     // const prevStart = prevState.start
     // const currStart = this.state.start
@@ -660,22 +752,19 @@ class AllResearcherReports extends Component {
     // }
 
     if (prevDepartment !== currDepartment) {
-      this.props.dispatch(clearAllResearchersReports());
+      // this.props.dispatch(clearAllResearchersReports());
       this.props
         .dispatch(
           getAllResearchersReports(
-            this.state.deparment,
+            this.state.department,
             this.state.start,
             this.state.end
           )
         )
         .then(response => {
-          const newdata = this.props.user.allResearchersReports;
-
-          newdata[0].deparment = this.state.departmentText;
-
           this.setState({
-            data: newdata
+            data: this.props.user.allResearchersReports,
+            rowsPerPage: this.props.user.allResearchersReports.length
           });
         });
     }
@@ -709,7 +798,7 @@ class AllResearcherReports extends Component {
                     selected={this.state.selected}
                     data={this.state.data}
                     departments={this.props.user.departments}
-                    selectedValue={this.state.deparment}
+                    selectedValue={this.state.department}
                     handleDepartmentChange={event =>
                       this.handleDepartmentChange(event)
                     }
@@ -749,7 +838,6 @@ class AllResearcherReports extends Component {
                               page * rowsPerPage + rowsPerPage
                             )
                             .map((n, index) => {
-                  
                               return (
                                 <TableRow tabIndex={-1} key={n.id}>
                                   <TableCell
@@ -757,7 +845,8 @@ class AllResearcherReports extends Component {
                                     scope="row"
                                     padding="dense"
                                   >
-                                    {index + 1}
+                                    {console.log(n)}
+                                    {n.no}
                                   </TableCell>
                                   <TableCell
                                     component="th"
@@ -765,7 +854,7 @@ class AllResearcherReports extends Component {
                                     padding="dense"
                                   >
                                     <Typography variant="inherit">{`${
-                                      this.state.departmentText
+                                      n.deapartmentName
                                     }`}</Typography>
                                   </TableCell>
                                   <TableCell
@@ -846,7 +935,7 @@ class AllResearcherReports extends Component {
                                     padding="dense"
                                   >
                                     <Typography variant="inherit">{`${
-                                      n.allCount
+                                      n.countByDepartment
                                     }`}</Typography>
                                   </TableCell>
                                 </TableRow>
@@ -883,6 +972,64 @@ class AllResearcherReports extends Component {
                       // />
                     }
                   </Paper>
+
+                  {this.state.department === "" ? (
+                    <Grid container spacing={8} style={{ marginTop: "16px" }}> 
+                      <Grid item lg={4} md={6} sm={1}>
+                        <Paper
+                          style={{
+                            boxShadow: "none",
+                            border: "1px solid #d8d8d8", maxHeight: "400px"
+                          }}
+                        >
+                          <Typography
+                            variant="inherit"
+                            style={{
+                              fontSize: "18px",
+                              fontWeight: 500,
+                              padding: "24px"
+                            }}
+                          >
+                            ຈໍານວນນັກຄົ້ນຄວ້າແບ່ງຕາມພາກ
+                          </Typography>
+                          <Chart
+                            options={this.state.options}
+                            labels={this.state.department}
+                            series={this.state.series}
+                            props
+                            type="pie"
+                          />
+                        </Paper>
+                      </Grid>
+                      <Grid item lg={4} md={6} sm={1}>
+                        <Paper
+                          style={{
+                            boxShadow: "none",
+                            border: "1px solid #d8d8d8"
+                          }}
+                        >
+                          <Typography
+                            variant="inherit"
+                            style={{
+                              fontSize: "18px",
+                              fontWeight: 500,
+                              padding: "24px"
+                            }}
+                          >
+                            ຈໍານວນນັກຄົ້ນຄວ້າແບ່ງຕາມວຸດທິ
+                          </Typography>
+                          <Chart
+                            options={this.state.optionsDegree}
+                            labels={this.state.optionsDegree.labels}
+                            series={this.state.seriesDegree}
+                            props
+                            type="pie"
+                            
+                          />
+                        </Paper>
+                      </Grid>
+                    </Grid>
+                  ) : null}
                 </>
               ) : (
                 <Paper

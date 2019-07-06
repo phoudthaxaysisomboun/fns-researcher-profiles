@@ -421,7 +421,8 @@ const ProfileHeader = ({
                   value={tab}
                   indicatorColor="primary"
                   textColor="primary"
-                  centered
+                  
+            centered
                   style={{ marginTop: "16px" }}
                 >
                   <Tab
