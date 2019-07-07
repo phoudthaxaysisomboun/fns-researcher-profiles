@@ -489,10 +489,10 @@ class AllResearcherReports extends Component {
     end: moment().format("YYYY-MM-DD"),
     options: {
       chart: {
-        id: "apexchart-example",
+        id: "apexchart-example"
 
-        width: "100%",
-        height: "300"
+        // width: "100%",
+        // height: "300"
       },
       // xaxis: {
       //   categories: departmentName
@@ -505,7 +505,7 @@ class AllResearcherReports extends Component {
       },
       responsive: [
         {
-          breakpoint: 480,
+          breakpoint: 1600,
           options: {
             chart: {
               width: 200
@@ -534,7 +534,7 @@ class AllResearcherReports extends Component {
         id: "apexchart-example",
 
         width: "100%",
-        
+        height: "100%"
       },
       // xaxis: {
       //   categories: departmentName
@@ -547,7 +547,7 @@ class AllResearcherReports extends Component {
       },
       responsive: [
         {
-          breakpoint: 480,
+          breakpoint: 1600,
           options: {
             chart: {
               width: 200
@@ -569,7 +569,83 @@ class AllResearcherReports extends Component {
         }
       }
     },
-    seriesDegree: []
+    seriesDegree: [],
+
+    optionsGender: {
+      chart: {
+        id: "apexchart-example",
+
+        width: "100%"
+      },
+      labels: ["ຊາຍ", "ຍິງ"],
+      dataLabels: {
+        formatter: function(val, opts) {
+          return opts.w.config.series[opts.seriesIndex];
+        }
+      },
+      responsive: [
+        {
+          breakpoint: 1600,
+          options: {
+            chart: {
+              width: 200
+            },
+            legend: {
+              position: "bottom"
+            }
+          }
+        }
+      ],
+      theme: {
+        mode: "light",
+        palette: "palette4",
+        monochrome: {
+          enabled: false,
+          color: "#255aee",
+          shadeTo: "light",
+          shadeIntensity: 0.65
+        }
+      }
+    },
+    seriesGender: [],
+
+    optionsAge: {
+      chart: {
+        id: "apexchart-example",
+
+        width: "100%"
+      },
+      labels: ["18-30", "31-45", "46-65"],
+      dataLabels: {
+        formatter: function(val, opts) {
+          return opts.w.config.series[opts.seriesIndex];
+        }
+      },
+      responsive: [
+        {
+          breakpoint: 1600,
+          options: {
+            chart: {
+              width: 200
+            },
+            legend: {
+              position: "bottom"
+            }
+          }
+        }
+      ],
+      theme: {
+        mode: "light",
+        palette: "palette5",
+        monochrome: {
+          enabled: false,
+          color: "#255aee",
+          shadeTo: "light",
+          shadeIntensity: 0.65
+        }
+      }
+    },
+    seriesAge: []
   };
 
   handleRequestSort = (event, property) => {
@@ -627,39 +703,9 @@ class AllResearcherReports extends Component {
     this.props
       .dispatch(getAllResearchersReports("", this.state.start, this.state.end))
       .then(response => {
-       
         this.setState({
           data: this.props.user.allResearchersReports,
           rowsPerPage: this.props.user.allResearchersReports.length
-        });
-
-        let departmentName = [];
-        let countByDepartment = [];
-
-        let countByDegree = []
-
-        this.state.data.map(function(el, index, array) {
-          var o = Object.assign({}, el);
-          if (o["deapartmentName"] !== "ລວມ") {
-            departmentName.push(o.deapartmentName);
-            countByDepartment.push(o["countByDepartment"]);
-            
-            console.log(o["doctorialCount"])
-          } else {
-            countByDegree[0] = o["bachelorCount"]
-            countByDegree[1] = o["masterCount"]
-            countByDegree[2] = o["doctorialCount"]
-          }
-          return null;
-        });
-       
-        let newlabelData = { ...this.state.options };
-        newlabelData["labels"] = departmentName;
-
-        this.setState({
-          options: newlabelData,
-          series: countByDepartment,
-          seriesDegree: countByDegree
         });
       });
   }
@@ -742,17 +788,59 @@ class AllResearcherReports extends Component {
     const prevDepartment = prevState.department;
     const currDepartment = this.state.department;
 
-    // const prevStart = prevState.start
-    // const currStart = this.state.start
-    // const prevEnd = prevState.end
-    // const currEnd = this.state.end
+    const prevData = prevState.data;
+    const currData = this.state.data;
 
-    // if ((prevStart !== currStart) || (prevEnd !== currEnd)) {
-    //   console.log("date changes yay!")
-    // }
+    if (prevData !== currData && currData.length > 0) {
+      if (this.props.user.allResearchersReports.length > 0) {
+        let departmentName = [];
+        let countByDepartment = [];
+
+        let countByDegree = [];
+        let countByGender = [];
+        let countByAge = [];
+
+        this.state.data.map(function(el, index, array) {
+          var o = Object.assign({}, el);
+          if (o["deapartmentName"] !== "ລວມ") {
+            departmentName.push(o.deapartmentName);
+            countByDepartment.push(o["countByDepartment"]);
+
+            countByDegree[0] = o["bachelorCount"];
+            countByDegree[1] = o["masterCount"];
+            countByDegree[2] = o["doctorialCount"];
+            countByGender[0] = o["maleCount"];
+            countByGender[1] = o["femaleCount"];
+            countByAge[0] = o["age18to30Count"];
+            countByAge[1] = o["age31to45Count"];
+            countByAge[2] = o["age46to65Count"];
+          } else {
+            countByDegree[0] = o["bachelorCount"];
+            countByDegree[1] = o["masterCount"];
+            countByDegree[2] = o["doctorialCount"];
+            countByGender[0] = o["maleCount"];
+            countByGender[1] = o["femaleCount"];
+            countByAge[0] = o["age18to30Count"];
+            countByAge[1] = o["age31to45Count"];
+            countByAge[2] = o["age46to65Count"];
+          }
+          return null;
+        });
+
+        let newlabelData = { ...this.state.options };
+        newlabelData["labels"] = departmentName;
+
+        this.setState({
+          options: newlabelData,
+          series: countByDepartment,
+          seriesDegree: countByDegree,
+          seriesGender: countByGender,
+          seriesAge: countByAge
+        });
+      }
+    }
 
     if (prevDepartment !== currDepartment) {
-      // this.props.dispatch(clearAllResearchersReports());
       this.props
         .dispatch(
           getAllResearchersReports(
@@ -949,45 +1037,25 @@ class AllResearcherReports extends Component {
                         </TableBody>
                       </Table>
                     </div>
-
-                    {
-                      //   <TablePagination
-                      //   rowsPerPageOptions={[10, 15, 25]}
-                      //   component="div"
-                      //   count={data.length}
-                      //   rowsPerPage={rowsPerPage}
-                      //   page={page}
-                      //   backIconButtonProps={{
-                      //     "aria-label": "ຫນ້າກ່ອນຫນ້າ"
-                      //   }}
-                      //   nextIconButtonProps={{
-                      //     "aria-label": "ຫນ້າຕໍ່ໄປ"
-                      //   }}
-                      //   onChangePage={this.handleChangePage}
-                      //   onChangeRowsPerPage={this.handleChangeRowsPerPage}
-                      //   labelRowsPerPage="ແຖວຕໍ່ຫນ້າ"
-                      //   labelDisplayedRows={({ from, to, count }) =>
-                      //     `${from}-${to} ໃນ ${count}`
-                      //   }
-                      // />
-                    }
                   </Paper>
-
-                  {this.state.department === "" ? (
-                    <Grid container spacing={8} style={{ marginTop: "16px" }}> 
-                      <Grid item lg={4} md={6} sm={1}>
+                  {console.log(this.state.data.length)}
+                  {this.state.department === "" &&
+                  this.state.series.length > 0 ? (
+                    <Grid container spacing={16} style={{ marginTop: "16px" }}>
+                      <Grid item lg={4} md={6} sm={6} xs={12}>
                         <Paper
                           style={{
                             boxShadow: "none",
-                            border: "1px solid #d8d8d8", maxHeight: "400px"
+                            border: "1px solid #d8d8d8",
+                            maxHeight: "400px",
+                            padding: "16px"
                           }}
                         >
                           <Typography
                             variant="inherit"
                             style={{
                               fontSize: "18px",
-                              fontWeight: 500,
-                              padding: "24px"
+                              fontWeight: 500
                             }}
                           >
                             ຈໍານວນນັກຄົ້ນຄວ້າແບ່ງຕາມພາກ
@@ -998,22 +1066,23 @@ class AllResearcherReports extends Component {
                             series={this.state.series}
                             props
                             type="pie"
+                            height={260}
                           />
                         </Paper>
                       </Grid>
-                      <Grid item lg={4} md={6} sm={1}>
+                      <Grid item lg={4} md={6} sm={6} xs={12}>
                         <Paper
                           style={{
                             boxShadow: "none",
-                            border: "1px solid #d8d8d8"
+                            border: "1px solid #d8d8d8",
+                            padding: "16px"
                           }}
                         >
                           <Typography
                             variant="inherit"
                             style={{
                               fontSize: "18px",
-                              fontWeight: 500,
-                              padding: "24px"
+                              fontWeight: 500
                             }}
                           >
                             ຈໍານວນນັກຄົ້ນຄວ້າແບ່ງຕາມວຸດທິ
@@ -1024,12 +1093,150 @@ class AllResearcherReports extends Component {
                             series={this.state.seriesDegree}
                             props
                             type="pie"
-                            
+                            height={260}
+                          />
+                        </Paper>
+                      </Grid>
+                      <Grid item lg={4} md={6} sm={6} xs={12}>
+                        <Paper
+                          style={{
+                            boxShadow: "none",
+                            border: "1px solid #d8d8d8",
+                            padding: "16px"
+                          }}
+                        >
+                          <Typography
+                            variant="inherit"
+                            style={{
+                              fontSize: "18px",
+                              fontWeight: 500
+                            }}
+                          >
+                            ຈໍານວນນັກຄົ້ນຄວ້າແບ່ງຕາມເພດ
+                          </Typography>
+                          <Chart
+                            options={this.state.optionsGender}
+                            labels={this.state.optionsGender.labels}
+                            series={this.state.seriesGender}
+                            props
+                            type="pie"
+                            height={260}
+                          />
+                        </Paper>
+                      </Grid>
+                      <Grid item lg={4} md={6} sm={6} xs={12}>
+                        <Paper
+                          style={{
+                            boxShadow: "none",
+                            border: "1px solid #d8d8d8",
+                            padding: "16px"
+                          }}
+                        >
+                          <Typography
+                            variant="inherit"
+                            style={{
+                              fontSize: "18px",
+                              fontWeight: 500
+                            }}
+                          >
+                            ຈໍານວນນັກຄົ້ນຄວ້າແບ່ງອາຍຸ
+                          </Typography>
+                          <Chart
+                            options={this.state.optionsAge}
+                            labels={this.state.optionsAge.labels}
+                            series={this.state.seriesAge}
+                            props
+                            type="pie"
+                            height={260}
                           />
                         </Paper>
                       </Grid>
                     </Grid>
-                  ) : null}
+                  ) : (
+                    <Grid container spacing={16} style={{ marginTop: "16px" }}>
+                      <Grid item lg={4} md={6} sm={6} xs={12}>
+                        <Paper
+                          style={{
+                            boxShadow: "none",
+                            border: "1px solid #d8d8d8",
+                            padding: "16px"
+                          }}
+                        >
+                          <Typography
+                            variant="inherit"
+                            style={{
+                              fontSize: "18px",
+                              fontWeight: 500
+                            }}
+                          >
+                            ຈໍານວນນັກຄົ້ນຄວ້າແບ່ງຕາມວຸດທິ
+                          </Typography>
+                          <Chart
+                            options={this.state.optionsDegree}
+                            labels={this.state.optionsDegree.labels}
+                            series={this.state.seriesDegree}
+                            props
+                            type="pie"
+                            height={260}
+                          />
+                        </Paper>
+                      </Grid>
+                      <Grid item lg={4} md={6} sm={6} xs={12}>
+                        <Paper
+                          style={{
+                            boxShadow: "none",
+                            border: "1px solid #d8d8d8",
+                            padding: "16px"
+                          }}
+                        >
+                          <Typography
+                            variant="inherit"
+                            style={{
+                              fontSize: "18px",
+                              fontWeight: 500
+                            }}
+                          >
+                            ຈໍານວນນັກຄົ້ນຄວ້າແບ່ງຕາມເພດ
+                          </Typography>
+                          <Chart
+                            options={this.state.optionsGender}
+                            labels={this.state.optionsGender.labels}
+                            series={this.state.seriesGender}
+                            props
+                            type="pie"
+                            height={260}
+                          />
+                        </Paper>
+                      </Grid>
+                      <Grid item lg={4} md={6} sm={6} xs={12}>
+                        <Paper
+                          style={{
+                            boxShadow: "none",
+                            border: "1px solid #d8d8d8",
+                            padding: "16px"
+                          }}
+                        >
+                          <Typography
+                            variant="inherit"
+                            style={{
+                              fontSize: "18px",
+                              fontWeight: 500
+                            }}
+                          >
+                            ຈໍານວນນັກຄົ້ນຄວ້າແບ່ງອາຍຸ
+                          </Typography>
+                          <Chart
+                            options={this.state.optionsAge}
+                            labels={this.state.optionsAge.labels}
+                            series={this.state.seriesAge}
+                            props
+                            type="pie"
+                            height={260}
+                          />
+                        </Paper>
+                      </Grid>
+                    </Grid>
+                  )}
                 </>
               ) : (
                 <Paper

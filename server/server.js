@@ -581,7 +581,7 @@ app.post(
     let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0;
 
     let from = req.query.from ? req.query.from : null;
-    let to = req.query.from ? req.query.to : null;
+    let to = req.query.to ? req.query.to : null;
     let department = req.query.department ? req.query.department : null;
     let findArgs = {};
 
@@ -594,8 +594,8 @@ app.post(
 
     if (from != null && to != null) {
       findArgs["createdAt"] = {
-        $gte: moment(from).toDate(),
-        $lte: moment(to).toDate()
+        $gte: moment(from).add(1, 'days').toDate(),
+        $lte: moment(to).add(1, 'days').toDate()
       };
     }
 
@@ -618,8 +618,8 @@ app.post(
             accountIsVerified: true,
             active: true,
             createdAt : {
-              $gte: moment(from).toDate(),
-        $lte: moment(to).toDate()
+              $gte: moment(from).add(1, 'days').toDate(),
+              $lte: moment(to).add(1, 'days').toDate()
             },
             "affiliation.department": mongoose.Types.ObjectId(department)
           }
@@ -640,7 +640,7 @@ app.post(
                   $cond: [
                     {
                       $and: [
-                        { $eq: ["$gender", mongoose.Types.ObjectId("5cb2c97c1331746efcc3b1fb")] },
+                        { $eq: ["$gender", mongoose.Types.ObjectId("5cb2c98e1331746efcc3b1fd")] },
                       ]
                     },
                     1,
@@ -761,7 +761,7 @@ app.post(
           });
         });
     } else {
-      console.log(moment());
+      console.log(findArgs);
       User.aggregate([
         // { $unwind: '$affiliation'},
 
@@ -770,7 +770,7 @@ app.post(
           $group: {
             _id: "$affiliation.department",
             countByDepartment: { $sum: 1 },
-            // isActive : { $addToSet: '$active' },
+            degree : { $addToSet: '$degree' },
             maleCount: {
               $sum: {
                 $cond: [{$and: [{ $eq: ["$gender", mongoose.Types.ObjectId("5cb2c97c1331746efcc3b1fb")]},]}, 1, 0 ]
@@ -781,7 +781,7 @@ app.post(
                 $cond: [
                   {
                     $and: [
-                      { $eq: ["$gender", mongoose.Types.ObjectId("5cb2c97c1331746efcc3b1fb")] },
+                      { $eq: ["$gender", mongoose.Types.ObjectId("5cb2c98e1331746efcc3b1fd")] },
                     ]
                   },
                   1,
@@ -969,11 +969,11 @@ app.post(
 
     if (from != null && to != null) {
       findArgs["createdAt"] = {
-        $gte: from,
-        $lte: to
+        $gte: moment(from).add(1, 'days').toDate(),
+              $lte: moment(to).add(1, 'days').toDate()
       };
     }
-    console.log(department);
+
     if (department != null) {
       findArgs["affiliation.department"] = mongoose.Types.ObjectId(department);
     }
@@ -982,276 +982,7 @@ app.post(
     findArgs.accountIsVerified = true;
     findArgs.active = true;
 
-    if (department != null) {
-      findArgs["affiliation.department"] = mongoose.Types.ObjectId(department);
-
-      User.aggregate([
-        // { $unwind: '$affiliation'},
-        {
-          $match: {
-            emailIsVerified: true,
-            accountIsVerified: true,
-            active: true,
-            "affiliation.department": mongoose.Types.ObjectId(department)
-          }
-        },
-        // {
-          {
-            $group: {
-              _id: "$affiliation.department",
-              countByDepartment: { $sum: 1 },
-              // isActive : { $addToSet: '$active' },
-              maleCount: {
-                $sum: {
-                  $cond: [{$and: [{ $eq: ["$gender", mongoose.Types.ObjectId("5cb2c97c1331746efcc3b1fb")]},]}, 1, 0 ]
-                }
-              },
-              fmaleCount: {
-                $sum: {
-                  $cond: [
-                    {
-                      $and: [
-                        { $eq: ["$gender", mongoose.Types.ObjectId("5cb2c97c1331746efcc3b1fb")] },
-                      ]
-                    },
-                    1,
-                    0
-                  ]
-                }
-              },
-              bachelorCount: {
-                $sum: {
-                  $cond: [
-                    {
-                      $and: [
-                        { $eq: ["$degree", mongoose.Types.ObjectId("5d0bab397ba3dd53b44d06df")] },
-                      ]
-                    },
-                    1,
-                    0
-                  ]
-                }
-              },
-              masterCount: {
-                $sum: {
-                  $cond: [
-                    {
-                      $and: [
-                        { $eq: ["$degree", mongoose.Types.ObjectId("5d0bab527ba3dd53b44d06e0")] },
-                      ]
-                    },
-                    1,
-                    0
-                  ]
-                }
-              },
-              doctorialCount: {
-                $sum: {
-                  $cond: [
-                    {
-                      $and: [
-                        { $eq: ["$degree", mongoose.Types.ObjectId("5d0bab637ba3dd53b44d06e1")] },
-                      ]
-                    },
-                    1,
-                    0
-                  ]
-                }
-              },
-              age18to30Count: {
-                $sum: {
-                  $cond: [
-                    {
-                      $and: [
-                        { $lte: ["$dateOfBirth", moment()
-                        .subtract(18, "years").toDate()] },
-                        { $gte: ["$dateOfBirth", moment()
-                        .subtract(30, "years").toDate()] },
-                      ]
-                    },
-                    1,
-                    0
-                  ]
-                }
-              },
-              age31to45Count: {
-                $sum: {
-                  $cond: [
-                    {
-                      $and: [
-                        { $lte: ["$dateOfBirth", moment()
-                        .subtract(31, "years").toDate()] },
-                        { $gte: ["$dateOfBirth", moment()
-                        .subtract(45, "years").toDate()] },
-                      ]
-                    },
-                    1,
-                    0
-                  ]
-                }
-              },
-              age46to65Count: {
-                $sum: {
-                  $cond: [
-                    {
-                      $and: [
-                        { $lte: ["$dateOfBirth", moment()
-                        .subtract(46, "years").toDate()] },
-                        { $gte: ["$dateOfBirth", moment()
-                        .subtract(65, "years").toDate()] },
-                      ]
-                    },
-                    1,
-                    0
-                  ]
-                }
-              }
-            }
-          },
-          { $sort: { countByDepartment: -1 } },
-          
-          //  { $lookup: {from: 'users', localField: 'affiliation.department', foreignField: 'departments.name', as: 'department'} }
-        ]).exec((err, doc) => {
-          // console.log(doc);
-          Department.populate(doc, { path: "_id" }, function(
-            err,
-            populatedDepartment
-          ) {
-            console.log(doc);
-          });
-        });
-    } else {
-      console.log(moment());
-      User.aggregate([
-        // { $unwind: '$affiliation'},
-
-        { $match: findArgs },
-        {
-          $group: {
-            _id: "$affiliation.department",
-            countByDepartment: { $sum: 1 },
-            // isActive : { $addToSet: '$active' },
-            maleCount: {
-              $sum: {
-                $cond: [{$and: [{ $eq: ["$gender", mongoose.Types.ObjectId("5cb2c97c1331746efcc3b1fb")]},]}, 1, 0 ]
-              }
-            },
-            femaleCount: {
-              $sum: {
-                $cond: [
-                  {
-                    $and: [
-                      { $eq: ["$gender", mongoose.Types.ObjectId("5cb2c97c1331746efcc3b1fb")] },
-                    ]
-                  },
-                  1,
-                  0
-                ]
-              }
-            },
-            bachelorCount: {
-              $sum: {
-                $cond: [
-                  {
-                    $and: [
-                      { $eq: ["$degree", mongoose.Types.ObjectId("5d0bab397ba3dd53b44d06df")] },
-                    ]
-                  },
-                  1,
-                  0
-                ]
-              }
-            },
-            masterCount: {
-              $sum: {
-                $cond: [
-                  {
-                    $and: [
-                      { $eq: ["$degree", mongoose.Types.ObjectId("5d0bab527ba3dd53b44d06e0")] },
-                    ]
-                  },
-                  1,
-                  0
-                ]
-              }
-            },
-            doctorialCount: {
-              $sum: {
-                $cond: [
-                  {
-                    $and: [
-                      { $eq: ["$degree", mongoose.Types.ObjectId("5d0bab637ba3dd53b44d06e1")] },
-                    ]
-                  },
-                  1,
-                  0
-                ]
-              }
-            },
-            age18to30: {
-              $sum: {
-                $cond: [
-                  {
-                    $and: [
-                      { $lte: ["$dateOfBirth", moment()
-                      .subtract(18, "years").toDate()] },
-                      { $gte: ["$dateOfBirth", moment()
-                      .subtract(30, "years").toDate()] },
-                    ]
-                  },
-                  1,
-                  0
-                ]
-              }
-            },
-            age31to45Count: {
-              $sum: {
-                $cond: [
-                  {
-                    $and: [
-                      { $lte: ["$dateOfBirth", moment()
-                      .subtract(31, "years").toDate()] },
-                      { $gte: ["$dateOfBirth", moment()
-                      .subtract(45, "years").toDate()] },
-                    ]
-                  },
-                  1,
-                  0
-                ]
-              }
-            },
-            age46to65Count: {
-              $sum: {
-                $cond: [
-                  {
-                    $and: [
-                      { $lte: ["$dateOfBirth", moment()
-                      .subtract(46, "years").toDate()] },
-                      { $gte: ["$dateOfBirth", moment()
-                      .subtract(65, "years").toDate()] },
-                    ]
-                  },
-                  1,
-                  0
-                ]
-              }
-            }
-          }
-        },
-        { $sort: { countByDepartment: -1 } },
-        
-        //  { $lookup: {from: 'users', localField: 'affiliation.department', foreignField: 'departments.name', as: 'department'} }
-      ]).exec((err, doc) => {
-        // console.log(doc);
-        Department.populate(doc, { path: "_id" }, function(
-          err,
-          populatedDepartment
-        ) {
-          console.log(doc);
-        });
-      });
-    }
-
+    
     User.find(findArgs)
       .populate("gender")
       .populate("degree")
