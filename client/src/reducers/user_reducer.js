@@ -425,127 +425,123 @@ export default function(state = {}, action) {
         allResearchersReports: action.payload
       };
     case GET_ALL_RESEARCHERS_REPORTS:
-
-    console.log(action.payload)
+      console.log(action.payload);
 
       if (action.payload.allResearchersReports) {
-        var allResearchersReports = action.payload.allResearchersReports.map(function(el, index, array) {
-          var o = Object.assign({}, el);
-          
-console.log(array.length -1 )
-console.log(index)
-          if (o["deapartmentName"] === "ລວມ" ) {
-            if (index !== array.length - 1) {
-              o["no"] = index + 1
+        var allResearchersReports = action.payload.allResearchersReports.map(
+          function(el, index, array) {
+            var o = Object.assign({}, el);
+
+            console.log(array.length - 1);
+            console.log(index);
+            if (o["deapartmentName"] === "ລວມ") {
+              if (index !== array.length - 1) {
+                o["no"] = index + 1;
+              } else {
+                o["no"] = "";
+              }
             } else {
-              o["no"] = ""
+              o["no"] = index + 1;
             }
-          } else {
-            o["no"] = index + 1
+
+            return o;
           }
-          
-          return o;
-        });
+        );
       }
 
       return {
         ...state,
         allResearchersReports
       };
-      case GET_ALL_RESEARCHERS_LISTS_REPORTS:
-        var allResearchersListsReports
+    case GET_ALL_RESEARCHERS_LISTS_REPORTS:
+      var allResearchersListsReports;
 
-        if (action.payload.allResearchersListsReports) {
-          allResearchersListsReports = action.payload.allResearchersListsReports.map(function(el, index) {
+      if (action.payload.allResearchersListsReports) {
+        allResearchersListsReports = action.payload.allResearchersListsReports.map(
+          function(el, index) {
             var o = Object.assign({}, el);
-            o["no"] = index + 1
-            o["myName"] = `${o.prefix} ${o.name} ${o.lastname}`
+            o["no"] = index + 1;
+            o["myName"] = `${o.prefix} ${o.name} ${o.lastname}`;
             o["gender.name"] = o.gender.name;
-            o["affiliation.department"] = o["affiliation"].department.name
-            o["age"] = moment().diff(
-              o["dateOfBirth"],
-              "years",
-              false
-            )
-            o["degree"] = o.degree ? o["degree"].name  : ""
-            o["research"] = o["research"].length
+            o["affiliation.department"] = o["affiliation"].department.name;
+            o["age"] = moment().diff(o["dateOfBirth"], "years", false);
+            o["degree"] = o.degree ? o["degree"].name : "";
+            o["research"] = o["research"].length;
 
-        
             return o;
-          });
-        }
+          }
+        );
+      }
 
       return {
         ...state,
         allResearchersListsReports,
         allResearchersListsReportsCount: action.payload.size
       };
-      case GET_OUTSTANDING_REPORTS:
+    case GET_OUTSTANDING_REPORTS:
+      console.log(action.payload);
+      var outstandingReports;
 
-      console.log(action.payload)
-        var outstandingReports
+      if (action.payload.outstandingReports) {
+        outstandingReports = action.payload.outstandingReports.map(function(
+          el,
+          index
+        ) {
+          var o = Object.assign({}, el);
+          o["no"] = index + 1;
+          o["myName"] = `${o.prefix} ${o.name} ${o.lastname}`;
+          o["gender.name"] = o.gender.name;
+          o["affiliation.department"] = o["affiliation"].department.name;
+          o["age"] = moment().diff(o["dateOfBirth"], "years", false);
+          o["degree"] = o.degree ? o["degree"].name : "";
+          o["research"] = o["research"].length;
+          o["outstanding.date"] = o["outstanding"].date;
+          o["outstandingDate"] = moment(o["outstanding"].date).format(
+            "DD/MM/YYYY"
+          );
+          o["outstanding.description"] = o["outstanding"].description;
 
-        if (action.payload.outstandingReports) {
-          outstandingReports = action.payload.outstandingReports.map(function(el, index) {
-            var o = Object.assign({}, el);
-            o["no"] = index + 1
-            o["myName"] = `${o.prefix} ${o.name} ${o.lastname}`
-            o["gender.name"] = o.gender.name;
-            o["affiliation.department"] = o["affiliation"].department.name
-            o["age"] = moment().diff(
-              o["dateOfBirth"],
-              "years",
-              false
-            )
-            o["degree"] = o.degree ? o["degree"].name  : ""
-            o["research"] = o["research"].length
-            o["outstanding.date"] = o["outstanding"].date
-            o["outstandingDate"] = moment(o["outstanding"].date).format("DD/MM/YYYY")
-            o["outstanding.description"] = o["outstanding"].description
-
-        
-            return o;
-          });
-        }
+          return o;
+        });
+      }
 
       return {
         ...state,
         outstandingReports,
         outstandingReportsCount: action.payload.size
       };
-      case GET_NEWCOMER_REPORTS:
-        var newResearcherReports
+    case GET_NEWCOMER_REPORTS:
+      var newResearcherReports;
 
-        if (action.payload.newResearcherReports) {
-          newResearcherReports = action.payload.newResearcherReports.map(function(el, index) {
-            var o = Object.assign({}, el);
-            o["no"] = index + 1
-            o["myName"] = `${o.prefix} ${o.name} ${o.lastname}`
-            o["gender.name"] = o.gender.name;
-            o["affiliation.department"] = o["affiliation"].department.name
-            o["age"] = moment().diff(
-              o["dateOfBirth"],
-              "years",
-              false
-            )
-            o["degree"] = o.degree ? o["degree"].name  : ""
-            o["research"] = o["research"].length
-            o["newResearcher.date"] = o["newResearcher"].date
-            o["newResearcherDate"] = moment(o["newResearcher"].date).format("DD/MM/YYYY")
-            o["newResearcher.description"] = o["newResearcher"].description
+      if (action.payload.newResearcherReports) {
+        newResearcherReports = action.payload.newResearcherReports.map(function(
+          el,
+          index
+        ) {
+          var o = Object.assign({}, el);
+          o["no"] = index + 1;
+          o["myName"] = `${o.prefix} ${o.name} ${o.lastname}`;
+          o["gender.name"] = o.gender.name;
+          o["affiliation.department"] = o["affiliation"].department.name;
+          o["age"] = moment().diff(o["dateOfBirth"], "years", false);
+          o["degree"] = o.degree ? o["degree"].name : "";
+          o["research"] = o["research"].length;
+          o["newResearcher.date"] = o["newResearcher"].date;
+          o["newResearcherDate"] = moment(o["newResearcher"].date).format(
+            "DD/MM/YYYY"
+          );
+          o["newResearcher.description"] = o["newResearcher"].description;
 
-        
-            return o;
-          });
-        }
+          return o;
+        });
+      }
 
       return {
         ...state,
         newResearcherReports,
         newResearcherReportsCount: action.payload.size
       };
-      case CLEAR_ALL_RESEARCHERS_LISTS_REPORTS:
-
+    case CLEAR_ALL_RESEARCHERS_LISTS_REPORTS:
       return {
         ...state,
         allResearchersListsReports: action.payload,

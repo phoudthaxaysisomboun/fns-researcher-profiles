@@ -54,8 +54,32 @@ const ResearchReportsHeader = ({ tab, props, children }) => {
 
             <Tab
               style={{ fontWeight: 500, fontSize: "14px" }}
-              label="ລາຍຊື່"
+              label="ລາຍການ"
               to={`/admin/reports/research/lists`}
+              component={Link}
+            />
+            <Tab
+              style={{ fontWeight: 500, fontSize: "14px" }}
+              label="ຖືກໃຈ-ຄໍາເຫັນ-ແບ່ງປັນ"
+              to={`/admin/reports/research/likes_comments_shares`}
+              component={Link}
+            />
+            <Tab
+              style={{ fontWeight: 500, fontSize: "14px" }}
+              label="ອ່ານ"
+              to={`/admin/reports/research/reads`}
+              component={Link}
+            />
+            <Tab
+              style={{ fontWeight: 500, fontSize: "14px" }}
+              label="ດາວນ໌ໂຫລດ"
+              to={`/admin/reports/research/downloads`}
+              component={Link}
+            />
+            <Tab
+              style={{ fontWeight: 500, fontSize: "14px" }}
+              label="ນໍາໄປອ້າງອີງ"
+              to={`/admin/reports/research/citations`}
               component={Link}
             />
           </Tabs>

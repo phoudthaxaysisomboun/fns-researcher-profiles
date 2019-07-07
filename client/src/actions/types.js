@@ -94,3 +94,6 @@ export const GET_NEWCOMER_REPORTS = "get_newcomer_reports"
 export const CLEAR_ALL_RESEARCHERS_REPORTS = "clear_all_researchers_reports"
 export const CLEAR_ALL_RESEARCHERS_LISTS_REPORTS = "clear_all_researchers_lists_reports"
 
+export const GET_ALL_RESEARCHES_NUMBERS_REPORTS = "get_all_researches_numbers_reports"
+
+

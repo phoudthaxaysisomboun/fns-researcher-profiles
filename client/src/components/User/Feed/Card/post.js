@@ -445,7 +445,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike }) => {
                       style={{ paddingTop: "8px", paddingLeft: "8px" }}
                     >
                       <Typography
-                        variant="body1"
+                        
                         style={{
                           fontFamily: "'Roboto', sans-serif",
                           fontSize: "12px",

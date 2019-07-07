@@ -12,7 +12,8 @@ import {
   ADD_LIKE,
   REMOVE_LIKE,
   CLEAR_LIKES_RESEARCH,
-  GET_ALL_RESEARCHES_ADMIN
+  GET_ALL_RESEARCHES_ADMIN,
+  GET_ALL_RESEARCHES_NUMBERS_REPORTS
 } from "./types";
 
 import { RESEARCH_SERVER, RESEARCHER_SERVER } from "../components/utils/misc";
@@ -134,4 +135,18 @@ export function clearLikeResearch() {
     type: CLEAR_LIKES_RESEARCH,
     payload: ''
   };
+}
+
+
+export function getAllResearchesNumbersReports(department, from, to, by) {
+
+  const request = axios
+    .post(
+      `${RESEARCH_SERVER}/reports/number?department=${department}&from=${from}&to=${to}&by=${by}`
+    )
+    .then(response => response.data);
+  return {
+    type: GET_ALL_RESEARCHES_NUMBERS_REPORTS,
+    payload: request
+  }
 }

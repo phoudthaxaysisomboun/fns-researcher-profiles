@@ -1,28 +1,26 @@
-import React from "react";
+import React, { Component } from "react";
+import ResearchReportsHeader from "../../../../../hoc/research_reports_header";
+
 import classNames from "classnames";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 
-import Chart from 'react-apexcharts'
+import { withRouter } from "react-router-dom";
 
-import { Link, withRouter } from "react-router-dom";
-
-import {
-    XYPlot,
-    XAxis,
-    YAxis,
-    VerticalGridLines,
-    HorizontalGridLines,
-    VerticalBarSeries,
-    VerticalBarSeriesCanvas,
-    LabelSeries
-  } from "react-vis"
+import Chart from "react-apexcharts";
 
 import moment from "moment";
 
-import RsearchReportsHeader from "../../../../../hoc/research_reports_header";
-
 import { connect } from "react-redux";
+
+import {
+  getAllResearchersReports,
+  getDepartments,
+  clearAllResearchersReports
+} from "../../../../../actions/user_actions";
+import {
+  getAllResearchesNumbersReports
+} from "../../../../../actions/research_actions";
 
 import {
   Grid,
@@ -45,37 +43,26 @@ import {
   DialogContentText,
   DialogTitle,
   Button,
-  CircularProgress,
+  FormHelperText,
   MenuItem,
   InputLabel,
   OutlinedInput,
   Select,
   FormControl,
+  CircularProgress,
   Input,
   TextField
 } from "@material-ui/core";
 
 import {
-    SaveAltOutlined
+  DeleteOutline,
+  FilterListOutlined,
+  EditOutlined,
+  VisibilityOutlined,
+  SaveAltOutlined
 } from "@material-ui/icons";
 
 import { lighten } from "@material-ui/core/styles/colorManipulator";
-
-import {
-
-  clearAllResearchersListsReports,
-  getAllResearchersListsReports,
-  getDepartments
-} from "../../../../../actions/user_actions";
-import {
-
-  getPublicationType,
-  getResearchType
-} from "../../../../../actions/research_actions";
-// function createData(name, calories, fat, carbs, protein) {
-//   counter += 1;
-//   return { id: counter, name, calories, fat, carbs, protein };
-// }
 
 import ReactExport from "react-data-export";
 
@@ -83,16 +70,6 @@ const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 const ExcelRow = ReactExport.ExcelFile.ExcelRow;
-
-const greenData = [{x: 'A', y: 10}, {x: 'B', y: 5}, {x: 'C', y: 15}];
-
-const blueData = [{x: 'A', y: 12}, {x: 'B', y: 2}, {x: 'C', y: 11}];
-
-const labelData = greenData.map((d, idx) => ({
-  x: d.x,
-  y: Math.max(greenData[idx].y, blueData[idx].y)
-}));
-
 
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -121,50 +98,9 @@ function getSorting(order, orderBy) {
     : (a, b) => -desc(a, b, orderBy);
 }
 
-const rows = [
-    {
-        id: "no",
-        numeric: false,
-        disablePadding: false,
-        label: "ລ/ດ",
-    hideSortIcon: true,
-    active: false
-      },
-  {
-    id: "name",
-    numeric: false,
-    disablePadding: false,
-    label: "ຊື່ ແລະ ນາມສະກຸນ"
-  },
-  { id: "gender.name", numeric: false, disablePadding: false, label: "ເພດ" },
-  {
-    id: "affiliation.department",
-    numeric: false,
-    disablePadding: false,
-    label: "ພາກວິຊາ"
-  },
-  { id: "dateOfBirth", numeric: false, disablePadding: false, label: "ອາຍຸ" },
-  {
-    id: "degree",
-    numeric: false,
-    disablePadding: false,
-    label: "ວຸດທິ"
-  },
-  {
-    id: "research",
-    numeric: false,
-    disablePadding: false,
-    label: "ຈໍານວນຜົນງານ"
-  }
-  // {
-  //   id: "actions",
-  //   numeric: false,
-  //   disablePadding: false,
-  //   label: "",
-  //   hideSortIcon: true,
-  //   active: false
-  // }
-];
+
+
+
 
 class EnhancedTableHead extends React.Component {
   createSortHandler = property => event => {
@@ -173,8 +109,12 @@ class EnhancedTableHead extends React.Component {
 
   render() {
     const {
+      onSelectAllClick,
       order,
       orderBy,
+      numSelected,
+      rowCount,
+      rows
     } = this.props;
 
     return (
@@ -186,23 +126,17 @@ class EnhancedTableHead extends React.Component {
                 key={row.id}
                 align={row.numeric ? "right" : "left"}
                 padding={row.disablePadding ? "none" : "default"}
-                sortDirection={orderBy === row.id ? order : false}
               >
                 {!row.hideSortIcon ? (
                   <>
-                    <Tooltip
-                      title="ຮຽງຕາມ"
-                      placement={row.numeric ? "bottom-end" : "bottom-start"}
-                      enterDelay={300}
+                    <TableSortLabel
+                      direction={order}
+                      active={false}
+                      hover={false}
+                      hideSortIcon={true}
                     >
-                      <TableSortLabel
-                        active={orderBy === row.id}
-                        direction={order}
-                        onClick={this.createSortHandler(row.id)}
-                      >
-                        {row.label}
-                      </TableSortLabel>
-                    </Tooltip>
+                      {row.label}
+                    </TableSortLabel>
                   </>
                 ) : (
                   <>
@@ -260,197 +194,256 @@ const toolbarStyles = theme => ({
 });
 
 class EnhancedTableToolbar extends React.Component {
-  
+  state = {
+    labelWidth: 0
+  };
+
   render() {
     const {
-        numSelected,
-        selected,
-        classes,
-        researchersCount,
-        departments,
+      numSelected,
+      classes,
+      researchersCount,
+      departments,
       data,
       selectedValue,
       handleDepartmentChange,
+      by,
       endValue,
       startValue,
       handleEndChange,
       handleEndBlur,
       handleStartChange,
-      handleStartBlur
-      } = this.props;
-    return (
-        <Toolbar
-          className={classNames(classes.root, {
-            [classes.highlight]: numSelected > 0
-          })}
-          style={{ paddingLeft: 0, paddingRight: 0, borderWidth: "1px" }}
-        >
-          <Grid
-            container
-            alignItems="center"
-            style={{ marginTop: "16px", marginBottom: "16px" }}
-          >
-            <Grid item xs>
-              <div>
-              <Typography
-              variant="inherit"
-              style={{
-                fontSize: "20px",
-                fontWeight: "500",
-                paddingLeft: 0,
-                marginLeft: 0
-              }}
-              id="tableTitle"
-            >
-              ລາຍຊື່ນັກຄົ້ນຄວ້າ{" "}
-              <div
-                style={{
-                  fontWeight: "normal",
-                  display: "inline",
-                  fontFamily: "'Roboto', sans-serif",
-                  color: "#898989",
-                  fontSize: "16px"
-                }}
-              >
-                {researchersCount}
-              </div>
-            </Typography>
-              </div>
-            </Grid>
-            <Grid item xs={8} align="right">
-              <div className={classes.actions}>
-              <FormControl
-            style={{
-              minWidth: 120,
-              textAlign: "-webkit-left",
-              marginRight: "8px"
-            }}
-          >
-            <TextField
-              id="standard-name"
-              label="ແຕ່"
-              value={startValue}
-              onChange={event => {
-                handleStartChange(event);
-              }}
-              onBlur={event => {
-                handleStartBlur(event);
-              }}
-              type="date"
-              margin="none"
-            />
-          </FormControl>
-          <FormControl
-            style={{
-              minWidth: 120,
-              textAlign: "-webkit-left",
-              marginRight: "8px"
-            }}
-          >
-            <TextField
-              id="standard-name"
-              label="ຮອດ"
-              value={endValue}
-              onChange={event => {
-                handleEndChange(event);
-              }}
-              onBlur={event => {
-                handleEndBlur(event);
-              }}
-              type="date"
-              margin="none"
-            />
-          </FormControl>
+      handleStartBlur,
+      handleByChange
+    } = this.props;
 
-          <FormControl
-            style={{
-              minWidth: 120,
-              textAlign: "-webkit-left",
-              marginRight: "8px"
-            }}
-          >
-            <InputLabel shrink htmlFor="age-label-placeholder">
-              ພາກວິຊາ
-            </InputLabel>
-            <Select
-              value={selectedValue}
-              onChange={event => {
-                handleDepartmentChange(event);
-              }}
-              style={{ borderBottom: 0, marginTop: "16px" }}
-              input={
-                <Input
-                  style={{
-                    fontFamily: "'Noto Sans Lao UI', sans serif",
-                    borderBottom: 0
-                  }}
-                  id="age-label-placeholder"
-                />
-              }
-              displayEmpty
-            >
-              <MenuItem
+    return (
+      <Toolbar
+        className={classNames(classes.root, {
+          [classes.highlight]: numSelected > 0
+        })}
+        style={{ paddingLeft: 0, paddingRight: 0, borderWidth: "1px" }}
+      >
+        <Grid
+          container
+          alignItems="center"
+          style={{ marginTop: "16px", marginBottom: "16px" }}
+        >
+          <Grid item xs>
+            <div>
+              <Typography
+                variant="inherit"
                 style={{
-                  fontFamily: "'Noto Sans Lao UI', sans serif",
-                  borderBottom: 0
+                  fontSize: "20px",
+                  fontWeight: "500",
+                  paddingLeft: 0,
+                  marginLeft: 0
                 }}
-                value=""
+                id="tableTitle"
               >
-                <em
+                ຈໍານວນຜົນງານຄົ້ນຄວ້າ{" "}
+                <div
                   style={{
-                    fontFamily: "'Noto Sans Lao UI', sans serif",
-                    fontStyle: "normal"
+                    fontWeight: "normal",
+                    display: "inline",
+                    fontFamily: "'Roboto', sans-serif",
+                    color: "#898989",
+                    fontSize: "16px"
                   }}
                 >
-                  ທັງຫມົດ
-                </em>
-              </MenuItem>
-              {departments.map((value, index, id) => (
-                <MenuItem
-                  style={{
-                    fontFamily: "'Noto Sans Lao UI', sans serif"
-                  }}
-                  value={value._id}
-                >
-                  <Typography variant="inherit">
-                    {value.name}
-                  </Typography>{" "}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <ExcelFile
-            name="ລາຍຊື່ນັກຄົ້ນຄວ້າ"
-            element={
-              <Tooltip title="ດາວໂຫລດຟາຍລ໌ Excel">
-                <IconButton style={{ marginRight: "0px" }}>
-                  <SaveAltOutlined />
-                </IconButton>
-              </Tooltip>
-            }
-          >
-            <ExcelSheet data={data} name="ລາຍຊື່ນັກຄົ້ນຄວ້າ">
-             
-              <ExcelColumn label="ລ/ດ" value="no" />
-              <ExcelColumn label="ຊື່ ແລະ ນາມສະກຸນ" value="myName" />
-              <ExcelColumn label="ເພດ" value="gender.name" />
-              <ExcelColumn label="ພາກວິຊາ" value="affiliation.department" />
-              <ExcelColumn label="ອາຍຸ" value="age" />
-              <ExcelColumn label="ວຸດທິ" value="degree" />
-              <ExcelColumn label="ຈໍານວນຜົນງານ" value="research" />
-              {
-                // <ExcelColumn label="Marital Status"
-                //            value={(col) => col.is_married ? "Married" : "Single"}/>
-              }
-            </ExcelSheet>
-          </ExcelFile>
-              </div>
-            </Grid>
+                  {researchersCount}
+                </div>
+              </Typography>
+            </div>
           </Grid>
-        </Toolbar>
-      );
+          <Grid item xs={6} align="right">
+            <div className={classes.actions}>
+              <FormControl
+                style={{
+                  minWidth: 120,
+                  textAlign: "-webkit-left",
+                  marginRight: "8px"
+                }}
+              >
+                <TextField
+                  id="standard-name"
+                  label="ແຕ່"
+                  value={startValue}
+                  onChange={event => {
+                    handleStartChange(event);
+                  }}
+                  onBlur={event => {
+                    handleStartBlur(event);
+                  }}
+                  type="date"
+                  margin="none"
+                />
+              </FormControl>
+              <FormControl
+                style={{
+                  minWidth: 120,
+                  textAlign: "-webkit-left",
+                  marginRight: "8px"
+                }}
+              >
+                <TextField
+                  id="standard-name"
+                  label="ຮອດ"
+                  value={endValue}
+                  onChange={event => {
+                    handleEndChange(event);
+                  }}
+                  onBlur={event => {
+                    handleEndBlur(event);
+                  }}
+                  type="date"
+                  margin="none"
+                />
+              </FormControl>
+
+              <FormControl
+                style={{
+                  minWidth: 120,
+                  textAlign: "-webkit-left",
+                  marginRight: "8px"
+                }}
+              >
+                <InputLabel shrink htmlFor="age-label-placeholder">
+                  ພາກວິຊາ
+                </InputLabel>
+                <Select
+                  value={selectedValue}
+                  onChange={event => {
+                    handleDepartmentChange(event);
+                  }}
+                  style={{ borderBottom: 0, marginTop: "16px" }}
+                  input={
+                    <Input
+                      style={{
+                        fontFamily: "'Noto Sans Lao UI', sans serif",
+                        borderBottom: 0
+                      }}
+                      id="age-label-placeholder"
+                    />
+                  }
+                  displayEmpty
+                >
+                  <MenuItem
+                    style={{
+                      fontFamily: "'Noto Sans Lao UI', sans serif",
+                      borderBottom: 0
+                    }}
+                    value=""
+                  >
+                    <em
+                      style={{
+                        fontFamily: "'Noto Sans Lao UI', sans serif",
+                        fontStyle: "normal"
+                      }}
+                    >
+                      ທັງຫມົດ
+                    </em>
+                  </MenuItem>
+                  {departments.map((value, index, id) => (
+                    <MenuItem
+                      style={{
+                        fontFamily: "'Noto Sans Lao UI', sans serif"
+                      }}
+                      value={value._id}
+                    >
+                      <Typography variant="inherit">{value.name}</Typography>{" "}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              <FormControl
+                style={{
+                  minWidth: 120,
+                  textAlign: "-webkit-left",
+                  marginRight: "8px"
+                }}
+              >
+                <InputLabel shrink htmlFor="age-label-placeholder">
+                  ຕາມ
+                </InputLabel>
+                <Select
+                  value={by}
+                  onChange={event => {
+                    handleByChange(event);
+                  }}
+                  style={{ borderBottom: 0, marginTop: "16px" }}
+                  input={
+                    <Input
+                      style={{
+                        fontFamily: "'Noto Sans Lao UI', sans serif",
+                        borderBottom: 0
+                      }}
+                      id="age-label-placeholder"
+                    />
+                  }
+                  
+                >
+                 
+             
+                    <MenuItem
+                      style={{
+                        fontFamily: "'Noto Sans Lao UI', sans serif"
+                      }}
+                      value={"researchType"}
+                    >
+                      <Typography variant="inherit">ປະເພດຜົນງານ</Typography>{" "}
+                    </MenuItem>
+                    <MenuItem
+                      style={{
+                        fontFamily: "'Noto Sans Lao UI', sans serif"
+                      }}
+                      value={"publicationType"}
+                    >
+                      <Typography variant="inherit">ປະເພດການຕີພິມ</Typography>{" "}
+                    </MenuItem>
+            
+                </Select>
+              </FormControl>
+              <ExcelFile
+                filename={`ລາຍງານຈໍານວນຜົນງານຄົ້ນຄວ້າ ຄວທ (${moment(
+                  startValue
+                ).format("DD/MM/YYYY")}-${moment(endValue).format(
+                  "DD/MM/YYYY"
+                )})`}
+                element={
+                  <Tooltip title="ດາວໂຫລດຟາຍລ໌ Excel">
+                    <IconButton style={{ marginRight: "0px" }}>
+                      <SaveAltOutlined />
+                    </IconButton>
+                  </Tooltip>
+                }
+              >
+                <ExcelSheet data={data} name="ຈໍານວນຜົນງານຄົ້ນຄວ້າ ຄວທ">
+                  <ExcelColumn name="Saysettha OT" label="ລ/ດ" value="no" />
+                  <ExcelColumn label="ພາກວິຊາ" value="deapartmentName" />
+                  <ExcelColumn label="ປະລິນຍາຕີ" value="bachelorCount" />
+                  <ExcelColumn label="ປະລິນຍາໂທ" value="masterCount" />
+                  <ExcelColumn label="ປະລິນຍາເອກ" value="doctorialCount" />
+                  <ExcelColumn label="ຍິງ" value="femaleCount" />
+                  <ExcelColumn label="ຊາຍ" value="maleCount" />
+                  <ExcelColumn label="18-30" value="age18to30Count" />
+                  <ExcelColumn label="31-45" value="age31to45Count" />
+                  <ExcelColumn label="46-65" value="age46to65Count" />
+                  <ExcelColumn label="ທັງຫມົດ" value="countByDepartment" />
+                  {
+                    // <ExcelColumn label="Marital Status"
+                    //            value={(col) => col.is_married ? "Married" : "Single"}/>
+                  }
+                </ExcelSheet>
+              </ExcelFile>
+            </div>
+          </Grid>
+        </Grid>
+      </Toolbar>
+    );
   }
-};
+}
 
 EnhancedTableToolbar.propTypes = {
   classes: PropTypes.object.isRequired,
@@ -471,40 +464,211 @@ const styles = theme => ({
   }
 });
 
-
-
-class ResearchNumbers extends React.Component {
+class ResearchNumbersReports extends Component {
   state = {
+    tabNumber: 0,
     order: "asc",
-    orderBy: "name",
+    orderBy: "",
     selected: [],
     data: [],
     page: 0,
-    rowsPerPage: 10,
-    tabNumber: 0,
+    rowsPerPage: 1,
     department: "",
     departmentText: "ທັງຫມົດ",
+    by: "researchType",
     start: moment("1996-05-11").format("YYYY-MM-DD"),
     end: moment().format("YYYY-MM-DD"),
-    useCanvas: false,
+    rows: [
+      {
+        id: "no",
+        numeric: false,
+        disablePadding: false,
+        label: "ລ/ດ"
+      },
+      {
+        id: "countByDepartment",
+        numeric: false,
+        disablePadding: false,
+        label: "ປະເພດ"
+      },
+      {
+        id: "countByDepartment",
+        numeric: false,
+        disablePadding: false,
+        label: "ພາຍໃນ"
+      },
+      {
+        id: "countByDepartment",
+        numeric: false,
+        disablePadding: false,
+        label: "ຕ່າງປະເທດ"
+      },
+      {
+        id: "countByDepartment",
+        numeric: false,
+        disablePadding: false,
+        label: "ທັງຫມົດ"
+      }
+    ],
     options: {
-        chart: {
-          id: 'apexchart-example'
-        },
-        xaxis: {
-          categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998]
+      chart: {
+        id: "apexchart-example"
+
+        // width: "100%",
+        // height: "300"
+      },
+      // xaxis: {
+      //   categories: departmentName
+      // },
+      labels: [],
+      dataLabels: {
+        formatter: function(val, opts) {
+          return opts.w.config.series[opts.seriesIndex];
         }
       },
-      series: [{
-        name: 'series-1',
-        data: [30, 40, 45, 50, 49, 60, 70, 91]
-      }, 
-      {
-        name: 'series-2',
-        data: [16, 85, 41, 63, 49, 25, 62, 85]
+      responsive: [
+        {
+          breakpoint: 1600,
+          options: {
+            chart: {
+              width: 200
+            },
+            legend: {
+              position: "bottom"
+            }
+          }
+        }
+      ],
+      theme: {
+        mode: "light",
+        palette: "palette2",
+        monochrome: {
+          enabled: false,
+          color: "#255aee",
+          shadeTo: "light",
+          shadeIntensity: 0.65
+        }
       }
-    ]
-    
+    },
+    series: [],
+
+    optionsDegree: {
+      chart: {
+        id: "apexchart-example",
+
+        width: "100%",
+        height: "100%"
+      },
+      // xaxis: {
+      //   categories: departmentName
+      // },
+      labels: ["ປະລິນຍາຕີ", "ປະລິນຍາໂທ", "ປະລິນຍາເອກ"],
+      dataLabels: {
+        formatter: function(val, opts) {
+          return opts.w.config.series[opts.seriesIndex];
+        }
+      },
+      responsive: [
+        {
+          breakpoint: 1600,
+          options: {
+            chart: {
+              width: 200
+            },
+            legend: {
+              position: "bottom"
+            }
+          }
+        }
+      ],
+      theme: {
+        mode: "light",
+        palette: "palette3",
+        monochrome: {
+          enabled: false,
+          color: "#255aee",
+          shadeTo: "light",
+          shadeIntensity: 0.65
+        }
+      }
+    },
+    seriesDegree: [],
+
+    optionsGender: {
+      chart: {
+        id: "apexchart-example",
+
+        width: "100%"
+      },
+      labels: ["ຊາຍ", "ຍິງ"],
+      dataLabels: {
+        formatter: function(val, opts) {
+          return opts.w.config.series[opts.seriesIndex];
+        }
+      },
+      responsive: [
+        {
+          breakpoint: 1600,
+          options: {
+            chart: {
+              width: 200
+            },
+            legend: {
+              position: "bottom"
+            }
+          }
+        }
+      ],
+      theme: {
+        mode: "light",
+        palette: "palette4",
+        monochrome: {
+          enabled: false,
+          color: "#255aee",
+          shadeTo: "light",
+          shadeIntensity: 0.65
+        }
+      }
+    },
+    seriesGender: [],
+
+    optionsAge: {
+      chart: {
+        id: "apexchart-example",
+
+        width: "100%"
+      },
+      labels: ["18-30", "31-45", "46-65"],
+      dataLabels: {
+        formatter: function(val, opts) {
+          return opts.w.config.series[opts.seriesIndex];
+        }
+      },
+      responsive: [
+        {
+          breakpoint: 1600,
+          options: {
+            chart: {
+              width: 200
+            },
+            legend: {
+              position: "bottom"
+            }
+          }
+        }
+      ],
+      theme: {
+        mode: "light",
+        palette: "palette5",
+        monochrome: {
+          enabled: false,
+          color: "#255aee",
+          shadeTo: "light",
+          shadeIntensity: 0.65
+        }
+      }
+    },
+    seriesAge: []
   };
 
   handleRequestSort = (event, property) => {
@@ -518,18 +682,6 @@ class ResearchNumbers extends React.Component {
     this.setState({ order, orderBy });
   };
 
-  handleAddUserDialogClose() {
-    this.setState({
-      openAddUserDialog: false
-    });
-  }
-
-  handleOpenAddUserDialog() {
-    this.setState({
-      openAddUserDialog: true
-    });
-  }
-
   handleSelectAllClick = event => {
     if (event.target.checked) {
       this.setState(state => ({ selected: state.data.map(n => n._id) }));
@@ -539,7 +691,24 @@ class ResearchNumbers extends React.Component {
   };
 
   handleClick = (event, id) => {
-    this.props.history.push(`/profile/${id}`)
+    const { selected } = this.state;
+    const selectedIndex = selected.indexOf(id);
+    let newSelected = [];
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, id);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1)
+      );
+    }
+
+    this.setState({ selected: newSelected });
   };
 
   handleChangePage = (event, page) => {
@@ -552,76 +721,35 @@ class ResearchNumbers extends React.Component {
 
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
-  componentDidMount() {}
-
   componentWillMount() {
-    document.title = "ລາຍງານລາຍຊື່ນັກຄົ້ນຄວ້າ - FNS Researcher Profiles";
     this.props.dispatch(getDepartments());
-    this.props.dispatch(getResearchType());
-    this.props.dispatch(getPublicationType());
     this.props
-      .dispatch(
-        getAllResearchersListsReports(
-          this.state.orderBy,
-          this.state.order,
-          "",
-          "",
-          ""
-        )
-      )
-      .then(response => {
+      .dispatch(getAllResearchesNumbersReports("", this.state.start, this.state.end, this.state.by)).then((response)=>{
         this.setState({
-          data: this.props.user.allResearchersListsReports
+          data: this.props.research.allResearchesListsReports,
+          rowsPerPage: this.props.research.allResearchesListsReports.length
         });
-      });
+      })
+    // this.props
+    //   .dispatch(getAllResearchersReports("", this.state.start, this.state.end))
+    //   .then(response => {
+    //     this.setState({
+    //       data: this.props.user.allResearchersReports,
+    //       rowsPerPage: this.props.user.allResearchersReports.length
+    //     });
+    //   });
   }
 
-  componentWillUnmount() {
-    // this.props.dispatch(clearAllResearchers())
-  }
+  handleRequestSort = (event, property) => {
+    const orderBy = property;
+    let order = "desc";
 
-  componentDidUpdate(prevProps, prevState) {
-      const prevDepartment = prevState.department;
-    const currDepartment = this.state.department;
-    if (prevDepartment !== currDepartment) {
-        // this.props.dispatch(clearAllResearchersListsReports());
-        this.props
-        .dispatch(
-          getAllResearchersListsReports(
-            this.state.orderBy,
-            this.state.order,
-            this.state.department,
-            this.state.start,
-            this.state.end,
-          )
-        )
-        .then(response => {
-          this.setState({
-            data: this.props.user.allResearchersListsReports
-          });
-        });
-      }
-    if (
-      prevState.order !== this.state.order ||
-      prevState.orderBy !== this.state.orderBy
-    ) {
-      this.props
-        .dispatch(
-          getAllResearchersListsReports(
-            this.state.orderBy,
-            this.state.order,
-            this.state.department,
-            this.state.start,
-            this.state.end,
-          )
-        )
-        .then(response => {
-          this.setState({
-            data: this.props.user.allResearchersListsReports
-          });
-        });
+    if (this.state.orderBy === property && this.state.order === "desc") {
+      order = "asc";
     }
-  }
+
+    this.setState({ order, orderBy });
+  };
 
   handleDepartmentChange = event => {
     this.setState({
@@ -629,6 +757,13 @@ class ResearchNumbers extends React.Component {
       departmentText: event.nativeEvent.srcElement.innerText
     });
     console.log("click");
+  };
+
+
+  handleByChange = event => {
+    this.setState({
+      by: event.target.value,
+    });
   };
 
   handleEndChange = event => {
@@ -642,23 +777,20 @@ class ResearchNumbers extends React.Component {
     ) {
       this.setState({ end: moment().format("YYYY-MM-DD") });
     }
-
-    // this.props.dispatch(clearAllResearchersListsReports());
     this.props
-    .dispatch(
-      getAllResearchersListsReports(
-        this.state.orderBy,
-        this.state.order,
-        this.state.department,
-        this.state.start,
-        this.state.end,
+      .dispatch(
+        getAllResearchersReports(
+          this.state.department,
+          this.state.start,
+          this.state.end
+        )
       )
-    )
-    .then(response => {
-      this.setState({
-        data: this.props.user.allResearchersListsReports
+      .then(response => {
+        this.setState({
+          data: this.props.user.allResearchersReports,
+          rowsPerPage: this.props.user.allResearchersReports.length
+        });
       });
-    });
   };
 
   handleStartChange = event => {
@@ -673,37 +805,169 @@ class ResearchNumbers extends React.Component {
       this.setState({ start: moment().format("YYYY-MM-DD") });
     }
 
-    // this.props.dispatch(clearAllResearchersListsReports());
     this.props
-    .dispatch(
-      getAllResearchersListsReports(
-        this.state.orderBy,
-        this.state.order,
-        this.state.department,
-        this.state.start,
-        this.state.end,
+      .dispatch(
+        getAllResearchersReports(
+          this.state.department,
+          this.state.start,
+          this.state.end
+        )
       )
-    )
-    .then(response => {
-      this.setState({
-        data: this.props.user.allResearchersListsReports
+      .then(response => {
+        this.setState({
+          data: this.props.user.allResearchersReports,
+          rowsPerPage: this.props.user.allResearchersReports.length
+        });
       });
-    });
   };
+
+  componentDidUpdate(prevProps, prevState) {
+    const prevDepartment = prevState.department;
+    const currDepartment = this.state.department;
+
+    const prevData = prevState.data;
+    const currData = this.state.data;
+
+    const prevBy = prevState.by
+    const currBy = this.state.by
+
+    if (prevBy !== currBy) {
+      if (currBy === "researchType") {
+        this.setState({
+          rows: [
+            {
+              id: "no",
+              numeric: false,
+              disablePadding: false,
+              label: "ລ/ດ"
+            },
+            {
+              id: "countByDepartment",
+              numeric: false,
+              disablePadding: false,
+              label: "ປະເພດ"
+            },
+            {
+              id: "countByDepartment",
+              numeric: false,
+              disablePadding: false,
+              label: "ພາຍໃນ"
+            },
+            {
+              id: "countByDepartment",
+              numeric: false,
+              disablePadding: false,
+              label: "ຕ່າງປະເທດ"
+            },
+            {
+              id: "countByDepartment",
+              numeric: false,
+              disablePadding: false,
+              label: "ທັງຫມົດ"
+            }
+          ],
+        })
+      } else {
+        this.setState({
+          rows:[
+            {
+              id: "no",
+              numeric: false,
+              disablePadding: false,
+              label: "ລ/ດ"
+            },
+            {
+              id: "countByDepartment",
+              numeric: false,
+              disablePadding: false,
+              label: "ປະເພດຕີພິມ"
+            },
+            {
+              id: "countByDepartment",
+              numeric: false,
+              disablePadding: false,
+              label: "ທັງຫມົດ"
+            }
+          ],
+        })
+      }
+    }
+
+    if (prevData !== currData && currData.length > 0) {
+      // if (this.props.user.allResearchersReports.length > 0) {
+      //   let departmentName = [];
+      //   let countByDepartment = [];
+
+      //   let countByDegree = [];
+      //   let countByGender = [];
+      //   let countByAge = [];
+
+      //   this.state.data.map(function(el, index, array) {
+      //     var o = Object.assign({}, el);
+      //     if (o["deapartmentName"] !== "ລວມ") {
+      //       departmentName.push(o.deapartmentName);
+      //       countByDepartment.push(o["countByDepartment"]);
+
+      //       countByDegree[0] = o["bachelorCount"];
+      //       countByDegree[1] = o["masterCount"];
+      //       countByDegree[2] = o["doctorialCount"];
+      //       countByGender[0] = o["maleCount"];
+      //       countByGender[1] = o["femaleCount"];
+      //       countByAge[0] = o["age18to30Count"];
+      //       countByAge[1] = o["age31to45Count"];
+      //       countByAge[2] = o["age46to65Count"];
+      //     } else {
+      //       countByDegree[0] = o["bachelorCount"];
+      //       countByDegree[1] = o["masterCount"];
+      //       countByDegree[2] = o["doctorialCount"];
+      //       countByGender[0] = o["maleCount"];
+      //       countByGender[1] = o["femaleCount"];
+      //       countByAge[0] = o["age18to30Count"];
+      //       countByAge[1] = o["age31to45Count"];
+      //       countByAge[2] = o["age46to65Count"];
+      //     }
+      //     return null;
+      //   });
+
+      //   let newlabelData = { ...this.state.options };
+      //   newlabelData["labels"] = departmentName;
+
+      //   this.setState({
+      //     options: newlabelData,
+      //     series: countByDepartment,
+      //     seriesDegree: countByDegree,
+      //     seriesGender: countByGender,
+      //     seriesAge: countByAge
+      //   });
+      // }
+    }
+
+    if (prevDepartment !== currDepartment) {
+      this.props
+        .dispatch(
+          getAllResearchersReports(
+            this.state.department,
+            this.state.start,
+            this.state.end
+          )
+        )
+        .then(response => {
+          this.setState({
+            data: this.props.user.allResearchersReports,
+            rowsPerPage: this.props.user.allResearchersReports.length
+          });
+        });
+    }
+  }
 
   render() {
     const { classes } = this.props;
     const { data, order, orderBy, selected, rowsPerPage, page } = this.state;
     const emptyRows =
       rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
-
-      const {useCanvas} = this.state;
-    const content = useCanvas ? 'TOGGLE TO SVG' : 'TOGGLE TO CANVAS';
-    const BarSeries = useCanvas ? VerticalBarSeriesCanvas : VerticalBarSeries;
-
     return (
       <>
-        <RsearchReportsHeader
+        <ResearchReportsHeader
           props={this.props}
           children={this.props.children}
           tab={this.state.tabNumber}
@@ -717,42 +981,36 @@ class ResearchNumbers extends React.Component {
             <Grid item xs sm lg md />
 
             <Grid item xs={11} sm={11} lg={11} md={11}>
-              {this.props.user.allResearchersListsReports ? (
+              {this.props.research.allResearchesListsReports ? (
                 <>
+                {console.log(this.state.data)}
                   <EnhancedTableToolbar
                     numSelected={selected.length}
                     selected={this.state.selected}
-                    
-                    openDeleteDialog={() => {
-                      this.handleOpenDeleteConfirmationDialog();
-                    }}
-                    openAddUserDialog={() => {
-                      this.handleOpenAddUserDialog();
-                    }}
-                    researchersCount={
-                      this.props.user.allResearchersListsReportsCount
-                        ? `(${this.props.user.allResearchersListsReportsCount})`
-                        : null
-                    }
+                    data={this.state.data}
+                    departments={this.props.user.departments}
                     selectedValue={this.state.department}
                     handleDepartmentChange={event =>
                       this.handleDepartmentChange(event)
                     }
-                    departments={this.props.user.departments}
+                    by = {this.state.by}
+                    handleByChange={event =>
+                      this.handleByChange(event)
+                    }
                     endValue={this.state.end}
                     startValue={this.state.start}
                     handleEndChange={event => this.handleEndChange(event)}
                     handleEndBlur={event => this.handleEndBlur(event)}
                     handleStartChange={event => this.handleStartChange(event)}
                     handleStartBlur={event => this.handleStartBlur(event)}
-                    data={this.state.data}
                   />
                   <Paper
                     style={{
                       boxShadow: "none",
                       border: "1px solid #d8d8d8",
 
-                      borderRadius: 0
+                      borderRadius: 0,
+                      borderBottom: 0
                     }}
                   >
                     <div className={classes.tableWrapper}>
@@ -767,6 +1025,7 @@ class ResearchNumbers extends React.Component {
                           onSelectAllClick={this.handleSelectAllClick}
                           onRequestSort={this.handleRequestSort}
                           rowCount={data.length}
+                          rows = {this.state.rows}
                         />
                         <TableBody>
                           {stableSort(data, getSorting(order, orderBy))
@@ -776,20 +1035,14 @@ class ResearchNumbers extends React.Component {
                             )
                             .map((n, index) => {
                               return (
-                                <TableRow
-                                  hover
-                                  tabIndex={-1}
-                                  key={n.id}
-                                  onClick={event =>
-                                    this.handleClick(event, n._id)
-                                  }
-                                >
+                                <TableRow tabIndex={-1} key={n.id}>
                                   <TableCell
                                     component="th"
                                     scope="row"
                                     padding="dense"
                                   >
-                                    {index + 1}
+                                    {console.log(n)}
+                                    {n.no}
                                   </TableCell>
                                   <TableCell
                                     component="th"
@@ -797,52 +1050,37 @@ class ResearchNumbers extends React.Component {
                                     padding="dense"
                                   >
                                     <Typography variant="inherit">{`${
-                                      n.prefix
-                                    } ${n.name} ${n.lastname}`}</Typography>
+                                      n.name
+                                    }`}</Typography>
                                   </TableCell>
                                   <TableCell
-                                    align="left"
                                     component="th"
                                     scope="row"
                                     padding="dense"
                                   >
                                     <Typography variant="inherit">{`${
-                                      n["gender.name"]
-                                    }`}</Typography>{" "}
+                                      n.nationalCount
+                                    }`}</Typography>
                                   </TableCell>
-
                                   <TableCell
-                                    align="left"
                                     component="th"
                                     scope="row"
                                     padding="dense"
                                   >
-                                    {" "}
                                     <Typography variant="inherit">{`${
-                                      n["affiliation.department"]
-                                    }`}</Typography>{" "}
-                                  </TableCell>
-                                  <TableCell align="left" padding="dense">
-                                    {moment().diff(
-                                      n.dateOfBirth,
-                                      "years",
-                                      false
-                                    )}
-                                  </TableCell>
-                                  <TableCell padding="dense">
-                                    <Typography variant="inherit">
-                                      {n["degree"]
-                                        ? `${n["degree"]}`
-                                        : ""}
-                                    </Typography>
+                                      n.internationalCount
+                                    }`}</Typography>
                                   </TableCell>
                                   <TableCell
-                                    padding="dense"
                                     component="th"
                                     scope="row"
+                                    padding="dense"
                                   >
-                                    {n["research"]}
+                                    <Typography variant="inherit">{`${
+                                      n.count
+                                    }`}</Typography>
                                   </TableCell>
+                                  
                                 </TableRow>
                               );
                             })}
@@ -854,26 +1092,208 @@ class ResearchNumbers extends React.Component {
                         </TableBody>
                       </Table>
                     </div>
-                    <TablePagination
-                      rowsPerPageOptions={[10, 15, 20]}
-                      component="div"
-                      count={data.length}
-                      rowsPerPage={rowsPerPage}
-                      page={page}
-                      backIconButtonProps={{
-                        "aria-label": "ຫນ້າກ່ອນຫນ້າ"
-                      }}
-                      nextIconButtonProps={{
-                        "aria-label": "ຫນ້າຕໍ່ໄປ"
-                      }}
-                      onChangePage={this.handleChangePage}
-                      onChangeRowsPerPage={this.handleChangeRowsPerPage}
-                      labelRowsPerPage="ແຖວຕໍ່ຫນ້າ"
-                      labelDisplayedRows={({ from, to, count }) =>
-                        `${from}-${to} ໃນ ${count}`
-                      }
-                    />
                   </Paper>
+                  {console.log(this.state.data.length)}
+                {
+                  // {this.state.department === "" &&
+                  // this.state.series.length > 0 ? (
+                  //   <Grid container spacing={16} style={{ marginTop: "16px" }}>
+                  //     <Grid item lg={4} md={6} sm={6} xs={12}>
+                  //       <Paper
+                  //         style={{
+                  //           boxShadow: "none",
+                  //           border: "1px solid #d8d8d8",
+                  //           maxHeight: "400px",
+                  //           padding: "16px"
+                  //         }}
+                  //       >
+                  //         <Typography
+                  //           variant="inherit"
+                  //           style={{
+                  //             fontSize: "18px",
+                  //             fontWeight: 500
+                  //           }}
+                  //         >
+                  //           ຈໍານວນຜົນງານຄົ້ນຄວ້າແບ່ງຕາມພາກ
+                  //         </Typography>
+                  //         <Chart
+                  //           options={this.state.options}
+                  //           labels={this.state.department}
+                  //           series={this.state.series}
+                  //           props
+                  //           type="pie"
+                  //           height={260}
+                  //         />
+                  //       </Paper>
+                  //     </Grid>
+                  //     <Grid item lg={4} md={6} sm={6} xs={12}>
+                  //       <Paper
+                  //         style={{
+                  //           boxShadow: "none",
+                  //           border: "1px solid #d8d8d8",
+                  //           padding: "16px"
+                  //         }}
+                  //       >
+                  //         <Typography
+                  //           variant="inherit"
+                  //           style={{
+                  //             fontSize: "18px",
+                  //             fontWeight: 500
+                  //           }}
+                  //         >
+                  //           ຈໍານວນຜົນງານຄົ້ນຄວ້າແບ່ງຕາມວຸດທິ
+                  //         </Typography>
+                  //         <Chart
+                  //           options={this.state.optionsDegree}
+                  //           labels={this.state.optionsDegree.labels}
+                  //           series={this.state.seriesDegree}
+                  //           props
+                  //           type="pie"
+                  //           height={260}
+                  //         />
+                  //       </Paper>
+                  //     </Grid>
+                  //     <Grid item lg={4} md={6} sm={6} xs={12}>
+                  //       <Paper
+                  //         style={{
+                  //           boxShadow: "none",
+                  //           border: "1px solid #d8d8d8",
+                  //           padding: "16px"
+                  //         }}
+                  //       >
+                  //         <Typography
+                  //           variant="inherit"
+                  //           style={{
+                  //             fontSize: "18px",
+                  //             fontWeight: 500
+                  //           }}
+                  //         >
+                  //           ຈໍານວນຜົນງານຄົ້ນຄວ້າແບ່ງຕາມເພດ
+                  //         </Typography>
+                  //         <Chart
+                  //           options={this.state.optionsGender}
+                  //           labels={this.state.optionsGender.labels}
+                  //           series={this.state.seriesGender}
+                  //           props
+                  //           type="pie"
+                  //           height={260}
+                  //         />
+                  //       </Paper>
+                  //     </Grid>
+                  //     <Grid item lg={4} md={6} sm={6} xs={12}>
+                  //       <Paper
+                  //         style={{
+                  //           boxShadow: "none",
+                  //           border: "1px solid #d8d8d8",
+                  //           padding: "16px"
+                  //         }}
+                  //       >
+                  //         <Typography
+                  //           variant="inherit"
+                  //           style={{
+                  //             fontSize: "18px",
+                  //             fontWeight: 500
+                  //           }}
+                  //         >
+                  //           ຈໍານວນຜົນງານຄົ້ນຄວ້າແບ່ງອາຍຸ
+                  //         </Typography>
+                  //         <Chart
+                  //           options={this.state.optionsAge}
+                  //           labels={this.state.optionsAge.labels}
+                  //           series={this.state.seriesAge}
+                  //           props
+                  //           type="pie"
+                  //           height={260}
+                  //         />
+                  //       </Paper>
+                  //     </Grid>
+                  //   </Grid>
+                  // ) : (
+                  //   <Grid container spacing={16} style={{ marginTop: "16px" }}>
+                  //     <Grid item lg={4} md={6} sm={6} xs={12}>
+                  //       <Paper
+                  //         style={{
+                  //           boxShadow: "none",
+                  //           border: "1px solid #d8d8d8",
+                  //           padding: "16px"
+                  //         }}
+                  //       >
+                  //         <Typography
+                  //           variant="inherit"
+                  //           style={{
+                  //             fontSize: "18px",
+                  //             fontWeight: 500
+                  //           }}
+                  //         >
+                  //           ຈໍານວນຜົນງານຄົ້ນຄວ້າແບ່ງຕາມວຸດທິ
+                  //         </Typography>
+                  //         <Chart
+                  //           options={this.state.optionsDegree}
+                  //           labels={this.state.optionsDegree.labels}
+                  //           series={this.state.seriesDegree}
+                  //           props
+                  //           type="pie"
+                  //           height={260}
+                  //         />
+                  //       </Paper>
+                  //     </Grid>
+                  //     <Grid item lg={4} md={6} sm={6} xs={12}>
+                  //       <Paper
+                  //         style={{
+                  //           boxShadow: "none",
+                  //           border: "1px solid #d8d8d8",
+                  //           padding: "16px"
+                  //         }}
+                  //       >
+                  //         <Typography
+                  //           variant="inherit"
+                  //           style={{
+                  //             fontSize: "18px",
+                  //             fontWeight: 500
+                  //           }}
+                  //         >
+                  //           ຈໍານວນຜົນງານຄົ້ນຄວ້າແບ່ງຕາມເພດ
+                  //         </Typography>
+                  //         <Chart
+                  //           options={this.state.optionsGender}
+                  //           labels={this.state.optionsGender.labels}
+                  //           series={this.state.seriesGender}
+                  //           props
+                  //           type="pie"
+                  //           height={260}
+                  //         />
+                  //       </Paper>
+                  //     </Grid>
+                  //     <Grid item lg={4} md={6} sm={6} xs={12}>
+                  //       <Paper
+                  //         style={{
+                  //           boxShadow: "none",
+                  //           border: "1px solid #d8d8d8",
+                  //           padding: "16px"
+                  //         }}
+                  //       >
+                  //         <Typography
+                  //           variant="inherit"
+                  //           style={{
+                  //             fontSize: "18px",
+                  //             fontWeight: 500
+                  //           }}
+                  //         >
+                  //           ຈໍານວນຜົນງານຄົ້ນຄວ້າແບ່ງອາຍຸ
+                  //         </Typography>
+                  //         <Chart
+                  //           options={this.state.optionsAge}
+                  //           labels={this.state.optionsAge.labels}
+                  //           series={this.state.seriesAge}
+                  //           props
+                  //           type="pie"
+                  //           height={260}
+                  //         />
+                  //       </Paper>
+                  //     </Grid>
+                  //   </Grid>
+                  // )}
+                }
                 </>
               ) : (
                 <Paper
@@ -897,45 +1317,25 @@ class ResearchNumbers extends React.Component {
                   </Grid>
                 </Paper>
               )}
-
-              <div>
-              <Chart options={this.state.options} series={this.state.series} props type="bar" width={500} height={320} />
-              <Button
-                onClick={() => this.setState({useCanvas: !useCanvas})}
-               
-              >Use Canvas</Button>
-              <XYPlot xType="ordinal" width={500} height={300} xDistance={100}>
-                <VerticalGridLines />
-                <HorizontalGridLines />
-                <XAxis />
-                <YAxis />
-                <BarSeries className="vertical-bar-series-example" data={greenData} />
-                <BarSeries data={blueData} />
-                <LabelSeries data={labelData} getLabel={d => d.x} />
-              </XYPlot>
-            </div>
             </Grid>
             <Grid item xs sm lg md />
           </Grid>
-
-         
-        </RsearchReportsHeader>
+        </ResearchReportsHeader>
       </>
     );
   }
 }
 
-ResearchNumbers.propTypes = {
+ResearchNumbersReports.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => {
   return {
     user: state.user,
-    research: state.research,
+    research: state.research
   };
 };
-
 export default withRouter(
-  connect(mapStateToProps)(withStyles(styles)(ResearchNumbers))
+  connect(mapStateToProps)(withStyles(styles)(ResearchNumbersReports))
 );

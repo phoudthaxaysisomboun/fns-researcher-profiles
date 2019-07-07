@@ -668,7 +668,7 @@ class Layout extends Component {
                       variant="h6"
                       color="inherit"
                       noWrap
-                      style={{ fontWeight: "bold" }}
+                      style={{ fontWeight: "bold", fontFamily: "'Roboto', sans serif" }}
                     >
                       FNS Researcher Profiles
                     </Typography>

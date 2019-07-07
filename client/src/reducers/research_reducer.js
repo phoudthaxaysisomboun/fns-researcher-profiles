@@ -10,7 +10,8 @@ import {
   ADD_LIKE,
   REMOVE_LIKE,
   CLEAR_LIKES_RESEARCH,
-  GET_ALL_RESEARCHES_ADMIN
+  GET_ALL_RESEARCHES_ADMIN,
+  GET_ALL_RESEARCHES_NUMBERS_REPORTS
 } from "../actions/types";
 
 import mergeByKey from "array-merge-by-key";
@@ -71,6 +72,35 @@ export default function(state = {}, action) {
         ...state,
         allResearches,
         allResearchesCount: action.payload.size
+      };
+      case GET_ALL_RESEARCHES_NUMBERS_REPORTS:
+      console.log(action.payload);
+
+      if (action.payload.allResearchesListsReports) {
+        var allResearchesListsReports = action.payload.allResearchesListsReports.map(
+          function(el, index, array) {
+            var o = Object.assign({}, el);
+
+            console.log(array.length - 1);
+            console.log(index);
+            if (o["name"] === "ລວມ") {
+              if (index !== array.length - 1) {
+                o["no"] = index + 1;
+              } else {
+                o["no"] = "";
+              }
+            } else {
+              o["no"] = index + 1;
+            }
+
+            return o;
+          }
+        );
+      }
+
+      return {
+        ...state,
+        allResearchesListsReports
       };
     default:
       return state;
