@@ -16,6 +16,7 @@ import {
 } from "../actions/types";
 
 import mergeByKey from "array-merge-by-key";
+import moment from "moment";
 
 export default function(state = {}, action) {
   switch (action.type) {
@@ -110,13 +111,23 @@ export default function(state = {}, action) {
         var listResearchesListReports = action.payload.allResearchesListReports.map(
           function(el, index, array) {
             var o = Object.assign({}, el);
-            let author = ""
+            let author = []
             o["researchType"] = o["researchType"].name
             o["publicationType"] = o["publicationType"].name
             o["likes"] = o["likes"].length
-            o["author"] = o["author"].map((value, index)=>{
+            o["reads"] = o["reads"].length
+            o["shares"] = o["shares"].length
+            o["comments"] = o["comments"].length
+            o["citations"] = o["citations"].length
+            o["downloads"] = o["downloads"].length
+            o["date"] = moment(o["date"]).format("DD/MM/YYYY")
+            o["author"].map((value, index)=>{
+              author.push(value.lastname ? `${value.name} ${value.lastname}`: `${value.name}`)
               return null
             })
+            o["author"] = author.join(", ")
+
+
 
             if (o["name"] === "ລວມ") {
               if (index !== array.length - 1) {
@@ -127,7 +138,6 @@ export default function(state = {}, action) {
             } else {
               o["no"] = index + 1;
             }
-            console.log(o)
             return o;
             
           }

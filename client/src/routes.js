@@ -29,6 +29,11 @@ import OutstandingResearchersList from './components/User/Admin/Reports/Research
 import NewcomerResearchersList from './components/User/Admin/Reports/Researcher/newcomer'
 import ResearchNumber from './components/User/Admin/Reports/Research'
 import AllResearchesList from './components/User/Admin/Reports/Research/list_all_researches'
+import ResearchLikesCommentsSharesReports from './components/User/Admin/Reports/Research/likes_shares_comments'
+import ResearchReadsReports from './components/User/Admin/Reports/Research/reads'
+import ResearchDownloadsReports from './components/User/Admin/Reports/Research/downloads'
+import ResearchCitationsReports from './components/User/Admin/Reports/Research/citations'
+import research from "./components/User/Card/research";
 
 const Routes = () => {
   return (
@@ -57,6 +62,10 @@ const Routes = () => {
         <Route path="/admin/reports/researchers/newcomer" exact component={Auth(NewcomerResearchersList, true, true)} />
         <Route path="/admin/reports/researches/numbers" exact component={Auth(ResearchNumber, true, true)} />
         <Route path="/admin/reports/researches/lists" exact component={Auth(AllResearchesList, true, true)} />
+        <Route path="/admin/reports/researches/likes_comments_shares" exact component={Auth(ResearchLikesCommentsSharesReports, true, true)} />
+        <Route path="/admin/reports/researches/reads" exact component={Auth(ResearchReadsReports, true, true)} />
+        <Route path="/admin/reports/researches/downloads" exact component={Auth(ResearchDownloadsReports, true, true)} />
+        <Route path="/admin/reports/researches/citations" exact component={Auth(ResearchCitationsReports, true, true)} />
 
       </Switch>
     </Layout>

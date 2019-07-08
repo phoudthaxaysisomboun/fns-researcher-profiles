@@ -152,7 +152,7 @@ export function getAllResearchesNumbersReports(department, from, to, by) {
   }
 }
 export function getAllResearchesListsReports(department, from, to, researchType, publicationType, order, sortby) {
-
+console.log( `${RESEARCH_SERVER}/reports/list?department=${department}&from=${from}&to=${to}&researchType=${researchType}&publicationType=${publicationType}&order=${order}&sortby=${sortby}`)
   const request = axios
     .post(
       `${RESEARCH_SERVER}/reports/list?department=${department}&from=${from}&to=${to}&researchType=${researchType}&publicationType=${publicationType}&order=${order}&sortby=${sortby}`

@@ -633,8 +633,6 @@ app.post("/api/research/reports/list", auth, admin, (req, res) => {
 
       findArgsResearch["uploader"] = {$in: ids}
 
-      console.log(findArgsResearch)
-
       Research.find(findArgsResearch
       )
       .sort([[sortBy, order]])
@@ -654,7 +652,7 @@ app.post("/api/research/reports/list", auth, admin, (req, res) => {
 
     .exec((err, result) => {
 
-
+if (err) return console.log(err)
       return res.status(200).json({
         allResearchesListReports: result,
         size: result.length

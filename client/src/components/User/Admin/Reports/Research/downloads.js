@@ -569,7 +569,7 @@ const styles = theme => ({
   }
 });
 
-class AllResearchesList extends React.Component {
+class ResearchDownloadsReports extends React.Component {
   state = {
     order: "desc",
     orderBy: "date",
@@ -577,7 +577,7 @@ class AllResearchesList extends React.Component {
     data: [],
     page: 0,
     rowsPerPage: 10,
-    tabNumber: 1,
+    tabNumber: 4,
     department: "",
     researchType: "",
     publicationType: "",
@@ -983,7 +983,7 @@ class AllResearchesList extends React.Component {
   }
 }
 
-AllResearchesList.propTypes = {
+ResearchDownloadsReports.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
@@ -995,5 +995,5 @@ const mapStateToProps = state => {
 };
 
 export default withRouter(
-  connect(mapStateToProps)(withStyles(styles)(AllResearchesList))
+  connect(mapStateToProps)(withStyles(styles)(ResearchDownloadsReports))
 );

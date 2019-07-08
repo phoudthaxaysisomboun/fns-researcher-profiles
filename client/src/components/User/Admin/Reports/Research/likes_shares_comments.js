@@ -569,7 +569,7 @@ const styles = theme => ({
   }
 });
 
-class AllResearchesList extends React.Component {
+class ResearchLikesCommentsSharesReports extends React.Component {
   state = {
     order: "desc",
     orderBy: "date",
@@ -577,7 +577,7 @@ class AllResearchesList extends React.Component {
     data: [],
     page: 0,
     rowsPerPage: 10,
-    tabNumber: 1,
+    tabNumber: 2,
     department: "",
     researchType: "",
     publicationType: "",
@@ -918,6 +918,15 @@ class AllResearchesList extends React.Component {
                                       {n.publicationType}
                                     </Typography>
                                   </TableCell>
+                                  <TableCell
+                                    padding="dense"
+                                    component="th"
+                                    scope="row"
+                                  >
+                                    <Typography variant="inherit">
+                                      {n.likes}
+                                    </Typography>
+                                  </TableCell>
                                 </TableRow>
                               );
                             })}
@@ -983,7 +992,7 @@ class AllResearchesList extends React.Component {
   }
 }
 
-AllResearchesList.propTypes = {
+ResearchLikesCommentsSharesReports.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
@@ -995,5 +1004,5 @@ const mapStateToProps = state => {
 };
 
 export default withRouter(
-  connect(mapStateToProps)(withStyles(styles)(AllResearchesList))
+  connect(mapStateToProps)(withStyles(styles)(ResearchLikesCommentsSharesReports))
 );
