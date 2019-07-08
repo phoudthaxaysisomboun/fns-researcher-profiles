@@ -36,7 +36,7 @@ const ResearchReportsHeader = ({ tab, props, children }) => {
                 fontSize: "24px"
               }}
             >
-            ລາຍງານນັກຄົ້ນຄວ້າ
+            ລາຍງານຜົນງານການຄົ້ນຄວ້າ
             </Typography>
           <Tabs
             value={tab}
@@ -48,38 +48,38 @@ const ResearchReportsHeader = ({ tab, props, children }) => {
             <Tab
               style={{ fontWeight: 500, fontSize: "14px" }}
               label="ຈໍານວນ"
-              to={`/admin/reports/research/numbers`}
+              to={`/admin/reports/researches/numbers`}
               component={Link}
             />
 
             <Tab
               style={{ fontWeight: 500, fontSize: "14px" }}
               label="ລາຍການ"
-              to={`/admin/reports/research/lists`}
+              to={`/admin/reports/researches/lists`}
               component={Link}
             />
             <Tab
               style={{ fontWeight: 500, fontSize: "14px" }}
               label="ຖືກໃຈ-ຄໍາເຫັນ-ແບ່ງປັນ"
-              to={`/admin/reports/research/likes_comments_shares`}
+              to={`/admin/reports/researches/likes_comments_shares`}
               component={Link}
             />
             <Tab
               style={{ fontWeight: 500, fontSize: "14px" }}
               label="ອ່ານ"
-              to={`/admin/reports/research/reads`}
+              to={`/admin/reports/researches/reads`}
               component={Link}
             />
             <Tab
               style={{ fontWeight: 500, fontSize: "14px" }}
               label="ດາວນ໌ໂຫລດ"
-              to={`/admin/reports/research/downloads`}
+              to={`/admin/reports/researches/downloads`}
               component={Link}
             />
             <Tab
               style={{ fontWeight: 500, fontSize: "14px" }}
               label="ນໍາໄປອ້າງອີງ"
-              to={`/admin/reports/research/citations`}
+              to={`/admin/reports/researches/citations`}
               component={Link}
             />
           </Tabs>

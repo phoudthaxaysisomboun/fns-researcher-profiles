@@ -13,7 +13,8 @@ import {
   REMOVE_LIKE,
   CLEAR_LIKES_RESEARCH,
   GET_ALL_RESEARCHES_ADMIN,
-  GET_ALL_RESEARCHES_NUMBERS_REPORTS
+  GET_ALL_RESEARCHES_NUMBERS_REPORTS,
+  GET_ALL_RESEARCHERS_LISTS_REPORTS
 } from "./types";
 
 import { RESEARCH_SERVER, RESEARCHER_SERVER } from "../components/utils/misc";
@@ -147,6 +148,18 @@ export function getAllResearchesNumbersReports(department, from, to, by) {
     .then(response => response.data);
   return {
     type: GET_ALL_RESEARCHES_NUMBERS_REPORTS,
+    payload: request
+  }
+}
+export function getAllResearchesListsReports(department, from, to, researchType, publicationType, order, sortby) {
+
+  const request = axios
+    .post(
+      `${RESEARCH_SERVER}/reports/list?department=${department}&from=${from}&to=${to}&researchType=${researchType}&publicationType=${publicationType}&order=${order}&sortby=${sortby}`
+    )
+    .then(response => response.data);
+  return {
+    type: GET_ALL_RESEARCHERS_LISTS_REPORTS,
     payload: request
   }
 }

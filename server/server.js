@@ -570,6 +570,244 @@ app.post("/api/researchers/researchers", auth, admin, (req, res) => {
     });
 });
 
+
+app.post("/api/research/reports/list", auth, admin, (req, res) => {
+  let order = req.query.order ? req.query.order : "asc";
+  let sortBy = req.query.sortBy ? req.query.sortBy : "name";
+  let limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 6;
+  let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0;
+
+  let from = req.query.from ? req.query.from : null;
+  let to = req.query.to ? req.query.to : null;
+  let department = req.query.department ? req.query.department : null;
+  let researchType = req.query.researchType ? req.query.researchType : null;
+  let publicationType = req.query.publicationType
+    ? req.query.publicationType
+    : null;
+
+  let findArgs = {};
+  let findArgsResearch = {};
+
+  for (let key in req.body.filters) {
+    if (req.body.filters[key].length > 0) {
+      findArgs[key] = req.body.filters[key];
+    }
+  }
+
+  if (researchType != null) {
+    findArgsResearch["researchType"] = mongoose.Types.ObjectId(researchType);
+  }
+
+  if (publicationType != null) {
+    findArgsResearch["publicationType"] = mongoose.Types.ObjectId(publicationType);
+  }
+
+  if (from != null && to != null) {
+    findArgsResearch["date"] = {
+      $gte: moment(from)
+        .add(1, "days")
+        .toDate(),
+      $lte: moment(to)
+        .add(1, "days")
+        .toDate()
+    };
+  }
+
+  if (department != null) {
+    findArgs["affiliation.department"] = mongoose.Types.ObjectId(department);
+  }
+
+  findArgs.emailIsVerified = true;
+  findArgs.accountIsVerified = true;
+  findArgs.active = true;
+
+  User.find(findArgs)
+    .select("_id")
+    .exec((err, userIds) => {
+      let ids = [];
+      if (!err) {
+        ids = userIds.map(value => {
+          return mongoose.Types.ObjectId(value._id);
+        });
+      }
+
+      findArgsResearch["uploader"] = {$in: ids}
+
+      console.log(findArgsResearch)
+
+      Research.find(findArgsResearch
+      )
+      .sort([[sortBy, order]])
+    .select("_id title date likes comments shares citations reads downloads")
+    .populate({
+      path: "uploader",
+      model: "User",
+      select: ["name", "lastname", "prefix"]
+    })
+    .populate({
+      path: "author",
+      model: "User",
+      select: ["name", "lastname", "prefix"]
+    })
+    .populate("researchType")
+    .populate("publicationType")
+
+    .exec((err, result) => {
+
+
+      return res.status(200).json({
+        allResearchesListReports: result,
+        size: result.length
+      });
+    });
+
+      // switch (by) {
+      //   case "researchType":
+      //     Research.aggregate([
+      //       {
+      //         $match: { uploader: { $in: ids }, date: {
+      //           $gte: moment(from)
+      //             .add(1, "days")
+      //             .toDate(),
+      //           $lte: moment(to)
+      //             .add(1, "days")
+      //             .toDate()
+      //         }}
+      //       },
+      //       {
+      //         $group: {
+      //           _id: "$researchType",
+      //           nationalCount: {
+      //             $sum: {
+      //               $cond: [
+      //                 {
+      //                   $and: [
+      //                     {
+      //                       $eq: [
+      //                         "$publicationType",
+      //                         mongoose.Types.ObjectId(
+      //                           "5cdb90c8ae41ef71480b6e0d"
+      //                         )
+      //                       ]
+      //                     }
+      //                   ]
+      //                 },
+      //                 1,
+      //                 0
+      //               ]
+      //             }
+      //           },
+      //           internationalCount: {
+      //             $sum: {
+      //               $cond: [
+      //                 {
+      //                   $and: [
+      //                     {
+      //                       $eq: [
+      //                         "$publicationType",
+      //                         mongoose.Types.ObjectId(
+      //                           "5cdb90dbae41ef71480b6e0e"
+      //                         )
+      //                       ]
+      //                     }
+      //                   ]
+      //                 },
+      //                 1,
+      //                 0
+      //               ]
+      //             }
+      //           },
+      //           count: { $sum: 1 }
+      //         }
+      //       }
+      //     ]).exec((err, doc) => {
+      //       ResearchType.populate(doc, { path: "_id" }, function(
+      //         err,
+      //         populatedDepartment
+      //       ) {
+      //         let allSum = 0,
+      //           nationalSum = 0,
+      //           internationalSum = 0;
+
+      //         var result = doc.map(function(el, index) {
+      //           var o = Object.assign({}, el);
+      //           o["name"] = o["_id"].name;
+      //           nationalSum += parseInt(o["nationalCount"]);
+      //           internationalSum += parseInt(o["internationalCount"]);
+      //           allSum += parseInt(o["count"]);
+      //           return o;
+      //         });
+      //         var sumObject = {
+      //           name: "ລວມ",
+      //           nationalCount: nationalSum,
+      //           internationalCount: internationalSum,
+      //           count: allSum
+      //         };
+
+      //         result.push(sumObject);
+
+      //         return res.status(200).json({
+      //           allResearchesListsReports: result
+      //         });
+      //       });
+      //     });
+      //     break;
+      //   case "publicationType":
+      //     Research.aggregate([
+      //       {
+      //         $match: { uploader: { $in: ids }, date: {
+      //           $gte: moment(from)
+      //             .add(1, "days")
+      //             .toDate(),
+      //           $lte: moment(to)
+      //             .add(1, "days")
+      //             .toDate()
+      //         } }
+      //       },
+      //       {
+      //         $group: {
+      //           _id: "$publicationType",
+
+      //           count: { $sum: 1 }
+      //         }
+      //       },
+      //       { $sort: { count: -1 } }
+      //     ]).exec((err, doc) => {
+      //       PublicationType.populate(doc, { path: "_id" }, function(
+      //         err,
+      //         populatedDepartment
+      //       ) {
+      //         let allSum = 0;
+
+      //         var result = doc.map(function(el, index) {
+      //           var o = Object.assign({}, el);
+      //           o["name"] = o["_id"].name;
+      //           allSum += parseInt(o["count"]);
+      //           return o;
+      //         });
+      //         var sumObject = {
+      //           name: "ລວມ",
+      //           count: allSum
+      //         };
+
+      //         result.push(sumObject);
+      //         return res.status(200).json({
+      //           allResearchesListsReports: result
+      //         });
+      //       });
+      //     });
+      //     break;
+      //   default:
+      //     break;
+      // }
+
+      // return res.status(200).json({
+      //   allResearchersListsReports: result,
+      //   size: result.length
+      // });
+    });
+});
+
 app.post("/api/research/reports/number", auth, admin, (req, res) => {
   let order = req.query.order ? req.query.order : "asc";
   let sortBy = req.query.sortBy ? req.query.sortBy : "name";
@@ -601,16 +839,16 @@ app.post("/api/research/reports/number", auth, admin, (req, res) => {
     findArgs["publicationType"] = mongoose.Types.ObjectId(publicationType);
   }
 
-  if (from != null && to != null) {
-    findArgs["createdAt"] = {
-      $gte: moment(from)
-        .add(1, "days")
-        .toDate(),
-      $lte: moment(to)
-        .add(1, "days")
-        .toDate()
-    };
-  }
+  // if (from != null && to != null) {
+  //   findArgs["createdAt"] = {
+  //     $gte: moment(from)
+  //       .add(1, "days")
+  //       .toDate(),
+  //     $lte: moment(to)
+  //       .add(1, "days")
+  //       .toDate()
+  //   };
+  // }
 
   if (department != null) {
     findArgs["affiliation.department"] = mongoose.Types.ObjectId(department);
@@ -634,7 +872,14 @@ app.post("/api/research/reports/number", auth, admin, (req, res) => {
         case "researchType":
           Research.aggregate([
             {
-              $match: { uploader: { $in: ids } }
+              $match: { uploader: { $in: ids }, date: {
+                $gte: moment(from)
+                  .add(1, "days")
+                  .toDate(),
+                $lte: moment(to)
+                  .add(1, "days")
+                  .toDate()
+              }}
             },
             {
               $group: {
@@ -717,7 +962,14 @@ app.post("/api/research/reports/number", auth, admin, (req, res) => {
         case "publicationType":
           Research.aggregate([
             {
-              $match: { uploader: { $in: ids } }
+              $match: { uploader: { $in: ids }, date: {
+                $gte: moment(from)
+                  .add(1, "days")
+                  .toDate(),
+                $lte: moment(to)
+                  .add(1, "days")
+                  .toDate()
+              } }
             },
             {
               $group: {

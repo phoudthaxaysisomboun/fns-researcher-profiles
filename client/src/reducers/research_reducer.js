@@ -11,7 +11,8 @@ import {
   REMOVE_LIKE,
   CLEAR_LIKES_RESEARCH,
   GET_ALL_RESEARCHES_ADMIN,
-  GET_ALL_RESEARCHES_NUMBERS_REPORTS
+  GET_ALL_RESEARCHES_NUMBERS_REPORTS,
+  GET_ALL_RESEARCHERS_LISTS_REPORTS
 } from "../actions/types";
 
 import mergeByKey from "array-merge-by-key";
@@ -101,6 +102,44 @@ export default function(state = {}, action) {
       return {
         ...state,
         allResearchesListsReports
+      };
+      case GET_ALL_RESEARCHERS_LISTS_REPORTS:
+      console.log(action.payload);
+
+      if (action.payload.allResearchesListReports) {
+        var listResearchesListReports = action.payload.allResearchesListReports.map(
+          function(el, index, array) {
+            var o = Object.assign({}, el);
+            let author = ""
+            o["researchType"] = o["researchType"].name
+            o["publicationType"] = o["publicationType"].name
+            o["likes"] = o["likes"].length
+            o["author"] = o["author"].map((value, index)=>{
+              return null
+            })
+
+            if (o["name"] === "ລວມ") {
+              if (index !== array.length - 1) {
+                o["no"] = index + 1;
+              } else {
+                o["no"] = "";
+              }
+            } else {
+              o["no"] = index + 1;
+            }
+            console.log(o)
+            return o;
+            
+          }
+        );
+
+        
+      }
+
+      return {
+        ...state,
+        listResearchesListReports,
+        listResearchesListReportsCount: action.payload.size
       };
     default:
       return state;

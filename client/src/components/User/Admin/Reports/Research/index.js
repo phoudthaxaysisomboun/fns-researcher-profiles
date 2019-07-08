@@ -405,11 +405,13 @@ class EnhancedTableToolbar extends React.Component {
             
                 </Select>
               </FormControl>
-              <ExcelFile
-                filename={`ລາຍງານຈໍານວນຜົນງານຄົ້ນຄວ້າ ຄວທ (${moment(
+              {
+                by === "researchType" ?
+                <ExcelFile
+                filename={`ລາຍງານຈໍານວນຜົນງານຄົ້ນຄວ້າ ຄວທ ແບ່ງຕາມປະເພດຜົນງານ (${moment(
                   startValue
-                ).format("DD/MM/YYYY")}-${moment(endValue).format(
-                  "DD/MM/YYYY"
+                ).format("DD-MM-YYYY")} - ${moment(endValue).format(
+                  "DD-MM-YYYY"
                 )})`}
                 element={
                   <Tooltip title="ດາວໂຫລດຟາຍລ໌ Excel">
@@ -419,24 +421,44 @@ class EnhancedTableToolbar extends React.Component {
                   </Tooltip>
                 }
               >
-                <ExcelSheet data={data} name="ຈໍານວນຜົນງານຄົ້ນຄວ້າ ຄວທ">
+                <ExcelSheet data={data} name="ລາຍງານຈໍານວນຜົນງານຄົ້ນຄວ້າ ຄວທ ແບ່ງຕາມປະເພດຜົນງານ">
                   <ExcelColumn name="Saysettha OT" label="ລ/ດ" value="no" />
-                  <ExcelColumn label="ພາກວິຊາ" value="deapartmentName" />
-                  <ExcelColumn label="ປະລິນຍາຕີ" value="bachelorCount" />
-                  <ExcelColumn label="ປະລິນຍາໂທ" value="masterCount" />
-                  <ExcelColumn label="ປະລິນຍາເອກ" value="doctorialCount" />
-                  <ExcelColumn label="ຍິງ" value="femaleCount" />
-                  <ExcelColumn label="ຊາຍ" value="maleCount" />
-                  <ExcelColumn label="18-30" value="age18to30Count" />
-                  <ExcelColumn label="31-45" value="age31to45Count" />
-                  <ExcelColumn label="46-65" value="age46to65Count" />
-                  <ExcelColumn label="ທັງຫມົດ" value="countByDepartment" />
+                  <ExcelColumn label="ປະເພດຜົນງານ" value="name" />
+                  <ExcelColumn label="ຕີພິມພາຍໃນ" value="nationalCount" />
+                  <ExcelColumn label="ຕີພິມພາຍຕ່າງປະເທດ" value="internationalCount" />
+                  <ExcelColumn label="ທັງຫມົດ" value="count" />
                   {
                     // <ExcelColumn label="Marital Status"
                     //            value={(col) => col.is_married ? "Married" : "Single"}/>
                   }
                 </ExcelSheet>
               </ExcelFile>
+              :
+              <ExcelFile
+                filename={`ລາຍງານຈໍານວນຜົນງານຄົ້ນຄວ້າ ຄວທ ແບ່ງຕາມປະເພດການຕີພິມ (${moment(
+                  startValue
+                ).format("DD-MM-YYYY")} - ${moment(endValue).format(
+                  "DD-MM-YYYY"
+                )})`}
+                element={
+                  <Tooltip title="ດາວໂຫລດຟາຍລ໌ Excel">
+                    <IconButton style={{ marginRight: "0px" }}>
+                      <SaveAltOutlined />
+                    </IconButton>
+                  </Tooltip>
+                }
+              >
+                <ExcelSheet data={data} name="ລາຍງານຈໍານວນຜົນງານຄົ້ນຄວ້າ ຄວທ ແບ່ງຕາມປະເພດການຕີພິມ">
+                  <ExcelColumn name="Saysettha OT" label="ລ/ດ" value="no" />
+                  <ExcelColumn label="ປະເພດການຕີພິມ" value="name" />
+                  <ExcelColumn label="ທັງຫມົດ" value="count" />
+                  {
+                    // <ExcelColumn label="Marital Status"
+                    //            value={(col) => col.is_married ? "Married" : "Single"}/>
+                  }
+                </ExcelSheet>
+              </ExcelFile>
+              }
             </div>
           </Grid>
         </Grid>
@@ -552,7 +574,7 @@ class ResearchNumbersReports extends Component {
     },
     series: [],
 
-    optionsDegree: {
+    optionsByPub: {
       chart: {
         id: "apexchart-example",
 
@@ -562,7 +584,7 @@ class ResearchNumbersReports extends Component {
       // xaxis: {
       //   categories: departmentName
       // },
-      labels: ["ປະລິນຍາຕີ", "ປະລິນຍາໂທ", "ປະລິນຍາເອກ"],
+      labels: [],
       dataLabels: {
         formatter: function(val, opts) {
           return opts.w.config.series[opts.seriesIndex];
@@ -592,83 +614,7 @@ class ResearchNumbersReports extends Component {
         }
       }
     },
-    seriesDegree: [],
-
-    optionsGender: {
-      chart: {
-        id: "apexchart-example",
-
-        width: "100%"
-      },
-      labels: ["ຊາຍ", "ຍິງ"],
-      dataLabels: {
-        formatter: function(val, opts) {
-          return opts.w.config.series[opts.seriesIndex];
-        }
-      },
-      responsive: [
-        {
-          breakpoint: 1600,
-          options: {
-            chart: {
-              width: 200
-            },
-            legend: {
-              position: "bottom"
-            }
-          }
-        }
-      ],
-      theme: {
-        mode: "light",
-        palette: "palette4",
-        monochrome: {
-          enabled: false,
-          color: "#255aee",
-          shadeTo: "light",
-          shadeIntensity: 0.65
-        }
-      }
-    },
-    seriesGender: [],
-
-    optionsAge: {
-      chart: {
-        id: "apexchart-example",
-
-        width: "100%"
-      },
-      labels: ["18-30", "31-45", "46-65"],
-      dataLabels: {
-        formatter: function(val, opts) {
-          return opts.w.config.series[opts.seriesIndex];
-        }
-      },
-      responsive: [
-        {
-          breakpoint: 1600,
-          options: {
-            chart: {
-              width: 200
-            },
-            legend: {
-              position: "bottom"
-            }
-          }
-        }
-      ],
-      theme: {
-        mode: "light",
-        palette: "palette5",
-        monochrome: {
-          enabled: false,
-          color: "#255aee",
-          shadeTo: "light",
-          shadeIntensity: 0.65
-        }
-      }
-    },
-    seriesAge: []
+    seriesByPub: [],    
   };
 
   handleRequestSort = (event, property) => {
@@ -764,6 +710,8 @@ class ResearchNumbersReports extends Component {
     this.setState({
       by: event.target.value,
     });
+
+
   };
 
   handleEndChange = event => {
@@ -778,19 +726,12 @@ class ResearchNumbersReports extends Component {
       this.setState({ end: moment().format("YYYY-MM-DD") });
     }
     this.props
-      .dispatch(
-        getAllResearchersReports(
-          this.state.department,
-          this.state.start,
-          this.state.end
-        )
-      )
-      .then(response => {
+      .dispatch(getAllResearchesNumbersReports(this.state.department, this.state.start, this.state.end, this.state.by)).then((response)=>{
         this.setState({
-          data: this.props.user.allResearchersReports,
-          rowsPerPage: this.props.user.allResearchersReports.length
+          data: this.props.research.allResearchesListsReports,
+          rowsPerPage: this.props.research.allResearchesListsReports.length
         });
-      });
+      })
   };
 
   handleStartChange = event => {
@@ -806,19 +747,12 @@ class ResearchNumbersReports extends Component {
     }
 
     this.props
-      .dispatch(
-        getAllResearchersReports(
-          this.state.department,
-          this.state.start,
-          this.state.end
-        )
-      )
-      .then(response => {
+      .dispatch(getAllResearchesNumbersReports(this.state.department, this.state.start, this.state.end, this.state.by)).then((response)=>{
         this.setState({
-          data: this.props.user.allResearchersReports,
-          rowsPerPage: this.props.user.allResearchersReports.length
+          data: this.props.research.allResearchesListsReports,
+          rowsPerPage: this.props.research.allResearchesListsReports.length
         });
-      });
+      })
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -832,6 +766,21 @@ class ResearchNumbersReports extends Component {
     const currBy = this.state.by
 
     if (prevBy !== currBy) {
+      this.props
+      .dispatch(getAllResearchesNumbersReports(this.state.department, this.state.start, this.state.end, this.state.by)).then((response)=>{
+        this.setState({
+          data: this.props.research.allResearchesListsReports,
+          rowsPerPage: this.props.research.allResearchesListsReports.length
+        });
+
+        
+      })
+      
+
+      
+    }
+
+    if (prevData !== currData && currData.length > 0) {
       if (currBy === "researchType") {
         this.setState({
           rows: [
@@ -891,72 +840,53 @@ class ResearchNumbersReports extends Component {
           ],
         })
       }
-    }
 
-    if (prevData !== currData && currData.length > 0) {
-      // if (this.props.user.allResearchersReports.length > 0) {
-      //   let departmentName = [];
-      //   let countByDepartment = [];
+      if (this.state.data.length > 0) {
+        let name = [];
+        let countByResearchType = [];
+        let countNationalPublication =[]
+        let countInternationalPublication =[]
 
-      //   let countByDegree = [];
-      //   let countByGender = [];
-      //   let countByAge = [];
+        let countByPublicationType = []
 
-      //   this.state.data.map(function(el, index, array) {
-      //     var o = Object.assign({}, el);
-      //     if (o["deapartmentName"] !== "ລວມ") {
-      //       departmentName.push(o.deapartmentName);
-      //       countByDepartment.push(o["countByDepartment"]);
+        this.state.data.map(function(el, index, array) {
+          var o = Object.assign({}, el);
+          if (o["name"] !== "ລວມ") {
+            name.push(o.name);
+            countByResearchType.push(o["count"]);
+            countByPublicationType.push(o["count"]);
+            countNationalPublication.push(o["nationalCount"])
+            countInternationalPublication.push(o["internationalCount"])
+          } else {
+            
+          }
+          return null;
+        });
 
-      //       countByDegree[0] = o["bachelorCount"];
-      //       countByDegree[1] = o["masterCount"];
-      //       countByDegree[2] = o["doctorialCount"];
-      //       countByGender[0] = o["maleCount"];
-      //       countByGender[1] = o["femaleCount"];
-      //       countByAge[0] = o["age18to30Count"];
-      //       countByAge[1] = o["age31to45Count"];
-      //       countByAge[2] = o["age46to65Count"];
-      //     } else {
-      //       countByDegree[0] = o["bachelorCount"];
-      //       countByDegree[1] = o["masterCount"];
-      //       countByDegree[2] = o["doctorialCount"];
-      //       countByGender[0] = o["maleCount"];
-      //       countByGender[1] = o["femaleCount"];
-      //       countByAge[0] = o["age18to30Count"];
-      //       countByAge[1] = o["age31to45Count"];
-      //       countByAge[2] = o["age46to65Count"];
-      //     }
-      //     return null;
-      //   });
 
-      //   let newlabelData = { ...this.state.options };
-      //   newlabelData["labels"] = departmentName;
+        let newlabelData = { ...this.state.options };
+        newlabelData["labels"] = name;
 
-      //   this.setState({
-      //     options: newlabelData,
-      //     series: countByDepartment,
-      //     seriesDegree: countByDegree,
-      //     seriesGender: countByGender,
-      //     seriesAge: countByAge
-      //   });
-      // }
+        this.setState({
+          options: newlabelData,
+          optionsByPub: newlabelData,
+          series: countByResearchType,
+          seriesByPub: countByPublicationType,
+          // seriesDegree: countByDegree,
+          // seriesGender: countByGender,
+          // seriesAge: countByAge
+        });
+      }
     }
 
     if (prevDepartment !== currDepartment) {
       this.props
-        .dispatch(
-          getAllResearchersReports(
-            this.state.department,
-            this.state.start,
-            this.state.end
-          )
-        )
-        .then(response => {
-          this.setState({
-            data: this.props.user.allResearchersReports,
-            rowsPerPage: this.props.user.allResearchersReports.length
-          });
+      .dispatch(getAllResearchesNumbersReports(this.state.department, this.state.start, this.state.end, this.state.by)).then((response)=>{
+        this.setState({
+          data: this.props.research.allResearchesListsReports,
+          rowsPerPage: this.props.research.allResearchesListsReports.length
         });
+      })
     }
   }
 
@@ -1004,7 +934,9 @@ class ResearchNumbersReports extends Component {
                     handleStartChange={event => this.handleStartChange(event)}
                     handleStartBlur={event => this.handleStartBlur(event)}
                   />
-                  <Paper
+                <Grid container spacing={8}>
+                    <Grid item lg={8} sm={12}>
+                    <Paper
                     style={{
                       boxShadow: "none",
                       border: "1px solid #d8d8d8",
@@ -1053,7 +985,10 @@ class ResearchNumbersReports extends Component {
                                       n.name
                                     }`}</Typography>
                                   </TableCell>
-                                  <TableCell
+                                  {
+                                    this.state.by === "researchType" ?
+                                    <>
+                                    <TableCell
                                     component="th"
                                     scope="row"
                                     padding="dense"
@@ -1071,6 +1006,8 @@ class ResearchNumbersReports extends Component {
                                       n.internationalCount
                                     }`}</Typography>
                                   </TableCell>
+                                    </> : null
+                                  }
                                   <TableCell
                                     component="th"
                                     scope="row"
@@ -1093,6 +1030,73 @@ class ResearchNumbersReports extends Component {
                       </Table>
                     </div>
                   </Paper>
+                    </Grid>
+                    <Grid item lg={4} sm={12}>
+                     {
+                       this.state.by === "researchType" ?
+                       <Paper
+                          style={{
+                            boxShadow: "none",
+                            border: "1px solid #d8d8d8",
+                            maxHeight: "400px",
+                            padding: "16px"
+                          }}
+                        >
+                        <Typography
+                            variant="inherit"
+                            style={{
+                              fontSize: "18px",
+                              fontWeight: 500
+                            }}
+                          >
+                            ຈໍານວນຜົນງານຄົ້ນຄວ້າແບ່ງຕາມປະເພດ
+                          </Typography>
+                                   {
+                                    this.state.rowsPerPage > 1 ?
+                                     <Chart
+                            options={this.state.options}
+                            labels={this.state.options.labels}
+                            series={this.state.series}
+                            props
+                            type="pie"
+                            height={260}
+                          /> : null
+                                   }
+                        </Paper> : 
+
+                        <Paper
+                          style={{
+                            boxShadow: "none",
+                            border: "1px solid #d8d8d8",
+                            maxHeight: "400px",
+                            padding: "16px"
+                          }}
+                        >
+                        <Typography
+                            variant="inherit"
+                            style={{
+                              fontSize: "18px",
+                              fontWeight: 500
+                            }}
+                          >
+                            ຈໍານວນຜົນງານຄົ້ນຄວ້າແບ່ງຕາມການຕີພິມ
+                          </Typography>
+                                   {
+                                     this.state.rowsPerPage > 1 ?
+                                     <Chart
+                            options={this.state.optionsByPub}
+                            labels={this.state.optionsByPub.labels}
+                            series={this.state.seriesByPub}
+                            props
+                            type="pie"
+                            height={260}
+                          />
+                          : null
+                                   }
+                        </Paper>
+                     }
+                    </Grid>
+                </Grid>
                   {console.log(this.state.data.length)}
                 {
                   // {this.state.department === "" &&

@@ -28,6 +28,7 @@ import AllResearchersList from './components/User/Admin/Reports/Researcher/list_
 import OutstandingResearchersList from './components/User/Admin/Reports/Researcher/outstanding'
 import NewcomerResearchersList from './components/User/Admin/Reports/Researcher/newcomer'
 import ResearchNumber from './components/User/Admin/Reports/Research'
+import AllResearchesList from './components/User/Admin/Reports/Research/list_all_researches'
 
 const Routes = () => {
   return (
@@ -55,6 +56,7 @@ const Routes = () => {
         <Route path="/admin/reports/researchers/outstanding" exact component={Auth(OutstandingResearchersList, true, true)} />
         <Route path="/admin/reports/researchers/newcomer" exact component={Auth(NewcomerResearchersList, true, true)} />
         <Route path="/admin/reports/researches/numbers" exact component={Auth(ResearchNumber, true, true)} />
+        <Route path="/admin/reports/researches/lists" exact component={Auth(AllResearchesList, true, true)} />
 
       </Switch>
     </Layout>
