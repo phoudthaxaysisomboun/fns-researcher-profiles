@@ -125,14 +125,25 @@ const SearchHeader = ({
   return (
     <Grid container>
       <Grid item xs={12} style={{paddingTop:"16px"}}>
-        
+      <embed
+      height="160px"
+      width="100%"
+      style={{ marginBottom: "16px" }}
+      type="image/svg+xml"
+      src="/images/fns.svg"
+    />
           <Grid container justify="center" style={{ paddingBottom: "14px" }}>
+          <Link
+                          to="/"
+                          style={{ textDecoration: "none", color: "inherit" }}
+                        >
             <Typography
               variant="inherit"
               style={{ fontSize: "24px", fontWeight: "bold" }}
             >
-              ຄົ້ນຫາ
+              ເວັບໄຊທ໌ຖານປະຫວັດຂໍ້ມູນນັກຄົ້ນຄວ້າ ຄວທ
             </Typography>
+            </Link>
           </Grid>
           <Grid container justify="center" style={{ paddingBottom: "24px" }}>
             <Grid item xs={12}>

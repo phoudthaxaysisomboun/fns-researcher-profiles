@@ -67,16 +67,6 @@ import ReactExport from "react-data-export";
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
-const ExcelRow = ReactExport.ExcelFile.ExcelRow;
-
-const greenData = [{ x: "A", y: 10 }, { x: "B", y: 5 }, { x: "C", y: 15 }];
-
-const blueData = [{ x: "A", y: 12 }, { x: "B", y: 2 }, { x: "C", y: 11 }];
-
-const labelData = greenData.map((d, idx) => ({
-  x: d.x,
-  y: Math.max(greenData[idx].y, blueData[idx].y)
-}));
 
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -143,7 +133,26 @@ const rows = [
     numeric: false,
     disablePadding: false,
     label: "ການຕີພິມ"
+  },
+  {
+    id: "likes",
+    numeric: false,
+    disablePadding: false,
+    label: "ຖຶກໃຈ"
+  },
+  {
+    id: "comments",
+    numeric: false,
+    disablePadding: false,
+    label: "ຄໍາເຫັນ"
+  },
+  {
+    id: "shares",
+    numeric: false,
+    disablePadding: false,
+    label: "ແຊຣ໌"
   }
+
   // {
   //   id: "actions",
   //   numeric: false,
@@ -520,7 +529,7 @@ class EnhancedTableToolbar extends React.Component {
                 </Select>
               </FormControl>
               <ExcelFile
-                filename={`ລາຍການຜົນງານຄົ້ນຄວ້າ (${moment(startValue).format("DD-MM-YYYY")} - ${moment(endValue).format("DD-MM-YYYY")}) ${selectedValue} ຄວທ`}
+                filename={`ລາຍງານຈໍານວນຖືກໃຈ, ຄໍາເຫັນ, ແຊຣ໌ຜົນງານຄົ້ນຄວ້າ (${moment(startValue).format("DD-MM-YYYY")} - ${moment(endValue).format("DD-MM-YYYY")}) ${selectedValue} ຄວທ`}
                 element={
                   <Tooltip title="ດາວໂຫລດຟາຍລ໌ Excel">
                     <IconButton style={{ marginRight: "0px" }}>
@@ -536,6 +545,9 @@ class EnhancedTableToolbar extends React.Component {
                   <ExcelColumn label="ວັນທີ" value="date" />
                   <ExcelColumn label="ປະເພດຜົນງານ" value="researchType" />
                   <ExcelColumn label="ການຕີພິມ" value="publicationType" />
+                  <ExcelColumn label="ຖືກໃຈ" value="likes" />
+                  <ExcelColumn label="ຄໍາເຫັນ" value="comments" />
+                  <ExcelColumn label="ແຊຣ໌" value="shares" />
                   {
                     // <ExcelColumn label="Marital Status"
                     //            value={(col) => col.is_married ? "Married" : "Single"}/>
@@ -572,7 +584,7 @@ const styles = theme => ({
 class ResearchLikesCommentsSharesReports extends React.Component {
   state = {
     order: "desc",
-    orderBy: "date",
+    orderBy: "likes",
     selected: [],
     data: [],
     page: 0,
@@ -925,6 +937,24 @@ class ResearchLikesCommentsSharesReports extends React.Component {
                                   >
                                     <Typography variant="inherit">
                                       {n.likes}
+                                    </Typography>
+                                  </TableCell>
+                                  <TableCell
+                                    padding="dense"
+                                    component="th"
+                                    scope="row"
+                                  >
+                                    <Typography variant="inherit">
+                                      {n.comments}
+                                    </Typography>
+                                  </TableCell>
+                                  <TableCell
+                                    padding="dense"
+                                    component="th"
+                                    scope="row"
+                                  >
+                                    <Typography variant="inherit">
+                                      {n.shares}
                                     </Typography>
                                   </TableCell>
                                 </TableRow>

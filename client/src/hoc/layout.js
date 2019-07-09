@@ -245,7 +245,7 @@ class Layout extends Component {
   state = {
     anchorEl: null,
     mobileMoreAnchorEl: null,
-    open: true,
+    open: false,
     headerclass: "",
     openManageToolMenu: true,
     openReportsToolMenu: true,
@@ -656,6 +656,13 @@ class Layout extends Component {
                         >
                           <MenuIcon />
                         </IconButton>
+                        <embed
+            height="24px"
+            width="24px"
+            style={{ marginBottom: "0", flexGrow: 0, paddingRight: "12px", paddingTop: "4px", paddingBottom: "12px" }}
+            type="image/svg+xml"
+            src="/images/fns.svg"
+          />
                   </>
                 ) : null}
                 {!this.props.location.pathname.startsWith("/search") ? (
@@ -663,6 +670,7 @@ class Layout extends Component {
                     to="/"
                     style={{ textDecoration: "none", color: "inherit" }}
                   >
+                  
                     <Typography
                       className={classes.title}
                       variant="h6"
@@ -734,18 +742,20 @@ class Layout extends Component {
                           to="/"
                           style={{ textDecoration: "none", color: "inherit" }}
                         >
-                          <Typography
-                            variant="h6"
-                            color="inherit"
-                            style={{
-                              textAlign: "center",
-                              fontWeight: "bold",
-                              fontFamily: "'Roboto', sans serif"
-                            }}
-                            noWrap
-                          >
-                            FNS Researcher Profiles
-                          </Typography>
+                          {
+                          //   <Typography
+                          //   variant="h6"
+                          //   color="inherit"
+                          //   style={{
+                          //     textAlign: "center",
+                          //     fontWeight: "bold",
+                          //     fontFamily: "'Roboto', sans serif"
+                          //   }}
+                          //   noWrap
+                          // >
+                          //   FNS Researcher Profiles
+                          // </Typography>
+                          }
                         </Link>
                       </Grid>
 

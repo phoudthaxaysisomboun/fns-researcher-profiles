@@ -892,20 +892,7 @@ class AllResearchersList extends React.Component {
               )}
 
               <div>
-              <Chart options={this.state.options} series={this.state.series} props type="bar" width={500} height={320} />
-              <Button
-                onClick={() => this.setState({useCanvas: !useCanvas})}
-               
-              >Use Canvas</Button>
-              <XYPlot xType="ordinal" width={500} height={300} xDistance={100}>
-                <VerticalGridLines />
-                <HorizontalGridLines />
-                <XAxis />
-                <YAxis />
-                <BarSeries className="vertical-bar-series-example" data={greenData} />
-                <BarSeries data={blueData} />
-                <LabelSeries data={labelData} getLabel={d => d.x} />
-              </XYPlot>
+              
             </div>
             </Grid>
             <Grid item xs sm lg md />

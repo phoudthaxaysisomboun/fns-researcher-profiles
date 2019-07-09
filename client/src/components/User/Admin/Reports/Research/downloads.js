@@ -143,6 +143,12 @@ const rows = [
     numeric: false,
     disablePadding: false,
     label: "ການຕີພິມ"
+  },
+  {
+    id: "downloads",
+    numeric: false,
+    disablePadding: false,
+    label: "ດາວນ໌ໂຫລດ"
   }
   // {
   //   id: "actions",
@@ -520,7 +526,7 @@ class EnhancedTableToolbar extends React.Component {
                 </Select>
               </FormControl>
               <ExcelFile
-                filename={`ລາຍການຜົນງານຄົ້ນຄວ້າ (${moment(startValue).format("DD-MM-YYYY")} - ${moment(endValue).format("DD-MM-YYYY")}) ${selectedValue} ຄວທ`}
+                filename={`ລາຍງານຈໍານວນດາວນ໌ໂຫລດຄົ້ນຄວ້າ (${moment(startValue).format("DD-MM-YYYY")} - ${moment(endValue).format("DD-MM-YYYY")}) ${selectedValue} ຄວທ`}
                 element={
                   <Tooltip title="ດາວໂຫລດຟາຍລ໌ Excel">
                     <IconButton style={{ marginRight: "0px" }}>
@@ -536,6 +542,7 @@ class EnhancedTableToolbar extends React.Component {
                   <ExcelColumn label="ວັນທີ" value="date" />
                   <ExcelColumn label="ປະເພດຜົນງານ" value="researchType" />
                   <ExcelColumn label="ການຕີພິມ" value="publicationType" />
+                  <ExcelColumn label="ດາວນ໌ໂຫລດ" value="downloads" />
                   {
                     // <ExcelColumn label="Marital Status"
                     //            value={(col) => col.is_married ? "Married" : "Single"}/>
@@ -572,7 +579,7 @@ const styles = theme => ({
 class ResearchDownloadsReports extends React.Component {
   state = {
     order: "desc",
-    orderBy: "date",
+    orderBy: "downloads",
     selected: [],
     data: [],
     page: 0,
@@ -916,6 +923,15 @@ class ResearchDownloadsReports extends React.Component {
                                   >
                                     <Typography variant="inherit">
                                       {n.publicationType}
+                                    </Typography>
+                                  </TableCell>
+                                  <TableCell
+                                    padding="dense"
+                                    component="th"
+                                    scope="row"
+                                  >
+                                    <Typography variant="inherit">
+                                      {n.downloads}
                                     </Typography>
                                   </TableCell>
                                 </TableRow>
