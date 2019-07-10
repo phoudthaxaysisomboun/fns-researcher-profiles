@@ -141,7 +141,7 @@ const SearchHeader = ({
               variant="inherit"
               style={{ fontSize: "24px", fontWeight: "bold" }}
             >
-              ເວັບໄຊທ໌ຖານປະຫວັດຂໍ້ມູນນັກຄົ້ນຄວ້າ ຄວທ
+              ເວັບໄຊທ໌ຖານຂໍ້ມູນປະຫວັດຂໍ້ມູນນັກຄົ້ນຄວ້າ ຄວທ
             </Typography>
             </Link>
           </Grid>

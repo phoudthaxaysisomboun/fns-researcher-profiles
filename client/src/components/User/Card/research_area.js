@@ -13,7 +13,7 @@ import {
   EditOutlined,
 } from "@material-ui/icons";
 
-const ResearchaAreaCard = props => {
+const ResearchaAreaCard = ({props, runOpenUpdateDialog}) => {
   const profile = { ...props.user.userDetail };
   const user = { ...props.user.userData };
 
@@ -47,13 +47,13 @@ const ResearchaAreaCard = props => {
               fontWeight: "bold"
             }}
           >
-            ຂົງເຂດການຄົ້ນຄວ້າ
+          ຫົວຂໍ້ການຄົ້ນຄ້ວາ
           </Typography>
         </Grid>
         <Grid item xs={6} align="right">
           {props.user.userDetail && (isOwner || user.isAdmin) ? (
             <IconButton style={{ padding: "0",  }}>
-              <EditOutlined fontSize="small" />
+              <EditOutlined onClick={()=>{runOpenUpdateDialog()}} fontSize="small" />
             </IconButton>
           ) : null}
         </Grid>
@@ -67,7 +67,7 @@ const ResearchaAreaCard = props => {
               return (
                 <Chip
                   key={i}
-                  label={data.label}
+                  label={data}
                   variant="outlined"
                   style={{ fontSize: "14px", margin: "4px" }}
                 />
@@ -104,7 +104,7 @@ const ResearchaAreaCard = props => {
               fontWeight: "bold"
             }}
           >
-            ຂົງເຂດການຄົ້ນຄວ້າ
+          ຫົວຂໍ້ການຄົ້ນຄ້ວາ
           </Typography>
         </Grid>
         <Grid item xs={6} align="right">
@@ -151,7 +151,7 @@ const ResearchaAreaCard = props => {
               fontWeight: "bold"
             }}
           >
-            ຂົງເຂດການຄົ້ນຄວ້າ
+          ຫົວຂໍ້ການຄົ້ນຄ້ວາ
           </Typography>
         </Grid>
         

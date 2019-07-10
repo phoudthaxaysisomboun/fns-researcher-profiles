@@ -13,7 +13,6 @@ import {
   clearFeed,
   addLike,
   removeLike,
-  clearLikeResearch
 } from "../../../actions/research_actions";
 import { like, unlike, clearLike } from "../../../actions/user_actions";
 

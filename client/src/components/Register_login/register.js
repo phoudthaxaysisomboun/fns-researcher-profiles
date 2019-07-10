@@ -197,7 +197,7 @@ class Register extends Component {
         element: "input",
         value: "",
         config: {
-          label: "ຄໍານໍາຫນ້າ",
+          label: "ນາມມະຍົດ",
           placeholder: "ທ້າວ, ທ່ານ, ທ່ານປະລິນຍາເອກ...",
           name: "prefix_input",
           type: "text"

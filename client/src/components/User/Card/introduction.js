@@ -11,7 +11,7 @@ import {
 
 import { EditOutlined } from "@material-ui/icons";
 
-const IntroductionCard = props => {
+const IntroductionCard = ({props, openEditDialog}) => {
   const profile = { ...props.user.userDetail };
   const user = { ...props.user.userData };
 
@@ -48,7 +48,7 @@ const IntroductionCard = props => {
             <Grid item xs={6} align="right">
               {props.user.userDetail && (isOwner || user.isAdmin) ? (
                 <IconButton style={{ padding: 0 }}>
-                  <EditOutlined fontSize="small" />
+                  <EditOutlined onClick={()=>{openEditDialog()}} fontSize="small" />
                 </IconButton>
               ) : null}
             </Grid>
@@ -131,7 +131,7 @@ const IntroductionCard = props => {
             </Grid>
             <Grid item xs={6} align="right">
               {props.user.userDetail && (isOwner || user.isAdmin) ? (
-                <IconButton style={{ padding: 0 }}>
+                <IconButton onClick={()=>{openEditDialog()}} style={{ padding: 0 }}>
                   <EditOutlined fontSize="small" />
                 </IconButton>
               ) : null}

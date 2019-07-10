@@ -20,6 +20,7 @@ export const GET_FOLLOWER_IN_LOAD_MORE = "get_follower_in_load_more";
 export const GET_FOLLOWING_IN_LOAD_MORE = "get_following_in_load_more";
 
 export const UPDATE_USER_MOBILE = "update_user_mobile";
+export const UPDATE_PROFILE_DESCRIPTION = "update_profile_description";
 export const UPDATE_USER_PHONE = "update_user_phone";
 export const UPDATE_USER_FAX = "update_user_fax";
 export const UPDATE_USER_WEBSITE = "update_user_website";

@@ -12,6 +12,8 @@ import LoadMoreFollowerCard from "./Card/load_more_follower";
 import LoadMoreFollowingCard from "../User/Card/load_more_following";
 import ResearchCard from "../User/Card/research";
 import ShareDialog from "../User/Dialog/share";
+import IntorductionDialog from "../User/Dialog/add_introduction";
+import UpdateResearchArea from "../User/Dialog/update_research_area";
 
 import PropTypes from "prop-types";
 
@@ -69,7 +71,9 @@ class ProfileOverview extends Component {
     loadingFollower: true,
     loadingFollowing: true,
     tabNumber: 0,
-    openShareDialog: false
+    openShareDialog: false,
+    openIntroductionDialog: false,
+    openUpdateResearchAreaDialog: false,
   };
 
   componentWillMount() {
@@ -80,65 +84,76 @@ class ProfileOverview extends Component {
     var researchId = [];
 
     this.props.dispatch(getProfileDetail(id)).then(response => {
-      following = response.payload.following;
-      followerId = response.payload.follower;
-      researchId = response.payload.research;
-      for (var key in following) {
-        followingId.push(following[key]._id);
-      }
-      console.log(response);
-      shareUrl = `${LOCALHOST}/profile/${response.payload._id}`;
+      if (response.payload) {
+        following =
+          response.payload && response.payload.following
+            ? response.payload.following
+            : [];
+        followerId =
+          response.payload && response.payload.follower
+            ? response.payload.follower
+            : [];
+        researchId =
+          response.payload && response.payload.research
+            ? response.payload.research
+            : [];
+        for (var key in following) {
+          followingId.push(following[key]._id);
+        }
+        console.log(response);
+        shareUrl = `${LOCALHOST}/profile/${response.payload._id}`;
 
-      if (following.length > 0) {
-        this.props.dispatch(getFollowing(followingId)).then(() => {
+        if (following.length > 0) {
+          this.props.dispatch(getFollowing(followingId)).then(() => {
+            this.setState({
+              loadingFollowing: false
+            });
+          });
+
+          this.props.dispatch(
+            getFollowingInLoadMore(
+              followingId,
+              this.state.followingLimit,
+              this.state.followingSkip
+            )
+          );
+        } else {
           this.setState({
             loadingFollowing: false
           });
-        });
+        }
 
-        this.props.dispatch(
-          getFollowingInLoadMore(
-            followingId,
-            this.state.followingLimit,
-            this.state.followingSkip
-          )
-        );
-      } else {
-        this.setState({
-          loadingFollowing: false
-        });
-      }
+        if (response.payload.follower.length > 0) {
+          this.props.dispatch(getFollower(followerId)).then(() => {
+            this.setState({
+              loadingFollower: false
+            });
+          });
 
-      if (response.payload.follower.length > 0) {
-        this.props.dispatch(getFollower(followerId)).then(() => {
+          this.props.dispatch(
+            getFollowerInLoadMore(
+              followerId,
+              this.state.followerLimit,
+              this.state.followerSkip
+            )
+          );
+        } else {
           this.setState({
             loadingFollower: false
           });
-        });
+        }
 
-        this.props.dispatch(
-          getFollowerInLoadMore(
-            followerId,
-            this.state.followerLimit,
-            this.state.followerSkip
-          )
-        );
-      } else {
-        this.setState({
-          loadingFollower: false
-        });
-      }
-
-      if (response.payload.research.length > 0) {
-        this.props.dispatch(getResearchForCard(researchId)).then(response => {
+        if (response.payload.research.length > 0) {
+          this.props.dispatch(getResearchForCard(researchId)).then(response => {
+            this.setState({
+              loadingResearchCard: false
+            });
+          });
+        } else {
           this.setState({
             loadingResearchCard: false
           });
-        });
-      } else {
-        this.setState({
-          loadingResearchCard: false
-        });
+        }
       }
     });
   }
@@ -378,6 +393,30 @@ class ProfileOverview extends Component {
     });
   };
 
+  handleIntroductionDialogClose = () => {
+    this.setState({
+      openIntroductionDialog: false
+    });
+  };
+
+  handleIntroductionDialogOpen = () => {
+    this.setState({
+      openIntroductionDialog: true
+    });
+  };
+
+  handleUpdateResearchAreaDialogClose = () => {
+    this.setState({
+      openUpdateResearchAreaDialog: false
+    });
+  };
+
+  handleUpdateResearchAreaDialogOpen = () => {
+    this.setState({
+      openUpdateResearchAreaDialog: true
+    });
+  };
+
   changeTab = tabNumber => {
     this.setState({
       tabNumber
@@ -407,15 +446,18 @@ class ProfileOverview extends Component {
           this.handleShareDialogOpen();
         }}
       >
-        <Grid container style={{paddingTop: "24px"}}>
+        <Grid container style={{ paddingTop: "24px" }}>
           <Grid item xs sm={1} lg={2} md={1} />
           <Grid item xs={10} sm={10} lg={8} md={10}>
-            <Grid container spacing={24} >
+            <Grid container spacing={24}>
               <Grid item xs={12} lg={7} sm={12} md={6}>
                 <Grid container spacing={24}>
-                  <IntroductionCard {...this.props} />
+                  <IntroductionCard
+                    props={this.props}
+                    openEditDialog={() => this.handleIntroductionDialogOpen()}
+                  />
 
-                  <ResearchaAreaCard {...this.props} />
+                  <ResearchaAreaCard props={this.props} runOpenUpdateDialog={()=>{this.handleUpdateResearchAreaDialogOpen()}} />
                   <Grid item xs={12}>
                     <MiniStatsCard {...this.props} />
                   </Grid>
@@ -467,64 +509,59 @@ class ProfileOverview extends Component {
         </Grid>
 
         {
-        //   <Grid container spacing={24} style={{ margin: "8px" }}>
-        //   <Hidden only="sm">
-        //     <Grid item md={1} lg />
-        //   </Hidden>
-        //   <Grid item xs={12} lg={4} sm={6} md={5}>
-        //     <Grid container spacing={24}>
-        //       <IntroductionCard {...this.props} />
-
-        //       <ResearchaAreaCard {...this.props} />
-        //       <Grid item xs={12}>
-        //         <MiniStatsCard {...this.props} />
-        //       </Grid>
-
-        //       <ResearchCard
-        //         userData={this.props.user.userData}
-        //         userDetail={this.props.user.userDetail}
-        //         userResearch={this.props.research.userResearch}
-        //         props={this.props}
-        //         loading={this.state.loadingResearchCard}
-        //       />
-        //     </Grid>
-        //   </Grid>
-
-        //   <Grid item xs={12} lg={3} sm={6} md={5}>
-        //     <Grid container spacing={24}>
-        //       <Grid item xs={12}>
-        //         <AffiliationCard {...this.props} />
-        //       </Grid>
-
-        //       <Grid item xs={12}>
-        //         <FollowerCard
-        //           userData={this.props.user.userData}
-        //           userDetail={this.props.user.userDetail}
-        //           userFollower={this.props.user.follower}
-        //           runFollow={id => this.followUser(id)}
-        //           runUnfollow={id => this.unfollowUser(id)}
-        //           runSeeAllFollower={id => this.seeAllFollower(id)}
-        //           loading={this.state.loadingFollower}
-        //         />
-        //       </Grid>
-
-        //       <Grid item xs={12}>
-        //         <FollowingCard
-        //           userData={this.props.user.userData}
-        //           userDetail={this.props.user.userDetail}
-        //           userFollowing={this.props.user.following}
-        //           runFollow={id => this.followUser(id)}
-        //           runUnfollow={id => this.unfollowUser(id)}
-        //           runSeeAllFollowing={id => this.seeAllFollowing(id)}
-        //           loading={this.state.loadingFollowing}
-        //         />
-        //       </Grid>
-        //     </Grid>
-        //   </Grid>
-        //   <Hidden only="sm">
-        //     <Grid item xs md={1} lg />
-        //   </Hidden>
-        // </Grid>
+          //   <Grid container spacing={24} style={{ margin: "8px" }}>
+          //   <Hidden only="sm">
+          //     <Grid item md={1} lg />
+          //   </Hidden>
+          //   <Grid item xs={12} lg={4} sm={6} md={5}>
+          //     <Grid container spacing={24}>
+          //       <IntroductionCard {...this.props} />
+          //       <ResearchaAreaCard {...this.props} />
+          //       <Grid item xs={12}>
+          //         <MiniStatsCard {...this.props} />
+          //       </Grid>
+          //       <ResearchCard
+          //         userData={this.props.user.userData}
+          //         userDetail={this.props.user.userDetail}
+          //         userResearch={this.props.research.userResearch}
+          //         props={this.props}
+          //         loading={this.state.loadingResearchCard}
+          //       />
+          //     </Grid>
+          //   </Grid>
+          //   <Grid item xs={12} lg={3} sm={6} md={5}>
+          //     <Grid container spacing={24}>
+          //       <Grid item xs={12}>
+          //         <AffiliationCard {...this.props} />
+          //       </Grid>
+          //       <Grid item xs={12}>
+          //         <FollowerCard
+          //           userData={this.props.user.userData}
+          //           userDetail={this.props.user.userDetail}
+          //           userFollower={this.props.user.follower}
+          //           runFollow={id => this.followUser(id)}
+          //           runUnfollow={id => this.unfollowUser(id)}
+          //           runSeeAllFollower={id => this.seeAllFollower(id)}
+          //           loading={this.state.loadingFollower}
+          //         />
+          //       </Grid>
+          //       <Grid item xs={12}>
+          //         <FollowingCard
+          //           userData={this.props.user.userData}
+          //           userDetail={this.props.user.userDetail}
+          //           userFollowing={this.props.user.following}
+          //           runFollow={id => this.followUser(id)}
+          //           runUnfollow={id => this.unfollowUser(id)}
+          //           runSeeAllFollowing={id => this.seeAllFollowing(id)}
+          //           loading={this.state.loadingFollowing}
+          //         />
+          //       </Grid>
+          //     </Grid>
+          //   </Grid>
+          //   <Hidden only="sm">
+          //     <Grid item xs md={1} lg />
+          //   </Hidden>
+          // </Grid>
         }
 
         <Dialog
@@ -679,6 +716,30 @@ class ProfileOverview extends Component {
               : ""
           }
         />
+        <IntorductionDialog
+          open={this.state.openIntroductionDialog}
+          profileDescription={
+            this.props.user &&
+            this.props.user &&
+            this.props.user.userDetail &&
+            this.props.user.userDetail.profileDescription
+              ? this.props.user.userDetail.profileDescription
+              : ""
+          }
+          close={() => this.handleIntroductionDialogClose()}
+        />
+        <UpdateResearchArea
+          open={this.state.openUpdateResearchAreaDialog}
+          researchArea={
+            this.props.user &&
+            this.props.user.userDetail &&
+            this.props.user.userDetail.researchArea
+              ? this.props.user.userDetail.researchArea
+              : ""
+          }
+          close={() => this.handleUpdateResearchAreaDialogClose()}
+        />
+        {console.log(this.props.user)}
       </ProfileHeader>
     );
   }

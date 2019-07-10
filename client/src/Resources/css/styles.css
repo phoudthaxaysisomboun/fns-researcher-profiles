@@ -161,6 +161,17 @@ canvas {
 .MuiDrawer-paperAnchorDockedLeft-185  {
   border: 0 !important
 }
+.MuiDrawer-paperAnchorDockedLeft-142  {
+  border: 0 !important
+}
 .MuiTab-textColorPrimary-1820.MuiTab-selected-1822  {
   border-radius: 23px
+}
+.MuiDrawer-paperAnchorLeft-182  {
+  border: 0 !important
+}
+
+
+.MuiInputBase-input-128 .MuiOutlinedInput-input-472 .UpdateResearchArea-input-389 {
+  padding: 8px
 }

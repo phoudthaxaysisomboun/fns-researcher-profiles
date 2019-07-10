@@ -61,7 +61,8 @@ import {
   GET_ALL_RESEARCHERS_LISTS_REPORTS,
   CLEAR_ALL_RESEARCHERS_LISTS_REPORTS,
   GET_OUTSTANDING_REPORTS,
-  GET_NEWCOMER_REPORTS
+  GET_NEWCOMER_REPORTS,
+  UPDATE_PROFILE_DESCRIPTION
 } from "../actions/types";
 
 import moment from "moment";
@@ -149,6 +150,14 @@ export default function(state = {}, action) {
         userDetail: {
           ...state.userDetail,
           phone: action.payload.phone
+        }
+      };
+    case UPDATE_PROFILE_DESCRIPTION:
+      return {
+        ...state,
+        userDetail: {
+          ...state.userDetail,
+          profileDescription: action.payload.profileDescription
         }
       };
     case UPDATE_USER_FAX:

@@ -51,7 +51,7 @@ const ProfileCard = ({ resercher, user, runFollow,runUnfollow }) => {
     let researchArealabel = [];
     let list = "";
     researchArea.map((value, index, array) => {
-      researchArealabel.push(value.label);
+      researchArealabel.push(value);
     });
     list = researchArealabel.join(" • ");
     console.log(list);
@@ -228,7 +228,7 @@ const ProfileCard = ({ resercher, user, runFollow,runUnfollow }) => {
                                   marginTop: "4px"
                                 }}
                               >
-                                ຂົງເຂດການຄົ້ນຄວ້າ
+                              ຫົວຂໍ້ການຄົ້ນຄ້ວາ
                               </Typography>
                               <>
                                 {renderResearchArea(

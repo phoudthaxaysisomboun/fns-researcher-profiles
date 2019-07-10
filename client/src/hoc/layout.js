@@ -83,6 +83,12 @@ const styles = theme => ({
       display: "block"
     }
   },
+  logo: {
+    display: "none",
+    [theme.breakpoints.up("sm")]: {
+      display: "block"
+    }
+  },
   search: {
     position: "relative",
     borderRadius: theme.shape.borderRadius,
@@ -192,7 +198,7 @@ const styles = theme => ({
   drawer: {
     width: drawerWidth,
     flexShrink: 0,
-    border: 0
+    border: "'0' !importabt"
   },
   drawerPaper: {
     width: drawerWidth
@@ -249,6 +255,7 @@ class Layout extends Component {
     headerclass: "",
     openManageToolMenu: true,
     openReportsToolMenu: true,
+    showHeader: false
   };
 
   handleDrawerOpen = () => {
@@ -293,6 +300,11 @@ class Layout extends Component {
 
   handleScroll = event => {
     let scroll = window.pageYOffset;
+    if (scroll >= 232) {
+      this.setState({showHeader: true})
+    } else {
+      this.setState({showHeader: false})
+    }
     if (scroll > 0) {
       this.setState({ headerclass: "active" });
     } else {
@@ -656,13 +668,18 @@ class Layout extends Component {
                         >
                           <MenuIcon />
                         </IconButton>
+                        <Link
+                    to="/"
+                    style={{ textDecoration: "none", color: "inherit" }}
+                  >
                         <embed
-            height="24px"
-            width="24px"
-            style={{ marginBottom: "0", flexGrow: 0, paddingRight: "12px", paddingTop: "4px", paddingBottom: "12px" }}
+                        className={classes.logo}
+            height="28"
+            width="28"
+            style={{ marginBottom: "0", flexGrow: 0, paddingRight: "8px", paddingBottom: "6px" }}
             type="image/svg+xml"
             src="/images/fns.svg"
-          />
+          /></Link>
                   </>
                 ) : null}
                 {!this.props.location.pathname.startsWith("/search") ? (
@@ -738,25 +755,30 @@ class Layout extends Component {
                       </Grid>
 
                       <Grid item xs={8} alignContent="center">
+                      {
+                        this.state.showHeader ?
                         <Link
                           to="/"
                           style={{ textDecoration: "none", color: "inherit" }}
                         >
-                          {
-                          //   <Typography
-                          //   variant="h6"
-                          //   color="inherit"
-                          //   style={{
-                          //     textAlign: "center",
-                          //     fontWeight: "bold",
-                          //     fontFamily: "'Roboto', sans serif"
-                          //   }}
-                          //   noWrap
-                          // >
-                          //   FNS Researcher Profiles
-                          // </Typography>
-                          }
+                          
+                            <Typography
+                            variant="h6"
+                            color="inherit"
+                            style={{
+                              textAlign: "center",
+                              fontWeight: "bold",
+                              fontFamily: "'Roboto', sans serif"
+                            }}
+                            noWrap
+                          >
+                            FNS Researcher Profiles
+                          </Typography>
+                          
                         </Link>
+                        : null
+                      }
+                        
                       </Grid>
 
                       <Grid item xs={2} align="right">

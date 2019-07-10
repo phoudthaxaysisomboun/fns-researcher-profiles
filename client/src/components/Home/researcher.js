@@ -114,7 +114,7 @@ class ResearcherSearch extends Component {
           changeToResearcher = {()=>this.handleToggleResearcherTab()}
           changeToResearch = {()=>this.handleToggleResearchTab()}
         >
-          <Grid container spacing={8}>
+          <Grid container >
             <Grid item xs sm lg md />
             <Grid item xs={11} sm={11} lg={5} md={8}>
               <Grid container justify="center">

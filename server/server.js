@@ -2282,6 +2282,7 @@ app.get("/api/researchers/profiles_by_id", (req, res) => {
       options: { sort: { city: 1 } }
     })
     .exec((err, docs) => {
+      if (err) {console.log(err)}
       return res.status(200).send(docs);
     });
 });
@@ -2397,6 +2398,7 @@ app.post("/api/researchers/follow", auth, (req, res) => {
           new: true
         },
         (err, doc) => {
+          
           if (err) return res.json({ success: false, err });
           res.status(200).json(doc.following);
         }
@@ -2919,6 +2921,27 @@ app.post("/api/researchers/update_gender", auth, (req, res) => {
       res.status(200).json({
         success: true,
         gender: doc.gender
+      });
+    });
+});
+
+app.post("/api/researchers/update_introduction", auth, (req, res) => {
+  User.findOneAndUpdate(
+    { _id: req.query.userId },
+    {
+      $set: {
+        profileDescription: req.query.profileDescription
+      }
+    },
+    {
+      new: true
+    }
+  )
+    .exec((err, doc) => {
+      if (err) return res.json({ success: false, err });
+      res.status(200).json({
+        success: true,
+        profileDescription: doc.profileDescription
       });
     });
 });

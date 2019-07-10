@@ -63,7 +63,8 @@ import {
   GET_ALL_RESEARCHERS_LISTS_REPORTS,
   CLEAR_ALL_RESEARCHERS_LISTS_REPORTS,
   GET_OUTSTANDING_REPORTS,
-  GET_NEWCOMER_REPORTS
+  GET_NEWCOMER_REPORTS,
+  UPDATE_PROFILE_DESCRIPTION
 } from "./types";
 
 import {
@@ -292,6 +293,17 @@ export function updateMobile(_id, mobile) {
 
   return {
     type: UPDATE_USER_MOBILE,
+    payload: request
+  };
+}
+
+export function updateProfileDescription(_id, profileDescription) {
+  const request = axios
+    .post(`${RESEARCHER_SERVER}/update_introduction?userId=${_id}&profileDescription=${profileDescription}`)
+    .then(response => response.data);
+
+  return {
+    type: UPDATE_PROFILE_DESCRIPTION,
     payload: request
   };
 }
