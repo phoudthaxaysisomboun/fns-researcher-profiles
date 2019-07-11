@@ -175,3 +175,11 @@ canvas {
 .MuiInputBase-input-128 .MuiOutlinedInput-input-472 .UpdateResearchArea-input-389 {
   padding: 8px
 }
+
+.UpdateResearchArea-input-389 {
+  padding: 8px !important
+}
+
+.UpdateResearchArea-valueContainer-946 {
+  padding: 8px !important
+}

@@ -62,7 +62,9 @@ import {
   CLEAR_ALL_RESEARCHERS_LISTS_REPORTS,
   GET_OUTSTANDING_REPORTS,
   GET_NEWCOMER_REPORTS,
-  UPDATE_PROFILE_DESCRIPTION
+  UPDATE_PROFILE_DESCRIPTION,
+  GET_RESEARCH_AREA,
+  UPDATE_RESEARCHER_RESEARCH_AREA
 } from "../actions/types";
 
 import moment from "moment";
@@ -555,6 +557,19 @@ export default function(state = {}, action) {
         ...state,
         allResearchersListsReports: action.payload,
         allResearchersListsReportsCount: action.payload
+      };
+    case GET_RESEARCH_AREA:
+      return {
+        ...state,
+        researchAreas: action.payload
+      };
+    case UPDATE_RESEARCHER_RESEARCH_AREA:
+      return {
+        ...state,
+        userDetail: {
+          ...state.userDetail,
+          researchArea: action.payload
+        }
       };
     default:
       return state;

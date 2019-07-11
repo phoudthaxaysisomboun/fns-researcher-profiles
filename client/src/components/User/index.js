@@ -100,7 +100,6 @@ class ProfileOverview extends Component {
         for (var key in following) {
           followingId.push(following[key]._id);
         }
-        console.log(response);
         shareUrl = `${LOCALHOST}/profile/${response.payload._id}`;
 
         if (following.length > 0) {
@@ -737,9 +736,23 @@ class ProfileOverview extends Component {
               ? this.props.user.userDetail.researchArea
               : ""
           }
+          userId={
+            this.props.user &&
+            this.props.user.userDetail &&
+            this.props.user.userDetail._id
+              ? this.props.user.userDetail._id
+              : ""
+          }
+          researchAreas={
+            this.props.user &&
+            this.props.user.researchAreas
+              ? this.props.user.researchAreas
+              : ""
+          }
+
+
           close={() => this.handleUpdateResearchAreaDialogClose()}
         />
-        {console.log(this.props.user)}
       </ProfileHeader>
     );
   }

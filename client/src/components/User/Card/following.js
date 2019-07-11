@@ -108,7 +108,6 @@ const FollowingCard = ({
     <div>
       {userFollowing ? (
         <div>
-          {console.log("test".toColor())}
           {userFollowing.map(followings => (
             <div key={followings._id}>
               <Grid container spacing={0} style={{ padding: "16px" }}>

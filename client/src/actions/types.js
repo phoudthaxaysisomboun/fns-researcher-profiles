@@ -7,6 +7,7 @@ export const CLEAR_USER_DETAIL = "clear_user_detail";
 export const GET_PROVINCE = "get_province";
 export const GET_DISTRICT = "get_district";
 export const GET_COUNTRY = "get_country";
+export const GET_RESEARCH_AREA = "get_research_area";
 
 export const GET_FOLLOWING = "get_following";
 export const GET_FOLLOWER = "get_follower";
@@ -32,6 +33,7 @@ export const UPDATE_USER_PLACE_OF_BIRTH = "update_user_place_of_birth";
 export const UPDATE_USER_NATIONALITY = "update_user_nationality";
 export const UPDATE_USER_MINOR_ETHNICITY = "update_user_minor_ethnicity";
 export const ADD_EDUCATION = "add_education";
+export const UPDATE_RESEARCHER_RESEARCH_AREA = "UPDATE_RESEARCHER_RESEARCH_AREA";
 export const UPDATE_EDUCATION = "update_education";
 export const REMOVE_EDUCATION = "remove_education";
 

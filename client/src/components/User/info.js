@@ -650,8 +650,12 @@ class ProfileInfo extends Component {
          
       <Grid item xs={12} lg={7} sm={12} md={6}>
             <Grid container spacing={24}>
-              <IntroductionCard {...this.props} />
-              <ResearchaAreaCard {...this.props} />
+            <IntroductionCard
+            props={this.props}
+            openEditDialog={() => this.handleIntroductionDialogOpen()}
+          />
+          <ResearchaAreaCard props={this.props} runOpenUpdateDialog={()=>{this.handleUpdateResearchAreaDialogOpen()}} />
+             
 
               <PersonalInfoCard
                 props={this.props}

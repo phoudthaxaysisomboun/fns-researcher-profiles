@@ -85,8 +85,6 @@ class AddIntroductionDialogue extends Component {
   componentDidUpdate(prevProps, prevState) {
       if (prevProps.profileDescription !== this.props.profileDescription) {
         const newFormData = {...this.state.formdata}
-
-        console.log(newFormData)
         
         newFormData["description"].value = this.props.profileDescription
         this.setState({
@@ -151,18 +149,6 @@ class AddIntroductionDialogue extends Component {
     });
   };
 
-  componentWillReceiveProps() {
-    // const formdata = this.state.formdata;
-    // const newFormdata = populateOptionFields(
-    //   formdata,
-    //   this.props.country,
-    //   "country"
-    // );
-
-    // this.updateFields(newFormdata);
-    console.log(this.props)
-  }
-
   componentWillMount() {
       
   }
@@ -181,7 +167,6 @@ class AddIntroductionDialogue extends Component {
             )
           )
           .then(response => {
-            console.log(this.state.formdata);
             if (response.payload.success) {
               this.setState({
                 formError: false,
@@ -251,7 +236,7 @@ class AddIntroductionDialogue extends Component {
                   <Typography
                   variant="inherit"
                     style={{
-                      fontFamily: "'Noto Sans Lao UI', sans serif",
+            
                       
                       color: "rgb(102, 102, 102)"
                     }}

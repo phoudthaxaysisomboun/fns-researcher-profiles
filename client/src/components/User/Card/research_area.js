@@ -58,7 +58,7 @@ const ResearchaAreaCard = ({props, runOpenUpdateDialog}) => {
           ) : null}
         </Grid>
       </Grid>
-        <Grid container style={{ padding: "16px" }}>
+        <Grid container style={{ padding: "16px", paddingTop: 0 }}>
         {
           props.user.userDetail && props.user.userDetail.researchArea.length !== 0 ? 
           <>
@@ -111,20 +111,19 @@ const ResearchaAreaCard = ({props, runOpenUpdateDialog}) => {
           
         </Grid>
       </Grid>
-        <Grid container style={{ padding: "16px" }}>
+        <Grid container style={{ padding: "16px", paddingTop: 0 }}>
         {
-          
-            profile.researchArea.map((data, i) => {
-              return (
-                <Chip
-                  key={i}
-                  label={data.label}
-                  variant="outlined"
-                  style={{ fontSize: "14px", margin: "4px" }}
-                />
-              );
-            })
-          }
+          profile.researchArea.map((data, i) => {
+            return (
+              <Chip
+                key={i}
+                label={data}
+                variant="outlined"
+                style={{ fontSize: "14px", margin: "4px" }}
+              />
+            );
+          })
+        }
         </Grid>
       </Paper>
       </Grid>

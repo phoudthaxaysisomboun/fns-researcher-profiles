@@ -8,15 +8,13 @@ import Select from "react-select";
 import { withStyles } from "@material-ui/core/styles";
 import NoSsr from "@material-ui/core/NoSsr";
 
-import Dropzone from "react-dropzone";
-// import { useDropzone } from "react-dropzone";
+import {getResearchArea} from "../../../actions/user_actions"
 
-import moment from "moment";
 import {
   update,
   generateData,
   isFormValid,
-  populateOptionFields
+  populateOptionFields,
 } from "../../utils/Form/formActions";
 import {
   FormControl,
@@ -45,7 +43,7 @@ import {
   DescriptionOutlined
 } from "@material-ui/icons";
 
-// import { getCountry } from "../../../actions/user_actions";
+import { updateResearchArea } from "../../../actions/user_actions";
 import {
   getResearchType,
   getPublicationType
@@ -53,55 +51,16 @@ import {
 
 import { connect } from "react-redux";
 
-const suggestions = [
-  { label: "ພຸດທະໄຊ ສີສົມບູນ" },
-  { label: "ສົມສັກ ອິນທະສອນ" },
-  { label: "Nicolas Pasquier" },
-  { label: "Andrea G. B. Tettamanzi" },
-  { label: "Celia da Costa Pereira" },
-  { label: "Andorra" },
-  { label: "Angola" },
-  { label: "Anguilla" },
-  { label: "Antarctica" },
-  { label: "Antigua and Barbuda" },
-  { label: "Argentina" },
-  { label: "Armenia" },
-  { label: "Aruba" },
-  { label: "Australia" },
-  { label: "Austria" },
-  { label: "Azerbaijan" },
-  { label: "Bahamas" },
-  { label: "Bahrain" },
-  { label: "Bangladesh" },
-  { label: "Barbados" },
-  { label: "Belarus" },
-  { label: "Belgium" },
-  { label: "Belize" },
-  { label: "Benin" },
-  { label: "Bermuda" },
-  { label: "Bhutan" },
-  { label: "Bolivia, Plurinational State of" },
-  { label: "Bonaire, Sint Eustatius and Saba" },
-  { label: "Bosnia and Herzegovina" },
-  { label: "Botswana" },
-  { label: "Bouvet Island" },
-  { label: "Brazil" },
-  { label: "British Indian Ocean Territory" },
-  { label: "Brunei Darussalam" }
-].map(suggestion => ({
-  value: suggestion.label,
-  label: suggestion.label
-}));
+let suggestions = []
 
 const styles = theme => ({
   root: {
     flexGrow: 1,
-    marginTop: "16px",
-    
+    marginTop: "16px"
   },
   input: {
     display: "flex",
-    padding: 0
+    padding: "8px"
   },
   valueContainer: {
     display: "flex",
@@ -150,8 +109,9 @@ function NoOptionsMessage(props) {
       color="textSecondary"
       className={props.selectProps.classes.noOptionsMessage}
       {...props.innerProps}
+      style={{fontFamily: "'Noto Sans Lao UI', sans serif"}}
     >
-      {props.children}
+      ບໍ່ມີຂໍ້ມູນໃຫ້ເລືອກ, ກະລຸນາພິມສີ່ງທີ່ທ່ານຕ້ອງການຈະເພີ່ມ
     </Typography>
   );
 }
@@ -160,10 +120,18 @@ function inputComponent({ inputRef, ...props }) {
   return <div ref={inputRef} {...props} />;
 }
 
+const handleInputChanged = (event) => {
+  const length = this.props.researchAreas.length
+  suggestions[length] ={value: event.target.value, label: event.target.value}
+  console.log(event.target.value)
+  console.log(length)
+}
+
 function Control(props) {
   return (
     <TextField
       fullWidth
+      onChange={(event)=>{handleInputChanged(event)}}
       InputProps={{
         inputComponent,
         inputProps: {
@@ -243,6 +211,7 @@ function Menu(props) {
   return (
     <Paper
       square
+      style={{position: "relative"}}
       className={props.selectProps.classes.paper}
       {...props.innerProps}
     >
@@ -271,41 +240,45 @@ class UpdateResearchArea extends Component {
     formError: false,
     formErrorMessage: "ມີບາງຂໍ້ມູນບໍ່ຖືກຕ້ອງກະລຸນາກວດສອບຂໍ້ມູນຄືນ",
     formSuccess: false,
-    formdata: {
-     
-        
-    }
+    formdata: {}
   };
-
-
-  
 
   handleChange = name => value => {
     this.setState({
       [name]: value
     });
 
-    console.log(this.state.multi)
+    
   };
 
-  
   componentDidUpdate(prevProps, prevState) {
-    let multi = []
+    let multi = [];
     if (prevProps.researchArea !== this.props.researchArea) {
-        this.props.researchArea.map((value)=>{
-            multi.push({value: value, label: value})
-            return null
-        })
-        this.setState({
-            multi
-          });
+      this.props.researchArea.map(value => {
+        multi.push({ value: value, label: value });
+        return null;
+      });
+      this.setState({
+        multi
+      });
     }
 
-    
+    console.log(this.props)
+
+    if (prevProps.researchAreas !== this.props.researchAreas) {
+      if (this.props.researchAreas) {
+        this.props.researchAreas.map((value, index)=>{
+          suggestions.push({value: value.name, label: value.name })
+          return null
+        })
+        
+      }
+      console.log(suggestions)
+    }
   }
 
   updateForm = element => {
-    const newFormdata = update(element, this.state.formdata, "addEducation");
+    const newFormdata = update(element, this.state.formdata, "updateResearchArea");
     this.setState({
       formError: false,
       formdata: newFormdata
@@ -318,24 +291,30 @@ class UpdateResearchArea extends Component {
     });
   };
 
-  componentWillReceiveProps() {
-    // const formdata2 = this.state.formdata;
-    // const newFormdata2 = populateOptionFields(
-    //     formdata2,
-    //   this.props.research.publicationType,
-    //   "publicationType"
-    // );
-    // this.updateFields(newFormdata2);
+  componentWillMount() {
+    console.log(suggestions)
+    this.props.dispatch(getResearchArea())
   }
 
   submitForm = event => {
     event.preventDefault();
-    let formIsValid = isFormValid(this.state.formdata, "addEducation");
+    let formIsValid =   isFormValid(this.state.formdata, "");
+    const researchArea = []
+    this.state.multi.map((value)=>{
+      researchArea.push(value.value)
+      return null
+    })
+
+    this.props.dispatch(updateResearchArea(this.props.userId, researchArea)).then((response)=>{
+      this.props.close();
+    })
+
+    console.log(researchArea)
 
     if (formIsValid & !this.state.formError) {
       // this.props
       //   .dispatch(
-      //     addEducation(
+      //     updateResearchArea(
       //       this.props.profile._id,
       //       institution,
       //       fieldOfStudy,
@@ -397,7 +376,7 @@ class UpdateResearchArea extends Component {
           font: "inherit"
         },
 
-        padding: "16px"
+        padding: "8px"
       })
     };
 
@@ -461,6 +440,20 @@ class UpdateResearchArea extends Component {
               //   </Grid>
               // </Grid>
             }
+            <Grid container spacing={24}>
+                <Grid item xs={12}>
+                  <Typography
+                  variant="inherit"
+                    style={{
+            
+                      
+                      color: "rgb(102, 102, 102)"
+                    }}
+                  >
+                    ຕື່ມຂໍ້ມູນກ່ຽວກັບຫົວຂໍ້ທີ່ທ່ານກໍາລັງຄົ້ນຄວ້າ, ສິ່ງທີ່ທ່ານມີຄວາມສົນໃຈໃນການຄົ້ນຄວ້າ ຫລື ຂົງເຂດໃນການຄົ້ນຄວ້າຂອງທ່ານ
+                  </Typography>
+                </Grid>
+              </Grid>
 
             <div className={classes.root}>
               <NoSsr>
@@ -468,13 +461,12 @@ class UpdateResearchArea extends Component {
                   classes={classes}
                   styles={selectStyles}
                   textFieldProps={{
-                    label: "ນັກຄົ້ນຄວ້າ",
+                    label: "ຫົວຂໍ້ການຄົ້ນຄວ້າ",
                     InputLabelProps: {
-                      shrink: true,
-                     
+                      shrink: true
                     },
                     variant: "outlined",
-                    
+                  
                   }}
                   options={suggestions}
                   components={components}

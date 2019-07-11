@@ -102,7 +102,7 @@ app.get("/api/users/countries", (req, res) => {
 //====================================
 
 app.post("/api/research/research_area", auth, admin, (req, res) => {
-  const researchArea = new ResearchArea(req.body);
+  const researchArea = new ResearchArea({name: req.query.name});
 
   researchArea.save((err, doc) => {
     if (err) return res.json({ success: false, err });
@@ -114,10 +114,13 @@ app.post("/api/research/research_area", auth, admin, (req, res) => {
 });
 
 app.get("/api/research/research_areas", (req, res) => {
-  ResearchArea.find({}, (err, researchAreas) => {
+  ResearchArea.find({}).sort([['name', 'asc']]).exec((err, doc)=>{
     if (err) return res.status(400).send(err);
-    res.status(200).send(researchAreas);
-  });
+    res.status(200).send(doc);
+  })
+
+
+  
 });
 
 //====================================
@@ -3451,6 +3454,34 @@ app.post("/api/research/remove_like", auth, (req, res) => {
     (err, doc) => {
       if (err) return res.json({ success: false, err });
       res.status(200).json({ success: true });
+    }
+  );
+});
+
+
+app.post("/api/researchers/addResearchArea", auth, (req, res) => {
+
+  let items = req.query.researchArea;
+
+  let researchArea = req.query.researchArea.split(",");
+  items = [];
+  items = researchArea.map(item => {
+    return item
+  });
+  
+  User.findOneAndUpdate(
+    { _id: req.query.userId },
+    {
+      $set: {
+        researchArea: items
+      }
+    },
+    { 
+      new: true
+    },
+    (err, doc) => {
+      if (err) return res.json({ success: false, err });
+      res.status(200).json(doc.researchArea);
     }
   );
 });

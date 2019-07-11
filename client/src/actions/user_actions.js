@@ -64,13 +64,16 @@ import {
   CLEAR_ALL_RESEARCHERS_LISTS_REPORTS,
   GET_OUTSTANDING_REPORTS,
   GET_NEWCOMER_REPORTS,
-  UPDATE_PROFILE_DESCRIPTION
+  UPDATE_PROFILE_DESCRIPTION,
+  GET_RESEARCH_AREA,
+  UPDATE_RESEARCHER_RESEARCH_AREA
 } from "./types";
 
 import {
   USER_SERVER,
   RESEARCHER_SERVER,
-  RESEARCHER_PROFILES_SERVER
+  RESEARCHER_PROFILES_SERVER,
+  RESEARCH_SERVER
 } from "../components/utils/misc";
 
 export function loginUser(dataToSubmit) {
@@ -816,6 +819,30 @@ export function cancelUsers(id) {
 
   return {
     type: CANCEL_USER,
+    payload: request
+  };
+}
+
+export function getResearchArea() {
+  // console.log(`${RESEARCHER_SERVER}/like?researchId=${_id}`)
+  const request = axios
+    .get(`${RESEARCH_SERVER}/research_areas`)
+    .then(response => response.data);
+
+  return {
+    type: GET_RESEARCH_AREA,
+    payload: request
+  };
+}
+
+export function updateResearchArea(userId, researchArea) {
+  // console.log(`${RESEARCHER_SERVER}/like?researchId=${_id}`)
+  const request = axios
+    .post(`${RESEARCHER_SERVER}/addResearchArea?userId=${userId}&researchArea=${researchArea}`)
+    .then(response => response.data);
+
+  return {
+    type: UPDATE_RESEARCHER_RESEARCH_AREA,
     payload: request
   };
 }

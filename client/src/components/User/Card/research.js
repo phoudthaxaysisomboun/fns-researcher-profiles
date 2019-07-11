@@ -352,7 +352,7 @@ const ResearchCard = ({ userData, userDetail, userResearch, loading }) => {
                               displayType={"text"}
                               thousandSeparator={true}
                             />
-                            {console.log(researches.reads)}
+                     
                             &nbsp;
                           </div>
                           <span
