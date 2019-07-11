@@ -108,7 +108,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike }) => {
     var durationMonth = moment().diff(time, "months");
     var durationYear = moment().diff(time, "years");
 
-    console.log(durationMinutes + "nati");
+
 
     if (durationMinutes < 60) {
       return (
@@ -196,7 +196,6 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike }) => {
         </Typography>
       );
     } else if (durationYear >= 1) {
-      console.log(durationYear + " py krn");
       return (
         <Typography
           variant="inherit"
@@ -327,7 +326,6 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike }) => {
 
   const renderItems = () => (
     <Grid item xs={12}>
-      {console.log(research)}
       {userResearch ? (
         <div>
           {userResearch.map(researches => (
@@ -437,7 +435,6 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike }) => {
                     marginTop: "0"
                   }}
                 >
-                  {console.log(researches)}
                   <Grid container style={{ padding: "8px" }} wrap="nowrap">
                     <Grid
                       item
@@ -725,7 +722,6 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike }) => {
                         displayType={"text"}
                         thousandSeparator={true}
                       />
-                      {console.log(researches.reads)}
                       &nbsp;
                     </div>
                     <span style={{ fontSize: "13.5px", color: "#757575" }}>

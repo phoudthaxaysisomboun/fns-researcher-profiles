@@ -9,6 +9,8 @@ import { withStyles } from "@material-ui/core/styles";
 import NoSsr from "@material-ui/core/NoSsr";
 
 import Dropzone from "react-dropzone";
+
+import { ObjectID } from 'bson';
 // import { useDropzone } from "react-dropzone";
 
 import moment from "moment";
@@ -34,7 +36,8 @@ import {
   Checkbox,
   Chip,
   MenuItem,
-  Paper
+  Paper,
+  Avatar
 } from "@material-ui/core";
 
 import { emphasize } from "@material-ui/core/styles/colorManipulator";
@@ -42,10 +45,11 @@ import { emphasize } from "@material-ui/core/styles/colorManipulator";
 import {
   CloseOutlined,
   CancelOutlined,
-  DescriptionOutlined
+  DescriptionOutlined,
+  AccountCircleOutlined
 } from "@material-ui/icons";
 
-// import { getCountry } from "../../../actions/user_actions";
+import { getAuthorSuggestions } from "../../../actions/user_actions";
 import {
   getResearchType,
   getPublicationType
@@ -53,45 +57,9 @@ import {
 
 import { connect } from "react-redux";
 
-const suggestions = [
-  { label: "ພຸດທະໄຊ ສີສົມບູນ" },
-  { label: "ສົມສັກ ອິນທະສອນ" },
-  { label: "Nicolas Pasquier" },
-  { label: "Andrea G. B. Tettamanzi" },
-  { label: "Celia da Costa Pereira" },
-  { label: "Andorra" },
-  { label: "Angola" },
-  { label: "Anguilla" },
-  { label: "Antarctica" },
-  { label: "Antigua and Barbuda" },
-  { label: "Argentina" },
-  { label: "Armenia" },
-  { label: "Aruba" },
-  { label: "Australia" },
-  { label: "Austria" },
-  { label: "Azerbaijan" },
-  { label: "Bahamas" },
-  { label: "Bahrain" },
-  { label: "Bangladesh" },
-  { label: "Barbados" },
-  { label: "Belarus" },
-  { label: "Belgium" },
-  { label: "Belize" },
-  { label: "Benin" },
-  { label: "Bermuda" },
-  { label: "Bhutan" },
-  { label: "Bolivia, Plurinational State of" },
-  { label: "Bonaire, Sint Eustatius and Saba" },
-  { label: "Bosnia and Herzegovina" },
-  { label: "Botswana" },
-  { label: "Bouvet Island" },
-  { label: "Brazil" },
-  { label: "British Indian Ocean Territory" },
-  { label: "Brunei Darussalam" }
-].map(suggestion => ({
-  value: suggestion.label,
-  label: suggestion.label
-}));
+
+let suggestions = []
+let length = 0
 
 const styles = theme => ({
   root: {
@@ -100,7 +68,7 @@ const styles = theme => ({
   },
   input: {
     display: "flex",
-    padding: 0
+    padding: "8px"
   },
   valueContainer: {
     display: "flex",
@@ -149,8 +117,9 @@ function NoOptionsMessage(props) {
       color="textSecondary"
       className={props.selectProps.classes.noOptionsMessage}
       {...props.innerProps}
+      style={{fontFamily: "'Noto Sans Lao UI', sans serif"}}
     >
-      {props.children}
+      ບໍ່ມີຂໍ້ມູນໃຫ້ເລືອກ, ກະລຸນາພິມສີ່ງທີ່ທ່ານຕ້ອງການຈະເພີ່ມ
     </Typography>
   );
 }
@@ -159,10 +128,23 @@ function inputComponent({ inputRef, ...props }) {
   return <div ref={inputRef} {...props} />;
 }
 
+const handleInputChanged = (event) => {
+  var fullNameArr = event.target.value.split(/\s+/);
+  let name = fullNameArr.slice(0, -1).join(" ");
+  let lastname = fullNameArr.pop();
+
+  const _id  = new ObjectID();
+  
+  if (event.target.value.trim() !== "" || length > 0) {
+   suggestions[length] ={value: {_id: _id.toHexString(), name, lastname}, label: event.target.value}
+ } 
+}
+
 function Control(props) {
   return (
     <TextField
       fullWidth
+      onChange={(event)=>{handleInputChanged(event)}}
       InputProps={{
         inputComponent,
         inputProps: {
@@ -228,12 +210,18 @@ function MultiValue(props) {
   return (
     <Chip
       tabIndex={-1}
+      avatar={
+        <Avatar style={{backgroundColor: "transparent"}}>
+          <AccountCircleOutlined />
+        </Avatar>
+      }
       label={props.children}
       className={classNames(props.selectProps.classes.chip, {
         [props.selectProps.classes.chipFocused]: props.isFocused
       })}
       onDelete={props.removeProps.onClick}
       deleteIcon={<CancelOutlined {...props.removeProps} />}
+      variant="outlined"
     />
   );
 }
@@ -242,6 +230,7 @@ function Menu(props) {
   return (
     <Paper
       square
+      style={{position: "relative"}}
       className={props.selectProps.classes.paper}
       {...props.innerProps}
     >
@@ -265,11 +254,13 @@ class AddResearch extends Component {
   state = {
     single: null,
     multi: null,
+    multiForAdvisor: null,
     date: null,
     currentResearchType: "5cdb82bb27ba7c4214ef5776",
     formError: false,
     formErrorMessage: "ມີບາງຂໍ້ມູນບໍ່ຖືກຕ້ອງກະລຸນາກວດສອບຂໍ້ມູນຄືນ",
     formSuccess: false,
+    files: [],
     formdata: {
       title: {
         element: "input",
@@ -313,7 +304,7 @@ class AddResearch extends Component {
         config: {
           name: "date_of_birth_input",
           type: "date",
-          label: "ວັນທີ"
+          label: "ວັນທີ(ຕີພິມ)"
         },
         validation: {
           required: true
@@ -364,23 +355,6 @@ class AddResearch extends Component {
           type: "text",
           label: "ຊື່ງານປະຊຸມ",
           placeholder: "ຫົວຂໍ້ ຫລື ຊື່ຂອງງານປະຊຸມ"
-        },
-        validation: {
-          required: false
-        },
-        valid: false,
-        touched: false,
-        validationMessage: ""
-      },
-      file: {
-        element: "input",
-        value: "",
-        size: "",
-        config: {
-          name: "location_input",
-          type: "text",
-          label: "ສະຖານທີ່ປະຊຸມ",
-          placeholder: "ທີ່ຕັ້ງຂອງສະຖານທີ່ຈັດປະຊຸມ"
         },
         validation: {
           required: false
@@ -470,24 +444,109 @@ class AddResearch extends Component {
         valid: false,
         touched: false,
         validationMessage: ""
+      },
+      publisher: {
+        element: "input",
+        value: "",
+        config: {
+          name: "publisher_input",
+          type: "text",
+          label: "ສໍານັກພິມ",
+          placeholder: ""
+        },
+        validation: {
+          required: false
+        },
+        valid: false,
+        touched: false,
+        validationMessage: ""
+      },
+      editor: {
+        element: "input",
+        value: "",
+        config: {
+          name: "editor_input",
+          type: "text",
+          label: "ບັນນາທິການ",
+          placeholder: ""
+        },
+        validation: {
+          required: false
+        },
+        valid: false,
+        touched: false,
+        validationMessage: ""
+      },
+      edition: {
+        element: "input",
+        value: "",
+        config: {
+          name: "edition_input",
+          type: "text",
+          label: "ສະບັບ",
+          placeholder: ""
+        },
+        validation: {
+          required: false
+        },
+        valid: false,
+        touched: false,
+        validationMessage: ""
+      },
+      institution: {
+        element: "input",
+        value: "",
+        config: {
+          name: "institution_input",
+          type: "text",
+          label: "ສະຖາບັນ",
+          placeholder: ""
+        },
+        validation: {
+          required: false
+        },
+        valid: false,
+        touched: false,
+        validationMessage: ""
+      },
+      degree: {
+        element: "input",
+        value: "",
+        config: {
+          name: "degree_input",
+          type: "text",
+          label: "ລະດັບການສຶກສາ",
+          placeholder: ""
+        },
+        validation: {
+          required: false
+        },
+        valid: false,
+        touched: false,
+        validationMessage: ""
       }
     }
   };
 
   handleFileDrop = acceptedFiles => {
-    const newFormdata = {
-      ...this.state.formdata
-    };
-    newFormdata["file"].value = acceptedFiles[0].name;
-    newFormdata["file"].size = acceptedFiles[0].size;
+    let files = []
+    files[0] = {
+      name: acceptedFiles[0].name,
+      location: acceptedFiles[0].name,
+      date: moment().toDate(),
+      uploader: this.props.user._id,
+      size: acceptedFiles[0].size,
+    }
 
-    this.setState({ formdata: newFormdata });
+  
 
-    console.log(acceptedFiles[0]);
+    this.setState({ files} );
+
   };
 
   renderFields = () => {
     switch (this.state.currentResearchType) {
+      // ບົດຄວາມ
       case "5cdb82bb27ba7c4214ef5776": {
         return (
           <>
@@ -523,7 +582,7 @@ class AddResearch extends Component {
           </>
         );
       }
-      // conference paper
+      // ເອກະສານການປະຊຸມທາງວິຊາການ
       case "5d0516e447c496528476ec94": {
         return (
           <>
@@ -542,6 +601,85 @@ class AddResearch extends Component {
           </>
         );
       }
+      // ປື້ມ
+      case "5cdb830827ba7c4214ef5777": {
+        return (
+          <>
+          <Grid container>
+          <Grid item xs={4} style={{ paddingRight: "8px" }}>
+            <FormField
+              id={"publisher"}
+              formdata={this.state.formdata.publisher}
+              change={element => this.updateForm(element)}
+            />
+          </Grid>
+          <Grid
+            item
+            xs={4}
+            style={{ paddingLeft: "8px", paddingRight: "8px" }}
+          >
+            <FormField
+              id={"editor"}
+              formdata={this.state.formdata.editor}
+              change={element => this.updateForm(element)}
+              maxlength={500}
+            />
+          </Grid>
+          <Grid item xs={4} style={{ paddingLeft: "8px" }}>
+            <FormField
+              id={"edition"}
+              formdata={this.state.formdata.edition}
+              change={element => this.updateForm(element)}
+              maxlength={500}
+            />
+          </Grid>
+        </Grid>
+          </>
+        );
+      }
+      // ບົດສະເໜີໂຄງການ
+      case "5cdb835b27ba7c4214ef5778": {
+        return (
+          <>
+            <FormField
+              id={"researchProposal"}
+              formdata={this.state.formdata.institution}
+              change={element => this.updateForm(element)}
+              maxlength={500}
+            />
+            {
+            //   <FormField
+            //   id={"location"}
+            //   formdata={this.state.formdata.location}
+            //   change={element => this.updateForm(element)}
+            //   maxlength={500}
+            // />
+            }
+          </>
+        );
+      }
+      // ບົດໂຄງການຈົບຊັ້ນ
+      case "5cdb83a127ba7c4214ef5779": {
+        return (
+          <>
+            <FormField
+              id={"degree"}
+              formdata={this.state.formdata.degree}
+              change={element => this.updateForm(element)}
+              maxlength={500}
+            />
+            
+            {
+            //   <FormField
+            //   id={"location"}
+            //   formdata={this.state.formdata.location}
+            //   change={element => this.updateForm(element)}
+            //   maxlength={500}
+            // />
+            }
+          </>
+        );
+      }
       default: {
         break;
       }
@@ -553,11 +691,21 @@ class AddResearch extends Component {
       [name]: value
     });
   };
+  
+  handleChangeForAdvisor = name => value => {
+    this.setState({
+      [name]: value
+    });
+  };
+
+
 
   componentDidMount() {
     this.props.dispatch(getResearchType());
 
     this.props.dispatch(getPublicationType());
+
+    this.props.dispatch(getAuthorSuggestions());
 
     const newFormdata = {
       ...this.state.formdata
@@ -569,6 +717,19 @@ class AddResearch extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    if (prevProps.authorSuggestions !== this.props.authorSuggestions) {
+      let multi = [];
+      multi[0] = {value: this.props.user._id, label: `${this.props.user.name} ${this.props.user.lastname}`}
+      this.props.authorSuggestions.map(value => {
+        suggestions.push({ value: value._id, label: `${value.name} ${value.lastname}` });
+        return null;
+      });
+      length = multi.length
+      this.setState({
+        multi,
+        
+      });
+    }
     const prevResearchType =
       prevProps.research && prevProps.research.researchType
         ? prevProps.research.researchType
@@ -624,7 +785,7 @@ class AddResearch extends Component {
   }
 
   updateForm = element => {
-    const newFormdata = update(element, this.state.formdata, "addEducation");
+    const newFormdata = update(element, this.state.formdata, "addResearchDialog");
     this.setState({
       formError: false,
       formdata: newFormdata
@@ -649,60 +810,24 @@ class AddResearch extends Component {
 
   submitForm = event => {
     event.preventDefault();
-    let formIsValid = isFormValid(this.state.formdata, "addEducation");
+    let formIsValid = isFormValid(this.state.formdata, "addResearchDialog");
 
-    const institution = this.state.formdata.institution.value;
-    const fieldOfStudy = this.state.formdata.fieldOfStudy.value;
-    const degree = this.state.formdata.degree.value;
-    const start = moment(`01-01-${this.state.formdata.start.value}`).format(
-      "MM-DD-YYYY"
-    );
-    const end = moment(`01-01-${this.state.formdata.end.value}`).format(
-      "MM-DD-YYYY"
-    );
-    const city = this.state.formdata.city.value;
-    const country = this.state.formdata.country.value;
+    let dataToSubmit = generateData(this.state.formdata, "addResearchDialog");
 
-    if (moment(start).format("YYYY") > moment(end).format("YYYY")) {
-      this.setState({
-        formError: true,
-        formErrorMessage: "ປິເລີ່ມບໍ່ສາມາດຫລາຍກວ່າປິທີ່ສິ້ນສຸດໄດ້"
-      });
-      formIsValid = false;
-    } else if (moment(start).format("YYYY") <= moment(end).format("YYYY")) {
-      this.setState({
-        formError: false,
-        formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນທີ່ເກີດໄດ້`
-      });
-    } else if (
-      moment(start)
-        .format("YYYY")
-        .trim().length > 4 ||
-      moment(end)
-        .format("YYYY")
-        .trim().length > 4
-    ) {
-      this.setState({
-        formError: true,
-        formErrorMessage: `ຂໍອະໄພປີທີ່ທ່ານປ້ອນບໍ່ຖືກຕ້ອງ`
-      });
-      formIsValid = false;
-    }
+    console.log(dataToSubmit)
 
-    if (
-      institution.trim() !== "" &&
-      start.trim() !== "" &&
-      end.trim() !== "" &&
-      country.trim() !== "" &&
-      degree.trim() !== ""
-    ) {
-      formIsValid = true;
-    }
+    const author = []
+    this.state.multi.map((value)=>{
+      author.push(value.value)
+      return null
+    })
+
+    console.log(author)
 
     if (formIsValid & !this.state.formError) {
       // this.props
       //   .dispatch(
-      //     addEducation(
+      //     addResearchDialog(
       //       this.props.profile._id,
       //       institution,
       //       fieldOfStudy,
@@ -781,7 +906,7 @@ class AddResearch extends Component {
         onClose={() => this.props.close()}
         aria-labelledby="max-width-dialog-title"
         fullWidth={true}
-        maxWidth="sm"
+        maxWidth="md"
       >
         <DialogTitle style={{ padding: 0 }}>
           <Grid container>
@@ -885,7 +1010,7 @@ class AddResearch extends Component {
               </NoSsr>
             </div>
 
-            {this.state.formdata.file.value.trim() !== "" ? (
+            {this.state.files.length > 0 ? (
               <>
                 <Paper
                   style={{
@@ -905,13 +1030,13 @@ class AddResearch extends Component {
                     </Grid>
                     <Grid item xs align="left">
                       <Typography variant="inherit" style={{ fontWeight: 600 }}>
-                        {this.state.formdata.file.value}
+                        {this.state.files[0].name}
                       </Typography>
                       <Typography
                         variant="inherit"
                         style={{ fontSize: "12px" }}
                       >
-                        {this.state.formdata.file.size} bytes
+                        {this.state.files[0].size} bytes
                       </Typography>
                     </Grid>
 
@@ -957,6 +1082,34 @@ class AddResearch extends Component {
             />
 
             {this.renderFields()}
+
+            {
+              this.state.formdata.researchType.value === "5cdb83a127ba7c4214ef5779" ?
+
+              <div className={classes.root}>
+              <NoSsr>
+                <Select
+                  classes={classes}
+                  styles={selectStyles}
+                  textFieldProps={{
+                    label: "ທີ່ປຶກສາ",
+                    InputLabelProps: {
+                      shrink: true
+                    },
+                    variant: "outlined"
+                  }}
+                  options={suggestions}
+                  components={components}
+                  value={this.state.multiForAdvisor}
+                  onChange={this.handleChangeForAdvisor("multiForAdvisor")}
+                  placeholder=""
+                  isMulti
+                />
+              </NoSsr>
+            </div>
+
+              : null
+            }
 
             {this.state.formError ? (
               <Grid container spacing={24}>

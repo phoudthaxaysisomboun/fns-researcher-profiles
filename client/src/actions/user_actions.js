@@ -66,7 +66,8 @@ import {
   GET_NEWCOMER_REPORTS,
   UPDATE_PROFILE_DESCRIPTION,
   GET_RESEARCH_AREA,
-  UPDATE_RESEARCHER_RESEARCH_AREA
+  UPDATE_RESEARCHER_RESEARCH_AREA,
+  GET_AUTHOR_SUGGESTIONS
 } from "./types";
 
 import {
@@ -851,6 +852,19 @@ console.log(parsed);
 
   return {
     type: UPDATE_RESEARCHER_RESEARCH_AREA,
+    payload: request
+  };
+}
+
+
+export function getAuthorSuggestions() {
+
+  const request = axios
+    .get(`${RESEARCHER_SERVER}/list_for_suggestions`)
+    .then(response => response.data);
+
+  return {
+    type: GET_AUTHOR_SUGGESTIONS,
     payload: request
   };
 }

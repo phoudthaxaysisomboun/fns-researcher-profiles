@@ -3486,6 +3486,43 @@ app.post("/api/researchers/addResearchArea", auth, (req, res) => {
   );
 });
 
+app.get(
+  "/api/researchers/list_for_suggestions",
+  auth,
+  (req, res) => {
+    let order = req.query.order ? req.query.order : "asc";
+    let sortBy = req.query.sortBy ? req.query.sortBy : "name";
+    // let limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 6;
+    // let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0;
+
+    // let from = req.query.from ? req.query.from : null;
+    // let to = req.query.from ? req.query.to : null;
+    // let department = req.query.department ? req.query.department : null;
+    let findArgs = {};
+
+    findArgs.emailIsVerified = true;
+    findArgs.accountIsVerified = true;
+    findArgs.active = true;
+
+    User.find(findArgs)
+      .select(
+        "_id name lastname affiliation profileImage"
+      )
+      .populate({
+        path: "affiliation.institution"
+      })
+      .populate({
+        path: "affiliation.department"
+      })
+      .populate({
+        path: "affiliation.faculty"
+      })
+      .exec((err, result) => {
+        return res.status(200).send(result);
+      });
+  }
+);
+
 const port = process.env.PORT || 3002;
 
 app.listen(port, () => {

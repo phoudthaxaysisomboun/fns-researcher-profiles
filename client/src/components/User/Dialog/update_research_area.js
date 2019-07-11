@@ -264,7 +264,6 @@ class UpdateResearchArea extends Component {
       length = multi.length
       this.setState({
         multi,
-        
       });
     }
 

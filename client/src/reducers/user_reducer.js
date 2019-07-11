@@ -64,7 +64,8 @@ import {
   GET_NEWCOMER_REPORTS,
   UPDATE_PROFILE_DESCRIPTION,
   GET_RESEARCH_AREA,
-  UPDATE_RESEARCHER_RESEARCH_AREA
+  UPDATE_RESEARCHER_RESEARCH_AREA,
+  GET_AUTHOR_SUGGESTIONS
 } from "../actions/types";
 
 import moment from "moment";
@@ -571,6 +572,11 @@ export default function(state = {}, action) {
           researchArea: action.payload
         }
       };
+    case GET_AUTHOR_SUGGESTIONS:
+      return {
+        ...state,
+        authorSuggestions: action.payload
+      }
     default:
       return state;
   }

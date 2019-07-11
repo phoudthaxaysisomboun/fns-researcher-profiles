@@ -115,6 +115,7 @@ class ResearcherSearch extends Component {
           changeToResearch = {()=>this.handleToggleResearchTab()}
         >
           <Grid container >
+          
             <Grid item xs sm lg md />
             <Grid item xs={11} sm={11} lg={5} md={8}>
               <Grid container justify="center">
@@ -146,6 +147,14 @@ class ResearcherSearch extends Component {
               </Grid>
             </Grid>
             <Grid item xs sm lg md />
+            {
+            //   <div style={{
+         
+            //     float: "right",
+            //     width: 240
+            
+            // }}></div>
+            }
           </Grid>
         </SearchHeader>
       </>

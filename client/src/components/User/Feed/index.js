@@ -116,6 +116,12 @@ class Feed extends Component {
         <AddResearch
           open={this.state.openAddResearchDialog}
           close={() => this.handleAddResearchClose()}
+          authorSuggestions={
+            this.props && this.props.user && this.props.user.authorSuggestions ? this.props.user.authorSuggestions : []
+          }
+          user = {
+            this.props && this.props.user && this.props.user.userData ? this.props.user.userData : {}
+          }
         />
       </div>
     );

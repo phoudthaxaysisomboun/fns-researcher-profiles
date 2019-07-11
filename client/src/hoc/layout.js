@@ -217,7 +217,7 @@ const styles = theme => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
     }),
-    marginLeft: -drawerWidth
+    marginLeft: -drawerWidth,
   },
   contentShift: {
     transition: theme.transitions.create("margin", {
@@ -1341,7 +1341,7 @@ class Layout extends Component {
           })}
           style={{ padding: 0 }}
         >
-          <div className="page_container" style={{ marginLeft: drawerWidth }}>
+          <div className="page_container" style={{ marginLeft: drawerWidth,  }}>
             {this.props.children}
           </div>
         </main>

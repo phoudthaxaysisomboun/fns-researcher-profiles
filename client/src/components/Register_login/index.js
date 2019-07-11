@@ -28,7 +28,7 @@ const ResgisterLogin = () => {
       <Grid item lg={4} md={6}  sm={9} xs={11}>
         <Paper style={styles.container} elevation={0} >
           <embed
-            height="100px"
+          height="160px"
             width="100%"
             style={{ marginBottom: "16px" }}
             type="image/svg+xml"

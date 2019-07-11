@@ -123,6 +123,7 @@ const SearchHeader = ({
   changeToResearch
 }) => {
   return (
+    <>
     <Grid container>
       <Grid item xs={12} style={{paddingTop:"16px"}}>
       <embed
@@ -277,7 +278,10 @@ const SearchHeader = ({
       </Grid>
 
       {children}
+      
     </Grid>
+   
+  </>
   );
 };
 
