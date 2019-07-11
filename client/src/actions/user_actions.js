@@ -837,8 +837,16 @@ export function getResearchArea() {
 
 export function updateResearchArea(userId, researchArea) {
   // console.log(`${RESEARCHER_SERVER}/like?researchId=${_id}`)
+  const queryString = require('query-string');
+  let parsed = []
+  researchArea.map((value)=>{
+    parsed.push(encodeURIComponent(value))
+    return null
+  })
+  
+console.log(parsed);
   const request = axios
-    .post(`${RESEARCHER_SERVER}/addResearchArea?userId=${userId}&researchArea=${researchArea}`)
+    .post(`${RESEARCHER_SERVER}/addResearchArea?userId=${userId}&researchArea=${parsed}`)
     .then(response => response.data);
 
   return {

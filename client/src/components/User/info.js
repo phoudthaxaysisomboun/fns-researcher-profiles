@@ -26,6 +26,8 @@ import UpdatePlaceOfBirthDialogue from "./Dialog/update_place_of_birth";
 import AddEducationDialogue from "./Dialog/add_education";
 import UpdateEducationDialogue from "./Dialog/update_education";
 import ShareDialog from "../User/Dialog/share";
+import IntorductionDialog from "../User/Dialog/add_introduction";
+import UpdateResearchArea from "../User/Dialog/update_research_area";
 
 import {
   Hidden,
@@ -105,7 +107,10 @@ class ProfileInfo extends Component {
     selectedEducation: {},
 
     openRemoveEducationConformationDialog: false,
-    openShareDialog: false
+    openShareDialog: false,
+
+    openIntroductionDialog: false,
+    openUpdateResearchAreaDialog: false,
   };
 
   componentWillMount() {
@@ -620,6 +625,30 @@ class ProfileInfo extends Component {
     });
   };
 
+  handleIntroductionDialogClose = () => {
+    this.setState({
+      openIntroductionDialog: false
+    });
+  };
+
+  handleIntroductionDialogOpen = () => {
+    this.setState({
+      openIntroductionDialog: true
+    });
+  };
+
+  handleUpdateResearchAreaDialogClose = () => {
+    this.setState({
+      openUpdateResearchAreaDialog: false
+    });
+  };
+
+  handleUpdateResearchAreaDialogOpen = () => {
+    this.setState({
+      openUpdateResearchAreaDialog: true
+    });
+  };
+
   render() {
     const { fullScreen } = this.props;
 
@@ -960,6 +989,45 @@ class ProfileInfo extends Component {
           handleShareCount = {()=>{console.log(`shared`)}}
           title = {this.props && this.props.user && this.props.user.userDetail && this.props.user.userDetail.name ? `ປະຫວັດ${this.props.user.userDetail.prefix} ${this.props.user.userDetail.name} ${this.props.user.userDetail.lastname} - FNS Researcher Profiles` : ""}
           description = {this.props && this.props.user && this.props.user.userDetail && this.props.user.userDetail.name ? `ປະຫວັດ ແລະ ຂໍ້ມູນນັກຄົ້ນຄວ້າຂອງ${this.props.user.userDetail.prefix} ${this.props.user.userDetail.name} ${this.props.user.userDetail.lastname} - FNS Researcher Profiles` : ""}
+        />
+
+        <IntorductionDialog
+          open={this.state.openIntroductionDialog}
+          profileDescription={
+            this.props.user &&
+            this.props.user &&
+            this.props.user.userDetail &&
+            this.props.user.userDetail.profileDescription
+              ? this.props.user.userDetail.profileDescription
+              : ""
+          }
+          close={() => this.handleIntroductionDialogClose()}
+        />
+        <UpdateResearchArea
+          open={this.state.openUpdateResearchAreaDialog}
+          researchArea={
+            this.props.user &&
+            this.props.user.userDetail &&
+            this.props.user.userDetail.researchArea
+              ? this.props.user.userDetail.researchArea
+              : ""
+          }
+          userId={
+            this.props.user &&
+            this.props.user.userDetail &&
+            this.props.user.userDetail._id
+              ? this.props.user.userDetail._id
+              : ""
+          }
+          researchAreas={
+            this.props.user &&
+            this.props.user.researchAreas
+              ? this.props.user.researchAreas
+              : ""
+          }
+
+
+          close={() => this.handleUpdateResearchAreaDialogClose()}
         />
       </ProfileHeader>
     );

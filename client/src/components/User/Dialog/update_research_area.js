@@ -52,6 +52,7 @@ import {
 import { connect } from "react-redux";
 
 let suggestions = []
+let length= 0
 
 const styles = theme => ({
   root: {
@@ -121,10 +122,10 @@ function inputComponent({ inputRef, ...props }) {
 }
 
 const handleInputChanged = (event) => {
-  const length = this.props.researchAreas.length
+ if (event.target.value.trim() !== "" || length > 0) {
   suggestions[length] ={value: event.target.value, label: event.target.value}
-  console.log(event.target.value)
-  console.log(length)
+} 
+
 }
 
 function Control(props) {
@@ -203,6 +204,7 @@ function MultiValue(props) {
       })}
       onDelete={props.removeProps.onClick}
       deleteIcon={<CancelOutlined {...props.removeProps} />}
+      variant="outlined"
     />
   );
 }
@@ -236,6 +238,7 @@ class UpdateResearchArea extends Component {
     single: null,
     multi: null,
     date: null,
+    length: 0,
     currentResearchType: "5cdb82bb27ba7c4214ef5776",
     formError: false,
     formErrorMessage: "ມີບາງຂໍ້ມູນບໍ່ຖືກຕ້ອງກະລຸນາກວດສອບຂໍ້ມູນຄືນ",
@@ -258,8 +261,10 @@ class UpdateResearchArea extends Component {
         multi.push({ value: value, label: value });
         return null;
       });
+      length = multi.length
       this.setState({
-        multi
+        multi,
+        
       });
     }
 
@@ -298,12 +303,14 @@ class UpdateResearchArea extends Component {
 
   submitForm = event => {
     event.preventDefault();
+
     let formIsValid =   isFormValid(this.state.formdata, "");
     const researchArea = []
     this.state.multi.map((value)=>{
       researchArea.push(value.value)
       return null
     })
+
 
     this.props.dispatch(updateResearchArea(this.props.userId, researchArea)).then((response)=>{
       this.props.close();
