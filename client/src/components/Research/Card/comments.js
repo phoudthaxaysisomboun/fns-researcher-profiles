@@ -79,7 +79,14 @@ const CommentsCard = ({
   openReplyTextField,
   handleReplyTextChange,
   replyValue,
-  showReplyTextField
+  showReplyTextField,
+  submitComment,
+  deleleComment,
+  anchorElReply,
+  handleReplyMenuClose,
+  deleleReply,
+  submitReply,
+  handleReplyMenuClick
 }) => {
   const renderIsAuthor = (id, author) => {
     let isAuthor = false;
@@ -124,6 +131,58 @@ const CommentsCard = ({
               fontWeight: 500
             }}
             selected={false}
+            onClick = {()=> {deleleComment()}}
+          >
+            <svg
+              style={{ marginRight: "16px" }}
+              width="24px"
+              height="24px"
+              viewBox="0 0 24 24"
+              fill="#212121"
+              focusable="false"
+              class="a-s-fa-Ha-pa"
+            >
+              <path d="M0 0h24v24H0z" fill="none" />
+              <path d="M15 4V3H9v1H4v2h1v13c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V6h1V4h-5zm2 15H7V6h10v13z" />
+              <path d="M9 8h2v9H9zm4 0h2v9h-2z" />
+            </svg>
+            ລຶບ
+          </MenuItem>
+
+          <MenuItem
+            style={{
+              fontFamily: "'Noto Sans Lao UI', sans-serif",
+              fontWeight: 500,
+              display: "none"
+            }}
+            selected={true}
+          />
+        </Menu>
+
+
+        <Menu
+          className="menu"
+          anchorEl={anchorElReply}
+          open={Boolean(anchorElReply)}
+          onClose={event => {
+            handleReplyMenuClose(event);
+          }}
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "right"
+          }}
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "right"
+          }}
+        >
+          <MenuItem
+            style={{
+              fontFamily: "'Noto Sans Lao UI', sans-serif",
+              fontWeight: 500
+            }}
+            selected={false}
+            onClick = {()=> {deleleReply()}}
           >
             <svg
               style={{ marginRight: "16px" }}
@@ -214,12 +273,15 @@ const CommentsCard = ({
                     <Grid container>
                       <Grid item xs>
                         <Grid container>
-                          <Grid item xs={12}>
+                        <form style={{ padding: 0, margin: 0, width: "100%" }} onSubmit={event => submitComment(event)}>
+                        
+                        <Grid item xs={12}>
                             <TextField
                               id="commentTextField"
                               style={{ margin: 8 }}
                               placeholder="ເພີ່ມຄໍາເຫັນໃຫ້ແກ່ຜົນງານນີ້"
                               fullWidth
+                              multiline
                               value={commentText}
                               onChange={event => handleCommentTextChange(event)}
                               margin="normal"
@@ -239,7 +301,7 @@ const CommentsCard = ({
                             >
                               ຍົກເລີກ
                             </Button>
-                            <Button variant="contained" color="primary">
+                            <Button variant="contained" color="primary" type="submit">
                                 ໃຫ້ຄໍາເຫັນ
                               </Button>
                               </>
@@ -249,11 +311,15 @@ const CommentsCard = ({
                                 disabled
                                 variant="contained"
                                 color="primary"
+                                
                               >
                                 ໃຫ້ຄໍາເຫັນ
                               </Button>
                             )}
                           </Grid>
+                        
+                        </form>
+                          
                         </Grid>
                       </Grid>
                     </Grid>
@@ -406,7 +472,7 @@ const CommentsCard = ({
                                       style={{ marginTop: "10px" }}
                                     >
                                       <Button
-                                        onClick={() => openReplyTextField()}
+                                        onClick={(id) => openReplyTextField(value._id)}
                                         size="small"
                                         variant="outlined"
                                       >
@@ -495,7 +561,8 @@ const CommentsCard = ({
                                                 <Grid container>
                                                   <Grid item xs>
                                                     <Grid container>
-                                                      <Grid item xs={12}>
+                                                    <form style={{ padding: 0, margin: 0, width: "100%" }} onSubmit={event => submitReply(event)}>
+                                                    <Grid item xs={12}>
                                                         <TextField
                                                           id="replyTextField"
                                                           style={{ margin: 8 }}
@@ -507,6 +574,7 @@ const CommentsCard = ({
                                                               event
                                                             )
                                                           }
+                                                          multiline
                                                           margin="normal"
                                                           InputLabelProps={{
                                                             shrink: true
@@ -536,6 +604,7 @@ const CommentsCard = ({
                                                           <Button
                                                             variant="contained"
                                                             color="primary"
+                                                            type="submit"
                                                           >
                                                             ໃຫ້ຄໍາຕອບກັບ
                                                           </Button>
@@ -550,6 +619,9 @@ const CommentsCard = ({
                                                           </Button>
                                                         )}
                                                       </Grid>
+                                                    
+                                                    </form>
+                                                      
                                                     </Grid>
                                                   </Grid>
                                                 </Grid>
@@ -740,7 +812,7 @@ const CommentsCard = ({
                                                                 padding: 0
                                                               }}
                                                               onClick={event => {
-                                                                handleCommentMenuClick(
+                                                                handleReplyMenuClick(
                                                                   event,
                                                                   value._id
                                                                 );

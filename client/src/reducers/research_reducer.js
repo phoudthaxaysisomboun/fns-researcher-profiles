@@ -13,7 +13,11 @@ import {
   GET_ALL_RESEARCHES_ADMIN,
   GET_ALL_RESEARCHES_NUMBERS_REPORTS,
   GET_ALL_RESEARCHERS_LISTS_REPORTS,
-  GET_COMMENTS
+  GET_COMMENTS,
+  ADD_COMMENTS,
+  DELETE_COMMENTS,
+  ADD_REPLY,
+  REMOVE_REPLY
 } from "../actions/types";
 
 import mergeByKey from "array-merge-by-key";
@@ -153,7 +157,29 @@ export default function(state = {}, action) {
         listResearchesListReportsCount: action.payload.size
       };
       case GET_COMMENTS:
-        console.log(action.payload)
+      return { ...state, userResearch: {
+        ...state.userResearch,
+        researchComments: action.payload
+      } };
+      case ADD_COMMENTS:
+      return { ...state, userResearch: {
+        ...state.userResearch,
+        researchComments: action.payload
+      } };
+      case DELETE_COMMENTS:
+
+      return { ...state, userResearch: {
+        ...state.userResearch,
+        researchComments: action.payload
+      } };
+      case ADD_REPLY:
+
+      return { ...state, userResearch: {
+        ...state.userResearch,
+        researchComments: action.payload
+      } };
+      case REMOVE_REPLY:
+
       return { ...state, userResearch: {
         ...state.userResearch,
         researchComments: action.payload

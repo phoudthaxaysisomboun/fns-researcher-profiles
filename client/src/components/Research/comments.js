@@ -25,7 +25,11 @@ import {
   clearResearchCard,
   addLike,
   removeLike,
-  clearLikeResearch
+  clearLikeResearch,
+  addComment,
+  removeComment,
+  addReply,
+  removeReply
 } from "../../actions/research_actions";
 
 import { CloseOutlined } from "@material-ui/icons";
@@ -46,9 +50,12 @@ class ResearchComments extends Component {
     isAdmin: false,
     tabIndex: 2,
     anchorElComments: null,
+    anchorElReplies: null,
     commentValue: "",
     replyValue: "",
-    showReplyTextField: false
+    showReplyTextField: false,
+    commentId: null,
+    replyId: null
   };
 
   handleCommentTextChange = (event) => {
@@ -63,6 +70,18 @@ class ResearchComments extends Component {
     })
   }
 
+  deleleComment = () => {
+    this.props.dispatch(removeComment(this.props.research.userResearch[0]._id, this.state.commentId)).then(()=>{
+      this.setState({ anchorElComments: null });
+    })
+  }
+
+  deleleReply = () => {
+    this.props.dispatch(removeReply(this.props.research.userResearch[0]._id, this.state.replyId, this.state.commentId)).then(()=>{
+      this.setState({ anchorElReplies: null });
+    })
+  }
+
   cancelReply = () => {
     this.setState({
       replyValue: "",
@@ -70,23 +89,48 @@ class ResearchComments extends Component {
     })
   }
 
+
   handleReplyTextChange = event => {
     this.setState({
       replyValue: event.target.value,
     })
   }
 
-  openReplyTextField = () => {
+  openReplyTextField = (id) => {
     this.setState({
-      showReplyTextField: true
+      showReplyTextField: true,
+      commentId: id
     })
   }
 
+  submitComment = (event) => {
+    event.preventDefault();
+    console.log('hgey')
+    this.props.dispatch(addComment(this.props.research.userResearch[0]._id, this.props.user.userData._id, this.state.commentValue)).then((response)=>{
+      this.setState({
+        commentValue: ""
+      })
+    })
+    
+  }
+
+  submitReply = (event) => {
+    event.preventDefault();
+    this.props.dispatch(addReply(this.props.research.userResearch[0]._id, this.props.user.userData._id, this.state.replyValue, this.state.commentId)).then((response)=>{
+      this.setState({
+        replyValue: "",
+        openReplyTextField: false
+      })
+    })
+    
+  }
+
+
   handleCommentMenuClick = (event, id) => {
     this.setState({ anchorElComments: event.currentTarget });
-  //   this.setState({
-  //     educationId: id
-  //   });
+    this.setState({
+      commentId: id
+    });
 
   //   let educations = this.props.user.userDetail.education
   //   let obj = educations.find(o => o._id === id);
@@ -97,6 +141,23 @@ class ResearchComments extends Component {
 
   handleEducationMenuClose = () => {
     this.setState({ anchorElComments: null });
+  };
+
+  handleReplyMenuClick = (event, id) => {
+    this.setState({ anchorElReplies: event.currentTarget });
+    this.setState({
+      replyId: id
+    });
+
+  //   let educations = this.props.user.userDetail.education
+  //   let obj = educations.find(o => o._id === id);
+  //  this.setState({
+  //   selectedEducation: obj
+  //  })
+  };
+
+  handleReplyMenuClose = () => {
+    this.setState({ anchorElReplies: null });
   };
 
 
@@ -221,17 +282,28 @@ class ResearchComments extends Component {
               (event) => {this.handleReplyTextChange(event)}
             }
             
+            submitComment = {(event)=>{this.submitComment(event)}}
+
             comments = {
                 this.props && this.props.research && this.props.research.userResearch && this.props.research.userResearch.researchComments ? this.props.research.userResearch.researchComments : null
             }
             anchorElComment={this.state.anchorElComments}
+            anchorElReply={this.state.anchorElReplies}
             handleCommentMenuClick={(event, id) => {
               this.handleCommentMenuClick(event, id);
             }}
             handleCommentMenuClose={event => {
               this.handleEducationMenuClose(event);
             }}
-
+            handleReplyMenuClick={(event, id) => {
+              this.handleCommentMenuClick(event, id);
+            }}
+            handleReplyMenuClose={event => {
+              this.handleReplyMenuClose(event);
+            }}
+            deleleComment = {()=>{this.deleleComment()}}
+            deleleReply = {()=>{this.deleleReply()}}
+            submitReply = {(event)=>{this.submitReply(event)}}
             commentText = {this.state.commentValue}
             clearComment = {()=>{this.clearComment()}}
 

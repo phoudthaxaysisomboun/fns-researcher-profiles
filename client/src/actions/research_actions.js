@@ -15,7 +15,11 @@ import {
   GET_ALL_RESEARCHES_ADMIN,
   GET_ALL_RESEARCHES_NUMBERS_REPORTS,
   GET_ALL_RESEARCHERS_LISTS_REPORTS,
-  GET_COMMENTS
+  GET_COMMENTS,
+  ADD_COMMENTS,
+  DELETE_COMMENTS,
+  ADD_REPLY,
+  REMOVE_REPLY
 } from "./types";
 
 import { RESEARCH_SERVER, RESEARCHER_SERVER } from "../components/utils/misc";
@@ -132,6 +136,54 @@ export function getComments(id) {
   };
 }
 
+export function addComment(id, userId, comment) {
+console.log(`${RESEARCH_SERVER}/add_comment?id=${id}&userId=${userId}&comment=${encodeURIComponent(comment)}`)
+  const request = axios
+    .post(`${RESEARCH_SERVER}/add_comment?id=${id}&userId=${userId}&comment=${encodeURIComponent(comment)}`)
+    .then(response => response.data);
+
+  return {
+    type: ADD_COMMENTS,
+    payload: request
+  };
+}
+
+export function addReply(id, userId,reply, commentId) {
+
+  const request = axios
+    .post(`${RESEARCH_SERVER}/add_reply?id=${id}&userId=${userId}&reply=${encodeURIComponent(reply)}&commentId=${commentId}`)
+    .then(response => response.data);
+
+  return {
+    type: ADD_REPLY,
+    payload: request
+  };
+}
+
+export function removeComment(id, commentId) {
+
+  const request = axios
+    .post(`${RESEARCH_SERVER}/remove_comment?id=${id}&commentId=${commentId}`)
+    .then(response => response.data);
+
+  return {
+    type: DELETE_COMMENTS,
+    payload: request
+  };
+}
+
+export function removeReply(id, commentId, replyId) {
+
+  const request = axios
+    .post(`${RESEARCH_SERVER}/remove_comment?id=${id}&commentId=${commentId}&replyId=${replyId}`)
+    .then(response => response.data);
+
+  return {
+    type: REMOVE_REPLY,
+    payload: request
+  };
+}
+
 
 
 export function getAllResearches() {
@@ -177,3 +229,5 @@ console.log( `${RESEARCH_SERVER}/reports/list?department=${department}&from=${fr
     payload: request
   }
 }
+
+// encodeURIComponent(value)
