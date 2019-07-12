@@ -44,8 +44,27 @@ class ResearchComments extends Component {
     isUploader: false,
     isAuth: false,
     isAdmin: false,
-    tabIndex: 2
+    tabIndex: 2,
+    anchorElComments: null,
   };
+
+  handleCommentMenuClick = (event, id) => {
+    this.setState({ anchorElComments: event.currentTarget });
+  //   this.setState({
+  //     educationId: id
+  //   });
+
+  //   let educations = this.props.user.userDetail.education
+  //   let obj = educations.find(o => o._id === id);
+  //  this.setState({
+  //   selectedEducation: obj
+  //  })
+  };
+
+  handleEducationMenuClose = () => {
+    this.setState({ anchorElComments: null });
+  };
+
 
   like = id => {
     if (this.props.user.userData.isAuth) {
@@ -146,11 +165,23 @@ class ResearchComments extends Component {
             <CommentsCard user={
                 this.props && this.props.user && this.props.user.userData ? this.props.user.userData : {}
             }
+
+            research={
+              this.props.research && this.props.research.userResearch
+            ? this.props.research.userResearch[0]
+            : ""
+            }
             
             comments = {
                 this.props && this.props.research && this.props.research.userResearch && this.props.research.userResearch.researchComments ? this.props.research.userResearch.researchComments : []
             }
-            
+            anchorElComment={this.state.anchorElComments}
+            handleCommentMenuClick={(event, id) => {
+              this.handleCommentMenuClick(event, id);
+            }}
+            handleCommentMenuClose={event => {
+              this.handleEducationMenuClose(event);
+            }}
             />
           </Grid>
 
