@@ -3042,6 +3042,7 @@ app.post("/api/researchers/updateEducation", auth, (req, res) => {
     });
 });
 
+
 app.post("/api/researchers/removeEducation", auth, (req, res) => {
   User.findOneAndUpdate(
     { _id: mongoose.Types.ObjectId(req.query.userId) },
@@ -3310,6 +3311,200 @@ app.get("/api/research/researches_by_id", (req, res) => {
         res.status(200).send(researches);
       });
   }
+});
+
+app.post("/api/research/add_comment", auth, (req, res) => {
+  Research.findOneAndUpdate(
+    { _id: mongoose.Types.ObjectId(req.query.id) },
+    {
+      $push: {
+        comments: {
+          user: mongoose.Types.ObjectId(req.query.userId),
+          time: moment().toDate(),
+          comment: req.query.comment
+        }
+      }
+    },
+  )
+    .exec((err, doc) => {
+      if (err) return res.json({ success: false, err });
+      Research.find({ _id: mongoose.Types.ObjectId(req.query.id) })
+      // .sort([[sortBy, order]])
+      // .limit(limit)
+      // .skip(skip)
+      .select("comments")
+      .populate({
+        path: "comments.user",
+        model: "User",
+        select: ["name", "lastname", "profileImage"]
+      })
+      .populate({
+        path: "comments.replies.user",
+        model: "User",
+        select: ["name", "lastname", "profileImage"]
+      })
+      // .populate({
+      //   path: "affiliation.department"
+      // })
+      // .populate({
+      //   path: "affiliation.faculty"
+      // })
+      .exec((err, comments) => {
+        if (err) return res.status(400).send(err);
+        res.status(200).json(comments[0].comments);
+      });
+    });
+});
+
+app.post("/api/research/add_reply", auth, (req, res) => {
+  Research.findOneAndUpdate(
+    { _id: mongoose.Types.ObjectId(req.query.id),
+      "comments._id": req.query.commentId },
+    {
+      $push: {
+        "comments.$.replies": {
+          user: mongoose.Types.ObjectId(req.query.userId),
+          time: moment().toDate(),
+          reply: req.query.reply
+        }
+      }
+
+      
+    },
+  )
+    .exec((err, doc) => {
+      if (err) return res.json({ success: false, err });
+      Research.find({ _id: mongoose.Types.ObjectId(req.query.id) })
+      // .sort([[sortBy, order]])
+      // .limit(limit)
+      // .skip(skip)
+      .select("comments")
+      .populate({
+        path: "comments.user",
+        model: "User",
+        select: ["name", "lastname", "profileImage"]
+      })
+      .populate({
+        path: "comments.replies.user",
+        model: "User",
+        select: ["name", "lastname", "profileImage"]
+      })
+      // .populate({
+      //   path: "affiliation.department"
+      // })
+      // .populate({
+      //   path: "affiliation.faculty"
+      // })
+      .exec((err, comments) => {
+        if (err) return res.status(400).send(err);
+        res.status(200).json(comments[0].comments);
+      });
+    });
+});
+
+
+app.post("/api/research/remove_reply", auth, (req, res) => {
+  Research.findOneAndUpdate(
+    { _id: mongoose.Types.ObjectId(req.query.id),
+      "comments._id": req.query.commentId },
+    {
+      $pull: {
+        "comments.$.replies": {
+          _id: mongoose.Types.ObjectId(req.query.replyId),
+        }
+      }
+
+      
+    },
+  )
+    .exec((err, doc) => {
+      if (err) return res.json({ success: false, err });
+      Research.find({ _id: mongoose.Types.ObjectId(req.query.id) })
+      // .sort([[sortBy, order]])
+      // .limit(limit)
+      // .skip(skip)
+      .select("comments")
+      .populate({
+        path: "comments.user",
+        model: "User",
+        select: ["name", "lastname", "profileImage"]
+      })
+      .populate({
+        path: "comments.replies.user",
+        model: "User",
+        select: ["name", "lastname", "profileImage"]
+      })
+      // .populate({
+      //   path: "affiliation.department"
+      // })
+      // .populate({
+      //   path: "affiliation.faculty"
+      // })
+      .exec((err, comments) => {
+        if (err) return res.status(400).send(err);
+        res.status(200).json(comments[0].comments);
+      });
+    });
+});
+
+// User.findOneAndUpdate(
+//   {
+//     _id: mongoose.Types.ObjectId(req.query.userId),
+//     "education._id": mongoose.Types.ObjectId(req.query.id)
+//   },
+//   {
+//     $set: {
+//       "education.$._id": mongoose.Types.ObjectId(req.query.id),
+//       "education.$.institution": req.query.institution,
+//       "education.$.fieldOfStudy": req.query.fieldOfStudy,
+//       "education.$.degree": req.query.degree,
+//       "education.$.start": req.query.start,
+//       "education.$.end": req.query.end,
+//       "education.$.city": req.query.city,
+//       "education.$.country": mongoose.Types.ObjectId(req.query.country)
+//     }
+//   },
+
+
+app.post("/api/research/remove_comment", auth, (req, res) => {
+  Research.findOneAndUpdate(
+    { _id: mongoose.Types.ObjectId(req.query.id) },
+    {
+      $pull: {
+        comments: {
+          _id: mongoose.Types.ObjectId(req.query.commentId),
+        }
+      }
+    },
+  )
+    .exec((err, doc) => {
+      if (err) return res.json({ success: false, err });
+      Research.find({ _id: mongoose.Types.ObjectId(req.query.id) })
+      // .sort([[sortBy, order]])
+      // .limit(limit)
+      // .skip(skip)
+      .select("comments")
+      .populate({
+        path: "comments.user",
+        model: "User",
+        select: ["name", "lastname", "profileImage"]
+      })
+      .populate({
+        path: "comments.replies.user",
+        model: "User",
+        select: ["name", "lastname", "profileImage"]
+      })
+      // .populate({
+      //   path: "affiliation.department"
+      // })
+      // .populate({
+      //   path: "affiliation.faculty"
+      // })
+      .exec((err, comments) => {
+        if (err) return res.status(400).send(err);
+        res.status(200).json(comments[0].comments);
+      });
+    });
 });
 
 app.get("/api/research/researches_by_id/comments", (req, res) => {

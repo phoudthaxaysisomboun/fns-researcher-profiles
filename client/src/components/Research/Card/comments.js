@@ -27,6 +27,7 @@ import {
   CheckOutlined,
   PersonAddOutlined,
   ReplyOutlined,
+
   MoreVertOutlined
 } from "@material-ui/icons";
 
@@ -70,14 +71,24 @@ const CommentsCard = ({
   research,
   anchorElComment,
   handleCommentMenuClose,
-  handleCommentMenuClick
+  handleCommentMenuClick,
+  commentText,
+  handleCommentTextChange,
+  clearComment,
+  cancelReply,
+  openReplyTextField,
+  handleReplyTextChange,
+  replyValue,
+  showReplyTextField
 }) => {
   const renderIsAuthor = (id, author) => {
     let isAuthor = false;
 
-    author.map((value, index) => {
+    author.map(value => {
       if (value._id === id) {
         return (isAuthor = true);
+      } else {
+        return null;
       }
     });
 
@@ -139,448 +150,677 @@ const CommentsCard = ({
             selected={true}
           />
         </Menu>
-        
-        {
-          user && user.isAuth && user._id ?
-          <>
-          
-          <Grid item>
-                <Paper
-                  style={{
-                    boxShadow: "none",
-                    border: "none",
 
-                  }}
+        {user && user.isAuth && user._id ? (
+          <>
+            <Grid item>
+              <Paper
+                style={{
+                  boxShadow: "none",
+                  border: "none"
+                }}
+              >
+                <Grid
+                  container
+                  spacing={0}
+                  style={{ padding: "16px", paddingLeft: 0, paddingRight: 0 }}
                 >
                   <Grid
-                    container
-                    spacing={0}
-                    style={{ padding: "16px", paddingLeft: 0, paddingRight: 0 }}
+                    item
+                    align="center"
+                    style={{ marginRight: "16px", width: "48px" }}
                   >
-                    <Grid
-                      item
-                      align="center"
-                      style={{ marginRight: "16px", width: "48px" }}
+                    <Link
+                      to={`/profile/${user._id}`}
+                      style={{ color: "inherit", textDecoration: "none" }}
                     >
-                      <Link
-                        to={`/profile/${user._id}`}
-                        style={{ color: "inherit", textDecoration: "none" }}
-                      >
-                        {user.profileImage &&
-                        user.profileImage[0] &&
-                        user.profileImage[0].name ? (
-                          <Avatar
-                            src={`${UPLOADS_SERVER}/images/${
-                              user.profileImage[0].name
-                            }`}
-                            alt="profile image"
-                            style={{
-                              width: "40px",
-                              height: "40px",
-                              borderStyle: "solid",
-                              borderColor: "#CFCECE",
-                              borderWidth: "1px"
-                            }}
-                          />
-                        ) : (
-                          <Avatar
-                            alt="profile image"
-                            style={{
-                              width: "40px",
-                              height: "40px",
-                              backgroundColor: `${`${user.name}${
-                                user.lastname
-                              }`.toColor()}`,
-                              fontFamily: "'Noto Sans Lao UI', sans serif",
-                              fontWeight: "500"
-                            }}
-                          >
-                            <Typography variant="inherit">
-                              {`${user.name.charAt(
-                                0
-                              )}${user.lastname.charAt(0)}`}
-                            </Typography>
-                          </Avatar>
-                        )}
-                      </Link>
-                    </Grid>
-                    <Grid item xs>
-                      <Grid container>
-                        <Grid item xs>
-                          <Grid container>
-                            <Grid item xs={12}>
+                      {user.profileImage &&
+                      user.profileImage[0] &&
+                      user.profileImage[0].name ? (
+                        <Avatar
+                          src={`${UPLOADS_SERVER}/images/${
+                            user.profileImage[0].name
+                          }`}
+                          alt="profile image"
+                          style={{
+                            width: "40px",
+                            height: "40px",
+                            borderStyle: "solid",
+                            borderColor: "#CFCECE",
+                            borderWidth: "1px"
+                          }}
+                        />
+                      ) : (
+                        <Avatar
+                          alt="profile image"
+                          style={{
+                            width: "40px",
+                            height: "40px",
+                            backgroundColor: `${`${user.name}${
+                              user.lastname
+                            }`.toColor()}`,
+                            fontFamily: "'Noto Sans Lao UI', sans serif",
+                            fontWeight: "500"
+                          }}
+                        >
+                          <Typography variant="inherit">
+                            {`${user.name.charAt(0)}${user.lastname.charAt(0)}`}
+                          </Typography>
+                        </Avatar>
+                      )}
+                    </Link>
+                  </Grid>
+                  <Grid item xs>
+                    <Grid container>
+                      <Grid item xs>
+                        <Grid container>
+                          <Grid item xs={12}>
                             <TextField
-                            id="commentTextField"
-                            style={{ margin: 8 }}
-                            placeholder="ເພີ່ມຄໍາເຫັນໃຫ້ແກ່ຜົນງານນີ້"
-                            fullWidth
-                            value="ທົດສອບການໃຫ້ຄໍາເຫັນ"
-                            margin="normal"
-                            InputLabelProps={{
-                              shrink: true,
-                            }}
-                          />
-                            </Grid>
-                            <Grid item xs={12} align="right">
-                            <Button style={{marginRight: "8px"}}>ຍົກເລີກ</Button>
-                            <Button variant="contained" color="primary">ໃຫ້ຄໍາເຫັນ</Button>
-                            </Grid>
-
+                              id="commentTextField"
+                              style={{ margin: 8 }}
+                              placeholder="ເພີ່ມຄໍາເຫັນໃຫ້ແກ່ຜົນງານນີ້"
+                              fullWidth
+                              value={commentText}
+                              onChange={event => handleCommentTextChange(event)}
+                              margin="normal"
+                              InputLabelProps={{
+                                shrink: true
+                              }}
+                              autoFocus
+                            />
                           </Grid>
-
+                          <Grid item xs={12} align="right">
+                            
+                            {commentText.trim() !== "" ? (
+                              <>
+                              <Button
+                              onClick={() => clearComment()}
+                              style={{ marginRight: "8px" }}
+                            >
+                              ຍົກເລີກ
+                            </Button>
+                            <Button variant="contained" color="primary">
+                                ໃຫ້ຄໍາເຫັນ
+                              </Button>
+                              </>
+                              
+                            ) : (
+                              <Button
+                                disabled
+                                variant="contained"
+                                color="primary"
+                              >
+                                ໃຫ້ຄໍາເຫັນ
+                              </Button>
+                            )}
+                          </Grid>
                         </Grid>
                       </Grid>
                     </Grid>
                   </Grid>
-                </Paper>
-              </Grid>
+                </Grid>
+              </Paper>
+            </Grid>
           </>
-          : null
-        }
+        ) : null}
 
         {comments ? (
           <>
-            {comments.map((value, index, array) => (
-              <Grid item>
-                {console.log(value)}
-                <Paper
-                  style={{
-                    boxShadow: "none",
-                    border: "none",
-               
-                  }}
-                >
-                  <Grid
-                    container
-                    spacing={0}
-                    style={{ padding: "16px", paddingLeft: 0, paddingRight: 0 }}
-                  >
-                    <Grid
-                      item
-                      align="center"
-                      style={{ marginRight: "16px", width: "48px" }}
+            {comments.length > 0 ? (
+              <>
+                {comments.map((value, index, array) => (
+                  <Grid item>
+                    {console.log(value)}
+                    <Paper
+                      style={{
+                        boxShadow: "none",
+                        border: "none"
+                      }}
                     >
-                      <Link
-                        to={`/profile/${value._id}`}
-                        style={{ color: "inherit", textDecoration: "none" }}
+                      <Grid
+                        container
+                        spacing={0}
+                        style={{
+                          padding: "16px",
+                          paddingLeft: 0,
+                          paddingRight: 0
+                        }}
                       >
-                        {value.user.profileImage &&
-                        value.user.profileImage[0] &&
-                        value.user.profileImage[0].name ? (
-                          <Avatar
-                            src={`${UPLOADS_SERVER}/images/${
-                              value.user.profileImage[0].name
-                            }`}
-                            alt="profile image"
-                            style={{
-                              width: "40px",
-                              height: "40px",
-                              borderStyle: "solid",
-                              borderColor: "#CFCECE",
-                              borderWidth: "1px"
-                            }}
-                          />
-                        ) : (
-                          <Avatar
-                            alt="profile image"
-                            style={{
-                              width: "40px",
-                              height: "40px",
-                              backgroundColor: `${`${value.user.name}${
-                                value.user.lastname
-                              }`.toColor()}`,
-                              fontFamily: "'Noto Sans Lao UI', sans serif",
-                              fontWeight: "500"
-                            }}
+                        <Grid
+                          item
+                          align="center"
+                          style={{ marginRight: "16px", width: "48px" }}
+                        >
+                          <Link
+                            to={`/profile/${value._id}`}
+                            style={{ color: "inherit", textDecoration: "none" }}
                           >
-                            <Typography variant="inherit">
-                              {`${value.user.name.charAt(
-                                0
-                              )}${value.user.lastname.charAt(0)}`}
-                            </Typography>
-                          </Avatar>
-                        )}
-                      </Link>
-                    </Grid>
-                    <Grid item xs>
-                      <Grid container>
+                            {value.user.profileImage &&
+                            value.user.profileImage[0] &&
+                            value.user.profileImage[0].name ? (
+                              <Avatar
+                                src={`${UPLOADS_SERVER}/images/${
+                                  value.user.profileImage[0].name
+                                }`}
+                                alt="profile image"
+                                style={{
+                                  width: "40px",
+                                  height: "40px",
+                                  borderStyle: "solid",
+                                  borderColor: "#CFCECE",
+                                  borderWidth: "1px"
+                                }}
+                              />
+                            ) : (
+                              <Avatar
+                                alt="profile image"
+                                style={{
+                                  width: "40px",
+                                  height: "40px",
+                                  backgroundColor: `${`${value.user.name}${
+                                    value.user.lastname
+                                  }`.toColor()}`,
+                                  fontFamily: "'Noto Sans Lao UI', sans serif",
+                                  fontWeight: "500"
+                                }}
+                              >
+                                <Typography variant="inherit">
+                                  {`${value.user.name.charAt(
+                                    0
+                                  )}${value.user.lastname.charAt(0)}`}
+                                </Typography>
+                              </Avatar>
+                            )}
+                          </Link>
+                        </Grid>
                         <Grid item xs>
                           <Grid container>
-                            <Grid item xs={11}>
-                              <Link
-                                to={`/profile/${value.user._id}`}
-                                style={{ textDecoration: "none" }}
-                              >
-                                <Typography
-                                  style={{
-                                    fontWeight: "600",
-                                    color: "#404040",
-                                    fontSize: "14px",
-                                    display: "inline"
-                                  }}
-                                >
-                                  {value.user.name} {value.user.lastname}
-                                  {renderIsAuthor(
-                                    value.user._id,
-                                    research.author
-                                  )}
-                                  <div
-                                    style={{
-                                      display: "inline",
-                                      fontWeight: 200,
-                                      fontSize: "13px",
-                                      color: "#626262",
-                                      marginLeft: "4px"
-                                    }}
+                            <Grid item xs>
+                              <Grid container>
+                                <Grid item xs={11}>
+                                  <Link
+                                    to={`/profile/${value.user._id}`}
+                                    style={{ textDecoration: "none" }}
                                   >
-                                    {moment(value.time).format(
-                                      "HH:mm - DD/MM/YYYY"
-                                    )}
-                                  </div>
-                                </Typography>
-                              </Link>
-                            </Grid>
+                                    <Typography
+                                      style={{
+                                        fontWeight: "600",
+                                        color: "#404040",
+                                        fontSize: "14px",
+                                        display: "inline"
+                                      }}
+                                    >
+                                      {value.user.name} {value.user.lastname}
+                                      {renderIsAuthor(
+                                        value.user._id,
+                                        research.author
+                                      )}
+                                      <div
+                                        style={{
+                                          display: "inline",
+                                          fontWeight: 200,
+                                          fontSize: "13px",
+                                          color: "#626262",
+                                          marginLeft: "4px"
+                                        }}
+                                      >
+                                        {moment(value.time).format(
+                                          "HH:mm - DD/MM/YYYY"
+                                        )}
+                                      </div>
+                                    </Typography>
+                                  </Link>
+                                </Grid>
 
-                            <Grid item xs align="right">
-                              {user.isAdmin ||
-                              user._id === value.user._id ||
-                              user._id === research.uploader ? (
-                                <IconButton
-                                  style={{ padding: 0 }}
-                                  onClick={event => {
-                                    handleCommentMenuClick(event, value._id);
-                                  }}
-                                >
-                                  <MoreVertOutlined fontSize="small" />
-                                </IconButton>
-                              ) : null}
-                            </Grid>
-                            <Grid item xs={12} style={{ marginTop: "0" }}>
-                              <Typography variant="inherit" style={{fontSize: "14px"}}>
-                                <AutoLinkText text={value.comment} />
-                              </Typography>
-                            </Grid>
-
-                            {
-                              user.isAuth ?
-                              <Grid item xs={12} style={{ marginTop: "10px" }}>
-                              <Button size="small" variant="outlined">
-                                ຕອບກັບ
-                              </Button>
-                            </Grid>
-                            : null
-                            }
-
-                            {value.replies && value.replies.length > 0 ? (
-                              <>
-                                <Grid
-                                  item
-                                  xs={12}
-                                  style={{ marginTop: "10px" }}
-                                >
+                                <Grid item xs align="right">
+                                  {user.isAdmin ||
+                                  user._id === value.user._id ||
+                                  user._id === research.uploader ? (
+                                    <IconButton
+                                      style={{ padding: 0 }}
+                                      onClick={event => {
+                                        handleCommentMenuClick(
+                                          event,
+                                          value._id
+                                        );
+                                      }}
+                                    >
+                                      <MoreVertOutlined fontSize="small" />
+                                    </IconButton>
+                                  ) : null}
+                                </Grid>
+                                <Grid item xs={12} style={{ marginTop: "0" }}>
                                   <Typography
                                     variant="inherit"
-                                    style={{
-                                      fontSize: "14px",
-                                      fontWeight: "600"
-                                    }}
+                                    style={{ fontSize: "14px" }}
                                   >
-                                    {`ຄໍາຕອບກັບ (${value.replies.length})`}
+                                    <AutoLinkText text={value.comment} />
                                   </Typography>
                                 </Grid>
-                                <Grid
-                                  item
-                                  xs={12}
-                                  style={{ marginTop: "10px" }}
-                                >
-                                  {value.replies.map(reply => (
-                                    <>
-                                      <Grid item>
-                                        <Paper
-                                          style={{
-                                            boxShadow: "none",
-                                            border: "none",
-                                            marginTop: "8px"
-                                          }}
-                                        >
-                                          <Grid
-                                            container
-                                            spacing={0}
+
+                                {user.isAuth ? (
+                                  <>
+                                    <Grid
+                                      item
+                                      xs={12}
+                                      style={{ marginTop: "10px" }}
+                                    >
+                                      <Button
+                                        onClick={() => openReplyTextField()}
+                                        size="small"
+                                        variant="outlined"
+                                      >
+                                        ຕອບກັບ
+                                      </Button>
+                                    </Grid>
+                                    {showReplyTextField ? (
+                                      <Grid item xs={12}>
+                                        <Grid item>
+                                          <Paper
                                             style={{
-                                              padding: "0",
-                                              paddingLeft: 0,
-                                              paddingRight: 0
+                                              boxShadow: "none",
+                                              border: "none",
+                                              marginTop: "16px"
                                             }}
                                           >
                                             <Grid
-                                              item
-                                              align="center"
+                                              container
+                                              spacing={0}
                                               style={{
-                                                marginRight: "8px",
-                                                width: "32"
+                                                padding: "0",
+                                                paddingLeft: 0,
+                                                paddingRight: 0
                                               }}
                                             >
-                                              <Link
-                                                to={`/profile/${value._id}`}
+                                              <Grid
+                                                item
+                                                align="center"
                                                 style={{
-                                                  color: "inherit",
-                                                  textDecoration: "none"
+                                                  marginRight: "8px",
+                                                  width: "32"
                                                 }}
                                               >
-                                                {value.user.profileImage &&
-                                                value.user.profileImage[0] &&
-                                                value.user.profileImage[0]
-                                                  .name ? (
-                                                  <Avatar
-                                                    src={`${UPLOADS_SERVER}/images/${
-                                                      reply.user.profileImage[0]
-                                                        .name
-                                                    }`}
-                                                    alt="profile image"
-                                                    style={{
-                                                      width: "24px",
-                                                      height: "24px",
-                                                      borderStyle: "solid",
-                                                      borderColor: "#CFCECE",
-                                                      borderWidth: "1px"
-                                                    }}
-                                                  />
-                                                ) : (
-                                                  <Avatar
-                                                    alt="profile image"
-                                                    style={{
-                                                      width: "24px",
-                                                      height: "24px",
-                                                      backgroundColor: `${`${
-                                                        reply.user.name
-                                                      }${
-                                                        reply.user.lastname
-                                                      }`.toColor()}`,
-                                                      fontFamily:
-                                                        "'Noto Sans Lao UI', sans serif",
-                                                      fontWeight: "500"
-                                                    }}
-                                                  >
-                                                    <Typography variant="inherit">
-                                                      {`${reply.user.name.charAt(
-                                                        0
-                                                      )}${reply.user.lastname.charAt(
-                                                        0
-                                                      )}`}
-                                                    </Typography>
-                                                  </Avatar>
-                                                )}
-                                              </Link>
-                                            </Grid>
-                                            <Grid item xs>
-                                              <Grid container>
-                                                <Grid item xs>
-                                                  <Grid container>
-                                                    <Grid item xs={11}>
-                                                      <Link
-                                                        to={`/profile/${
-                                                          reply.user._id
-                                                        }`}
-                                                        style={{
-                                                          textDecoration: "none"
-                                                        }}
-                                                      >
-                                                        <Typography
-                                                          style={{
-                                                            fontWeight: "600",
-                                                            color: "#404040",
-                                                            fontSize: "14px",
-                                                            display: "inline"
-                                                          }}
-                                                        >
-                                                          {reply.user.name}{" "}
-                                                          {reply.user.lastname}
-                                                          {renderIsAuthor(
-                                                            reply.user._id,
-                                                            research.author
-                                                          )}
-                                                          <div
-                                                            style={{
-                                                              display: "inline",
-                                                              fontWeight: 200,
-                                                              fontSize: "13px",
-                                                              color: "#626262",
-                                                              marginLeft: "4px"
-                                                            }}
-                                                          >
-                                                            {moment(
-                                                              reply.time
-                                                            ).format(
-                                                              "HH:mm - DD/MM/YYYY"
-                                                            )}
-                                                          </div>
-                                                        </Typography>
-                                                      </Link>
-                                                    </Grid>
-
-                                                    <Grid item xs align="right">
-                                                      {user.isAdmin ||
-                                                      user._id ===
-                                                      reply.user._id ||
-                                                      user._id ===
-                                                        research.uploader ? (
-                                                        <IconButton
-                                                          style={{ padding: 0 }}
-                                                          onClick={event => {
-                                                            handleCommentMenuClick(
-                                                              event,
-                                                              value._id
-                                                            );
-                                                          }}
-                                                        >
-                                                          <MoreVertOutlined fontSize="small" />
-                                                        </IconButton>
-                                                      ) : null}
-                                                    </Grid>
-                                                    <Grid
-                                                      item
-                                                      xs={12}
+                                                <Link
+                                                  to={`/profile/${value._id}`}
+                                                  style={{
+                                                    color: "inherit",
+                                                    textDecoration: "none"
+                                                  }}
+                                                >
+                                                  {user.profileImage &&
+                                                  user.profileImage[0] &&
+                                                  user.profileImage[0].name ? (
+                                                    <Avatar
+                                                      src={`${UPLOADS_SERVER}/images/${
+                                                        user.profileImage[0]
+                                                          .name
+                                                      }`}
+                                                      alt="profile image"
+                                                      style={{
+                                                        width: "24px",
+                                                        height: "24px",
+                                                        borderStyle: "solid",
+                                                        borderColor: "#CFCECE",
+                                                        borderWidth: "1px"
+                                                      }}
+                                                    />
+                                                  ) : (
+                                                    <Avatar
+                                                      alt="profile image"
+                                                      style={{
+                                                        width: "24px",
+                                                        height: "24px",
+                                                        backgroundColor: `${`${
+                                                          user.name
+                                                        }${
+                                                          user.lastname
+                                                        }`.toColor()}`,
+                                                        fontFamily:
+                                                          "'Noto Sans Lao UI', sans serif",
+                                                        fontWeight: "500"
+                                                      }}
                                                     >
-                                                      <Typography variant="inherit" style={{fontSize: "14px"}}>
-                                                        <AutoLinkText
-                                                          text={reply.reply}
-                                                        />
+                                                      <Typography variant="inherit">
+                                                        {`${user.name.charAt(
+                                                          0
+                                                        )}${user.lastname.charAt(
+                                                          0
+                                                        )}`}
                                                       </Typography>
+                                                    </Avatar>
+                                                  )}
+                                                </Link>
+                                              </Grid>
+                                              <Grid item xs>
+                                                <Grid container>
+                                                  <Grid item xs>
+                                                    <Grid container>
+                                                      <Grid item xs={12}>
+                                                        <TextField
+                                                          id="replyTextField"
+                                                          style={{ margin: 8 }}
+                                                          placeholder="ໃສ່ຄໍາໃຫ້ແກ່ຄໍາເຫັນນີ້"
+                                                          fullWidth
+                                                          value={replyValue}
+                                                          onChange={event =>
+                                                            handleReplyTextChange(
+                                                              event
+                                                            )
+                                                          }
+                                                          margin="normal"
+                                                          InputLabelProps={{
+                                                            shrink: true
+                                                          }}
+                                                          autoFocus
+                                                        />
+                                                      </Grid>
+                                                      <Grid
+                                                        item
+                                                        xs={12}
+                                                        align="right"
+                                                      >
+                                                     
+                                                        {replyValue.trim() !==
+                                                        "" ? (
+                                                          <>
+                                                          <Button
+                                                          onClick={() =>
+                                                            cancelReply()
+                                                          }
+                                                          style={{
+                                                            marginRight: "8px"
+                                                          }}
+                                                        >
+                                                          ຍົກເລີກ
+                                                        </Button>
+                                                          <Button
+                                                            variant="contained"
+                                                            color="primary"
+                                                          >
+                                                            ໃຫ້ຄໍາຕອບກັບ
+                                                          </Button>
+                                                          </>
+                                                        ) : (
+                                                          <Button
+                                                            disabled
+                                                            variant="contained"
+                                                            color="primary"
+                                                          >
+                                                            ໃຫ້ຄໍາຕອບກັບ
+                                                          </Button>
+                                                        )}
+                                                      </Grid>
                                                     </Grid>
-
                                                   </Grid>
                                                 </Grid>
                                               </Grid>
                                             </Grid>
-                                          </Grid>
-                                        </Paper>
+                                          </Paper>
+                                        </Grid>
+                                        ;
                                       </Grid>
-                                    </>
-                                  ))}
-                                </Grid>
-                              </>
-                            ) : null}
-                          </Grid>
+                                    ) : null}
+                                  </>
+                                ) : null}
 
-                          {
-                          //   <Grid
-                          //   container
-                          //   alignItems="flex-end"
-                          //   style={{ marginTop: "16px" }}
-                          // >
-                          //   <Grid item xs={8} align="left" />
-                          //   <Grid item xs align="right">
-                          //     test
-                          //   </Grid>
-                          // </Grid>
-                          }
+                                {value.replies && value.replies.length > 0 ? (
+                                  <>
+                                    <Grid
+                                      item
+                                      xs={12}
+                                      style={{ marginTop: "10px" }}
+                                    >
+                                      <Typography
+                                        variant="inherit"
+                                        style={{
+                                          fontSize: "14px",
+                                          fontWeight: "600"
+                                        }}
+                                      >
+                                        {`ຄໍາຕອບກັບ (${value.replies.length})`}
+                                      </Typography>
+                                    </Grid>
+                                    <Grid
+                                      item
+                                      xs={12}
+                                      style={{ marginTop: "10px" }}
+                                    >
+                                      {value.replies.map(reply => (
+                                        <>
+                                          <Grid item>
+                                            <Paper
+                                              style={{
+                                                boxShadow: "none",
+                                                border: "none",
+                                                marginTop: "8px"
+                                              }}
+                                            >
+                                              <Grid
+                                                container
+                                                spacing={0}
+                                                style={{
+                                                  padding: "0",
+                                                  paddingLeft: 0,
+                                                  paddingRight: 0
+                                                }}
+                                              >
+                                                <Grid
+                                                  item
+                                                  align="center"
+                                                  style={{
+                                                    marginRight: "8px",
+                                                    width: "32"
+                                                  }}
+                                                >
+                                                  <Link
+                                                    to={`/profile/${value._id}`}
+                                                    style={{
+                                                      color: "inherit",
+                                                      textDecoration: "none"
+                                                    }}
+                                                  >
+                                                    {value.user.profileImage &&
+                                                    value.user
+                                                      .profileImage[0] &&
+                                                    value.user.profileImage[0]
+                                                      .name ? (
+                                                      <Avatar
+                                                        src={`${UPLOADS_SERVER}/images/${
+                                                          reply.user
+                                                            .profileImage[0]
+                                                            .name
+                                                        }`}
+                                                        alt="profile image"
+                                                        style={{
+                                                          width: "24px",
+                                                          height: "24px",
+                                                          borderStyle: "solid",
+                                                          borderColor:
+                                                            "#CFCECE",
+                                                          borderWidth: "1px"
+                                                        }}
+                                                      />
+                                                    ) : (
+                                                      <Avatar
+                                                        alt="profile image"
+                                                        style={{
+                                                          width: "24px",
+                                                          height: "24px",
+                                                          backgroundColor: `${`${
+                                                            reply.user.name
+                                                          }${
+                                                            reply.user.lastname
+                                                          }`.toColor()}`,
+                                                          fontFamily:
+                                                            "'Noto Sans Lao UI', sans serif",
+                                                          fontWeight: "500"
+                                                        }}
+                                                      >
+                                                        <Typography variant="inherit">
+                                                          {`${reply.user.name.charAt(
+                                                            0
+                                                          )}${reply.user.lastname.charAt(
+                                                            0
+                                                          )}`}
+                                                        </Typography>
+                                                      </Avatar>
+                                                    )}
+                                                  </Link>
+                                                </Grid>
+                                                <Grid item xs>
+                                                  <Grid container>
+                                                    <Grid item xs>
+                                                      <Grid container>
+                                                        <Grid item xs={11}>
+                                                          <Link
+                                                            to={`/profile/${
+                                                              reply.user._id
+                                                            }`}
+                                                            style={{
+                                                              textDecoration:
+                                                                "none"
+                                                            }}
+                                                          >
+                                                            <Typography
+                                                              style={{
+                                                                fontWeight:
+                                                                  "600",
+                                                                color:
+                                                                  "#404040",
+                                                                fontSize:
+                                                                  "14px",
+                                                                display:
+                                                                  "inline"
+                                                              }}
+                                                            >
+                                                              {reply.user.name}{" "}
+                                                              {
+                                                                reply.user
+                                                                  .lastname
+                                                              }
+                                                              {renderIsAuthor(
+                                                                reply.user._id,
+                                                                research.author
+                                                              )}
+                                                              <div
+                                                                style={{
+                                                                  display:
+                                                                    "inline",
+                                                                  fontWeight: 200,
+                                                                  fontSize:
+                                                                    "13px",
+                                                                  color:
+                                                                    "#626262",
+                                                                  marginLeft:
+                                                                    "4px"
+                                                                }}
+                                                              >
+                                                                {moment(
+                                                                  reply.time
+                                                                ).format(
+                                                                  "HH:mm - DD/MM/YYYY"
+                                                                )}
+                                                              </div>
+                                                            </Typography>
+                                                          </Link>
+                                                        </Grid>
+
+                                                        <Grid
+                                                          item
+                                                          xs
+                                                          align="right"
+                                                        >
+                                                          {user.isAdmin ||
+                                                          user._id ===
+                                                            reply.user._id ||
+                                                          user._id ===
+                                                            research.uploader ? (
+                                                            <IconButton
+                                                              style={{
+                                                                padding: 0
+                                                              }}
+                                                              onClick={event => {
+                                                                handleCommentMenuClick(
+                                                                  event,
+                                                                  value._id
+                                                                );
+                                                              }}
+                                                            >
+                                                              <MoreVertOutlined fontSize="small" />
+                                                            </IconButton>
+                                                          ) : null}
+                                                        </Grid>
+                                                        <Grid item xs={12}>
+                                                          <Typography
+                                                            variant="inherit"
+                                                            style={{
+                                                              fontSize: "14px"
+                                                            }}
+                                                          >
+                                                            <AutoLinkText
+                                                              text={reply.reply}
+                                                            />
+                                                          </Typography>
+                                                        </Grid>
+                                                      </Grid>
+                                                    </Grid>
+                                                  </Grid>
+                                                </Grid>
+                                              </Grid>
+                                            </Paper>
+                                          </Grid>
+                                        </>
+                                      ))}
+                                    </Grid>
+                                  </>
+                                ) : null}
+                              </Grid>
+
+                              {
+                                //   <Grid
+                                //   container
+                                //   alignItems="flex-end"
+                                //   style={{ marginTop: "16px" }}
+                                // >
+                                //   <Grid item xs={8} align="left" />
+                                //   <Grid item xs align="right">
+                                //     test
+                                //   </Grid>
+                                // </Grid>
+                              }
+                            </Grid>
+                          </Grid>
                         </Grid>
                       </Grid>
+                    </Paper>
+                  </Grid>
+                ))}
+              </>
+            ) : (
+              <Grid item>
+                <Paper
+                  style={{
+                    boxShadow: "none",
+                    border: "none",
+                    marginTop: "16px",
+                    padding: "16px"
+                  }}
+                >
+                  <Grid
+                    container
+                    alignContent="center"
+                    alignItems="center"
+                    justify="center"
+                  >
+                    <Grid item align="center">
+                      <Typography variant="inherit" style={{ padding: "24px" }}>
+                        ຍັງບໍ່ມີຄໍາເຫັນເທື່ອ
+                      </Typography>
                     </Grid>
                   </Grid>
                 </Paper>
               </Grid>
-            ))}
+            )}
           </>
         ) : (
           <Grid item>

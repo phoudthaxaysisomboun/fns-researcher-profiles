@@ -46,7 +46,41 @@ class ResearchComments extends Component {
     isAdmin: false,
     tabIndex: 2,
     anchorElComments: null,
+    commentValue: "",
+    replyValue: "",
+    showReplyTextField: false
   };
+
+  handleCommentTextChange = (event) => {
+    this.setState({
+      commentValue: event.target.value
+    })
+  }
+
+  clearComment = () => {
+    this.setState({
+      commentValue: ""
+    })
+  }
+
+  cancelReply = () => {
+    this.setState({
+      replyValue: "",
+      showReplyTextField: false
+    })
+  }
+
+  handleReplyTextChange = event => {
+    this.setState({
+      replyValue: event.target.value,
+    })
+  }
+
+  openReplyTextField = () => {
+    this.setState({
+      showReplyTextField: true
+    })
+  }
 
   handleCommentMenuClick = (event, id) => {
     this.setState({ anchorElComments: event.currentTarget });
@@ -171,9 +205,24 @@ class ResearchComments extends Component {
             ? this.props.research.userResearch[0]
             : ""
             }
+
+            cancelReply = {
+              ()=>{this.cancelReply()}
+            }
+
+            replyValue = {this.state.replyValue}
+
+            showReplyTextField = {this.state.showReplyTextField}
+
+            openReplyTextField = {
+              () => {this.openReplyTextField()}
+            }
+            handleReplyTextChange = {
+              (event) => {this.handleReplyTextChange(event)}
+            }
             
             comments = {
-                this.props && this.props.research && this.props.research.userResearch && this.props.research.userResearch.researchComments ? this.props.research.userResearch.researchComments : []
+                this.props && this.props.research && this.props.research.userResearch && this.props.research.userResearch.researchComments ? this.props.research.userResearch.researchComments : null
             }
             anchorElComment={this.state.anchorElComments}
             handleCommentMenuClick={(event, id) => {
@@ -181,6 +230,13 @@ class ResearchComments extends Component {
             }}
             handleCommentMenuClose={event => {
               this.handleEducationMenuClose(event);
+            }}
+
+            commentText = {this.state.commentValue}
+            clearComment = {()=>{this.clearComment()}}
+
+            handleCommentTextChange={event=>{
+              this.handleCommentTextChange(event)
             }}
             />
           </Grid>
