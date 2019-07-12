@@ -768,7 +768,7 @@ class NewcomerResearchersList extends React.Component {
                                     component="th"
                                     scope="row"
                                   >
-                                    {moment(n["newResearcher.date"]).format("DDD/MM/YYYY")}
+                                    {moment(n["newResearcher.date"]).format("DD/MM/YYYY")}
                                   </TableCell>
                                   <TableCell
                                     padding="dense"

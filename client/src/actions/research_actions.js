@@ -14,7 +14,8 @@ import {
   CLEAR_LIKES_RESEARCH,
   GET_ALL_RESEARCHES_ADMIN,
   GET_ALL_RESEARCHES_NUMBERS_REPORTS,
-  GET_ALL_RESEARCHERS_LISTS_REPORTS
+  GET_ALL_RESEARCHERS_LISTS_REPORTS,
+  GET_COMMENTS
 } from "./types";
 
 import { RESEARCH_SERVER, RESEARCHER_SERVER } from "../components/utils/misc";
@@ -118,6 +119,19 @@ export function removeLike(_id) {
     payload: request
   };
 }
+
+export function getComments(id) {
+
+  const request = axios
+    .get(`${RESEARCH_SERVER}/researches_by_id/comments?id=${id}`)
+    .then(response => response.data);
+
+  return {
+    type: GET_COMMENTS,
+    payload: request
+  };
+}
+
 
 
 export function getAllResearches() {

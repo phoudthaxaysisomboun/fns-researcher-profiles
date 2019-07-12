@@ -228,7 +228,7 @@ const ProfileCard = ({ resercher, user, runFollow,runUnfollow }) => {
                                   marginTop: "4px"
                                 }}
                               >
-                              ຫົວຂໍ້ການຄົ້ນຄ້ວາ
+                              ຫົວຂໍ້ການຄົ້ນຄວ້າ
                               </Typography>
                               <>
                                 {renderResearchArea(

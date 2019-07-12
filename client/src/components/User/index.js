@@ -457,9 +457,11 @@ class ProfileOverview extends Component {
                   />
 
                   <ResearchaAreaCard props={this.props} runOpenUpdateDialog={()=>{this.handleUpdateResearchAreaDialogOpen()}} />
-                  <Grid item xs={12}>
-                    <MiniStatsCard {...this.props} />
-                  </Grid>
+                  {
+                  //   <Grid item xs={12}>
+                  //   <MiniStatsCard {...this.props} />
+                  // </Grid>
+                  }
 
                   <ResearchCard
                     userData={this.props.user.userData}

@@ -3,7 +3,7 @@
  export const RESEARCH_SERVER = '/api/research'
  export const RESEARCHER_SERVER = '/api/researchers'
  
- export const LOCALHOST= 'https://chilly-badger-18.localtunnel.me'
+ export const LOCALHOST= 'https://fns-researcher-profiles.edu.la'
 
  export const UPLOADS_SERVER = 'http://localhost:3002/uploads/'
 

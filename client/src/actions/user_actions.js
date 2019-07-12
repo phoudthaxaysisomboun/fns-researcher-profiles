@@ -67,7 +67,8 @@ import {
   UPDATE_PROFILE_DESCRIPTION,
   GET_RESEARCH_AREA,
   UPDATE_RESEARCHER_RESEARCH_AREA,
-  GET_AUTHOR_SUGGESTIONS
+  GET_AUTHOR_SUGGESTIONS,
+  GET_COMMENTS
 } from "./types";
 
 import {
@@ -708,8 +709,11 @@ export function getNewResearcherReports(sortBy, order, department, from, to) {
 
   const request = axios
     .post(
-      `${RESEARCHER_SERVER}/reports/new_researcher?sortBy=${sortBy}&order=${order}&department=${department}&from=${from}&to=${to}`
+      `${RESEARCHER_SERVER}/reports/new_researcher`
     )
+    // .post(
+    //   `${RESEARCHER_SERVER}/reports/new_researcher?sortBy=${sortBy}&order=${order}&department=${department}&from=${from}&to=${to}`
+    // )
     .then(response => response.data);
   return {
     type: GET_NEWCOMER_REPORTS,
@@ -868,3 +872,4 @@ export function getAuthorSuggestions() {
     payload: request
   };
 }
+

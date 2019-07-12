@@ -37,6 +37,7 @@ export const UPDATE_RESEARCHER_RESEARCH_AREA = "UPDATE_RESEARCHER_RESEARCH_AREA"
 export const UPDATE_EDUCATION = "update_education";
 export const REMOVE_EDUCATION = "remove_education";
 export const GET_AUTHOR_SUGGESTIONS = "get_author_suggestions";
+export const GET_COMMENTS = "get_comments";
 
 export const GET_RESEARCH_FOR_CARD = "get_research_for_card";
 export const CLEAR_RESEARCH_CARD = "clear_research_card";

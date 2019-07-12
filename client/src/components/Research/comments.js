@@ -18,6 +18,7 @@ import {
 } from "@material-ui/core";
 
 import { like, unlike, clearLike } from "../../actions/user_actions";
+import { getComments } from "../../actions/research_actions";
 
 import {
   getResearchForCard,
@@ -33,16 +34,17 @@ import AddResearchButton from "../utils/Button/add_research_button";
 
 import AbstractCard from "../Research/Card/abstract";
 import FileViwerCard from "../Research/Card/file_viewer";
+import CommentsCard from "../Research/Card/comments";
 
 let shareUrl;
 
-class Research extends Component {
+class ResearchComments extends Component {
   state = {
     isAuthor: false,
     isUploader: false,
     isAuth: false,
     isAdmin: false,
-    tabIndex: 0
+    tabIndex: 2
   };
 
   like = id => {
@@ -105,6 +107,8 @@ class Research extends Component {
           isAdmin: true
         });
       }
+
+      this.props.dispatch(getComments(id))
     });
   }
 
@@ -127,9 +131,9 @@ class Research extends Component {
         openShareDialog={() => {
           this.handleShareDialogOpen();
         }}
-        tabIndex ={this.state.tabIndex}
         runLike={id => this.like(id)}
         runUnLike={id => this.unlike(id)}
+        tabIndex ={this.state.tabIndex}
       >
         <Grid
           container
@@ -139,21 +143,14 @@ class Research extends Component {
           <Grid item xs sm={1} lg={2} md={1} />
 
           <Grid item xs={11} sm={10} lg={8} md={10}>
-            <AbstractCard
-              user={this.props.user.userData}
-              research={
-                this.props.research && this.props.research.userResearch
-                  ? this.props.research.userResearch[0]
-                  : ""
-              }
-            />
-            <FileViwerCard
-              user={this.props.user.userData}
-              research={
-                this.props.research && this.props.research.userResearch
-                  ? this.props.research.userResearch[0]
-                  : ""
-              }
+            <CommentsCard user={
+                this.props && this.props.user && this.props.user.userData ? this.props.user.userData : {}
+            }
+            
+            comments = {
+                this.props && this.props.research && this.props.research.userResearch && this.props.research.userResearch.researchComments ? this.props.research.userResearch.researchComments : []
+            }
+            
             />
           </Grid>
 
@@ -173,4 +170,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(Research);
+export default connect(mapStateToProps)(ResearchComments);

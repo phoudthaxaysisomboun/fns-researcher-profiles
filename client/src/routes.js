@@ -16,6 +16,7 @@ import ProfileInfo from './components/User/info'
 import Feed from "./components/User/Feed";
 
 import Research from './components/Research/index'
+import ResearchComments from './components/Research/comments'
 
 import ResearcherAdmin from './components/User/Admin/researchers'
 import RequestRegisterAdmin from './components/User/Admin/requests'
@@ -42,6 +43,7 @@ const Routes = () => {
         <Route path="/profile/:id" exact component={Auth(ProfileOverview, null)} />
         <Route path="/profile/:id/info" exact component={Auth(ProfileInfo, null)} />
         <Route path="/research/:id" exact component={Auth(Research, null)} />
+        <Route path="/research/:id/comments" exact component={Auth(ResearchComments, null)} />
 
         <Route path="/register" exact component={Auth(Register, false)} />
         <Route path="/login" exact component={Auth(RegisterLogin, false)} />

@@ -12,7 +12,8 @@ import {
   CLEAR_LIKES_RESEARCH,
   GET_ALL_RESEARCHES_ADMIN,
   GET_ALL_RESEARCHES_NUMBERS_REPORTS,
-  GET_ALL_RESEARCHERS_LISTS_REPORTS
+  GET_ALL_RESEARCHERS_LISTS_REPORTS,
+  GET_COMMENTS
 } from "../actions/types";
 
 import mergeByKey from "array-merge-by-key";
@@ -151,6 +152,12 @@ export default function(state = {}, action) {
         listResearchesListReports,
         listResearchesListReportsCount: action.payload.size
       };
+      case GET_COMMENTS:
+        console.log(action.payload)
+      return { ...state, userResearch: {
+        ...state.userResearch,
+        researchComments: action.payload
+      } };
     default:
       return state;
   }

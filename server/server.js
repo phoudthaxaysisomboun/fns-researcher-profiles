@@ -3312,6 +3312,57 @@ app.get("/api/research/researches_by_id", (req, res) => {
   }
 });
 
+app.get("/api/research/researches_by_id/comments", (req, res) => {
+  let order = req.query.order ? req.query.order : "asc";
+  let sortBy = req.query.sortBy ? req.query.sortBy : "name";
+  let limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 3;
+  let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0;
+
+  let type = req.query.type;
+  let items = req.query.id;
+
+  if (req.query.id) {
+    if (type === "array") {
+      let ids = req.query.id.split(",");
+      items = [];
+      items = ids.map(item => {
+        return mongoose.Types.ObjectId(item);
+      });
+    }
+
+    // const myObjectId = (rnd = r16 => Math.floor(r16).toString(16)) =>
+    // rnd(Date.now()/1000) + ' '.repeat(16).replace(/./g, () => rnd(Math.random()*16));
+
+    // console.log(myObjectId().toString())
+
+    Research.find({ _id: { $in: items } })
+      .sort([[sortBy, order]])
+      .limit(limit)
+      .skip(skip)
+      .select("comments")
+      .populate({
+        path: "comments.user",
+        model: "User",
+        select: ["name", "lastname", "profileImage"]
+      })
+      .populate({
+        path: "comments.replies.user",
+        model: "User",
+        select: ["name", "lastname", "profileImage"]
+      })
+      // .populate({
+      //   path: "affiliation.department"
+      // })
+      // .populate({
+      //   path: "affiliation.faculty"
+      // })
+      .exec((err, comments) => {
+        if (err) return res.status(400).send(err);
+        res.status(200).json(comments[0].comments);
+      });
+  }
+});
+
 app.post("/api/research/add_research", auth, (req, res) => {
   const research = new Research(req.body);
 

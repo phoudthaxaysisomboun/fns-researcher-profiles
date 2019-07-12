@@ -51,7 +51,7 @@ const ResearchHeader = ({
   props,
   children,
   loading,
-  tab,
+  tabIndex,
   research,
   openShareDialog,
   runLike,
@@ -736,7 +736,7 @@ const ResearchHeader = ({
               <Grid container>
             <Grid item xs={12}>
               <Tabs
-                value={0}
+                value={tabIndex}
                 indicatorColor="primary"
                 textColor="primary"
                 centered
@@ -762,7 +762,9 @@ const ResearchHeader = ({
 
                 <Tab
                   style={{ fontSize: "16px", fontWeight: 500 }}
-                  label="ຄໍາເຫັນ"
+                  label={(research.comments) && (research.comments.length > 0) ? `ຄໍາເຫັນ (${research.comments.length})` : `ຄໍາເຫັນ`}
+                  to={`/research/${research._id}/comments`}
+                  component={ReactLink}
                 />
               </Tabs>
             </Grid>
