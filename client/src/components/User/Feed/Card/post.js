@@ -86,7 +86,7 @@ const styles = {
   }
 };
 
-const FeedCard = ({ userData, userResearch, runLike, runUnLike }) => {
+const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
   const user = { ...userData };
   const research = { ...userResearch };
   const profileResearch = { ...research.userResearch };
@@ -642,12 +642,14 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike }) => {
                         color: "#686868",
                         minWidth: "14px",
                         height: "36px",
-                        borderRadius: "22px"
+                        borderRadius: "22px",
+                        textDecoration:"none"
                       }}
+                      onClick={()=>comment(researches._id)}
                     >
                       {" "}
                       <ModeCommentOutlined fontSize="small" />
-                      {research.comments ? (
+                      {researches.comments.length > 0 ? (
                         <div
                           style={{
                             fontSize: "13.5px",
@@ -659,8 +661,8 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike }) => {
                           &nbsp;
                           <NumberFormat
                             value={
-                              research.comments
-                                ? research.comments.length
+                              researches.comments
+                                ? researches.comments.length
                                 : null
                             }
                             displayType={"text"}

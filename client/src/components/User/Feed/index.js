@@ -54,6 +54,10 @@ class Feed extends Component {
     });
   };
 
+  comment = (id) => {
+    this.props.history.push(`/research/${id}/comments`)
+  }
+
   like = id => {
     if (this.props.user.userData.isAuth) {
       this.props.dispatch(like(id)).then(() => {});
@@ -96,6 +100,7 @@ class Feed extends Component {
                 }
                 runLike={id => this.like(id)}
                 runUnLike={id => this.unlike(id)}
+                comment={id => this.comment(id)}
               />
             </Grid>
           </Grid>

@@ -41,6 +41,7 @@ import FileViwerCard from "../Research/Card/file_viewer";
 import CommentsCard from "../Research/Card/comments";
 
 let shareUrl;
+let commentId
 
 class ResearchComments extends Component {
   state = {
@@ -54,7 +55,7 @@ class ResearchComments extends Component {
     commentValue: "",
     replyValue: "",
     showReplyTextField: false,
-    commentId: null,
+    commentId: "",
     replyId: null
   };
 
@@ -77,7 +78,7 @@ class ResearchComments extends Component {
   }
 
   deleleReply = () => {
-    this.props.dispatch(removeReply(this.props.research.userResearch[0]._id, this.state.replyId, this.state.commentId)).then(()=>{
+    this.props.dispatch(removeReply(this.props.research.userResearch[0]._id,this.state.commentId, this.state.replyId)).then(()=>{
       this.setState({ anchorElReplies: null });
     })
   }
@@ -96,11 +97,14 @@ class ResearchComments extends Component {
     })
   }
 
-  openReplyTextField = (id) => {
+  openReplyTextField = (event, id) => {
+    commentId = id
+    
     this.setState({
+      commentId: id,
       showReplyTextField: true,
-      commentId: id
     })
+    console.log(this.state.commentId)
   }
 
   submitComment = (event) => {
@@ -116,10 +120,11 @@ class ResearchComments extends Component {
 
   submitReply = (event) => {
     event.preventDefault();
+    
     this.props.dispatch(addReply(this.props.research.userResearch[0]._id, this.props.user.userData._id, this.state.replyValue, this.state.commentId)).then((response)=>{
       this.setState({
         replyValue: "",
-        openReplyTextField: false
+        showReplyTextField: false,
       })
     })
     
@@ -127,6 +132,7 @@ class ResearchComments extends Component {
 
 
   handleCommentMenuClick = (event, id) => {
+    console.log(id)
     this.setState({ anchorElComments: event.currentTarget });
     this.setState({
       commentId: id
@@ -143,10 +149,12 @@ class ResearchComments extends Component {
     this.setState({ anchorElComments: null });
   };
 
-  handleReplyMenuClick = (event, id) => {
+  handleReplyMenuClick = (event, id, commentId) => {
+    console.log(commentId)
     this.setState({ anchorElReplies: event.currentTarget });
     this.setState({
-      replyId: id
+      replyId: id,
+      commentId
     });
 
   //   let educations = this.props.user.userDetail.education
@@ -276,14 +284,14 @@ class ResearchComments extends Component {
             showReplyTextField = {this.state.showReplyTextField}
 
             openReplyTextField = {
-              () => {this.openReplyTextField()}
+              (event, id) => {this.openReplyTextField(event, id)}
             }
             handleReplyTextChange = {
               (event) => {this.handleReplyTextChange(event)}
             }
             
             submitComment = {(event)=>{this.submitComment(event)}}
-
+            commentId = {this.state.commentId}
             comments = {
                 this.props && this.props.research && this.props.research.userResearch && this.props.research.userResearch.researchComments ? this.props.research.userResearch.researchComments : null
             }
@@ -295,8 +303,8 @@ class ResearchComments extends Component {
             handleCommentMenuClose={event => {
               this.handleEducationMenuClose(event);
             }}
-            handleReplyMenuClick={(event, id) => {
-              this.handleCommentMenuClick(event, id);
+            handleReplyMenuClick={(event, id,commentId) => {
+              this.handleReplyMenuClick(event, id, commentId);
             }}
             handleReplyMenuClose={event => {
               this.handleReplyMenuClose(event);

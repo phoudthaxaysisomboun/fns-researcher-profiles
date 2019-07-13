@@ -173,9 +173,9 @@ export function removeComment(id, commentId) {
 }
 
 export function removeReply(id, commentId, replyId) {
-
+console.log(`${RESEARCH_SERVER}/remove_reply?id=${id}&commentId=${commentId}&replyId=${replyId}`)
   const request = axios
-    .post(`${RESEARCH_SERVER}/remove_comment?id=${id}&commentId=${commentId}&replyId=${replyId}`)
+    .post(`${RESEARCH_SERVER}/remove_reply?id=${id}&commentId=${commentId}&replyId=${replyId}`)
     .then(response => response.data);
 
   return {

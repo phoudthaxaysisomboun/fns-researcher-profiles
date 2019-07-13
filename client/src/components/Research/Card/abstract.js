@@ -6,13 +6,18 @@ import {
   Grid,
   Paper,
   Typography,
-  LinearProgress
+  LinearProgress,
+  CircularProgress
 } from "@material-ui/core";
 
 import { EditOutlined } from "@material-ui/icons";
 
 const renderNoData = () => {
-  return <LinearProgress style={{ margin: "16px" }} />;
+  return (
+    <Grid item xs={12} align="center">
+    <CircularProgress style={{ padding: "24px" }} />
+    </Grid>
+  );
 };
 
 const AbstractCard = ({ user, research }) => {
@@ -20,13 +25,24 @@ const AbstractCard = ({ user, research }) => {
 
   const renderItems = () => {
     return (
-      <Grid container spacing={8} style={{ padding: "24px", paddingTop: "16px" }}>
-        <Typography style={{ whiteSpace: "pre-wrap", lineHeight: "24px", fontSize: "1rem" }}>
-          <AutoLinkText text={abstract}></AutoLinkText>
+      <Grid
+        container
+        spacing={8}
+        style={{ padding: "24px", paddingTop: "16px" }}
+      >
+        <Typography
+          style={{
+            whiteSpace: "pre-wrap",
+            lineHeight: "24px",
+            fontSize: "1rem"
+          }}
+        >
+          <AutoLinkText text={abstract} />
         </Typography>
       </Grid>
     );
   };
+
   return (
     <Grid item xs={12}>
       <Paper style={{ boxShadow: "none", border: "1px solid #d8d8d8" }}>
@@ -44,14 +60,14 @@ const AbstractCard = ({ user, research }) => {
             </Typography>
           </Grid>
           <Grid item xs={6} align="right">
-            {true ? (
+            {user.isAuth && (user._id === research.uploader || user.isAdmin) ? (
               <IconButton style={{ padding: 0 }}>
                 <EditOutlined fontSize="small" />
               </IconButton>
             ) : null}
           </Grid>
         </Grid>
-        {true ? renderItems() : renderNoData()}
+        {research && research.abstract ? renderItems() : renderNoData()}
       </Paper>
     </Grid>
   );

@@ -19,7 +19,8 @@ import {
   Menu,
   Avatar,
   CircularProgress,
-  TextField
+  TextField,
+  Link as MaterialUILink
 } from "@material-ui/core";
 
 import {
@@ -86,7 +87,8 @@ const CommentsCard = ({
   handleReplyMenuClose,
   deleleReply,
   submitReply,
-  handleReplyMenuClick
+  handleReplyMenuClick,
+  commentId
 }) => {
   const renderIsAuthor = (id, author) => {
     let isAuthor = false;
@@ -336,7 +338,6 @@ const CommentsCard = ({
               <>
                 {comments.map((value, index, array) => (
                   <Grid item>
-                    {console.log(value)}
                     <Paper
                       style={{
                         boxShadow: "none",
@@ -472,14 +473,19 @@ const CommentsCard = ({
                                       style={{ marginTop: "10px" }}
                                     >
                                       <Button
-                                        onClick={(id) => openReplyTextField(value._id)}
-                                        size="small"
-                                        variant="outlined"
+                                      onClick={(event) => {
+                                        openReplyTextField(
+                                          event,
+                                          value._id
+                                        );
+                                      }}
+                                   variant="outlined"
+                                      style={{padding: 0}}
                                       >
                                         ຕອບກັບ
                                       </Button>
                                     </Grid>
-                                    {showReplyTextField ? (
+                                    {showReplyTextField && commentId === value._id ? (
                                       <Grid item xs={12}>
                                         <Grid item>
                                           <Paper
@@ -610,6 +616,17 @@ const CommentsCard = ({
                                                           </Button>
                                                           </>
                                                         ) : (
+                                                          <>
+                                                          <Button
+                                                          onClick={() =>
+                                                            cancelReply()
+                                                          }
+                                                          style={{
+                                                            marginRight: "8px"
+                                                          }}
+                                                        >
+                                                          ຍົກເລີກ
+                                                        </Button>
                                                           <Button
                                                             disabled
                                                             variant="contained"
@@ -617,6 +634,7 @@ const CommentsCard = ({
                                                           >
                                                             ໃຫ້ຄໍາຕອບກັບ
                                                           </Button>
+                                                          </>
                                                         )}
                                                       </Grid>
                                                     
@@ -629,7 +647,7 @@ const CommentsCard = ({
                                             </Grid>
                                           </Paper>
                                         </Grid>
-                                        ;
+                                        
                                       </Grid>
                                     ) : null}
                                   </>
@@ -814,6 +832,7 @@ const CommentsCard = ({
                                                               onClick={event => {
                                                                 handleReplyMenuClick(
                                                                   event,
+                                                                  reply._id,
                                                                   value._id
                                                                 );
                                                               }}
