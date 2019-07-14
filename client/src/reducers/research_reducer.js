@@ -23,6 +23,16 @@ import {
 import mergeByKey from "array-merge-by-key";
 import moment from "moment";
 
+function compareDate( a, b ) {
+  if ( a.time < b.time ){
+    return 1;
+  }
+  if ( a.time > b.time ){
+    return -1;
+  }
+  return 0;
+}
+
 export default function(state = {}, action) {
   switch (action.type) {
     case GET_RESEARCH_FOR_CARD:
@@ -159,30 +169,30 @@ export default function(state = {}, action) {
       case GET_COMMENTS:
       return { ...state, userResearch: {
         ...state.userResearch,
-        researchComments: action.payload
+        researchComments: action.payload.sort( compareDate )
       } };
       case ADD_COMMENTS:
       return { ...state, userResearch: {
         ...state.userResearch,
-        researchComments: action.payload
+        researchComments: action.payload.sort( compareDate )
       } };
       case DELETE_COMMENTS:
 
       return { ...state, userResearch: {
         ...state.userResearch,
-        researchComments: action.payload
+        researchComments: action.payload.sort( compareDate )
       } };
       case ADD_REPLY:
 
       return { ...state, userResearch: {
         ...state.userResearch,
-        researchComments: action.payload
+        researchComments: action.payload.sort( compareDate )
       } };
       case REMOVE_REPLY:
 
       return { ...state, userResearch: {
         ...state.userResearch,
-        researchComments: action.payload
+        researchComments: action.payload.sort( compareDate )
       } };
     default:
       return state;

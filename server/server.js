@@ -3447,6 +3447,32 @@ app.post("/api/research/remove_reply", auth, (req, res) => {
     });
 });
 
+const path = require('path')
+
+// DOWNLOAD FILES
+app.get('/api/research/download/:id&:userId',  (req, res) => {
+  const file = path.resolve(".") + `/uploads/${req.params.id}`
+  res.download(file)
+
+  Research.findOneAndUpdate(
+    { _id: mongoose.Types.ObjectId(req.params.id) },
+    {
+      $push: {
+        downloads: {
+          user: mongoose.Types.ObjectId(req.params.userId),
+          time: moment().toDate()
+        }
+      }
+    },
+  )
+    .exec((err, doc) => {
+      if (err) return res.json({ success: false, err });
+      res.status(200).json(doc.downloads);
+
+      console.log(doc.downloads)
+    });
+})
+
 // User.findOneAndUpdate(
 //   {
 //     _id: mongoose.Types.ObjectId(req.query.userId),

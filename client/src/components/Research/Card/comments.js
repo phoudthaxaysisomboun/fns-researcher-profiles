@@ -438,11 +438,10 @@ const CommentsCard = ({
                                     </Typography>
                                   </Link>
                                 </Grid>
-
                                 <Grid item xs align="right">
                                   {user.isAdmin ||
                                   user._id === value.user._id ||
-                                  user._id === research.uploader ? (
+                                  user._id === research.uploader._id ? (
                                     <IconButton
                                       style={{ padding: 0 }}
                                       onClick={event => {
@@ -824,7 +823,7 @@ const CommentsCard = ({
                                                           user._id ===
                                                             reply.user._id ||
                                                           user._id ===
-                                                            research.uploader ? (
+                                                            research.uploader._id ? (
                                                             <IconButton
                                                               style={{
                                                                 padding: 0

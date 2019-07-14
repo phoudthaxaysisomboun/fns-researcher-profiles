@@ -9,12 +9,14 @@ import {
   Button,
   Tabs,
   Tab,
-  Link,
   Typography,
   LinearProgress,
   CircularProgress,
-  Hidden
+  Hidden,
+  
 } from "@material-ui/core";
+
+import { ObjectID } from 'bson';
 
 import NumberFormat from "react-number-format";
 
@@ -40,10 +42,11 @@ import {
   MoreVertOutlined,
   ForwardOutlined,
   MoreHorizOutlined,
+  SaveAltOutlined,
   RemoveRedEyeOutlined
 } from "@material-ui/icons";
 
-import { Link as ReactLink, withRouter } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 
 import { UPLOADS_SERVER } from "../components/utils/misc";
 
@@ -60,6 +63,8 @@ const ResearchHeader = ({
   const userData = { ...props.user.userData };
 
   const isAuth = userData.isAuth;
+
+  const _id  = new ObjectID();
 
   const styles = {
     chip: {
@@ -215,6 +220,10 @@ const ResearchHeader = ({
       );
     }
   };
+
+  // const downloadFile = () => {
+  //   this.props.history.push(`/api/research/download/${research.files[0].name}`)
+  // }
 
   return (
     <Grid container>
@@ -706,27 +715,28 @@ const ResearchHeader = ({
                     <ForwardOutlined style={{ marginRight: "14px" }} />
                     ນໍາໄປອ້າງອີງ
                   </Button>
-                  <Button
+
+                  {
+                    research && research.files && (research.files.length > 0) && research.files[0].name ?
+                    <>
+                    <Button
                     color="primary"
                     variant="contained"
                     style={{ marginLeft: "8px", fontSize: "1rem" }}
+                   
+                    href={`/api/research/download/${research.files[0].name}&${userData._id ? userData._id : _id.toHexString()}`}
+           
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="a-s-fa-Ha-pa"
-                      viewBox="0 0 24 24"
-                      focusable="false"
-                      fill="white"
-                      style={{
-                        width: "24px",
-                        height: "24px",
-                        marginRight: "14px"
-                      }}
-                    >
-                      <path d="M4 15h2v3h12v-3h2v3c0 1.1-.9 2-2 2H6c-1.1 0-2-.9-2-2m11.59-8.41L13 12.17V4h-2v8.17L8.41 9.59 7 11l5 5 5-5-1.41-1.41z" />
-                    </svg>
+                    <SaveAltOutlined style={{marginRight: "14px"}} />
+                
                     ດາວນ໌ໂຫລດ
                   </Button>
+                  
+                  </>
+                  : null
+                  }
+
+                  
 
                   <IconButton style={{ marginLeft: "8px" }}>
                     <MoreHorizOutlined />
@@ -746,7 +756,7 @@ const ResearchHeader = ({
                   style={{ fontSize: "16px", fontWeight: 500 }}
                   label="ໂດຍລວມ"
                   to={`/research/${research._id}`}
-                  component={ReactLink}
+                  component={Link}
                 />
 
                 <Tab
@@ -757,14 +767,14 @@ const ResearchHeader = ({
                   }}
                   label="ສະຖິຕິ"
                   to={`/profile/${research._id}/info`}
-                  component={ReactLink}
+                  component={Link}
                 />
 
                 <Tab
                   style={{ fontSize: "16px", fontWeight: 500 }}
                   label={(research.comments) && (research.comments.length > 0) ? `ຄໍາເຫັນ (${research.comments.length})` : `ຄໍາເຫັນ`}
                   to={`/research/${research._id}/comments`}
-                  component={ReactLink}
+                  component={Link}
                 />
               </Tabs>
             </Grid>
