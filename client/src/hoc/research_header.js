@@ -61,6 +61,21 @@ const ResearchHeader = ({
 }) => {
   const userData = { ...props.user.userData };
 
+  let author = []
+
+  let citationString = ""
+
+  let researchTitle
+
+  if (research.author) {
+    author = research.author.map((value)=> {
+      return `${value.name} ${value.lastname}`
+    })
+    citationString = encodeURIComponent(`${author.join(", ")}. (${moment(research.date).format("YYYY")}). ${research.title}`)
+
+    researchTitle = research.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()
+  }
+
   const isAuth = userData.isAuth;
 
   const _id = new ObjectID();
@@ -728,10 +743,17 @@ const ResearchHeader = ({
                 </Grid>
               </Grid>
               <Grid item lg={6} md={6} sm={6} xs={12} align="right">
+              {console.log(citationString)}
+              {
+              //   console.log(`/api/research/download/citation/${encodeURIComponent(`${research.author.join(", ")}. (${moment(research.date).format("YYYY")}). ${research.author}.`)}&${
+              //   userData._id ? userData._id : _id.toHexString()
+              // }&${research._id}`)
+            }
                 <Button
                   color="primary"
                   variant="outlined"
                   style={{ fontSize: "1rem" }}
+                  href={`/api/research/download/citation/${citationString}&${userData._id ? userData._id : _id.toHexString()}&${research._id}&${encodeURIComponent(researchTitle)}`}
                 >
                   <ForwardOutlined style={{ marginRight: "14px" }} />
                   ນໍາໄປອ້າງອີງ

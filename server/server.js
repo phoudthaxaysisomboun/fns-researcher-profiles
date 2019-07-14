@@ -418,7 +418,8 @@ app.get("/api/users/logout", auth, (req, res) => {
 app.get("/api/researcher_profiles/count", (req, res) => {
   User.find({
     emailIsVerified: true,
-    accountIsVerified: true
+    accountIsVerified: true,
+    active: true
   }).exec((err, docs) => {
     Research.find({}).exec((err, researchDoc) => {
       if (err) return res.status(400).send(err);
@@ -451,6 +452,7 @@ app.post("/api/researchers/search", (req, res) => {
 
   findArgs.emailIsVerified = true;
   findArgs.accountIsVerified = true;
+  findArgs.active = true;
 
   let reg = new RegExp(req.query.search, "i");
   // User.aggregate([
@@ -475,6 +477,7 @@ app.post("/api/researchers/search", (req, res) => {
     User.find({
       emailIsVerified: true,
       accountIsVerified: true,
+      active: true,
       $or: [
         { name: { $regex: reg, $options: "m" } },
         { lastname: { $regex: reg, $options: "m" } },
@@ -2352,7 +2355,8 @@ app.get("/api/researchers/followers", (req, res) => {
     User.find({
       _id: { $in: items },
       emailIsVerified: true,
-      accountIsVerified: true
+      accountIsVerified: true,
+      active: true
     })
       .sort([[sortBy, order]])
       .limit(limit)
@@ -3152,6 +3156,7 @@ app.post("/api/research/search", (req, res) => {
     User.find({
       emailIsVerified: true,
       accountIsVerified: true,
+      active: true,
       $or: [
         { name: { $regex: reg, $options: "m" } },
         { lastname: { $regex: reg, $options: "m" } }
@@ -3472,13 +3477,27 @@ app.get('/api/research/download/:id&:userId&:researchId',  (req, res) => {
 })
 
 
-app.get('/api/research/download/citation',  (req, res) => {
-  var text_ready = "This is a content of a txt file."
+app.get('/api/research/download/citation/:citation&:userId&:researchId&:researchTitle',  (req, res) => {
+  var text_ready = req.params.citation
 
 
-res.writeHead(200, {'Content-Type': 'application/force-download','Content-disposition':'attachment; filename=file.txt'});
+res.writeHead(200, {'Content-Type': 'application/force-download','Content-disposition':'attachment; filename=' + 'citation_for_' + req.params.researchTitle.trim() + '.txt'});
 
 res.end( text_ready );
+
+Research.findOneAndUpdate(
+  { _id: mongoose.Types.ObjectId(req.params.researchId) },
+  {
+    $push: {
+      citations: {
+        user: mongoose.Types.ObjectId(req.params.userId),
+        time: moment().toDate()
+      }
+    }
+  },
+)
+  .exec((err, doc) => {
+  });
 })
 
 // Count reads
