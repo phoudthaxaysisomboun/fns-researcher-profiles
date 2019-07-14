@@ -255,7 +255,8 @@ class Layout extends Component {
     headerclass: "",
     openManageToolMenu: true,
     openReportsToolMenu: true,
-    showHeader: false
+    showHeader: false,
+    searchText: ""
   };
 
   handleDrawerOpen = () => {
@@ -322,9 +323,20 @@ class Layout extends Component {
   };
 
   handleSearch = event => {
-    console.log(event.target.value);
+    this.setState({
+      searchText: event.target.value
+    })
   };
 
+  
+
+  submitSearch = event => {
+    event.preventDefault();
+    this.props.history.push(`/search/researchers?q=${encodeURIComponent(this.state.searchText)}`)
+    this.setState({
+      searchText: ""
+    })
+  }
   logoutHandler = () => {
     this.props.dispatch(logoutUser()).then(response => {
       if (response.payload.success) {
@@ -702,6 +714,7 @@ class Layout extends Component {
 
                 {!this.props.location.pathname.startsWith("/search") ? (
                   <>
+                  <form style={{ padding: 0, margin: 0, flexGrow: "0.4" }} onSubmit={event => this.submitSearch(event)}>
                     <div className={classes.search}>
                       <IconButton
                         className={classes.searchIcon}
@@ -714,6 +727,7 @@ class Layout extends Component {
                           marginBottom: "8.5px",
                           marginLeft: "8px"
                         }}
+                        type="submit"
                       >
                         <SearchIcon />
                       </IconButton>
@@ -726,11 +740,13 @@ class Layout extends Component {
                         style={{
                           fontFamily: "'Noto Sans Lao UI', sans-serif"
                         }}
+                        value={this.state.searchText}
                         onChange={event => {
                           this.handleSearch(event);
                         }}
                       />
                     </div>
+                    </form>
                     <div className={classes.grow} />
                   </>
                 ) : (

@@ -494,6 +494,74 @@ const ResearchHeader = ({
                         </Typography>
                       </Grid>
                     </Grid>
+                    <Grid container>
+                      <Grid
+                        item
+                        style={{ width: "32px", marginRight: "8px" }}
+                        align="left"
+                      >
+                        <ForwardOutlined
+                          style={{ color: "#757575", paddingLeft: 0 }}
+                        />
+                      </Grid>
+                      <Grid item xs align="left">
+                        <Typography variant="inherit">
+                          {" "}
+                          <span style={{ color: "#757575" }}>ຖືກນໍາໄປອ້າງອີງ</span>
+                          <div
+                            style={{
+                              color: "#757575",
+                              fontFamily: "'Roboto', sans serif",
+                              display: "inline",
+                              fontWeight: "500"
+                            }}
+                          >
+                            &nbsp;
+                            <NumberFormat
+                              value={research.citations ? research.citations.length : 0}
+                              displayType={"text"}
+                              thousandSeparator={true}
+                            />
+                            &nbsp;
+                          </div>
+                          <span style={{ color: "#757575" }}>ຄັ້ງ</span>
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                    <Grid container>
+                      <Grid
+                        item
+                        style={{ width: "32px", marginRight: "8px" }}
+                        align="left"
+                      >
+                        <SaveAltOutlined
+                          style={{ color: "#757575", paddingLeft: 0 }}
+                        />
+                      </Grid>
+                      <Grid item xs align="left">
+                        <Typography variant="inherit">
+                          {" "}
+                          <span style={{ color: "#757575" }}>ດາວນ໌ໂຫລດ</span>
+                          <div
+                            style={{
+                              color: "#757575",
+                              fontFamily: "'Roboto', sans serif",
+                              display: "inline",
+                              fontWeight: "500"
+                            }}
+                          >
+                            &nbsp;
+                            <NumberFormat
+                              value={research.downloads ? research.downloads.length : 0}
+                              displayType={"text"}
+                              thousandSeparator={true}
+                            />
+                            &nbsp;
+                          </div>
+                          <span style={{ color: "#757575" }}>ຄັ້ງ</span>
+                        </Typography>
+                      </Grid>
+                    </Grid>
                   </Grid>
                 </Hidden>
                 <Hidden smDown>
