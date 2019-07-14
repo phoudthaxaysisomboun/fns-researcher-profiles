@@ -44,6 +44,7 @@ export const ADD_REPLY = "add_reply";
 export const REMOVE_REPLY = "remove_reply";
 
 export const GET_RESEARCH_FOR_CARD = "get_research_for_card";
+export const COUNT_READS = "count_research_reads";
 export const CLEAR_RESEARCH_CARD = "clear_research_card";
 
 export const GET_DEPARTMENTS = "get_departments";

@@ -24,7 +24,8 @@ import {
   clearResearchCard,
   addLike,
   removeLike,
-  clearLikeResearch
+  clearLikeResearch,
+  addCountToResearch
 } from "../../actions/research_actions";
 
 import { CloseOutlined } from "@material-ui/icons";
@@ -33,6 +34,8 @@ import AddResearchButton from "../utils/Button/add_research_button";
 
 import AbstractCard from "../Research/Card/abstract";
 import FileViwerCard from "../Research/Card/file_viewer";
+
+import { ObjectID } from "bson";
 
 let shareUrl;
 
@@ -69,10 +72,13 @@ class Research extends Component {
 
   componentWillMount() {
     const id = this.props.match.params.id;
+    const _id = new ObjectID();
 
     this.props.dispatch(getResearchForCard(id)).then(response => {
       shareUrl = `${LOCALHOST}/research/${response.payload[0]._id}`;
       document.title = `${response.payload[0].title} - FNS Researcher Profiles`;
+
+      this.props.dispatch(addCountToResearch(response.payload[0]._id, this.props && this.props.user && this.props.user.userData && this.props.user.userData._id ? this.props.user.userData._id : _id.toHexString()))
 
       const author = response.payload[0].author.find(
         array => array._id === this.props.user.userData._id

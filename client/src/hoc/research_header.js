@@ -12,11 +12,10 @@ import {
   Typography,
   LinearProgress,
   CircularProgress,
-  Hidden,
-  
+  Hidden
 } from "@material-ui/core";
 
-import { ObjectID } from 'bson';
+import { ObjectID } from "bson";
 
 import NumberFormat from "react-number-format";
 
@@ -64,7 +63,7 @@ const ResearchHeader = ({
 
   const isAuth = userData.isAuth;
 
-  const _id  = new ObjectID();
+  const _id = new ObjectID();
 
   const styles = {
     chip: {
@@ -100,13 +99,14 @@ const ResearchHeader = ({
   };
 
   const renderLikeButton = id => {
-    let likeCount = research.likes  && research.likes ? research.likes.length : 0
+    let likeCount =
+      research.likes && research.likes ? research.likes.length : 0;
     let duplicate = false;
     let hasLike = false;
     if (userData.likes) {
       userData.likes.forEach(item => {
         if (item === id) {
-          duplicate = true; 
+          duplicate = true;
         }
       });
     }
@@ -138,7 +138,7 @@ const ResearchHeader = ({
               style={{ marginRight: "6px" }}
             />
             {likeCount > 0 ? (
-            <div
+              <div
                 style={{
                   fontSize: "1rem",
                   color: "#d32f2f",
@@ -153,18 +153,19 @@ const ResearchHeader = ({
                   thousandSeparator={true}
                 />
                 &nbsp;
-              </div>): 
+              </div>
+            ) : (
               <div
-              style={{
-                fontSize: "1rem",
+                style={{
+                  fontSize: "1rem",
 
-                fontFamily: "'Roboto', sans serif",
-                display: "inline"
-              }}
-            >
-              ຖຶກໃຈ
-            </div>}
-            
+                  fontFamily: "'Roboto', sans serif",
+                  display: "inline"
+                }}
+              >
+                ຖຶກໃຈ
+              </div>
+            )}
           </Button>
         </Grid>
       );
@@ -228,10 +229,15 @@ const ResearchHeader = ({
   return (
     <Grid container>
       <Grid item xs={12}>
-     
-          <Grid container>
-            <Grid item xs sm={1} lg={2} md={1} />
-            <Grid item xs={10} sm={10} lg={8} md={10} style={{
+        <Grid container>
+          <Grid item xs sm={1} lg={2} md={1} />
+          <Grid
+            item
+            xs={10}
+            sm={10}
+            lg={8}
+            md={10}
+            style={{
               paddingTop: "24px",
               borderRadius: 0,
               boxShadow: "none",
@@ -239,58 +245,66 @@ const ResearchHeader = ({
               borderLeft: 0,
               borderRight: 0,
               borderTop: "0"
-            }}>
-              <Grid container spacing={24}>
-                <Grid item lg md sm xs>
-                  {research ? (
-                    <>
-                      <Grid container style={{ marginBottom: "8px" }}>
-                        <div style={styles.chip}>
-                          {research.researchType.name}
+            }}
+          >
+            <Grid container spacing={24}>
+              <Grid item lg md sm xs>
+                {research ? (
+                  <>
+                    <Grid container style={{ marginBottom: "8px" }}>
+                      <div style={styles.chip}>
+                        {research.researchType.name}
+                      </div>
+
+                      {research.files ? (
+                        <div style={styles.chipSecondary}>
+                          ມີເອກກະສານໃຫ້ອ່ານ
                         </div>
+                      ) : null}
 
-                        {research.files ? (
-                          <div style={styles.chipSecondary}>
-                            ມີເອກກະສານໃຫ້ອ່ານ
-                          </div>
-                        ) : null}
+                      {research.publicationType ? (
+                        <div style={styles.chipSecondary}>
+                          {research.publicationType.name}
+                        </div>
+                      ) : null}
+                    </Grid>
+                    <Grid container>
+                      <Typography
+                        variant="inherit"
+                        style={{
+                          fontFamily: "'Noto Sans Lao UI', sans serif",
+                          fontWeight: 700,
+                          fontSize: "24px"
+                        }}
+                      >
+                        {research.title}
+                      </Typography>
+                    </Grid>
+                    <Grid container>
+                      <Typography
+                        variant="body2"
+                        style={{
+                          fontFamily: "'Roboto', sans-serif",
+                          fontSize: "12px",
+                          letterSpacing: "1.5 px",
+                          fontWeight: "600",
+                          color: "#00695C"
+                        }}
+                      >
+                        {moment(research.date).format("DD/MM/YYYY")}
+                      </Typography>
+                    </Grid>
 
-                        {research.publicationType ? (
-                          <div style={styles.chipSecondary}>
-                            {research.publicationType.name}
-                          </div>
-                        ) : null}
-                      </Grid>
-                      <Grid container>
-                        <Typography
-                          variant="inherit"
-                          style={{
-                            fontFamily: "'Noto Sans Lao UI', sans serif",
-                            fontWeight: 700,
-                            fontSize: "24px"
-                          }}
-                        >
-                          {research.title}
-                        </Typography>
-                      </Grid>
-                      <Grid container>
-                        <Typography
-                          variant="body2"
-                          style={{
-                            fontFamily: "'Roboto', sans-serif",
-                            fontSize: "12px",
-                            letterSpacing: "1.5 px",
-                            fontWeight: "600",
-                            color: "#00695C"
-                          }}
-                        >
-                          {moment(research.date).format("DD/MM/YYYY")}
-                        </Typography>
-                      </Grid>
-
-                      <Grid container style={{ marginTop: "8px" }}>
-                        {research.author.map((value, item, array) => (
-                          <>
+                    <Grid container style={{ marginTop: "8px" }}>
+                      {research.author.map((value, item, array) => (
+                        <>
+                          <Link
+                            to={`/profile/${value._id}`}
+                            style={{
+                              color: "inherit",
+                              textDecoration: "none"
+                            }}
+                          >
                             <Grid
                               item
                               style={{
@@ -333,456 +347,463 @@ const ResearchHeader = ({
                                 </Avatar>
                               )}
                             </Grid>
-                            <Grid item>
-                              <Typography
-                                variant="inherit"
-                                style={{
-                                  height: "18px",
-                                  lineHeight: "18px",
-                                  marginBottom: "8px",
-                                  fontWeight: "500",
-                                  marginRight: "4px"
-                                }}
-                              >
-                                {`${value.name} ${value.lastname}`}{" "}
-                                {item !== array.length - 1 ? " • " : null}
-                              </Typography>
-                            </Grid>
-                          </>
-                        ))}
-                      </Grid>
-                      {research &&
-                      research.researchType &&
-                      research.researchType._id ===
-                        "5cdb83a127ba7c4214ef5779" ? (
-                        <>
-                          {research.degree ? (
-                            <Grid container>
-                              <Typography
-                                variant="inherit"
-                                style={{
-                                  letterSpacing: "1.5 px"
-                                }}
-                              >
-                                <strong>ລະດັບ: </strong> {research.degree}
-                              </Typography>
-                            </Grid>
-                          ) : null}
-                          {research.supervisor[0] ? (
-                            <Grid container>
-                              <Typography
-                                variant="inherit"
-                                style={{
-                                  letterSpacing: "1.5 px"
-                                }}
-                              >
-                                <strong>ຜູ້ນໍາພາ: </strong>{" "}
-                                {`${research.supervisor[0].prefix} ${
-                                  research.supervisor[0].name
-                                } ${research.supervisor[0].lastname}`}
-                              </Typography>
-                            </Grid>
-                          ) : null}
-                        </>
-                      ) : null}
-
-                      {research &&
-                      research.researchType &&
-                      research.researchType._id ===
-                        "5d0516e447c496528476ec94" ? (
-                        <>
-                          {research.conferenceTitle ? (
-                            <Grid container>
-                              <Typography
-                                variant="inherit"
-                                style={{
-                                  letterSpacing: "1.5 px"
-                                }}
-                              >
-                                <strong>ງານປະຊຸມ: </strong>{" "}
-                                {research.conferenceTitle}
-                              </Typography>
-                            </Grid>
-                          ) : null}
-                          {research.location ? (
-                            <Grid container>
-                              <Typography
-                                variant="inherit"
-                                style={{
-                                  letterSpacing: "1.5 px"
-                                }}
-                              >
-                                <strong>ສະຖານທີ່ປະຊຸມ: </strong>{" "}
-                                {`${research.location}`}
-                              </Typography>
-                            </Grid>
-                          ) : null}
-                        </>
-                      ) : null}
-                    </>
-                  ) : (
-                    ""
-                  )}
-                </Grid>
-                <Grid item lg={3} md={6} sm={12} xs={12} align="right">
-                  <Hidden mdUp>
-                    <Grid container>
-                      <Grid container>
-                        <Grid
-                          item
-                          style={{ width: "32px", marginRight: "8px" }}
-                          align="left"
-                        >
-                          <RemoveRedEyeOutlined
-                            style={{ color: "#757575", paddingLeft: 0 }}
-                          />
-                        </Grid>
-                        <Grid item xs align="left">
-                          <Typography variant="inherit">
-                            {" "}
-                            <span style={{ color: "#757575" }}>ອ່ານ</span>
-                            <div
+                          </Link>
+                          <Link to={`/profile/${value._id}`}style={{
+                            color: "inherit",
+                            textDecoration: "none"
+                          }} >
+                          <Grid item>
+                            <Typography
+                              variant="inherit"
                               style={{
-                                color: "#757575",
-                                fontFamily: "'Roboto', sans serif",
-                                display: "inline",
-                                fontWeight: "500"
+                                height: "18px",
+                                lineHeight: "18px",
+                                marginBottom: "8px",
+                                fontWeight: "500",
+                                marginRight: "4px"
                               }}
                             >
-                              &nbsp;
-                              <NumberFormat
-                                value={
-                                  research.reads ? research.reads.length : 0
-                                }
-                                displayType={"text"}
-                                thousandSeparator={true}
-                              />
-                              &nbsp;
-                            </div>
-                            <span style={{ color: "#757575" }}>ຄັ້ງ</span>
-                          </Typography>
-                        </Grid>
-                      </Grid>
+                              {`${value.name} ${value.lastname}`}{" "}
+                              {item !== array.length - 1 ? " • " : null}
+                            </Typography>
+                          </Grid>
+                          </Link>
+                        </>
+                      ))}
                     </Grid>
-                  </Hidden>
-                  <Hidden smDown>
-                    <Grid
-                      container
-                      alignItems="flex-end"
-                      alignContent="flex-end"
-                    >
-                      <Grid container>
-                        <Grid item xs>
+                    {research &&
+                    research.researchType &&
+                    research.researchType._id === "5cdb83a127ba7c4214ef5779" ? (
+                      <>
+                        {research.degree ? (
                           <Grid container>
-                            <Grid item xs align="right">
-                              <Typography variant="inherit">
-                                {" "}
-                                <span style={{ color: "#757575" }}>ອ່ານ</span>
-                                <div
-                                  style={{
-                                    color: "#757575",
-                                    fontFamily: "'Roboto', sans serif",
-                                    display: "inline",
-                                    fontWeight: "500"
-                                  }}
-                                >
-                                  &nbsp;
-                                  <NumberFormat
-                                    value={
-                                      research.reads ? research.reads.length : 0
-                                    }
-                                    displayType={"text"}
-                                    thousandSeparator={true}
-                                  />
-                                  &nbsp;
-                                </div>
-                                <span style={{ color: "#757575" }}>ຄັ້ງ</span>
-                              </Typography>
-                            </Grid>
-                            <Grid item style={{ width: "32px" }}>
-                              <RemoveRedEyeOutlined
-                                style={{ color: "#757575" }}
-                              />
-                            </Grid>
+                            <Typography
+                              variant="inherit"
+                              style={{
+                                letterSpacing: "1.5 px"
+                              }}
+                            >
+                              <strong>ລະດັບ: </strong> {research.degree}
+                            </Typography>
                           </Grid>
-                        </Grid>
-                      </Grid>
+                        ) : null}
+                        {research.supervisor[0] ? (
+                          <Grid container>
+                            <Typography
+                              variant="inherit"
+                              style={{
+                                letterSpacing: "1.5 px"
+                              }}
+                            >
+                              <strong>ຜູ້ນໍາພາ: </strong>{" "}
+                              {`${research.supervisor[0].prefix} ${
+                                research.supervisor[0].name
+                              } ${research.supervisor[0].lastname}`}
+                            </Typography>
+                          </Grid>
+                        ) : null}
+                      </>
+                    ) : null}
 
-                      <Grid container>
-                        <Grid item xs>
+                    {research &&
+                    research.researchType &&
+                    research.researchType._id === "5d0516e447c496528476ec94" ? (
+                      <>
+                        {research.conferenceTitle ? (
                           <Grid container>
-                            <Grid item xs align="right">
-                              <Typography variant="inherit">
-                                {" "}
-                                <span style={{ color: "#757575" }}>
-                                  ຖືກນໍາໄປອ້າງອີງ
-                                </span>
-                                <div
-                                  style={{
-                                    color: "#757575",
-                                    fontFamily: "'Roboto', sans serif",
-                                    display: "inline",
-                                    fontWeight: "500"
-                                  }}
-                                >
-                                  &nbsp;
-                                  <NumberFormat
-                                    value={
-                                      research.reads ? research.reads.length : 0
-                                    }
-                                    displayType={"text"}
-                                    thousandSeparator={true}
-                                  />
-                                  &nbsp;
-                                </div>
-                                <span style={{ color: "#757575" }}>ຄັ້ງ</span>
-                              </Typography>
-                            </Grid>
-                            <Grid item style={{ width: "32px" }}>
-                              <ForwardOutlined style={{ color: "#757575" }} />
-                            </Grid>
+                            <Typography
+                              variant="inherit"
+                              style={{
+                                letterSpacing: "1.5 px"
+                              }}
+                            >
+                              <strong>ງານປະຊຸມ: </strong>{" "}
+                              {research.conferenceTitle}
+                            </Typography>
                           </Grid>
-                        </Grid>
-                      </Grid>
-
-                      <Grid container>
-                        <Grid item xs>
+                        ) : null}
+                        {research.location ? (
                           <Grid container>
-                            <Grid item xs align="right">
-                              <Typography variant="inherit">
-                                {" "}
-                                <span style={{ color: "#757575" }}>
-                                  ດາວນ໌ໂຫລດ
-                                </span>
-                                <div
-                                  style={{
-                                    color: "#757575",
-                                    fontFamily: "'Roboto', sans serif",
-                                    display: "inline",
-                                    fontWeight: "500"
-                                  }}
-                                >
-                                  &nbsp;
-                                  <NumberFormat
-                                    value={
-                                      research.reads ? research.reads.length : 0
-                                    }
-                                    displayType={"text"}
-                                    thousandSeparator={true}
-                                  />
-                                  &nbsp;
-                                </div>
-                                <span style={{ color: "#757575" }}>ຄັ້ງ</span>
-                              </Typography>
-                            </Grid>
-                            <Grid item style={{ width: "32px" }}>
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="a-s-fa-Ha-pa"
-                                viewBox="0 0 24 24"
-                                focusable="false"
-                                fill="#757575"
-                                style={{
-                                  width: "24px",
-                                  height: "24px"
-                                }}
-                              >
-                                <path d="M4 15h2v3h12v-3h2v3c0 1.1-.9 2-2 2H6c-1.1 0-2-.9-2-2m11.59-8.41L13 12.17V4h-2v8.17L8.41 9.59 7 11l5 5 5-5-1.41-1.41z" />
-                              </svg>
-                            </Grid>
+                            <Typography
+                              variant="inherit"
+                              style={{
+                                letterSpacing: "1.5 px"
+                              }}
+                            >
+                              <strong>ສະຖານທີ່ປະຊຸມ: </strong>{" "}
+                              {`${research.location}`}
+                            </Typography>
                           </Grid>
-                        </Grid>
-                      </Grid>
-                    </Grid>
-                  </Hidden>
-                </Grid>
+                        ) : null}
+                      </>
+                    ) : null}
+                  </>
+                ) : (
+                  ""
+                )}
               </Grid>
-              <Grid container spacing={24}>
-                <Grid item lg md sm xs>
-                  <Grid
-                    container
-                    style={{ marginTop: "4px", marginBottom: "8px" }}
-                    spacing={16}
-                  >
-                    {isAuth ? renderLikeButton(research._id) : null}
-                  
-                    <Grid item>
-                      <Button
-                        style={{
-                          color: "#686868",
-                          minWidth: "14px",
-                          padding: "4px"
-                        }}
+              <Grid item lg={3} md={6} sm={12} xs={12} align="right">
+                <Hidden mdUp>
+                  <Grid container>
+                    <Grid container>
+                      <Grid
+                        item
+                        style={{ width: "32px", marginRight: "8px" }}
+                        align="left"
                       >
-                        {" "}
-                        <ModeCommentOutlined
-                          fontSize="default"
-                          style={{ marginRight: "6px" }}
+                        <RemoveRedEyeOutlined
+                          style={{ color: "#757575", paddingLeft: 0 }}
                         />
-                        {research.comments && research.comments[0] ? (
+                      </Grid>
+                      <Grid item xs align="left">
+                        <Typography variant="inherit">
+                          {" "}
+                          <span style={{ color: "#757575" }}>ອ່ານ</span>
                           <div
                             style={{
-                              fontSize: "1rem",
                               color: "#757575",
                               fontFamily: "'Roboto', sans serif",
-                              display: "inline"
+                              display: "inline",
+                              fontWeight: "500"
                             }}
                           >
                             &nbsp;
                             <NumberFormat
-                              value={
-                                research.comments
-                                  ? research.comments.length
-                                  : null
-                              }
+                              value={research.reads ? research.reads.length : 0}
                               displayType={"text"}
                               thousandSeparator={true}
                             />
                             &nbsp;
                           </div>
-                        ) : (
-                          <div
-                            style={{
-                              fontSize: "1rem",
-
-                              fontFamily: "'Roboto', sans serif",
-                              display: "inline"
-                            }}
-                          >
-                            ໃຫ້ຄໍາເຫັນ
-                          </div>
-                        )}
-                      </Button>
-                    </Grid>
-
-                    <Grid item>
-                      <Button
-                        style={{
-                          color: "#686868",
-                          minWidth: "14px",
-                          padding: "4px"
-                        }}
-                      >
-                        {" "}
-                        <ReplyOutlined
-                          fontSize="default"
-                          style={{
-                            marginRight: "6px",
-                            transform: "rotateY(180deg)"
-                          }}
-                        />
-                        {research.shares && research.shares[0] ? (
-                          <div
-                            style={{
-                              fontSize: "1rem",
-                              color: "#757575",
-                              fontFamily: "'Roboto', sans serif",
-                              display: "inline"
-                            }}
-                          >
-                            &nbsp;
-                            <NumberFormat
-                              value={
-                                research.shares ? research.shares.length : null
-                              }
-                              displayType={"text"}
-                              thousandSeparator={true}
-                            />
-                            &nbsp;
-                          </div>
-                        ) : (
-                          <div
-                            style={{
-                              fontSize: "1rem",
-
-                              fontFamily: "'Roboto', sans serif",
-                              display: "inline"
-                            }}
-                          >
-                            ແບ່ງປັນ
-                          </div>
-                        )}
-                      </Button>
+                          <span style={{ color: "#757575" }}>ຄັ້ງ</span>
+                        </Typography>
+                      </Grid>
                     </Grid>
                   </Grid>
-                </Grid>
-                <Grid item lg={6} md={6} sm={6} xs={12} align="right">
-                  <Button
-                    color="primary"
-                    variant="outlined"
-                    style={{ fontSize: "1rem" }}
-                  >
-                    <ForwardOutlined style={{ marginRight: "14px" }} />
-                    ນໍາໄປອ້າງອີງ
-                  </Button>
+                </Hidden>
+                <Hidden smDown>
+                  <Grid container alignItems="flex-end" alignContent="flex-end">
+                    <Grid container>
+                      <Grid item xs>
+                        <Grid container>
+                          <Grid item xs align="right">
+                            <Typography variant="inherit">
+                              {" "}
+                              <span style={{ color: "#757575" }}>ອ່ານ</span>
+                              <div
+                                style={{
+                                  color: "#757575",
+                                  fontFamily: "'Roboto', sans serif",
+                                  display: "inline",
+                                  fontWeight: "500"
+                                }}
+                              >
+                                &nbsp;
+                                <NumberFormat
+                                  value={
+                                    research.reads ? research.reads.length : 0
+                                  }
+                                  displayType={"text"}
+                                  thousandSeparator={true}
+                                />
+                                &nbsp;
+                              </div>
+                              <span style={{ color: "#757575" }}>ຄັ້ງ</span>
+                            </Typography>
+                          </Grid>
+                          <Grid item style={{ width: "32px" }}>
+                            <RemoveRedEyeOutlined
+                              style={{ color: "#757575" }}
+                            />
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+
+                    <Grid container>
+                      <Grid item xs>
+                        <Grid container>
+                          <Grid item xs align="right">
+                            <Typography variant="inherit">
+                              {" "}
+                              <span style={{ color: "#757575" }}>
+                                ຖືກນໍາໄປອ້າງອີງ
+                              </span>
+                              <div
+                                style={{
+                                  color: "#757575",
+                                  fontFamily: "'Roboto', sans serif",
+                                  display: "inline",
+                                  fontWeight: "500"
+                                }}
+                              >
+                                &nbsp;
+                                <NumberFormat
+                                  value={
+                                    research.citations ? research.citations.length : 0
+                                  }
+                                  displayType={"text"}
+                                  thousandSeparator={true}
+                                />
+                                &nbsp;
+                              </div>
+                              <span style={{ color: "#757575" }}>ຄັ້ງ</span>
+                            </Typography>
+                          </Grid>
+                          <Grid item style={{ width: "32px" }}>
+                            <ForwardOutlined style={{ color: "#757575" }} />
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+
+                    <Grid container>
+                      <Grid item xs>
+                        <Grid container>
+                          <Grid item xs align="right">
+                            <Typography variant="inherit">
+                              {" "}
+                              <span style={{ color: "#757575" }}>
+                                ດາວນ໌ໂຫລດ
+                              </span>
+                              <div
+                                style={{
+                                  color: "#757575",
+                                  fontFamily: "'Roboto', sans serif",
+                                  display: "inline",
+                                  fontWeight: "500"
+                                }}
+                              >
+                                &nbsp;
+                                <NumberFormat
+                                  value={
+                                    research.downloads
+                                      ? research.downloads.length
+                                      : 0
+                                  }
+                                  displayType={"text"}
+                                  thousandSeparator={true}
+                                />
+                                &nbsp;
+                              </div>
+                              <span style={{ color: "#757575" }}>ຄັ້ງ</span>
+                            </Typography>
+                          </Grid>
+                          <Grid item style={{ width: "32px" }}>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="a-s-fa-Ha-pa"
+                              viewBox="0 0 24 24"
+                              focusable="false"
+                              fill="#757575"
+                              style={{
+                                width: "24px",
+                                height: "24px"
+                              }}
+                            >
+                              <path d="M4 15h2v3h12v-3h2v3c0 1.1-.9 2-2 2H6c-1.1 0-2-.9-2-2m11.59-8.41L13 12.17V4h-2v8.17L8.41 9.59 7 11l5 5 5-5-1.41-1.41z" />
+                            </svg>
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                </Hidden>
+              </Grid>
+            </Grid>
+            <Grid container spacing={24}>
+              <Grid item lg md sm xs>
+                <Grid
+                  container
+                  style={{ marginTop: "4px", marginBottom: "8px" }}
+                  spacing={16}
+                >
+                  {isAuth ? renderLikeButton(research._id) : null}
 
                   {
-                    research && research.files && (research.files.length > 0) && research.files[0].name ?
+                    isAuth ?
                     <>
+                    <Grid item>
                     <Button
-                    color="primary"
-                    variant="contained"
-                    style={{ marginLeft: "8px", fontSize: "1rem" }}
-                   
-                    href={`/api/research/download/${research.files[0].name}&${userData._id ? userData._id : _id.toHexString()}`}
-           
-                  >
-                    <SaveAltOutlined style={{marginRight: "14px"}} />
-                
-                    ດາວນ໌ໂຫລດ
-                  </Button>
-                  
-                  </>
-                  : null
+                      style={{
+                        color: "#686868",
+                        minWidth: "14px",
+                        padding: "4px"
+                      }}
+                      component = {Link}
+                      to={`/research/${research._id}/comments`}
+                    >
+                      {" "}
+                      <ModeCommentOutlined
+                        fontSize="default"
+                        style={{ marginRight: "6px" }}
+                      />
+                      {research.comments && research.comments[0] ? (
+                        <div
+                          style={{
+                            fontSize: "1rem",
+                            color: "#757575",
+                            fontFamily: "'Roboto', sans serif",
+                            display: "inline"
+                          }}
+                        >
+                          &nbsp;
+                          <NumberFormat
+                            value={
+                              research.comments
+                                ? research.comments.length
+                                : null
+                            }
+                            displayType={"text"}
+                            thousandSeparator={true}
+                          />
+                          &nbsp;
+                        </div>
+                      ) : (
+                        <div
+                          style={{
+                            fontSize: "1rem",
+
+                            fontFamily: "'Roboto', sans serif",
+                            display: "inline"
+                          }}
+                        >
+                          ໃຫ້ຄໍາເຫັນ
+                        </div>
+                      )}
+                    </Button>
+                  </Grid>
+                    </> : null
                   }
 
-                  
+                  <Grid item>
+                    <Button
+                      style={{
+                        color: "#686868",
+                        minWidth: "14px",
+                        padding: "4px"
+                      }}
+                    >
+                      {" "}
+                      <ReplyOutlined
+                        fontSize="default"
+                        style={{
+                          marginRight: "6px",
+                          transform: "rotateY(180deg)"
+                        }}
+                      />
+                      {research.shares && research.shares[0] ? (
+                        <div
+                          style={{
+                            fontSize: "1rem",
+                            color: "#757575",
+                            fontFamily: "'Roboto', sans serif",
+                            display: "inline"
+                          }}
+                        >
+                          &nbsp;
+                          <NumberFormat
+                            value={
+                              research.shares ? research.shares.length : null
+                            }
+                            displayType={"text"}
+                            thousandSeparator={true}
+                          />
+                          &nbsp;
+                        </div>
+                      ) : (
+                        <div
+                          style={{
+                            fontSize: "1rem",
 
-                  <IconButton style={{ marginLeft: "8px" }}>
-                    <MoreHorizOutlined />
-                  </IconButton>
+                            fontFamily: "'Roboto', sans serif",
+                            display: "inline"
+                          }}
+                        >
+                          ແບ່ງປັນ
+                        </div>
+                      )}
+                    </Button>
+                  </Grid>
                 </Grid>
               </Grid>
-              <Grid container>
-            <Grid item xs={12}>
-              <Tabs
-                value={tabIndex}
-                indicatorColor="primary"
-                textColor="primary"
-                centered
-                style={{ marginTop: "16px" }}
-              >
-                <Tab
-                  style={{ fontSize: "16px", fontWeight: 500 }}
-                  label="ໂດຍລວມ"
-                  to={`/research/${research._id}`}
-                  component={Link}
-                />
+              <Grid item lg={6} md={6} sm={6} xs={12} align="right">
+                <Button
+                  color="primary"
+                  variant="outlined"
+                  style={{ fontSize: "1rem" }}
+                >
+                  <ForwardOutlined style={{ marginRight: "14px" }} />
+                  ນໍາໄປອ້າງອີງ
+                </Button>
+                {console.log(research._id)}
+                {research &&
+                research.files &&
+                research.files.length > 0 &&
+                research.files[0].name ? (
+                  <>
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      style={{ marginLeft: "8px", fontSize: "1rem" }}
+                      href={`/api/research/download/${research.files[0].name}&${
+                        userData._id ? userData._id : _id.toHexString()
+                      }&${research._id}`}
+                    >
+                      <SaveAltOutlined style={{ marginRight: "14px" }} />
+                      ດາວນ໌ໂຫລດ
+                    </Button>
+                  </>
+                ) : null}
 
-                <Tab
-                  style={{
-                    fontSize: "16px",
-                    fontWeight: 500,
-                    textDecoration: "none"
-                  }}
-                  label="ສະຖິຕິ"
-                  to={`/profile/${research._id}/info`}
-                  component={Link}
-                />
+                <IconButton style={{ marginLeft: "8px" }}>
+                  <MoreHorizOutlined />
+                </IconButton>
+              </Grid>
+            </Grid>
+            <Grid container>
+              <Grid item xs={12}>
+                <Tabs
+                  value={tabIndex}
+                  indicatorColor="primary"
+                  textColor="primary"
+                  centered
+                  style={{ marginTop: "16px" }}
+                >
+                  <Tab
+                    style={{ fontSize: "16px", fontWeight: 500 }}
+                    label="ໂດຍລວມ"
+                    to={`/research/${research._id}`}
+                    component={Link}
+                  />
 
-                <Tab
-                  style={{ fontSize: "16px", fontWeight: 500 }}
-                  label={(research.comments) && (research.comments.length > 0) ? `ຄໍາເຫັນ (${research.comments.length})` : `ຄໍາເຫັນ`}
-                  to={`/research/${research._id}/comments`}
-                  component={Link}
-                />
-              </Tabs>
+                  <Tab
+                    style={{
+                      fontSize: "16px",
+                      fontWeight: 500,
+                      textDecoration: "none"
+                    }}
+                    label="ສະຖິຕິ"
+                    to={`/profile/${research._id}/info`}
+                    component={Link}
+                  />
+
+                  <Tab
+                    style={{ fontSize: "16px", fontWeight: 500 }}
+                    label={
+                      research.comments && research.comments.length > 0
+                        ? `ຄໍາເຫັນ (${research.comments.length})`
+                        : `ຄໍາເຫັນ`
+                    }
+                    to={`/research/${research._id}/comments`}
+                    component={Link}
+                  />
+                </Tabs>
+              </Grid>
             </Grid>
           </Grid>
-            </Grid>
-            <Grid item xs sm={1} lg={2} md={1} />
-          </Grid>
-          
+          <Grid item xs sm={1} lg={2} md={1} />
+        </Grid>
       </Grid>
 
       {children}

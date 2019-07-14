@@ -19,7 +19,8 @@ import {
   ADD_COMMENTS,
   DELETE_COMMENTS,
   ADD_REPLY,
-  REMOVE_REPLY
+  REMOVE_REPLY,
+  COUNT_READS
 } from "./types";
 
 import { RESEARCH_SERVER, RESEARCHER_SERVER } from "../components/utils/misc";
@@ -193,6 +194,17 @@ export function getAllResearches() {
 
   return {
     type: GET_ALL_RESEARCHES_ADMIN,
+    payload: request
+  };
+}
+
+export function addCountToResearch(researchId, userId) {
+  const request = axios
+    .post(`${RESEARCH_SERVER}/count_reads?&researchId=${researchId}&userId=${userId}`)
+    .then(response => response.data);
+
+  return {
+    type: COUNT_READS,
     payload: request
   };
 }

@@ -3450,12 +3450,12 @@ app.post("/api/research/remove_reply", auth, (req, res) => {
 const path = require('path')
 
 // DOWNLOAD FILES
-app.get('/api/research/download/:id&:userId',  (req, res) => {
+app.get('/api/research/download/:id&:userId&:researchId',  (req, res) => {
   const file = path.resolve(".") + `/uploads/${req.params.id}`
   res.download(file)
 
   Research.findOneAndUpdate(
-    { _id: mongoose.Types.ObjectId(req.params.id) },
+    { _id: mongoose.Types.ObjectId(req.params.researchId) },
     {
       $push: {
         downloads: {
@@ -3466,12 +3466,41 @@ app.get('/api/research/download/:id&:userId',  (req, res) => {
     },
   )
     .exec((err, doc) => {
-      if (err) return res.json({ success: false, err });
-      res.status(200).json(doc.downloads);
 
-      console.log(doc.downloads)
+
     });
 })
+
+
+app.get('/api/research/download/citation',  (req, res) => {
+  var text_ready = "This is a content of a txt file."
+
+
+res.writeHead(200, {'Content-Type': 'application/force-download','Content-disposition':'attachment; filename=file.txt'});
+
+res.end( text_ready );
+})
+
+// Count reads
+
+app.post('/api/research/count_reads', (req, res) => {
+  Research.findOneAndUpdate(
+    { _id: mongoose.Types.ObjectId(req.query.researchId) },
+    {
+      $push: {
+        reads: {
+          user: mongoose.Types.ObjectId(req.query.userId),
+          time: moment().toDate()
+        }
+      }
+    },
+  )
+    .exec((err, doc) => {
+      if (err) return res.status(400).send(err);
+        res.status(200).json(doc.reads);
+    });
+})
+
 
 // User.findOneAndUpdate(
 //   {

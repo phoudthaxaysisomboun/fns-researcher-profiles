@@ -17,7 +17,8 @@ import {
   ADD_COMMENTS,
   DELETE_COMMENTS,
   ADD_REPLY,
-  REMOVE_REPLY
+  REMOVE_REPLY,
+  COUNT_READS
 } from "../actions/types";
 
 import mergeByKey from "array-merge-by-key";
@@ -37,6 +38,8 @@ export default function(state = {}, action) {
   switch (action.type) {
     case GET_RESEARCH_FOR_CARD:
       return { ...state, userResearch: action.payload };
+    case COUNT_READS:
+      return { ...state };
     case CLEAR_RESEARCH_CARD:
       return { ...state, userResearch: action.payload };
     case SEARCH_RESEARCHES:
