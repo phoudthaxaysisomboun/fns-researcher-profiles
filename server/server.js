@@ -51,6 +51,52 @@ const { Research } = require("./models/research");
 // Middlewares
 const { auth } = require("./middleware/auth");
 const { admin } = require("./middleware/admin");
+const fs = require('fs')
+
+//====================================
+//             UPLOAD FILES
+//====================================
+
+let publicationFileName = ""
+
+const multer = require('multer')
+let storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/')
+  },
+  filename: (req, file, cb)=>{
+    cb(null, `${Date.now()}_${file.originalname}`)
+    publicationFileName = `${Date.now()}_${file.originalname}`
+  }
+})
+
+const upload = multer({storage: storage}).single('file')
+
+app.post('/api/research/upload_publication', auth, (req, res) => {
+  upload(req, res, (err)=> {
+    if (err) {
+      return res.json({success: false, err})
+    }
+    return res.json({success: true, filename: publicationFileName})
+  })
+})
+
+
+
+app.post('/api/research/remove_publication_file', auth, (req, res) => {
+  const path = './uploads/' + req.query.filename
+
+  console.log(path)
+
+  fs.unlink(path, (err) => {
+    if (err) {
+      return res.json({success: false, err})
+    }
+    return res.json({success: true})
+  })
+
+})
+
 
 //====================================
 //             DEPARTMENTS
@@ -1286,7 +1332,7 @@ app.post(
         });
       });
     } else {
-      console.log(findArgs);
+      // console.log(findArgs);
       User.aggregate([
         // { $unwind: '$affiliation'},
 
@@ -1559,7 +1605,7 @@ app.post(
     let department = req.query.department ? req.query.department : null;
     let findArgs = {};
 
-    console.log(sortBy);
+    // console.log(sortBy);
 
     for (let key in req.body.filters) {
       if (req.body.filters[key].length > 0) {
@@ -1617,7 +1663,7 @@ app.post("/api/researchers/reports/outstanding", auth, admin, (req, res) => {
   let department = req.query.department ? req.query.department : null;
   let findArgs = {};
 
-  console.log(sortBy);
+  // console.log(sortBy);
 
   for (let key in req.body.filters) {
     if (req.body.filters[key].length > 0) {
@@ -1672,7 +1718,7 @@ app.post("/api/researchers/reports/new_researcher", auth, admin, (req, res) => {
   let department = req.query.department ? req.query.department : null;
   let findArgs = {};
 
-  console.log(sortBy);
+  // console.log(sortBy);
 
   for (let key in req.body.filters) {
     if (req.body.filters[key].length > 0) {
@@ -3177,7 +3223,7 @@ app.post("/api/research/search", (req, res) => {
         User.find(findArgs)
           .select("_id")
           .exec((err, result) => {
-            (rFindArgs.author = findArgs), console.log(ids);
+            // (rFindArgs.author = findArgs), console.log(ids);
 
             Research.find({
               $or: [
@@ -3499,6 +3545,10 @@ Research.findOneAndUpdate(
   .exec((err, doc) => {
   });
 })
+
+
+
+
 
 // Count reads
 

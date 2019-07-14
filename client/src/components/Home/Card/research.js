@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Link as ReactLink, withRouter } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 
 import NumberFormat from "react-number-format";
 
@@ -13,7 +13,6 @@ import {
   Paper,
   Avatar,
   Divider,
-  Link,
   Button,
   Typography,
   IconButton,
@@ -281,7 +280,7 @@ const ResearchCard = ({ userData, userResearch, runLike, runUnLike }) => {
                 zeroMinWidth
                 style={{ paddingRight: "16px" }}
               >
-                <ReactLink
+                <Link
                   to={`/research/${researches._id}`}
                   style={{ textDecoration: "none", color: "inherit" }}
                 >
@@ -293,7 +292,7 @@ const ResearchCard = ({ userData, userResearch, runLike, runUnLike }) => {
                     basedOn="letters"
                     style={{ fontSize: "20px", fontWeight: "500" }}
                   />
-                </ReactLink>
+                </Link>
                 <Grid container />
                 <Grid
                   container
@@ -421,7 +420,7 @@ const ResearchCard = ({ userData, userResearch, runLike, runUnLike }) => {
                   <Button
                     variant="contained"
                     color="primary"
-                    component={ReactLink}
+                    component={Link}
                     to={`/research/${researches._id}`}
                   >
                     ອ່ານ
@@ -473,10 +472,12 @@ const ResearchCard = ({ userData, userResearch, runLike, runUnLike }) => {
                     height: "36px",
                     borderRadius: "22px"
                   }}
+                  component = {Link}
+                  to={`/research/${researches._id}/comments`}
                 >
                   {" "}
                   <ModeCommentOutlined fontSize="small" />
-                  {research.comments ? (
+                  {researches.comments ? (
                     <div
                       style={{
                         fontSize: "13.5px",
@@ -488,8 +489,8 @@ const ResearchCard = ({ userData, userResearch, runLike, runUnLike }) => {
                       &nbsp;
                       <NumberFormat
                         value={
-                          research.comments
-                            ? research.comments.length
+                          researches.comments
+                            ? researches.comments.length
                             : null
                         }
                         displayType={"text"}
@@ -510,7 +511,7 @@ const ResearchCard = ({ userData, userResearch, runLike, runUnLike }) => {
                 >
                   {" "}
                   <ReplyOutlined fontSize="small" />
-                  {research.shares ? (
+                  {researches.shares ? (
                     <div
                       style={{
                         fontSize: "13.5px",
@@ -522,8 +523,8 @@ const ResearchCard = ({ userData, userResearch, runLike, runUnLike }) => {
                       &nbsp;
                       <NumberFormat
                         value={
-                          research.shares
-                            ? research.shares.length
+                          researches.shares && researches.shares.length > 0
+                            ? researches.shares.length
                             : null
                         }
                         displayType={"text"}

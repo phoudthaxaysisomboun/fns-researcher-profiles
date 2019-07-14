@@ -9,8 +9,9 @@ import { withStyles } from "@material-ui/core/styles";
 import NoSsr from "@material-ui/core/NoSsr";
 
 import Dropzone from "react-dropzone";
+import axios from "axios";
 
-import { ObjectID } from 'bson';
+import { ObjectID } from "bson";
 // import { useDropzone } from "react-dropzone";
 
 import moment from "moment";
@@ -37,14 +38,17 @@ import {
   Chip,
   MenuItem,
   Paper,
-  Avatar
+  Avatar,
+  CircularProgress
 } from "@material-ui/core";
 
 import { emphasize } from "@material-ui/core/styles/colorManipulator";
 
 import {
   CloseOutlined,
+  Close,
   CancelOutlined,
+  Cancel,
   DescriptionOutlined,
   AccountCircleOutlined
 } from "@material-ui/icons";
@@ -57,9 +61,8 @@ import {
 
 import { connect } from "react-redux";
 
-
-let suggestions = []
-let length = 0
+let suggestions = [];
+let length = 0;
 
 const styles = theme => ({
   root: {
@@ -117,7 +120,7 @@ function NoOptionsMessage(props) {
       color="textSecondary"
       className={props.selectProps.classes.noOptionsMessage}
       {...props.innerProps}
-      style={{fontFamily: "'Noto Sans Lao UI', sans serif"}}
+      style={{ fontFamily: "'Noto Sans Lao UI', sans serif" }}
     >
       ບໍ່ມີຂໍ້ມູນໃຫ້ເລືອກ, ກະລຸນາພິມສີ່ງທີ່ທ່ານຕ້ອງການຈະເພີ່ມ
     </Typography>
@@ -128,23 +131,28 @@ function inputComponent({ inputRef, ...props }) {
   return <div ref={inputRef} {...props} />;
 }
 
-const handleInputChanged = (event) => {
+const handleInputChanged = event => {
   var fullNameArr = event.target.value.split(/\s+/);
   let name = fullNameArr.slice(0, -1).join(" ");
   let lastname = fullNameArr.pop();
 
-  const _id  = new ObjectID();
-  
+  const _id = new ObjectID();
+
   if (event.target.value.trim() !== "" || length > 0) {
-   suggestions[length] ={value: {_id: _id.toHexString(), name, lastname}, label: event.target.value}
- } 
-}
+    suggestions[length] = {
+      value: { _id: _id.toHexString(), name, lastname },
+      label: event.target.value
+    };
+  }
+};
 
 function Control(props) {
   return (
     <TextField
       fullWidth
-      onChange={(event)=>{handleInputChanged(event)}}
+      onChange={event => {
+        handleInputChanged(event);
+      }}
       InputProps={{
         inputComponent,
         inputProps: {
@@ -211,7 +219,7 @@ function MultiValue(props) {
     <Chip
       tabIndex={-1}
       avatar={
-        <Avatar style={{backgroundColor: "transparent"}}>
+        <Avatar style={{ backgroundColor: "transparent" }}>
           <AccountCircleOutlined />
         </Avatar>
       }
@@ -220,7 +228,7 @@ function MultiValue(props) {
         [props.selectProps.classes.chipFocused]: props.isFocused
       })}
       onDelete={props.removeProps.onClick}
-      deleteIcon={<CancelOutlined {...props.removeProps} />}
+      deleteIcon={<Cancel {...props.removeProps} />}
       variant="outlined"
     />
   );
@@ -230,7 +238,7 @@ function Menu(props) {
   return (
     <Paper
       square
-      style={{position: "relative"}}
+      style={{ position: "relative" }}
       className={props.selectProps.classes.paper}
       {...props.innerProps}
     >
@@ -251,298 +259,342 @@ const components = {
 };
 
 class AddResearch extends Component {
-  state = {
-    single: null,
-    multi: null,
-    multiForAdvisor: null,
-    date: null,
-    currentResearchType: "5cdb82bb27ba7c4214ef5776",
-    formError: false,
-    formErrorMessage: "ມີບາງຂໍ້ມູນບໍ່ຖືກຕ້ອງກະລຸນາກວດສອບຂໍ້ມູນຄືນ",
-    formSuccess: false,
-    files: [],
-    formdata: {
-      title: {
-        element: "input",
-        value: "",
-        config: {
-          name: "title_input",
-          type: "text",
-          label: "ຫົວຂໍ້",
-          autoFocus: true,
-          placeholder: "ຊື່ຜົນງານ"
+  constructor() {
+    super();
+    this.state = {
+      single: null,
+      multi: null,
+      multiForAdvisor: null,
+      date: null,
+      currentResearchType: "5cdb82bb27ba7c4214ef5776",
+      formError: false,
+      formErrorMessage: "ມີບາງຂໍ້ມູນບໍ່ຖືກຕ້ອງກະລຸນາກວດສອບຂໍ້ມູນຄືນ",
+      formSuccess: false,
+      uploading: false,
+      files: [],
+      formdata: {
+        title: {
+          element: "input",
+          value: "",
+          config: {
+            name: "title_input",
+            type: "text",
+            label: "ຫົວຂໍ້",
+            autoFocus: true,
+            placeholder: "ຊື່ຜົນງານ"
+          },
+          validation: {
+            required: true
+          },
+          valid: false,
+          touched: false,
+          validationMessage: ""
         },
-        validation: {
-          required: true
-        },
-        valid: false,
-        touched: false,
-        validationMessage: ""
-      },
-      abstract: {
-        element: "input",
-        value: "",
-        config: {
-          name: "abstract_input",
-          type: "text",
-          label: "ບົດຄັດຍໍ່",
+        abstract: {
+          element: "input",
+          value: "",
+          config: {
+            name: "abstract_input",
+            type: "text",
+            label: "ບົດຄັດຍໍ່",
 
-          placeholder: "ລາຍລະອຽດ ຫລື ຄໍາອະທິບາຍຜົນງານ",
-          multiline: true,
-          rows: 3
+            placeholder: "ລາຍລະອຽດ ຫລື ຄໍາອະທິບາຍຜົນງານ",
+            multiline: true,
+            rows: 3
+          },
+          validation: {
+            required: true
+          },
+          valid: false,
+          touched: false,
+          validationMessage: ""
         },
-        validation: {
-          required: true
+        date: {
+          element: "date",
+          value: moment(Date.now()).format("YYYY-MM-DD"),
+          config: {
+            name: "date_of_birth_input",
+            type: "date",
+            label: "ວັນທີ(ຕີພິມ)"
+          },
+          validation: {
+            required: true
+          },
+          valid: false,
+          touched: false,
+          validationMessage: ""
         },
-        valid: false,
-        touched: false,
-        validationMessage: ""
-      },
-      date: {
-        element: "date",
-        value: moment(Date.now()).format("YYYY-MM-DD"),
-        config: {
-          name: "date_of_birth_input",
-          type: "date",
-          label: "ວັນທີ(ຕີພິມ)"
+        researchType: {
+          element: "select",
+          value: "",
+          config: {
+            name: "research_type_input",
+            type: "text",
+            label: "ປະເພດຜົນງານ",
+            labelWidth: 86,
+            options: []
+          },
+          validation: {
+            required: true
+          },
+          valid: true,
+          touched: false,
+          validationMessage: ""
         },
-        validation: {
-          required: true
+        publicationType: {
+          element: "select",
+          value: "",
+          config: {
+            name: "publication_type_input",
+            type: "text",
+            label: "ປະເພດວາລະສານ",
+            labelWidth: 96,
+            options: []
+          },
+          validation: {
+            required: false
+          },
+          valid: true,
+          touched: false,
+          validationMessage: ""
         },
-        valid: false,
-        touched: false,
-        validationMessage: ""
-      },
-      researchType: {
-        element: "select",
-        value: "",
-        config: {
-          name: "research_type_input",
-          type: "text",
-          label: "ປະເພດຜົນງານ",
-          labelWidth: 86,
-          options: []
+        conferenceTitle: {
+          element: "input",
+          value: "",
+          config: {
+            name: "conference_title_input",
+            type: "text",
+            label: "ຊື່ງານປະຊຸມ",
+            placeholder: "ຫົວຂໍ້ ຫລື ຊື່ຂອງງານປະຊຸມ"
+          },
+          validation: {
+            required: false
+          },
+          valid: false,
+          touched: false,
+          validationMessage: ""
         },
-        validation: {
-          required: true
+        location: {
+          element: "input",
+          value: "",
+          config: {
+            name: "location_input",
+            type: "text",
+            label: "ສະຖານທີ່ປະຊຸມ",
+            placeholder: "ທີ່ຕັ້ງຂອງສະຖານທີ່ຈັດປະຊຸມ"
+          },
+          validation: {
+            required: false
+          },
+          valid: false,
+          touched: false,
+          validationMessage: ""
         },
-        valid: true,
-        touched: false,
-        validationMessage: ""
-      },
-      publicationType: {
-        element: "select",
-        value: "",
-        config: {
-          name: "publication_type_input",
-          type: "text",
-          label: "ປະເພດວາລະສານ",
-          labelWidth: 96,
-          options: []
-        },
-        validation: {
-          required: false
-        },
-        valid: true,
-        touched: false,
-        validationMessage: ""
-      },
-      conferenceTitle: {
-        element: "input",
-        value: "",
-        config: {
-          name: "conference_title_input",
-          type: "text",
-          label: "ຊື່ງານປະຊຸມ",
-          placeholder: "ຫົວຂໍ້ ຫລື ຊື່ຂອງງານປະຊຸມ"
-        },
-        validation: {
-          required: false
-        },
-        valid: false,
-        touched: false,
-        validationMessage: ""
-      },
-      location: {
-        element: "input",
-        value: "",
-        config: {
-          name: "location_input",
-          type: "text",
-          label: "ສະຖານທີ່ປະຊຸມ",
-          placeholder: "ທີ່ຕັ້ງຂອງສະຖານທີ່ຈັດປະຊຸມ"
-        },
-        validation: {
-          required: false
-        },
-        valid: false,
-        touched: false,
-        validationMessage: ""
-      },
 
-      journalName: {
-        element: "input",
-        value: "",
-        config: {
-          name: "journal_input",
-          type: "text",
-          label: "ຊື່ວາລະສານ",
-          placeholder: ""
+        journalName: {
+          element: "input",
+          value: "",
+          config: {
+            name: "journal_input",
+            type: "text",
+            label: "ຊື່ວາລະສານ",
+            placeholder: ""
+          },
+          validation: {
+            required: false
+          },
+          valid: false,
+          touched: false,
+          validationMessage: ""
         },
-        validation: {
-          required: false
-        },
-        valid: false,
-        touched: false,
-        validationMessage: ""
-      },
 
-      volume: {
-        element: "input",
-        value: "",
-        config: {
-          name: "volume_input",
-          type: "text",
-          label: "ເຫລັ້ມ",
-          placeholder: ""
+        volume: {
+          element: "input",
+          value: "",
+          config: {
+            name: "volume_input",
+            type: "text",
+            label: "ເຫລັ້ມ",
+            placeholder: ""
+          },
+          validation: {
+            required: false
+          },
+          valid: false,
+          touched: false,
+          validationMessage: ""
         },
-        validation: {
-          required: false
+        issue: {
+          element: "input",
+          value: "",
+          config: {
+            name: "issue_input",
+            type: "text",
+            label: "ສະບັບ",
+            placeholder: ""
+          },
+          validation: {
+            required: false
+          },
+          valid: false,
+          touched: false,
+          validationMessage: ""
         },
-        valid: false,
-        touched: false,
-        validationMessage: ""
-      },
-      issue: {
-        element: "input",
-        value: "",
-        config: {
-          name: "issue_input",
-          type: "text",
-          label: "ສະບັບ",
-          placeholder: ""
+        page: {
+          element: "input",
+          value: "",
+          config: {
+            name: "page_input",
+            type: "text",
+            label: "ຫນ້າ",
+            placeholder: ""
+          },
+          validation: {
+            required: false
+          },
+          valid: false,
+          touched: false,
+          validationMessage: ""
         },
-        validation: {
-          required: false
+        publisher: {
+          element: "input",
+          value: "",
+          config: {
+            name: "publisher_input",
+            type: "text",
+            label: "ສໍານັກພິມ",
+            placeholder: ""
+          },
+          validation: {
+            required: false
+          },
+          valid: false,
+          touched: false,
+          validationMessage: ""
         },
-        valid: false,
-        touched: false,
-        validationMessage: ""
-      },
-      page: {
-        element: "input",
-        value: "",
-        config: {
-          name: "page_input",
-          type: "text",
-          label: "ຫນ້າ",
-          placeholder: ""
+        editor: {
+          element: "input",
+          value: "",
+          config: {
+            name: "editor_input",
+            type: "text",
+            label: "ບັນນາທິການ",
+            placeholder: ""
+          },
+          validation: {
+            required: false
+          },
+          valid: false,
+          touched: false,
+          validationMessage: ""
         },
-        validation: {
-          required: false
+        edition: {
+          element: "input",
+          value: "",
+          config: {
+            name: "edition_input",
+            type: "text",
+            label: "ສະບັບ",
+            placeholder: ""
+          },
+          validation: {
+            required: false
+          },
+          valid: false,
+          touched: false,
+          validationMessage: ""
         },
-        valid: false,
-        touched: false,
-        validationMessage: ""
-      },
-      publisher: {
-        element: "input",
-        value: "",
-        config: {
-          name: "publisher_input",
-          type: "text",
-          label: "ສໍານັກພິມ",
-          placeholder: ""
+        institution: {
+          element: "input",
+          value: "",
+          config: {
+            name: "institution_input",
+            type: "text",
+            label: "ສະຖາບັນ",
+            placeholder: ""
+          },
+          validation: {
+            required: false
+          },
+          valid: false,
+          touched: false,
+          validationMessage: ""
         },
-        validation: {
-          required: false
-        },
-        valid: false,
-        touched: false,
-        validationMessage: ""
-      },
-      editor: {
-        element: "input",
-        value: "",
-        config: {
-          name: "editor_input",
-          type: "text",
-          label: "ບັນນາທິການ",
-          placeholder: ""
-        },
-        validation: {
-          required: false
-        },
-        valid: false,
-        touched: false,
-        validationMessage: ""
-      },
-      edition: {
-        element: "input",
-        value: "",
-        config: {
-          name: "edition_input",
-          type: "text",
-          label: "ສະບັບ",
-          placeholder: ""
-        },
-        validation: {
-          required: false
-        },
-        valid: false,
-        touched: false,
-        validationMessage: ""
-      },
-      institution: {
-        element: "input",
-        value: "",
-        config: {
-          name: "institution_input",
-          type: "text",
-          label: "ສະຖາບັນ",
-          placeholder: ""
-        },
-        validation: {
-          required: false
-        },
-        valid: false,
-        touched: false,
-        validationMessage: ""
-      },
-      degree: {
-        element: "input",
-        value: "",
-        config: {
-          name: "degree_input",
-          type: "text",
-          label: "ລະດັບການສຶກສາ",
-          placeholder: ""
-        },
-        validation: {
-          required: false
-        },
-        valid: false,
-        touched: false,
-        validationMessage: ""
+        degree: {
+          element: "input",
+          value: "",
+          config: {
+            name: "degree_input",
+            type: "text",
+            label: "ລະດັບການສຶກສາ",
+            placeholder: ""
+          },
+          validation: {
+            required: false
+          },
+          valid: false,
+          touched: false,
+          validationMessage: ""
+        }
       }
-    }
-  };
+    };
+  }
 
-  handleFileDrop = acceptedFiles => {
-    let files = []
-    files[0] = {
-      name: acceptedFiles[0].name,
-      location: acceptedFiles[0].name,
-      date: moment().toDate(),
-      uploader: this.props.user._id,
-      size: acceptedFiles[0].size,
-    }
+  removeFile() {
+    // /api/research/remove_publication_file
 
-  
 
-    this.setState({ files} );
+    axios
+      .post(`/api/research/remove_publication_file&filename=${encodeURIComponent(this.state.files[0].name)}`)
+      .then(response => {
+        console.log(response.data)
+        if (response.data.success) {
 
-  };
+          this.setState({
+            files: [],
+            uploading: false,
+          });
+          
+        }
+      });
+  }
+
+  onDrop(files) {
+    this.setState({
+      uploading: true
+    });
+
+
+    let formdata = new FormData();
+    const config = {
+      header: { "content-type": "multipart/form-data" }
+    };
+    formdata.append("file", files[0]);
+
+    axios
+      .post("/api/research/upload_publication", formdata, config)
+      .then(response => {
+        if (response.data.success) {
+          
+
+
+
+          this.setState({
+            files: [{
+              name: response.data.filename,
+              location: response.data.filename,
+              date: moment().toDate(),
+              uploader: this.props.user._id,
+              size: files[0].size
+            }],
+            uploading: false,
+         
+           
+          });
+          
+        }
+      });
+  }
 
   renderFields = () => {
     switch (this.state.currentResearchType) {
@@ -605,35 +657,35 @@ class AddResearch extends Component {
       case "5cdb830827ba7c4214ef5777": {
         return (
           <>
-          <Grid container>
-          <Grid item xs={4} style={{ paddingRight: "8px" }}>
-            <FormField
-              id={"publisher"}
-              formdata={this.state.formdata.publisher}
-              change={element => this.updateForm(element)}
-            />
-          </Grid>
-          <Grid
-            item
-            xs={4}
-            style={{ paddingLeft: "8px", paddingRight: "8px" }}
-          >
-            <FormField
-              id={"editor"}
-              formdata={this.state.formdata.editor}
-              change={element => this.updateForm(element)}
-              maxlength={500}
-            />
-          </Grid>
-          <Grid item xs={4} style={{ paddingLeft: "8px" }}>
-            <FormField
-              id={"edition"}
-              formdata={this.state.formdata.edition}
-              change={element => this.updateForm(element)}
-              maxlength={500}
-            />
-          </Grid>
-        </Grid>
+            <Grid container>
+              <Grid item xs={4} style={{ paddingRight: "8px" }}>
+                <FormField
+                  id={"publisher"}
+                  formdata={this.state.formdata.publisher}
+                  change={element => this.updateForm(element)}
+                />
+              </Grid>
+              <Grid
+                item
+                xs={4}
+                style={{ paddingLeft: "8px", paddingRight: "8px" }}
+              >
+                <FormField
+                  id={"editor"}
+                  formdata={this.state.formdata.editor}
+                  change={element => this.updateForm(element)}
+                  maxlength={500}
+                />
+              </Grid>
+              <Grid item xs={4} style={{ paddingLeft: "8px" }}>
+                <FormField
+                  id={"edition"}
+                  formdata={this.state.formdata.edition}
+                  change={element => this.updateForm(element)}
+                  maxlength={500}
+                />
+              </Grid>
+            </Grid>
           </>
         );
       }
@@ -648,12 +700,12 @@ class AddResearch extends Component {
               maxlength={500}
             />
             {
-            //   <FormField
-            //   id={"location"}
-            //   formdata={this.state.formdata.location}
-            //   change={element => this.updateForm(element)}
-            //   maxlength={500}
-            // />
+              //   <FormField
+              //   id={"location"}
+              //   formdata={this.state.formdata.location}
+              //   change={element => this.updateForm(element)}
+              //   maxlength={500}
+              // />
             }
           </>
         );
@@ -668,14 +720,14 @@ class AddResearch extends Component {
               change={element => this.updateForm(element)}
               maxlength={500}
             />
-            
+
             {
-            //   <FormField
-            //   id={"location"}
-            //   formdata={this.state.formdata.location}
-            //   change={element => this.updateForm(element)}
-            //   maxlength={500}
-            // />
+              //   <FormField
+              //   id={"location"}
+              //   formdata={this.state.formdata.location}
+              //   change={element => this.updateForm(element)}
+              //   maxlength={500}
+              // />
             }
           </>
         );
@@ -691,14 +743,12 @@ class AddResearch extends Component {
       [name]: value
     });
   };
-  
+
   handleChangeForAdvisor = name => value => {
     this.setState({
       [name]: value
     });
   };
-
-
 
   componentDidMount() {
     this.props.dispatch(getResearchType());
@@ -719,15 +769,20 @@ class AddResearch extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.authorSuggestions !== this.props.authorSuggestions) {
       let multi = [];
-      multi[0] = {value: this.props.user._id, label: `${this.props.user.name} ${this.props.user.lastname}`}
+      multi[0] = {
+        value: this.props.user._id,
+        label: `${this.props.user.name} ${this.props.user.lastname}`
+      };
       this.props.authorSuggestions.map(value => {
-        suggestions.push({ value: value._id, label: `${value.name} ${value.lastname}` });
+        suggestions.push({
+          value: value._id,
+          label: `${value.name} ${value.lastname}`
+        });
         return null;
       });
-      length = multi.length
+      length = multi.length;
       this.setState({
-        multi,
-        
+        multi
       });
     }
     const prevResearchType =
@@ -785,7 +840,11 @@ class AddResearch extends Component {
   }
 
   updateForm = element => {
-    const newFormdata = update(element, this.state.formdata, "addResearchDialog");
+    const newFormdata = update(
+      element,
+      this.state.formdata,
+      "addResearchDialog"
+    );
     this.setState({
       formError: false,
       formdata: newFormdata
@@ -814,15 +873,15 @@ class AddResearch extends Component {
 
     let dataToSubmit = generateData(this.state.formdata, "addResearchDialog");
 
-    console.log(dataToSubmit)
+    console.log(dataToSubmit);
 
-    const author = []
-    this.state.multi.map((value)=>{
-      author.push(value.value)
-      return null
-    })
+    const author = [];
+    this.state.multi.map(value => {
+      author.push(value.value);
+      return null;
+    });
 
-    console.log(author)
+    console.log(author);
 
     if (formIsValid & !this.state.formError) {
       // this.props
@@ -1009,8 +1068,10 @@ class AddResearch extends Component {
                 />
               </NoSsr>
             </div>
-
-            {this.state.files.length > 0 ? (
+{
+  console.log(this.state.files)
+}
+            {this.state.files && this.state.files[0] ? (
               <>
                 <Paper
                   style={{
@@ -1020,15 +1081,11 @@ class AddResearch extends Component {
                     padding: "16px"
                   }}
                 >
-                  <Grid
-                    container
-                    alignItems="flex-start"
-                    alignContent="flex-start"
-                  >
-                    <Grid item style={{ width: "51px" }} align="left">
-                      <DescriptionOutlined fontSize="large" />
+                  <Grid container alignItems="center">
+                    <Grid item>
+                      <DescriptionOutlined style={{ marginRight: "16px" }} />
                     </Grid>
-                    <Grid item xs align="left">
+                    <Grid item xs>
                       <Typography variant="inherit" style={{ fontWeight: 600 }}>
                         {this.state.files[0].name}
                       </Typography>
@@ -1040,9 +1097,9 @@ class AddResearch extends Component {
                       </Typography>
                     </Grid>
 
-                    <Grid item align="right" style={{width: "46px"}}>
-                      <IconButton style={{padding: "4px"}}>
-                        <CloseOutlined />
+                    <Grid item align="right">
+                      <IconButton onClick={() => this.removeFile()} style={{ padding: "4px" }}>
+                        <Cancel />
                       </IconButton>
                     </Grid>
                   </Grid>
@@ -1055,22 +1112,42 @@ class AddResearch extends Component {
                 style={{
                   width: "100%",
                   marginTop: "16px",
-                  textTransform: "none"
+                  textTransform: "none",
+                  minHeight: "56px"
                 }}
               >
-                <Dropzone
-                  style={{ height: "100%", width: "100%" }}
-                  onDrop={acceptedFiles => this.handleFileDrop(acceptedFiles)}
-                >
-                  <Grid container alignItems="center" alignContent="flex-start">
-                    <Grid item style={{ width: "51px" }} align="left">
-                      <DescriptionOutlined fontSize="large" />
-                    </Grid>
-                    <Grid item xs align="left">
-                      <Typography variant="inherit">ເພີ່ມ</Typography>
+                {this.state.uploading  ? (
+                  <>
+                  <Grid
+                    container
+                    alignItems="center"
+                    alignContent="center"
+                    justify="center"
+                  >
+                    <Grid item justify="center">
+                      <CircularProgress style={{ margin: "16px" }} />
                     </Grid>
                   </Grid>
-                </Dropzone>
+                    
+                  </>
+                ) : (
+                  <>
+                  <DescriptionOutlined style={{ marginRight: "16px" }} />
+                    <Dropzone
+                      style={{ height: "100%", width: "100%" }}
+                      onDrop={e => this.onDrop(e)}
+                      multiple={false}
+                    >
+                      <Grid container alignItems="center" alignContent="center">
+                        <Grid item>
+                          <Typography variant="inherit">
+                            ແນບຟາຍລ໌ເອກະສານຕີພິມ
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                    </Dropzone>
+                  </>
+                )}
               </Button>
             )}
 
@@ -1078,38 +1155,34 @@ class AddResearch extends Component {
               id={"abstract"}
               formdata={this.state.formdata.abstract}
               change={element => this.updateForm(element)}
-            
             />
 
             {this.renderFields()}
 
-            {
-              this.state.formdata.researchType.value === "5cdb83a127ba7c4214ef5779" ?
-
+            {this.state.formdata.researchType.value ===
+            "5cdb83a127ba7c4214ef5779" ? (
               <div className={classes.root}>
-              <NoSsr>
-                <Select
-                  classes={classes}
-                  styles={selectStyles}
-                  textFieldProps={{
-                    label: "ທີ່ປຶກສາ",
-                    InputLabelProps: {
-                      shrink: true
-                    },
-                    variant: "outlined"
-                  }}
-                  options={suggestions}
-                  components={components}
-                  value={this.state.multiForAdvisor}
-                  onChange={this.handleChangeForAdvisor("multiForAdvisor")}
-                  placeholder=""
-                  isMulti
-                />
-              </NoSsr>
-            </div>
-
-              : null
-            }
+                <NoSsr>
+                  <Select
+                    classes={classes}
+                    styles={selectStyles}
+                    textFieldProps={{
+                      label: "ທີ່ປຶກສາ",
+                      InputLabelProps: {
+                        shrink: true
+                      },
+                      variant: "outlined"
+                    }}
+                    options={suggestions}
+                    components={components}
+                    value={this.state.multiForAdvisor}
+                    onChange={this.handleChangeForAdvisor("multiForAdvisor")}
+                    placeholder=""
+                    isMulti
+                  />
+                </NoSsr>
+              </div>
+            ) : null}
 
             {this.state.formError ? (
               <Grid container spacing={24}>
