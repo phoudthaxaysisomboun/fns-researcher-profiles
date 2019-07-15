@@ -74,6 +74,14 @@ const researchSchema = mongoose.Schema({
         default: []
     },
 
+    /* presentation */
+    conferenceName :{
+        type: String,
+        maxlength: 500
+    },
+
+
+
     /*  */
 
 

@@ -391,7 +391,7 @@ const ResearchHeader = ({
                     research.researchType._id === "5cdb83a127ba7c4214ef5779" ? (
                       <>
                         {research.degree ? (
-                          <Grid container>
+                          <Grid container style={{ marginTop: "8px" }}>
                             <Typography
                               variant="inherit"
                               style={{
@@ -403,19 +403,98 @@ const ResearchHeader = ({
                           </Grid>
                         ) : null}
                         {research.supervisor[0] ? (
-                          <Grid container>
+                          <>
+                          <Grid container style={{ marginTop: "8px" }}>
                             <Typography
                               variant="inherit"
                               style={{
-                                letterSpacing: "1.5 px"
-                              }}
+                                letterSpacing: "1.5 px",
+                                marginRight: "8px"
+                              }} 
                             >
                               <strong>ຜູ້ນໍາພາ: </strong>{" "}
-                              {`${research.supervisor[0].prefix} ${
-                                research.supervisor[0].name
-                              } ${research.supervisor[0].lastname}`}
-                            </Typography>
+                              
+                              
+                            </Typography> 
                           </Grid>
+                          <Grid container style={{marginTop: "4px"}}>
+                          {research.supervisor.map((value, item, array) => (
+                            < >
+                              <Link
+                                to={`/profile/${value._id}`}
+                                style={{
+                                  color: "inherit",
+                                  textDecoration: "none"
+                                }}
+                              >
+                                <Grid
+                                  item
+                                  style={{
+                                    marginRight: "4px",
+                                    marginBottom: "8px"
+                                  }}
+                                >
+                                  {value.profileImage &&
+                                  value.profileImage[0] &&
+                                  value.profileImage[0].name ? (
+                                    <Avatar
+                                      src={`${UPLOADS_SERVER}/images/${
+                                        value.profileImage[0].name
+                                      }`}
+                                      style={{
+                                        width: "18px",
+                                        height: "18px"
+                                      }}
+                                      alt="profile image"
+                                    />
+                                  ) : (
+                                    <Avatar
+                                      style={{
+                                        width: "18px",
+                                        height: "18px",
+                                        backgroundColor: `${`${value.name}${
+                                          value.lastname
+                                        }`.toColor()}`,
+    
+                                        fontWeight: "normal",
+                                        fontSize: "8px"
+                                      }}
+                                      alt="profile image"
+                                    >
+                                      <Typography variant="inherit">
+                                        {`${value.name.charAt(
+                                          0
+                                        )}${value.lastname.charAt(0)}`}
+                                      </Typography>
+                                    </Avatar>
+                                  )}
+                                </Grid>
+                              </Link>
+                              <Link to={`/profile/${value._id}`}style={{
+                                color: "inherit",
+                                textDecoration: "none"
+                              }} >
+                              <Grid item>
+                                <Typography
+                                  variant="inherit"
+                                  style={{
+                                    height: "18px",
+                                    lineHeight: "18px",
+                                    marginBottom: "8px",
+                                    fontWeight: "500",
+                                    marginRight: "4px"
+                                  }}
+                                >
+                                  {`${value.name} ${value.lastname}`}{" "}
+                                  {item !== array.length - 1 ? " • " : null}
+                                </Typography>
+                              </Grid>
+                              </Link>
+                            </>
+                          ))}
+                          </Grid>
+                          </>
+
                         ) : null}
                       </>
                     ) : null}

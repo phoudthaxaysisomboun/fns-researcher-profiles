@@ -51,48 +51,45 @@ const { Research } = require("./models/research");
 // Middlewares
 const { auth } = require("./middleware/auth");
 const { admin } = require("./middleware/admin");
-const fs = require('fs')
+const fs = require("fs");
 
 //====================================
 //             UPLOAD FILES
 //====================================
 
-let publicationFileName = ""
+let publicationFileName = "";
 
-const multer = require('multer')
+const multer = require("multer");
 let storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/')
+    cb(null, "uploads/");
   },
-  filename: (req, file, cb)=>{
-    let filename = `${Date.now()}_${file.originalname}`
-    cb(null, filename)
-    publicationFileName = filename
+  filename: (req, file, cb) => {
+    let filename = `${Date.now()}_${file.originalname}`;
+    cb(null, filename);
+    publicationFileName = filename;
   }
-})
+});
 
-const upload = multer({storage: storage}).single('file')
+const upload = multer({ storage: storage }).single("file");
 
-app.post('/api/research/upload_publication', auth, (req, res) => {
-  upload(req, res, (err)=> {
+app.post("/api/research/upload_publication", auth, (req, res) => {
+  upload(req, res, err => {
     if (err) {
-      return res.json({success: false, err})
+      return res.json({ success: false, err });
     }
-    return res.json({success: true, filename: publicationFileName})
-  })
-})
+    return res.json({ success: true, filename: publicationFileName });
+  });
+});
 
-app.post('/api/research/remove_publication_file', auth, (req, res) => {
+app.post("/api/research/remove_publication_file", auth, (req, res) => {
   // const file = "." + `/uploads/${req.query.filename}`
-const path = "." + `/uploads/${req.query.filename}`
+  const path = "." + `/uploads/${req.query.filename}`;
 
-
-  fs.unlink(path, (err) => {
-    
-    return res.json({success: true})
-  })
-})
-
+  fs.unlink(path, err => {
+    return res.json({ success: true });
+  });
+});
 
 //====================================
 //             DEPARTMENTS
@@ -144,7 +141,7 @@ app.get("/api/users/countries", (req, res) => {
 //====================================
 
 app.post("/api/research/research_area", auth, admin, (req, res) => {
-  const researchArea = new ResearchArea({name: req.query.name});
+  const researchArea = new ResearchArea({ name: req.query.name });
 
   researchArea.save((err, doc) => {
     if (err) return res.json({ success: false, err });
@@ -156,13 +153,12 @@ app.post("/api/research/research_area", auth, admin, (req, res) => {
 });
 
 app.get("/api/research/research_areas", (req, res) => {
-  ResearchArea.find({}).sort([['name', 'asc']]).exec((err, doc)=>{
-    if (err) return res.status(400).send(err);
-    res.status(200).send(doc);
-  })
-
-
-  
+  ResearchArea.find({})
+    .sort([["name", "asc"]])
+    .exec((err, doc) => {
+      if (err) return res.status(400).send(err);
+      res.status(200).send(doc);
+    });
 });
 
 //====================================
@@ -618,7 +614,6 @@ app.post("/api/researchers/researchers", auth, admin, (req, res) => {
     });
 });
 
-
 app.post("/api/research/reports/list", auth, admin, (req, res) => {
   let order = req.query.order ? req.query.order : "asc";
   let sortBy = req.query.sortBy ? req.query.sortBy : "name";
@@ -647,7 +642,9 @@ app.post("/api/research/reports/list", auth, admin, (req, res) => {
   }
 
   if (publicationType != null) {
-    findArgsResearch["publicationType"] = mongoose.Types.ObjectId(publicationType);
+    findArgsResearch["publicationType"] = mongoose.Types.ObjectId(
+      publicationType
+    );
   }
 
   if (from != null && to != null) {
@@ -679,33 +676,33 @@ app.post("/api/research/reports/list", auth, admin, (req, res) => {
         });
       }
 
-      findArgsResearch["uploader"] = {$in: ids}
+      findArgsResearch["uploader"] = { $in: ids };
 
-      Research.find(findArgsResearch
-      )
-      .sort([[sortBy, order]])
-    .select("_id title date likes comments shares citations reads downloads")
-    .populate({
-      path: "uploader",
-      model: "User",
-      select: ["name", "lastname", "prefix"]
-    })
-    .populate({
-      path: "author",
-      model: "User",
-      select: ["name", "lastname", "prefix"]
-    })
-    .populate("researchType")
-    .populate("publicationType")
+      Research.find(findArgsResearch)
+        .sort([[sortBy, order]])
+        .select(
+          "_id title date likes comments shares citations reads downloads"
+        )
+        .populate({
+          path: "uploader",
+          model: "User",
+          select: ["name", "lastname", "prefix"]
+        })
+        .populate({
+          path: "author",
+          model: "User",
+          select: ["name", "lastname", "prefix"]
+        })
+        .populate("researchType")
+        .populate("publicationType")
 
-    .exec((err, result) => {
-
-if (err) return console.log(err)
-      return res.status(200).json({
-        allResearchesListReports: result,
-        size: result.length
-      });
-    });
+        .exec((err, result) => {
+          if (err) return console.log(err);
+          return res.status(200).json({
+            allResearchesListReports: result,
+            size: result.length
+          });
+        });
 
       // switch (by) {
       //   case "researchType":
@@ -918,14 +915,17 @@ app.post("/api/research/reports/number", auth, admin, (req, res) => {
         case "researchType":
           Research.aggregate([
             {
-              $match: { uploader: { $in: ids }, date: {
-                $gte: moment(from)
-                  .add(1, "days")
-                  .toDate(),
-                $lte: moment(to)
-                  .add(1, "days")
-                  .toDate()
-              }}
+              $match: {
+                uploader: { $in: ids },
+                date: {
+                  $gte: moment(from)
+                    .add(1, "days")
+                    .toDate(),
+                  $lte: moment(to)
+                    .add(1, "days")
+                    .toDate()
+                }
+              }
             },
             {
               $group: {
@@ -1008,14 +1008,17 @@ app.post("/api/research/reports/number", auth, admin, (req, res) => {
         case "publicationType":
           Research.aggregate([
             {
-              $match: { uploader: { $in: ids }, date: {
-                $gte: moment(from)
-                  .add(1, "days")
-                  .toDate(),
-                $lte: moment(to)
-                  .add(1, "days")
-                  .toDate()
-              } }
+              $match: {
+                uploader: { $in: ids },
+                date: {
+                  $gte: moment(from)
+                    .add(1, "days")
+                    .toDate(),
+                  $lte: moment(to)
+                    .add(1, "days")
+                    .toDate()
+                }
+              }
             },
             {
               $group: {
@@ -2330,7 +2333,9 @@ app.get("/api/researchers/profiles_by_id", (req, res) => {
       options: { sort: { city: 1 } }
     })
     .exec((err, docs) => {
-      if (err) {console.log(err)}
+      if (err) {
+        console.log(err);
+      }
       return res.status(200).send(docs);
     });
 });
@@ -2447,7 +2452,6 @@ app.post("/api/researchers/follow", auth, (req, res) => {
           new: true
         },
         (err, doc) => {
-          
           if (err) return res.json({ success: false, err });
           res.status(200).json(doc.following);
         }
@@ -2985,14 +2989,13 @@ app.post("/api/researchers/update_introduction", auth, (req, res) => {
     {
       new: true
     }
-  )
-    .exec((err, doc) => {
-      if (err) return res.json({ success: false, err });
-      res.status(200).json({
-        success: true,
-        profileDescription: doc.profileDescription
-      });
+  ).exec((err, doc) => {
+    if (err) return res.json({ success: false, err });
+    res.status(200).json({
+      success: true,
+      profileDescription: doc.profileDescription
     });
+  });
 });
 
 app.post("/api/researchers/addEducation", auth, (req, res) => {
@@ -3087,7 +3090,6 @@ app.post("/api/researchers/updateEducation", auth, (req, res) => {
       });
     });
 });
-
 
 app.post("/api/researchers/removeEducation", auth, (req, res) => {
   User.findOneAndUpdate(
@@ -3294,7 +3296,7 @@ app.post("/api/research/researches", (req, res) => {
 app.get("/api/research/researches_by_id", (req, res) => {
   let order = req.query.order ? req.query.order : "asc";
   let sortBy = req.query.sortBy ? req.query.sortBy : "name";
-  let limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 3;
+  let limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 100;
   let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0;
 
   let type = req.query.type;
@@ -3371,11 +3373,10 @@ app.post("/api/research/add_comment", auth, (req, res) => {
           comment: req.query.comment
         }
       }
-    },
-  )
-    .exec((err, doc) => {
-      if (err) return res.json({ success: false, err });
-      Research.find({ _id: mongoose.Types.ObjectId(req.query.id) })
+    }
+  ).exec((err, doc) => {
+    if (err) return res.json({ success: false, err });
+    Research.find({ _id: mongoose.Types.ObjectId(req.query.id) })
       // .sort([[sortBy, order]])
       // .limit(limit)
       // .skip(skip)
@@ -3400,13 +3401,15 @@ app.post("/api/research/add_comment", auth, (req, res) => {
         if (err) return res.status(400).send(err);
         res.status(200).json(comments[0].comments);
       });
-    });
+  });
 });
 
 app.post("/api/research/add_reply", auth, (req, res) => {
   Research.findOneAndUpdate(
-    { _id: mongoose.Types.ObjectId(req.query.id),
-      "comments._id": req.query.commentId },
+    {
+      _id: mongoose.Types.ObjectId(req.query.id),
+      "comments._id": req.query.commentId
+    },
     {
       $push: {
         "comments.$.replies": {
@@ -3415,13 +3418,10 @@ app.post("/api/research/add_reply", auth, (req, res) => {
           reply: req.query.reply
         }
       }
-
-      
-    },
-  )
-    .exec((err, doc) => {
-      if (err) return res.json({ success: false, err });
-      Research.find({ _id: mongoose.Types.ObjectId(req.query.id) })
+    }
+  ).exec((err, doc) => {
+    if (err) return res.json({ success: false, err });
+    Research.find({ _id: mongoose.Types.ObjectId(req.query.id) })
       // .sort([[sortBy, order]])
       // .limit(limit)
       // .skip(skip)
@@ -3446,27 +3446,25 @@ app.post("/api/research/add_reply", auth, (req, res) => {
         if (err) return res.status(400).send(err);
         res.status(200).json(comments[0].comments);
       });
-    });
+  });
 });
-
 
 app.post("/api/research/remove_reply", auth, (req, res) => {
   Research.findOneAndUpdate(
-    { _id: mongoose.Types.ObjectId(req.query.id),
-      "comments._id": req.query.commentId },
+    {
+      _id: mongoose.Types.ObjectId(req.query.id),
+      "comments._id": req.query.commentId
+    },
     {
       $pull: {
         "comments.$.replies": {
-          _id: mongoose.Types.ObjectId(req.query.replyId),
+          _id: mongoose.Types.ObjectId(req.query.replyId)
         }
       }
-
-      
-    },
-  )
-    .exec((err, doc) => {
-      if (err) return res.json({ success: false, err });
-      Research.find({ _id: mongoose.Types.ObjectId(req.query.id) })
+    }
+  ).exec((err, doc) => {
+    if (err) return res.json({ success: false, err });
+    Research.find({ _id: mongoose.Types.ObjectId(req.query.id) })
       // .sort([[sortBy, order]])
       // .limit(limit)
       // .skip(skip)
@@ -3491,15 +3489,15 @@ app.post("/api/research/remove_reply", auth, (req, res) => {
         if (err) return res.status(400).send(err);
         res.status(200).json(comments[0].comments);
       });
-    });
+  });
 });
 
-const path = require('path')
+const path = require("path");
 
 // DOWNLOAD FILES
-app.get('/api/research/download/:id&:userId&:researchId',  (req, res) => {
-  const file = path.resolve(".") + `/uploads/${req.params.id}`
-  res.download(file)
+app.get("/api/research/download/:id&:userId&:researchId", (req, res) => {
+  const file = path.resolve(".") + `/uploads/${req.params.id}`;
+  res.download(file);
 
   Research.findOneAndUpdate(
     { _id: mongoose.Types.ObjectId(req.params.researchId) },
@@ -3510,45 +3508,43 @@ app.get('/api/research/download/:id&:userId&:researchId',  (req, res) => {
           time: moment().toDate()
         }
       }
-    },
-  )
-    .exec((err, doc) => {
-
-
-    });
-})
-
-
-app.get('/api/research/download/citation/:citation&:userId&:researchId&:researchTitle',  (req, res) => {
-  var text_ready = req.params.citation
-
-
-res.writeHead(200, {'Content-Type': 'application/force-download','Content-disposition':'attachment; filename=' + 'citation_for_' + req.params.researchTitle.trim() + '.txt'});
-
-res.end( text_ready );
-
-Research.findOneAndUpdate(
-  { _id: mongoose.Types.ObjectId(req.params.researchId) },
-  {
-    $push: {
-      citations: {
-        user: mongoose.Types.ObjectId(req.params.userId),
-        time: moment().toDate()
-      }
     }
-  },
-)
-  .exec((err, doc) => {
-  });
-})
+  ).exec((err, doc) => {});
+});
 
+app.get(
+  "/api/research/download/citation/:citation&:userId&:researchId&:researchTitle",
+  (req, res) => {
+    var text_ready = req.params.citation;
 
+    res.writeHead(200, {
+      "Content-Type": "application/force-download",
+      "Content-disposition":
+        "attachment; filename=" +
+        "citation_for_" +
+        req.params.researchTitle.trim() +
+        ".txt"
+    });
 
+    res.end(text_ready);
 
+    Research.findOneAndUpdate(
+      { _id: mongoose.Types.ObjectId(req.params.researchId) },
+      {
+        $push: {
+          citations: {
+            user: mongoose.Types.ObjectId(req.params.userId),
+            time: moment().toDate()
+          }
+        }
+      }
+    ).exec((err, doc) => {});
+  }
+);
 
 // Count reads
 
-app.post('/api/research/count_reads', (req, res) => {
+app.post("/api/research/count_reads", (req, res) => {
   Research.findOneAndUpdate(
     { _id: mongoose.Types.ObjectId(req.query.researchId) },
     {
@@ -3558,14 +3554,12 @@ app.post('/api/research/count_reads', (req, res) => {
           time: moment().toDate()
         }
       }
-    },
-  )
-    .exec((err, doc) => {
-      if (err) return res.status(400).send(err);
-        res.status(200).json(doc.reads);
-    });
-})
-
+    }
+  ).exec((err, doc) => {
+    if (err) return res.status(400).send(err);
+    res.status(200).json(doc.reads);
+  });
+});
 
 // User.findOneAndUpdate(
 //   {
@@ -3585,21 +3579,19 @@ app.post('/api/research/count_reads', (req, res) => {
 //     }
 //   },
 
-
 app.post("/api/research/remove_comment", auth, (req, res) => {
   Research.findOneAndUpdate(
     { _id: mongoose.Types.ObjectId(req.query.id) },
     {
       $pull: {
         comments: {
-          _id: mongoose.Types.ObjectId(req.query.commentId),
+          _id: mongoose.Types.ObjectId(req.query.commentId)
         }
       }
-    },
-  )
-    .exec((err, doc) => {
-      if (err) return res.json({ success: false, err });
-      Research.find({ _id: mongoose.Types.ObjectId(req.query.id) })
+    }
+  ).exec((err, doc) => {
+    if (err) return res.json({ success: false, err });
+    Research.find({ _id: mongoose.Types.ObjectId(req.query.id) })
       // .sort([[sortBy, order]])
       // .limit(limit)
       // .skip(skip)
@@ -3624,7 +3616,7 @@ app.post("/api/research/remove_comment", auth, (req, res) => {
         if (err) return res.status(400).send(err);
         res.status(200).json(comments[0].comments);
       });
-    });
+  });
 });
 
 app.get("/api/research/researches_by_id/comments", (req, res) => {
@@ -3682,8 +3674,8 @@ app.post("/api/research/add_research", auth, (req, res) => {
   const research = new Research(req.body);
 
   research.save((err, doc) => {
-    console.log(err)
-    console.log(doc)
+    console.log(err);
+    console.log(doc);
     if (err) return res.json({ success: false, err });
     res.status(200).json({
       success: true,
@@ -3704,12 +3696,75 @@ app.post("/api/research/add_research", auth, (req, res) => {
       {
         new: true
       },
-      (err, research) => {
-        
+      (err, user) => {}
+    );
+  });
+});
+
+app.post("/api/research/remove_research", auth, (req, res) => {
+  Research.findOne({ _id: req.query.researchId }).exec((err, doc) => {
+    let ids = doc.author;
+
+    Research.findOneAndRemove({ _id: req.query.researchId }).exec(
+      (err, removed) => {
+        User.updateMany(
+          { _id: ids },
+          {
+            $pull: {
+              research: mongoose.Types.ObjectId(doc._id)
+            }
+          },
+          {
+            new: true
+          },
+          (err, user) => {
+            if (doc.files && doc.files.length > 0) {
+              const path = "." + `/uploads/${doc.files[0].name}`;
+
+            fs.unlink(path, err => {});
+            }
+            if (err) return res.json({ success: false, err });
+            res.status(200).json({
+              success: true,
+              removed
+            });
+          }
+        );
       }
     );
+  });
+});
 
-  
+app.post("/api/research/remove_author", auth, (req, res) => {
+  Research.findOneAndUpdate(
+    { _id: req.query.researchId },
+    {
+      $pull: {
+        author: req.query.userId
+      }
+    },
+    {
+      new: true
+    }
+  ).exec((err, doc) => {
+    User.updateMany(
+      { _id: req.query.userId },
+      {
+        $pull: {
+          research: mongoose.Types.ObjectId(req.query.researchId)
+        }
+      },
+      {
+        new: true
+      },
+      (err, user) => {
+        if (err) return res.json({ success: false, err });
+        res.status(200).json({
+          success: true,
+          doc
+        });
+      }
+    );
   });
 });
 
@@ -3828,17 +3883,15 @@ app.post("/api/research/remove_like", auth, (req, res) => {
   );
 });
 
-
 app.post("/api/researchers/addResearchArea", auth, (req, res) => {
-
   let items = req.query.researchArea;
 
   let researchArea = req.query.researchArea.split(",");
   items = [];
   items = researchArea.map(item => {
-    return item
+    return item;
   });
-  
+
   User.findOneAndUpdate(
     { _id: req.query.userId },
     {
@@ -3846,7 +3899,7 @@ app.post("/api/researchers/addResearchArea", auth, (req, res) => {
         researchArea: items
       }
     },
-    { 
+    {
       new: true
     },
     (err, doc) => {
@@ -3856,42 +3909,36 @@ app.post("/api/researchers/addResearchArea", auth, (req, res) => {
   );
 });
 
-app.get(
-  "/api/researchers/list_for_suggestions",
-  auth,
-  (req, res) => {
-    let order = req.query.order ? req.query.order : "asc";
-    let sortBy = req.query.sortBy ? req.query.sortBy : "name";
-    // let limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 6;
-    // let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0;
+app.get("/api/researchers/list_for_suggestions", auth, (req, res) => {
+  let order = req.query.order ? req.query.order : "asc";
+  let sortBy = req.query.sortBy ? req.query.sortBy : "name";
+  // let limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 6;
+  // let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0;
 
-    // let from = req.query.from ? req.query.from : null;
-    // let to = req.query.from ? req.query.to : null;
-    // let department = req.query.department ? req.query.department : null;
-    let findArgs = {};
+  // let from = req.query.from ? req.query.from : null;
+  // let to = req.query.from ? req.query.to : null;
+  // let department = req.query.department ? req.query.department : null;
+  let findArgs = {};
 
-    findArgs.emailIsVerified = true;
-    findArgs.accountIsVerified = true;
-    findArgs.active = true;
+  findArgs.emailIsVerified = true;
+  findArgs.accountIsVerified = true;
+  findArgs.active = true;
 
-    User.find(findArgs)
-      .select(
-        "_id name lastname affiliation profileImage"
-      )
-      .populate({
-        path: "affiliation.institution"
-      })
-      .populate({
-        path: "affiliation.department"
-      })
-      .populate({
-        path: "affiliation.faculty"
-      })
-      .exec((err, result) => {
-        return res.status(200).send(result);
-      });
-  }
-);
+  User.find(findArgs)
+    .select("_id name lastname affiliation profileImage")
+    .populate({
+      path: "affiliation.institution"
+    })
+    .populate({
+      path: "affiliation.department"
+    })
+    .populate({
+      path: "affiliation.faculty"
+    })
+    .exec((err, result) => {
+      return res.status(200).send(result);
+    });
+});
 
 const port = process.env.PORT || 3002;
 

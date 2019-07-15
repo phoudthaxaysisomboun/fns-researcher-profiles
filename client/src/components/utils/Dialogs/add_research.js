@@ -377,14 +377,30 @@ class AddResearch extends Component {
           touched: false,
           validationMessage: ""
         },
+        conferenceName: {
+          element: "input",
+          value: "",
+          config: {
+            name: "conference_title_input",
+            type: "text",
+            label: "ຊື່ງານ",
+            placeholder: "ຫົວຂໍ້ ຫລື ຊື່ຂອງງານທີ່ທ່ານນໍາເອົາບົດນີ້ໄປນໍາສະເຫນີ"
+          },
+          validation: {
+            required: false
+          },
+          valid: true,
+          touched: false,
+          validationMessage: ""
+        },
         location: {
           element: "input",
           value: "",
           config: {
             name: "location_input",
             type: "text",
-            label: "ສະຖານທີ່ປະຊຸມ",
-            placeholder: "ທີ່ຕັ້ງຂອງສະຖານທີ່ຈັດປະຊຸມ"
+            label: "ສະຖານທີ່",
+            placeholder: "ທີ່ຕັ້ງຂອງສະຖານທີ່ຈັດງານ"
           },
           validation: {
             required: false
@@ -622,7 +638,7 @@ class AddResearch extends Component {
                   id={"volume"}
                   formdata={this.state.formdata.volume}
                   change={element => this.updateForm(element)}
-                  maxlength={500}
+                 
                 />
               </Grid>
               <Grid item xs={4} style={{ paddingLeft: "8px" }}>
@@ -650,6 +666,31 @@ class AddResearch extends Component {
             <FormField
               id={"location"}
               formdata={this.state.formdata.location}
+              change={element => this.updateForm(element)}
+              maxlength={500}
+            />
+          </>
+        );
+      }
+      // ເອກະສານການປະຊຸມທາງວິຊາການ
+      case "5d035867f7c01c535c182950": {
+        return (
+          <>
+            <FormField
+              id={"conferenceName"}
+              formdata={this.state.formdata.conferenceName}
+              change={element => this.updateForm(element)}
+              maxlength={500}
+            />
+            <FormField
+              id={"location"}
+              formdata={this.state.formdata.location}
+              change={element => this.updateForm(element)}
+              maxlength={500}
+            />
+            <FormField
+              id={"institution"}
+              formdata={this.state.formdata.institution}
               change={element => this.updateForm(element)}
               maxlength={500}
             />
@@ -880,6 +921,8 @@ class AddResearch extends Component {
 
     const newDataToSubmit = {...dataToSubmit}
 
+   
+
     const author = [];
     if (this.state.multi && (this.state.multi.length > 0)) {
       this.state.multi.map(value => {
@@ -888,11 +931,13 @@ class AddResearch extends Component {
       });
 
       if (this.props.user.isAdmin) {
-        newDataToSubmit["uploader"] = this.state.multi[0].value
+        newDataToSubmit["uploader"] = this.state.multi[0].value ? this.state.multi[0].value : this.props.user._id
       } else {
         newDataToSubmit["uploader"] = this.props.user._id
       }
     }
+
+
 
 
     
@@ -902,7 +947,7 @@ class AddResearch extends Component {
 
     
 
-    newDataToSubmit["author"] = author
+    
 
     let hasAuthor = false 
     if (this.state.multi) {
@@ -919,9 +964,9 @@ class AddResearch extends Component {
       })
     }
 
-    console.log(this.state.multi)
+  
 
-    if (this.state.multi === null) {
+    if (!this.state.multi) {
       this.setState({
         authorError: true,
         authorErrorMessage: "ກະລຸນາຕື່ມນັກຄົ້ນຄວ້າ",
@@ -946,13 +991,31 @@ class AddResearch extends Component {
         // formError: false,
         // formErrorMessage: ""
       })
-      console.log(this.state.formError)
+      newDataToSubmit["author"] = author
+   
     }
 
+    console.log(this.state.multiForAdvisor)
 
-    
 
-    if (formIsValid && !this.state.formError && !this.state.authorError) {
+    if (this.state.formdata.researchType.value === "5cdb83a127ba7c4214ef5779") {
+      const supervisor = [];
+      if (this.state.multiForAdvisor && (this.state.multiForAdvisor.length > 0)) {
+        this.state.multiForAdvisor.map(value => {
+          supervisor.push(value.value);
+          return null;
+        });
+
+        console.log(supervisor)
+  
+      
+      }
+      newDataToSubmit["supervisor"] = supervisor
+    }
+
+    if (formIsValid && !this.state.formError && !this.state.authorError && hasAuthor) {
+
+      console.log(newDataToSubmit)
 
       this.props.dispatch(addNewResearch(newDataToSubmit)).then((response) => {
         console.log(response)
@@ -1250,6 +1313,7 @@ class AddResearch extends Component {
                       onDrop={e => this.onDrop(e)}
                       multiple={false}
                       accept ='.pdf,.docx'
+                      maxSize= {20971520}
                     >
                       <Grid container alignItems="center" alignContent="center">
                         <Grid item>

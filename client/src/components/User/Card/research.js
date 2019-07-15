@@ -127,7 +127,13 @@ const ResearchCard = ({ userData, userDetail, userResearch, loading }) => {
                   fontWeight: "bold"
                 }}
               >
-                ຜົນງານການຄົ້ນຄວ້າ
+                ຜົນງານການຄົ້ນຄວ້າ{" "}
+                <span
+              variant="inherit"
+              style={{ fontWeight: "normal", color: "#898989" }}
+            >
+              {profile.research ? `(${profile.research.length})` : null}
+            </span>
               </Typography>
             </Grid>
             <Grid item xs={4} align="right">
@@ -173,11 +179,14 @@ const ResearchCard = ({ userData, userDetail, userResearch, loading }) => {
                           objectFit: "contain"
                         }}
                       >
-                        {isOwner ? (
-                          <IconButton style={{ padding: 0 }}>
-                            <MoreVertOutlined fontSize="small" />
-                          </IconButton>
-                        ) : null}
+                        {
+                        //   isOwner ? (
+                        //   <IconButton style={{ padding: 0 }}>
+                        //     <MoreVertOutlined fontSize="small" />
+                        //   </IconButton>
+                        // ) : null
+                      
+                      }
                       </Grid>
                     </Grid>
                     <Grid
@@ -506,7 +515,13 @@ const ResearchCard = ({ userData, userDetail, userResearch, loading }) => {
                   fontWeight: "bold"
                 }}
               >
-                ຜົນງານການຄົ້ນຄວ້າ
+                ຜົນງານການຄົ້ນຄວ້າ{" "}
+                <span
+              variant="inherit"
+              style={{ fontWeight: "normal", color: "#898989" }}
+            >
+              {profile.research ? `(${profile.research.length})` : null}
+            </span>
               </Typography>
             </Grid>
             <Grid item xs={4} align="right">
