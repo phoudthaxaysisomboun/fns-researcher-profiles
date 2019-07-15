@@ -68,6 +68,7 @@ import {
   GET_RESEARCH_AREA,
   UPDATE_RESEARCHER_RESEARCH_AREA,
   GET_AUTHOR_SUGGESTIONS,
+  ADD_NEW_RESEARCH,
   GET_COMMENTS
 } from "./types";
 
@@ -872,4 +873,5 @@ export function getAuthorSuggestions() {
     payload: request
   };
 }
+
 

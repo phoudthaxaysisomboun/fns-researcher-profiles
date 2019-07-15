@@ -70,7 +70,7 @@ export const isFormValid = (formdata, formName) => {
     if (key === "gender") {
       formIsValid = true;
     }
-    console.log(formdata[key].valid);
+    console.log(key + " " + formdata[key].valid);
   }
 
   return formIsValid;

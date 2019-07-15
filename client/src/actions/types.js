@@ -20,6 +20,8 @@ export const CLEAR_FOLLOWER = "clear_follower";
 export const GET_FOLLOWER_IN_LOAD_MORE = "get_follower_in_load_more";
 export const GET_FOLLOWING_IN_LOAD_MORE = "get_following_in_load_more";
 
+export const ADD_NEW_RESEARCH = "add_new_research"
+
 export const UPDATE_USER_MOBILE = "update_user_mobile";
 export const UPDATE_PROFILE_DESCRIPTION = "update_profile_description";
 export const UPDATE_USER_PHONE = "update_user_phone";

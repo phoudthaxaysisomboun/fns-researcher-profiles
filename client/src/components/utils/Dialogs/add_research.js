@@ -56,7 +56,8 @@ import {
 import { getAuthorSuggestions } from "../../../actions/user_actions";
 import {
   getResearchType,
-  getPublicationType
+  getPublicationType,
+  addNewResearch
 } from "../../../actions/research_actions";
 
 import { connect } from "react-redux";
@@ -262,6 +263,8 @@ class AddResearch extends Component {
   constructor() {
     super();
     this.state = {
+      authorError: false,
+      authorErrorMessage: "",
       single: null,
       multi: null,
       multiForAdvisor: null,
@@ -320,7 +323,7 @@ class AddResearch extends Component {
           validation: {
             required: true
           },
-          valid: false,
+          valid: true,
           touched: false,
           validationMessage: ""
         },
@@ -370,7 +373,7 @@ class AddResearch extends Component {
           validation: {
             required: false
           },
-          valid: false,
+          valid: true,
           touched: false,
           validationMessage: ""
         },
@@ -386,7 +389,7 @@ class AddResearch extends Component {
           validation: {
             required: false
           },
-          valid: false,
+          valid: true,
           touched: false,
           validationMessage: ""
         },
@@ -403,7 +406,7 @@ class AddResearch extends Component {
           validation: {
             required: false
           },
-          valid: false,
+          valid: true,
           touched: false,
           validationMessage: ""
         },
@@ -420,7 +423,7 @@ class AddResearch extends Component {
           validation: {
             required: false
           },
-          valid: false,
+          valid: true,
           touched: false,
           validationMessage: ""
         },
@@ -436,7 +439,7 @@ class AddResearch extends Component {
           validation: {
             required: false
           },
-          valid: false,
+          valid: true,
           touched: false,
           validationMessage: ""
         },
@@ -452,7 +455,7 @@ class AddResearch extends Component {
           validation: {
             required: false
           },
-          valid: false,
+          valid: true,
           touched: false,
           validationMessage: ""
         },
@@ -468,7 +471,7 @@ class AddResearch extends Component {
           validation: {
             required: false
           },
-          valid: false,
+          valid: true,
           touched: false,
           validationMessage: ""
         },
@@ -484,7 +487,7 @@ class AddResearch extends Component {
           validation: {
             required: false
           },
-          valid: false,
+          valid: true,
           touched: false,
           validationMessage: ""
         },
@@ -500,7 +503,7 @@ class AddResearch extends Component {
           validation: {
             required: false
           },
-          valid: false,
+          valid: true,
           touched: false,
           validationMessage: ""
         },
@@ -516,7 +519,7 @@ class AddResearch extends Component {
           validation: {
             required: false
           },
-          valid: false,
+          valid: true,
           touched: false,
           validationMessage: ""
         },
@@ -532,7 +535,7 @@ class AddResearch extends Component {
           validation: {
             required: false
           },
-          valid: false,
+          valid: true,
           touched: false,
           validationMessage: ""
         }
@@ -545,7 +548,7 @@ class AddResearch extends Component {
 
 
     axios
-      .post(`/api/research/remove_publication_file&filename=${encodeURIComponent(this.state.files[0].name)}`)
+      .post(`/api/research/remove_publication_file?filename=${this.state.files[0].name}`)
       .then(response => {
         console.log(response.data)
         if (response.data.success) {
@@ -742,6 +745,8 @@ class AddResearch extends Component {
     this.setState({
       [name]: value
     });
+
+    
   };
 
   handleChangeForAdvisor = name => value => {
@@ -873,17 +878,105 @@ class AddResearch extends Component {
 
     let dataToSubmit = generateData(this.state.formdata, "addResearchDialog");
 
-    console.log(dataToSubmit);
+    const newDataToSubmit = {...dataToSubmit}
 
     const author = [];
-    this.state.multi.map(value => {
-      author.push(value.value);
-      return null;
-    });
+    if (this.state.multi && (this.state.multi.length > 0)) {
+      this.state.multi.map(value => {
+        author.push(value.value);
+        return null;
+      });
 
-    console.log(author);
+      if (this.props.user.isAdmin) {
+        newDataToSubmit["uploader"] = this.state.multi[0].value
+      } else {
+        newDataToSubmit["uploader"] = this.props.user._id
+      }
+    }
 
-    if (formIsValid & !this.state.formError) {
+
+    
+    if (this.state.files.length > 0) {
+      newDataToSubmit["files"] = this.state.files
+    }
+
+    
+
+    newDataToSubmit["author"] = author
+
+    let hasAuthor = false 
+    if (this.state.multi) {
+      this.state.multi.map((value)=>{
+        console.log(value.value)
+        console.log(this.props.user._id)
+        if (this.props.user.isAdmin || (value.value === this.props.user._id)) {
+          return hasAuthor = true
+        }
+        else {
+          return hasAuthor = false
+        }
+        
+      })
+    }
+
+    console.log(this.state.multi)
+
+    if (this.state.multi === null) {
+      this.setState({
+        authorError: true,
+        authorErrorMessage: "ກະລຸນາຕື່ມນັກຄົ້ນຄວ້າ",
+        // formError: true,
+        // formErrorMessage: "ກະລຸນາຕື່ມນັກຄົ້ນຄວ້າ"
+      })
+      console.log(this.state.formError)
+
+    } else if (!hasAuthor) {
+      this.setState({
+        authorError: true,
+        authorErrorMessage: "ທ່ານສາມາດເພີ່ມຜົນງານການຄົ້ນຄວ້າທີ່ມີທ່ານເປັນເຈົ້າຂອງເທົ່ານັ້ນ",
+        // formError: true,
+        // formErrorMessage: "ທ່ານສາມາດເພີ່ມຜົນງານການຄົ້ນຄວ້າທີ່ມີທ່ານເປັນເຈົ້າຂອງເທົ່ານັ້ນ"
+      })
+      console.log(this.state.formError)
+
+    } else {
+      this.setState({
+        authorError: false,
+        authorErrorMessage: "",
+        // formError: false,
+        // formErrorMessage: ""
+      })
+      console.log(this.state.formError)
+    }
+
+
+    
+
+    if (formIsValid && !this.state.formError && !this.state.authorError) {
+
+      this.props.dispatch(addNewResearch(newDataToSubmit)).then((response) => {
+        console.log(response)
+        if (response.payload.success) {
+          this.setState({
+                    formError: false,
+                    formSuccess: true
+                  });
+
+                  this.props.close()
+        } else {
+          this.setState({
+                    formError: true,
+                    formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດເພີ່ມຂໍ້ມູນໄດ້ (${response.payload.err})`
+                  });
+        }
+      }).catch(e => {
+            this.setState({
+              formError: true,
+              formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດເພີ່ມຂໍ້ມູນໄດ້ (${e})`
+            });
+          });
+
+      console.log(newDataToSubmit)
       // this.props
       //   .dispatch(
       //     addResearchDialog(
@@ -1068,6 +1161,25 @@ class AddResearch extends Component {
                 />
               </NoSsr>
             </div>
+
+            {this.state.authorError ? (
+              <Grid container spacing={24}>
+                <Grid item xs={12}>
+                  <FormHelperText
+                    style={{
+                      fontFamily: "'Noto Sans Lao UI', sans serif",
+                      fontWeight: "600",
+                      marginBottom: "8px",
+                      marginTop: "8px"
+                    }}
+                    error
+                    id="component-error-text"
+                  >
+                    {this.state.authorErrorMessage}
+                  </FormHelperText>
+                </Grid>
+              </Grid>
+            ) : null}
 {
   console.log(this.state.files)
 }
@@ -1137,6 +1249,7 @@ class AddResearch extends Component {
                       style={{ height: "100%", width: "100%" }}
                       onDrop={e => this.onDrop(e)}
                       multiple={false}
+                      accept ='.pdf,.docx'
                     >
                       <Grid container alignItems="center" alignContent="center">
                         <Grid item>

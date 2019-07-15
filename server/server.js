@@ -65,8 +65,9 @@ let storage = multer.diskStorage({
     cb(null, 'uploads/')
   },
   filename: (req, file, cb)=>{
-    cb(null, `${Date.now()}_${file.originalname}`)
-    publicationFileName = `${Date.now()}_${file.originalname}`
+    let filename = `${Date.now()}_${file.originalname}`
+    cb(null, filename)
+    publicationFileName = filename
   }
 })
 
@@ -81,20 +82,15 @@ app.post('/api/research/upload_publication', auth, (req, res) => {
   })
 })
 
-
-
 app.post('/api/research/remove_publication_file', auth, (req, res) => {
-  const path = './uploads/' + req.query.filename
+  // const file = "." + `/uploads/${req.query.filename}`
+const path = "." + `/uploads/${req.query.filename}`
 
-  console.log(path)
 
   fs.unlink(path, (err) => {
-    if (err) {
-      return res.json({success: false, err})
-    }
+    
     return res.json({success: true})
   })
-
 })
 
 
@@ -3686,6 +3682,8 @@ app.post("/api/research/add_research", auth, (req, res) => {
   const research = new Research(req.body);
 
   research.save((err, doc) => {
+    console.log(err)
+    console.log(doc)
     if (err) return res.json({ success: false, err });
     res.status(200).json({
       success: true,
@@ -3707,9 +3705,11 @@ app.post("/api/research/add_research", auth, (req, res) => {
         new: true
       },
       (err, research) => {
-        if (err) return res.json({ success: false, err });
+        
       }
     );
+
+  
   });
 });
 
