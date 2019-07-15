@@ -18,7 +18,8 @@ import {
   DELETE_COMMENTS,
   ADD_REPLY,
   REMOVE_REPLY,
-  COUNT_READS
+  COUNT_READS,
+  ADD_NEW_RESEARCH
 } from "../actions/types";
 
 import mergeByKey from "array-merge-by-key";
@@ -196,6 +197,15 @@ export default function(state = {}, action) {
       return { ...state, userResearch: {
         ...state.userResearch,
         researchComments: action.payload.sort( compareDate )
+      } };
+      case ADD_NEW_RESEARCH:
+
+      return { ...state, userResearch: {
+        ...state.userResearch,
+        allResearches: {
+          ...state.allResearches,
+          ...action.payload.doc
+        }
       } };
     default:
       return state;

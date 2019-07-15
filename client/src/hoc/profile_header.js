@@ -56,7 +56,8 @@ const ProfileHeader = ({
   children,
   loading,
   tab,
-  openShareDialog
+  openShareDialog,
+  openAddResearchDialog
 }) => {
   const userData = { ...props.user.userData };
   const profile = { ...props.user.userDetail };
@@ -87,6 +88,7 @@ const ProfileHeader = ({
           variant="extended"
           color="primary"
           style={{ margin: "8px" }}
+          onClick={()=>openAddResearchDialog()}
         >
           <AddOutlined style={{ marginRight: "8px" }} />
           ເພີ່ມຜົນງານ

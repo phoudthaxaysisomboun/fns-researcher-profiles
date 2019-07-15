@@ -51,6 +51,7 @@ import {
 
 import { CloseOutlined } from "@material-ui/icons";
 import { LOCALHOST } from "../utils/misc";
+import AddResearch from "../utils/Dialogs/add_research";
 
 let shareUrl;
 class ProfileOverview extends Component {
@@ -74,6 +75,19 @@ class ProfileOverview extends Component {
     openShareDialog: false,
     openIntroductionDialog: false,
     openUpdateResearchAreaDialog: false,
+    openAddResearchDialog: false
+  };
+
+  handleAddResearchClose = () => {
+    this.setState({
+      openAddResearchDialog: false
+    });
+  };
+
+  handleAddResearchOpen = () => {
+    this.setState({
+      openAddResearchDialog: true
+    });
   };
 
   componentWillMount() {
@@ -444,6 +458,9 @@ class ProfileOverview extends Component {
         openShareDialog={() => {
           this.handleShareDialogOpen();
         }}
+        openAddResearchDialog={() => {
+          this.handleAddResearchOpen();
+        }}
       >
         <Grid container style={{ paddingTop: "24px" }}>
           <Grid item xs sm={1} lg={2} md={1} />
@@ -469,6 +486,9 @@ class ProfileOverview extends Component {
                     userResearch={this.props.research.userResearch}
                     props={this.props}
                     loading={this.state.loadingResearchCard}
+                    openAddResearchDialog={() => {
+                      this.handleAddResearchOpen();
+                    }}
                   />
                 </Grid>
               </Grid>
@@ -754,6 +774,21 @@ class ProfileOverview extends Component {
 
 
           close={() => this.handleUpdateResearchAreaDialogClose()}
+        />
+
+        <AddResearch
+          open={this.state.openAddResearchDialog}
+          close={() => this.handleAddResearchClose()}
+          authorSuggestions={
+            this.props && this.props.user && this.props.user.authorSuggestions ? this.props.user.authorSuggestions : []
+          }
+          user = {
+            this.props && this.props.user && this.props.user.userData ? this.props.user.userData : {}
+          }
+          other = {
+            {value: this.props && this.props.user && this.props.user.userDetail && this.props.user.userDetail._id ? this.props.user.userDetail._id : "",
+            label: this.props && this.props.user && this.props.user.userDetail && this.props.user.userDetail.name ? `${this.props.user.userDetail.name} ${this.props.user.userDetail.lastname}` : ""}
+          }
         />
       </ProfileHeader>
     );

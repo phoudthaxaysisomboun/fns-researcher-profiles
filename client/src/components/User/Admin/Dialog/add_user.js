@@ -646,15 +646,7 @@ class AddUserDialog extends Component {
                   align="left"
                   style={{ display: "flex", alignItems: "center" }}
                 >
-                  <ReactLink style={{ textDecoration: "none" }} to="/login">
-                    <Typography
-                      variant="inherit"
-                      color="primary"
-                      style={{ fontWeight: "bold" }}
-                    >
-                      ລົງຊື່ເຂົ້າໃຊ້ແທນ
-                    </Typography>
-                  </ReactLink>
+                  
                 </Grid>
 
                 <Grid item xs={6} align="right">

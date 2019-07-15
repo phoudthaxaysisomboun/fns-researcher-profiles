@@ -86,7 +86,7 @@ const styles = {
   }
 };
 
-const ResearchCard = ({ userData, userDetail, userResearch, loading }) => {
+const ResearchCard = ({ userData, userDetail, userResearch, loading, openAddResearchDialog }) => {
   const user = { ...userData };
   const profile = { ...userDetail };
   const research = { ...userResearch };
@@ -140,7 +140,7 @@ const ResearchCard = ({ userData, userDetail, userResearch, loading }) => {
             {
               !loading && (isOwner || user.isAdmin) ? 
               
-              <IconButton style={{padding: "0px"}}>
+              <IconButton onClick={()=>openAddResearchDialog()} style={{padding: "0px"}}>
               <AddOutlined fontSize="default" />
               </IconButton >
               : null
@@ -528,7 +528,7 @@ const ResearchCard = ({ userData, userDetail, userResearch, loading }) => {
             {
               !loading && (isOwner || user.isAdmin) ? 
               
-              <IconButton style={{padding: "0px"}}>
+              <IconButton style={{padding: "0px"}} onClick={()=>openAddResearchDialog()}>
               <AddOutlined fontSize="default" />
               </IconButton >
               : null

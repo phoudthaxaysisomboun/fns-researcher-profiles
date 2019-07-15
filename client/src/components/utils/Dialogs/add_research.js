@@ -813,12 +813,24 @@ class AddResearch extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps.authorSuggestions !== this.props.authorSuggestions) {
-      let multi = [];
+    let multi = [];
+    if (this.props && this.props.other && (prevProps.other.value !== this.props.other)) {
+      console.log(this.props.other.value)
+      multi[0] = {
+        value: this.props.other.value,
+        label: this.props.other.label
+      };
+    } else {
       multi[0] = {
         value: this.props.user._id,
         label: `${this.props.user.name} ${this.props.user.lastname}`
       };
+    }
+    
+    if (prevProps.authorSuggestions !== this.props.authorSuggestions) {
+      console.log(this.props)
+      
+      
       this.props.authorSuggestions.map(value => {
         suggestions.push({
           value: value._id,
