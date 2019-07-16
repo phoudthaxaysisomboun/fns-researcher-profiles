@@ -57,7 +57,7 @@ import { getAuthorSuggestions } from "../../../actions/user_actions";
 import {
   getResearchType,
   getPublicationType,
-  addNewResearch
+  updateResearch
 } from "../../../actions/research_actions";
 
 import { connect } from "react-redux";
@@ -289,7 +289,7 @@ class EditResearch extends Component {
           validation: {
             required: true
           },
-          valid: false,
+          valid: true,
           touched: false,
           validationMessage: ""
         },
@@ -308,7 +308,7 @@ class EditResearch extends Component {
           validation: {
             required: true
           },
-          valid: false,
+          valid: true,
           touched: false,
           validationMessage: ""
         },
@@ -554,6 +554,22 @@ class EditResearch extends Component {
           valid: true,
           touched: false,
           validationMessage: ""
+        },
+        uploader: {
+          element: "input",
+          value: "",
+          config: {
+            name: "uploader",
+            type: "text",
+            label: "",
+            placeholder: ""
+          },
+          validation: {
+            required: false
+          },
+          valid: true,
+          touched: false,
+          validationMessage: ""
         }
       }
     };
@@ -561,21 +577,24 @@ class EditResearch extends Component {
 
   removeFile() {
     // /api/research/remove_publication_file
+    this.setState({
+      files: [],
+      uploading: false,
+    });
 
+    // axios
+    //   .post(`/api/research/remove_publication_file?filename=${this.state.files[0].name}`)
+    //   .then(response => {
+    //     console.log(response.data)
+    //     if (response.data.success) {
 
-    axios
-      .post(`/api/research/remove_publication_file?filename=${this.state.files[0].name}`)
-      .then(response => {
-        console.log(response.data)
-        if (response.data.success) {
-
-          this.setState({
-            files: [],
-            uploading: false,
-          });
+    //       this.setState({
+    //         files: [],
+    //         uploading: false,
+    //       });
           
-        }
-      });
+    //     }
+    //   });
   }
 
   onDrop(files) {
@@ -805,31 +824,86 @@ class EditResearch extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps.research !== this.props.research) {
+    // if (prevProps.research !== this.props.research) {
+    //   const newFormdata = {
+    //     ...this.state.formdata
+    //   };
+    //   newFormdata["researchType"].value = "5cdb82bb27ba7c4214ef5776";
+    //   newFormdata["publicationType"].value = "5cdb90c8ae41ef71480b6e0d";
+  
+    //   this.setState({ formdata: newFormdata });
+    // }
+
+    console.log(this.props._research)
+
+    if (prevProps._research.researchType !== this.props._research.researchType) {
+      
+
+      let multi = []
+      let multiForAdvisor = []
+
+      this.props._research.author.map((value, index)=>{
+        console.log(value)
+        multi.push( {
+          value: {_id: value._id, name: value.name, lastname: value.lastname},
+          label: `${value.name} ${value.lastname}`
+        });
+
+        return null
+      })
+
+      if (this.props._research.supervisor) {
+        this.props._research.supervisor.map((value, index)=>{
+
+          multiForAdvisor.push( {
+            value: {_id: value._id, name: value.name, lastname: value.lastname},
+            label: `${value.name} ${value.lastname}`
+          });
+  
+          return null
+        })
+      }
+
+
+
+      this.setState({
+        currentResearchType: this.props._research.researchType._id,
+        multi,
+        multiForAdvisor,
+        files: this.props._research.files ? this.props._research.files : [],
+        
+      })
+
+
       const newFormdata = {
         ...this.state.formdata
-      };
-      newFormdata["researchType"].value = "5cdb82bb27ba7c4214ef5776";
-      newFormdata["publicationType"].value = "5cdb90c8ae41ef71480b6e0d";
+      }
+
+      newFormdata["researchType"].value = this.props._research.researchType._id
+      newFormdata["publicationType"].value = this.props._research.publicationType._id
+      newFormdata["title"].value = this.props._research.title
+      newFormdata["abstract"].value = this.props._research.abstract
+      newFormdata["date"].value = moment(this.props._research.date).format("YYYY-MM-DD")
+      newFormdata["conferenceTitle"].value = this.props._research.conferenceTitle
+      newFormdata["conferenceName"].value = this.props._research.conferenceName
+      newFormdata["location"].value = this.props._research.location
+      newFormdata["journalName"].value = this.props._research.journalName
+      newFormdata["volume"].value = this.props._research.volume
+      newFormdata["issue"].value = this.props._research.issue
+      newFormdata["page"].value = this.props._research.page
+      newFormdata["publisher"].value = this.props._research.publisher
+      newFormdata["editor"].value = this.props._research.editor
+      newFormdata["institution"].value = this.props._research.institution
+      newFormdata["degree"].value = this.props._research.degree
+      newFormdata["uploader"].value = this.props._research.uploader._id
+      this.setState({
+        formdata: newFormdata
+      })
+    }
+
+
+
   
-      this.setState({ formdata: newFormdata });
-    }
-
-
-
-    let multi = [];
-    if (this.props && this.props.other && (prevProps.other.value !== this.props.other)) {
-      console.log(this.props.other.value)
-      multi[0] = {
-        value: this.props.other.value,
-        label: this.props.other.label
-      };
-    } else {
-      multi[0] = {
-        value: this.props.user._id,
-        label: `${this.props.user.name} ${this.props.user.lastname}`
-      };
-    }
     
     if (prevProps.authorSuggestions !== this.props.authorSuggestions) {
       console.log(this.props)
@@ -842,10 +916,8 @@ class EditResearch extends Component {
         });
         return null;
       });
-      length = multi.length;
-      this.setState({
-        multi
-      });
+      length = suggestions.length;
+      
     }
 
 
@@ -889,7 +961,6 @@ class EditResearch extends Component {
         "publicationType"
       );
       this.updateFields(newFormdata);
-      console.log(this.props.research);
     }
 
  
@@ -909,7 +980,7 @@ class EditResearch extends Component {
     const newFormdata = update(
       element,
       this.state.formdata,
-      "addResearchDialog"
+      "updateResearchDialog"
     );
     this.setState({
       formError: false,
@@ -935,13 +1006,11 @@ class EditResearch extends Component {
 
   submitForm = event => {
     event.preventDefault();
-    let formIsValid = isFormValid(this.state.formdata, "addResearchDialog");
+    let formIsValid = isFormValid(this.state.formdata, "updateResearchDialog");
 
-    let dataToSubmit = generateData(this.state.formdata, "addResearchDialog");
+    let dataToSubmit = generateData(this.state.formdata, "updateResearchDialog");
 
     const newDataToSubmit = {...dataToSubmit}
-
-   
 
     const author = [];
     if (this.state.multi && (this.state.multi.length > 0)) {
@@ -950,11 +1019,7 @@ class EditResearch extends Component {
         return null;
       });
 
-      if (this.props.user.isAdmin) {
-        newDataToSubmit["uploader"] = this.state.multi[0].value ? this.state.multi[0].value : this.props.user._id
-      } else {
-        newDataToSubmit["uploader"] = this.props.user._id
-      }
+    
     }
 
 
@@ -969,21 +1034,19 @@ class EditResearch extends Component {
 
     
 
-    let hasAuthor = false 
+    let hasAuthor = false
     if (this.state.multi) {
-      this.state.multi.map((value)=>{
-        console.log(value.value)
-        console.log(this.props.user._id)
-        if (this.props.user.isAdmin || (value.value === this.props.user._id)) {
-          return hasAuthor = true
-        }
-        else {
-          return hasAuthor = false
-        }
-        
+     this.state.multi.map((value)=>{
+   
+        if (this.props.user.isAdmin) {
+          hasAuthor = true
+          
+        } else if (value.value === this.props.user._id){
+          hasAuthor = true
+        } 
+    return null
       })
     }
-
   
 
     if (!this.state.multi) {
@@ -995,7 +1058,7 @@ class EditResearch extends Component {
       })
       console.log(this.state.formError)
 
-    } else if (!hasAuthor) {
+    } else if (hasAuthor === false) {
       this.setState({
         authorError: true,
         authorErrorMessage: "ທ່ານສາມາດເພີ່ມຜົນງານການຄົ້ນຄວ້າທີ່ມີທ່ານເປັນເຈົ້າຂອງເທົ່ານັ້ນ",
@@ -1015,8 +1078,6 @@ class EditResearch extends Component {
    
     }
 
-    console.log(this.state.multiForAdvisor)
-
 
     if (this.state.formdata.researchType.value === "5cdb83a127ba7c4214ef5779") {
       const supervisor = [];
@@ -1025,10 +1086,6 @@ class EditResearch extends Component {
           supervisor.push(value.value);
           return null;
         });
-
-        console.log(supervisor)
-  
-      
       }
       newDataToSubmit["supervisor"] = supervisor
     }
@@ -1037,29 +1094,29 @@ class EditResearch extends Component {
 
       console.log(newDataToSubmit)
 
-      this.props.dispatch(addNewResearch(newDataToSubmit)).then((response) => {
-        console.log(response)
-        if (response.payload.success) {
-          this.setState({
-                    formError: false,
-                    formSuccess: true
-                  });
+      // this.props.dispatch(updateResearch(newDataToSubmit)).then((response) => {
+      //   console.log(response)
+      //   if (response.payload.success) {
+      //     this.setState({
+      //               formError: false,
+      //               formSuccess: true
+      //             });
 
-                  this.props.close()
-        } else {
-          this.setState({
-                    formError: true,
-                    formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນໄດ້ (${response.payload.err})`
-                  });
-        }
-      }).catch(e => {
-            this.setState({
-              formError: true,
-              formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນໄດ້ (${e})`
-            });
-          });
+      //             this.props.close()
+      //   } else {
+      //     this.setState({
+      //               formError: true,
+      //               formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນໄດ້ (${response.payload.err})`
+      //             });
+      //   }
+      // }).catch(e => {
+      //       this.setState({
+      //         formError: true,
+      //         formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນໄດ້ (${e})`
+      //       });
+      //     });
 
-      console.log(newDataToSubmit)
+
       // this.props
       //   .dispatch(
       //     addResearchDialog(
@@ -1264,7 +1321,9 @@ class EditResearch extends Component {
             ) : null}
 {
   console.log(this.state.files)
+  //89
 }
+
             {this.state.files && this.state.files[0] ? (
               <>
                 <Paper

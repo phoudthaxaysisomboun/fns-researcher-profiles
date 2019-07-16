@@ -1006,6 +1006,8 @@ const ResearchHeader = ({
                         minWidth: "14px",
                         padding: "4px"
                       }}
+
+                      onClick={()=>{openShareDialog()}}
                     >
                       {" "}
                       <ReplyOutlined

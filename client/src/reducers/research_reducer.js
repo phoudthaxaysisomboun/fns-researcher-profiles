@@ -20,7 +20,8 @@ import {
   REMOVE_REPLY,
   COUNT_READS,
   ADD_NEW_RESEARCH,
-  EDIT_RESEARCH
+  EDIT_RESEARCH,
+  COUNT_SHARES
 } from "../actions/types";
 
 import mergeByKey from "array-merge-by-key";
@@ -220,6 +221,10 @@ export default function(state = {}, action) {
       return {
         ...state,
         newResearch: action.payload.research
+      };
+    case COUNT_SHARES:
+      return {
+        ...state,
       };
     default:
       return state;

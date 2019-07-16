@@ -3561,6 +3561,23 @@ app.post("/api/research/count_reads", (req, res) => {
   });
 });
 
+app.post("/api/research/count_shares", (req, res) => {
+  Research.findOneAndUpdate(
+    { _id: mongoose.Types.ObjectId(req.query.researchId) },
+    {
+      $push: {
+        shares: {
+          user: mongoose.Types.ObjectId(req.query.userId),
+          time: moment().toDate()
+        }
+      }
+    }
+  ).exec((err, doc) => {
+    if (err) return res.status(400).send(err);
+    res.status(200).json(doc.reads);
+  });
+});
+
 // User.findOneAndUpdate(
 //   {
 //     _id: mongoose.Types.ObjectId(req.query.userId),

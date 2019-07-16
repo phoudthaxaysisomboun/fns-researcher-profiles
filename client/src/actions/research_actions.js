@@ -24,7 +24,8 @@ import {
   ADD_NEW_RESEARCH,
   EDIT_RESEARCH,
   REMOVE_RESEARCH,
-  REMOVE_AUTHOR
+  REMOVE_AUTHOR,
+  COUNT_SHARES
 } from "./types";
 
 import { RESEARCH_SERVER, RESEARCHER_SERVER } from "../components/utils/misc";
@@ -213,6 +214,19 @@ export function addCountToResearch(researchId, userId) {
   };
 }
 
+export function addShareCount(researchId, userId) {
+  const request = axios
+    .post(`${RESEARCH_SERVER}/count_shares?&researchId=${researchId}&userId=${userId}`)
+    .then(response => response.data);
+
+  return {
+    type: COUNT_SHARES,
+    payload: request
+  };
+
+
+}
+
 export function clearLikeResearch() {
   return {
     type: CLEAR_LIKES_RESEARCH,
@@ -287,7 +301,7 @@ export function removeAuthor(researchId, userId) {
     .then(response => response.data);
 
   return {
-    type: EDIT_RESEARCH,
+    type: REMOVE_LIKE,
     payload: request
   };
 }

@@ -386,7 +386,7 @@ const ResearchCard = ({ userData, userDetail, userResearch, loading, openAddRese
                         >
                           {" "}
                           <FavoriteBorderOutlined fontSize="small" />
-                          {research.likes ? (
+                          {researches.likes ? (
                             <div
                               style={{
                                 fontSize: "13.5px",
@@ -398,7 +398,7 @@ const ResearchCard = ({ userData, userDetail, userResearch, loading, openAddRese
                               &nbsp;
                               <NumberFormat
                                 value={
-                                  research.likes ? research.likes.length : null
+                                  researches.likes && researches.likes.length > 0 ? researches.likes.length : null
                                 }
                                 displayType={"text"}
                                 thousandSeparator={true}
@@ -418,7 +418,7 @@ const ResearchCard = ({ userData, userDetail, userResearch, loading, openAddRese
                         >
                           {" "}
                           <ModeCommentOutlined fontSize="small" />
-                          {research.comments ? (
+                          {researches.comments ? (
                             <div
                               style={{
                                 fontSize: "13.5px",
@@ -430,8 +430,8 @@ const ResearchCard = ({ userData, userDetail, userResearch, loading, openAddRese
                               &nbsp;
                               <NumberFormat
                                 value={
-                                  research.comments
-                                    ? research.comments.length
+                                  researches.comments && researches.comments.length > 0
+                                    ? researches.comments.length
                                     : null
                                 }
                                 displayType={"text"}

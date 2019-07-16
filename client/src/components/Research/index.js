@@ -30,11 +30,13 @@ import {
   addCountToResearch,
   removeResearch,
   removeAuthor,
-  updateResearch
+  updateResearch,
+  addShareCount
 } from "../../actions/research_actions";
 
 import { CloseOutlined } from "@material-ui/icons";
 import { LOCALHOST } from "../utils/misc";
+import ShareDialog from "../utils/Dialogs/share_research";
 import AddResearch from "../utils/Dialogs/add_research";
 import UpdateResearch from "../utils/Dialogs/edit_research";
 import AddResearchButton from "../utils/Button/add_research_button";
@@ -60,8 +62,27 @@ class Research extends Component {
     openRemoveAuthorDialog: false,
     openEditResearchDialog: false,
     openAddResearchDialog: false,
-  
+    openShareDialog: false
   };
+
+  handleShareDialogClose = () => {
+    this.setState({
+      openShareDialog: false
+    })
+  }
+
+  handleShareDialogOpen = () => {
+    this.setState({
+      openShareDialog: true
+    })
+  }
+
+  handleShareCount = () => {
+    const _id = new ObjectID();
+    this.props.dispatch(addShareCount(this.props.research && this.props.research.userResearch
+      ? this.props.research.userResearch[0]._id : "", this.props && this.props.user && this.props.user.userData && this.props.user.userData._id ? this.props.user.userData._id : _id.toHexString()
+      ))
+  }
 
   handleAddResearchClose = () => {
     this.setState({
@@ -329,7 +350,7 @@ class Research extends Component {
             this.props && this.props.user && this.props.user.userData ? this.props.user.userData : {}
           }
 
-          research = {
+          _research = {
             this.props.research && this.props.research.userResearch
                   ? this.props.research.userResearch[0]
                   : {}
@@ -400,6 +421,22 @@ class Research extends Component {
           </DialogActions>
         </Dialog>
         <AddResearchButton add={()=> this.handleAddResearchOpen()} />
+
+        <ShareDialog
+          open={this.state.openShareDialog}
+          close={() => this.handleShareDialogClose()}
+          url={shareUrl}
+          profile={this.props && this.props.user && this.props.user.userDetail ? this.props.user.userDetail : null}
+          user={this.props.user.userData ? this.props.user.userData : this.props}
+          handleShareCount = {()=>{this.handleShareCount()}}
+          title = {this.props.research && this.props.research.userResearch
+            ? `${this.props.research.userResearch[0].title} - FNS Researcher Profiles`
+            : ""}
+          description = {this.props.research && this.props.research.userResearch
+            ? `${this.props.research.userResearch[0].title} - FNS Researcher Profiles`
+            : ""}
+        />
+
           </> : null
         }
       </ResearchHeader>
