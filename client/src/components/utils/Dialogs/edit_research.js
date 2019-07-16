@@ -843,11 +843,18 @@ class EditResearch extends Component {
       let multiForAdvisor = []
 
       this.props._research.author.map((value, index)=>{
-        console.log(value)
-        multi.push( {
-          value: {_id: value._id, name: value.name, lastname: value.lastname},
-          label: `${value.name} ${value.lastname}`
-        });
+        if (value.profileImage) {
+          multi.push( {
+            value: {_id: value._id, name: value.name, lastname: value.lastname, profileImage: value.profileImage},
+            label: `${value.name} ${value.lastname}`
+          });
+        }
+        else {
+          multi.push( {
+            value: {_id: value._id, name: value.name, lastname: value.lastname},
+            label: `${value.name} ${value.lastname}`
+          });
+        }
 
         return null
       })
@@ -855,11 +862,18 @@ class EditResearch extends Component {
       if (this.props._research.supervisor) {
         this.props._research.supervisor.map((value, index)=>{
 
-          multiForAdvisor.push( {
-            value: {_id: value._id, name: value.name, lastname: value.lastname},
-            label: `${value.name} ${value.lastname}`
-          });
-  
+          if (value.profileImage) {
+            multiForAdvisor.push( {
+              value: {_id: value._id, name: value.name, lastname: value.lastname, profileImage: value.profileImage},
+              label: `${value.name} ${value.lastname}`
+            });
+          }
+          else {
+            multiForAdvisor.push( {
+              value: {_id: value._id, name: value.name, lastname: value.lastname},
+              label: `${value.name} ${value.lastname}`
+            });
+          }
           return null
         })
       }
@@ -1012,6 +1026,8 @@ class EditResearch extends Component {
 
     const newDataToSubmit = {...dataToSubmit}
 
+    newDataToSubmit['_id'] = this.props._research._id
+
     const author = [];
     if (this.state.multi && (this.state.multi.length > 0)) {
       this.state.multi.map(value => {
@@ -1026,9 +1042,7 @@ class EditResearch extends Component {
 
 
     
-    if (this.state.files.length > 0) {
-      newDataToSubmit["files"] = this.state.files
-    }
+    newDataToSubmit["files"] = this.state.files
 
     
 
@@ -1094,27 +1108,27 @@ class EditResearch extends Component {
 
       console.log(newDataToSubmit)
 
-      // this.props.dispatch(updateResearch(newDataToSubmit)).then((response) => {
-      //   console.log(response)
-      //   if (response.payload.success) {
-      //     this.setState({
-      //               formError: false,
-      //               formSuccess: true
-      //             });
+      this.props.dispatch(updateResearch(newDataToSubmit)).then((response) => {
+        console.log(response)
+        if (response.payload.success) {
+          this.setState({
+                    formError: false,
+                    formSuccess: true
+                  });
 
-      //             this.props.close()
-      //   } else {
-      //     this.setState({
-      //               formError: true,
-      //               formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນໄດ້ (${response.payload.err})`
-      //             });
-      //   }
-      // }).catch(e => {
-      //       this.setState({
-      //         formError: true,
-      //         formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນໄດ້ (${e})`
-      //       });
-      //     });
+                  this.props.close()
+        } else {
+          this.setState({
+                    formError: true,
+                    formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນໄດ້ (${response.payload.err})`
+                  });
+        }
+      }).catch(e => {
+            this.setState({
+              formError: true,
+              formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນໄດ້ (${e})`
+            });
+          });
 
 
       // this.props

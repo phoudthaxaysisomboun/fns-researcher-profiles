@@ -3752,7 +3752,12 @@ app.post("/api/research/update_research", auth, (req, res) => {
           }
           if (err) return res.json({ success: false, err });
 
-          let newIds = req.body.author;
+          let newIds = []
+          req.body.author.map((value)=>{
+            newIds.push(value._id)
+          })
+
+          console.log(newIds)
 
           User.updateMany(
             { _id: newIds },
@@ -3774,32 +3779,25 @@ app.post("/api/research/update_research", auth, (req, res) => {
     });
   });
 
-  research.save((err, doc) => {
-    console.log(err);
-    console.log(doc);
-    if (err) return res.json({ success: false, err });
-    res.status(200).json({
-      success: true,
-      doc
-    });
-
-    let ids = doc.author;
-
-    // REMINDER: add researches id to other authors
-
-    User.updateMany(
-      { _id: ids },
-      {
-        $push: {
-          research: mongoose.Types.ObjectId(doc._id)
-        }
-      },
-      {
-        new: true
-      },
-      (err, user) => {}
-    );
-  });
+  // Research.findOneAndUpdate(
+  //       {
+  //         _id: req.body._id
+  //       },
+  //       {
+  //         $set: req.body
+  //       },
+  //       {
+  //         new: true
+  //       }
+  //     ).exec((err, research) => {
+  //       console.log(req.body)
+  //       console.log(research)
+  //       if (err) return res.json({ success: false, err });
+  //                   return res.json({
+  //                     success: true,
+  //                     research
+  //                   });
+  //     })
 });
 
 app.post("/api/research/remove_research", auth, (req, res) => {

@@ -247,6 +247,18 @@ class Research extends Component {
     this.props.dispatch(clearResearchCard());
   }
 
+  componentDidUpdate(prevProps) {
+    const id = this.props.match.params.id;
+    if (prevProps.research.newResearch !== this.props.research.newResearch) {
+      this.props.dispatch(getResearchForCard(id))
+      this.setState({
+        anchorUploader: false
+      })
+    }
+
+    
+  }
+
   render() {
     return (
       <ResearchHeader
@@ -429,11 +441,11 @@ class Research extends Component {
           profile={this.props && this.props.user && this.props.user.userDetail ? this.props.user.userDetail : null}
           user={this.props.user.userData ? this.props.user.userData : this.props}
           handleShareCount = {()=>{this.handleShareCount()}}
-          title = {this.props.research && this.props.research.userResearch
+          title = {this.props.research && this.props.research.userResearch && this.props.research.userResearch[0].title
             ? `${this.props.research.userResearch[0].title} - FNS Researcher Profiles`
             : ""}
           description = {this.props.research && this.props.research.userResearch
-            ? `${this.props.research.userResearch[0].title} - FNS Researcher Profiles`
+            && this.props.research.userResearch[0].title? `${this.props.research.userResearch[0].title} - FNS Researcher Profiles`
             : ""}
         />
 
