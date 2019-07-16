@@ -59,7 +59,8 @@ class Research extends Component {
     openRemoveAuthorResearchDialog: false,
     openRemoveAuthorDialog: false,
     openEditResearchDialog: false,
-    openAddResearchDialog: false
+    openAddResearchDialog: false,
+  
   };
 
   handleAddResearchClose = () => {
@@ -71,6 +72,18 @@ class Research extends Component {
   handleAddResearchOpen = () => {
     this.setState({
       openAddResearchDialog: true
+    });
+  };
+
+  handleEditResearchClose = () => {
+    this.setState({
+      openEditResearchDialog: false
+    });
+  };
+
+  handleEditResearchOpen = () => {
+    this.setState({
+      openEditResearchDialog: true
     });
   };
 
@@ -257,6 +270,11 @@ class Research extends Component {
                 this.handleRemoveAuthorResearchDialogOpen()
               }
             }
+            openEditResearch = {
+              () => {
+                this.handleEditResearchOpen()
+              }
+            }
       >
         <Grid
           container
@@ -298,9 +316,25 @@ class Research extends Component {
           }
           
         />
-        {
-          // <UpdateResearch />
-        }
+        
+          <UpdateResearch
+          open={this.state.openEditResearchDialog}
+          close={() => this.handleEditResearchClose()}
+          authorSuggestions={
+            this.props && this.props.user && this.props.user.authorSuggestions ? this.props.user.authorSuggestions : []
+          }
+          user = {
+            this.props && this.props.user && this.props.user.userData ? this.props.user.userData : {}
+          }
+
+          research = {
+            this.props.research && this.props.research.userResearch
+                  ? this.props.research.userResearch[0]
+                  : {}
+          }
+          
+        />
+        
 
         <Dialog
           open={this.state.openDeleteResearchDialog}

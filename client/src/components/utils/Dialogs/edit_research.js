@@ -805,13 +805,15 @@ class EditResearch extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const newFormdata = {
+    if (prevProps.research !== this.props.research) {
+      const newFormdata = {
         ...this.state.formdata
       };
       newFormdata["researchType"].value = "5cdb82bb27ba7c4214ef5776";
       newFormdata["publicationType"].value = "5cdb90c8ae41ef71480b6e0d";
   
       this.setState({ formdata: newFormdata });
+    }
 
 
 

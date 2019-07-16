@@ -68,7 +68,8 @@ const ResearchHeader = ({
   handleCoAuthorMenuClick,
   handleCoAuthorMenuClose,
   openDeleteResearchDialog,
-  openRemoveAuthorDialog
+  openRemoveAuthorDialog,
+  openEditResearch
 }) => {
   const userData = { ...props.user.userData };
 
@@ -325,7 +326,7 @@ const ResearchHeader = ({
               fontWeight: 500
             }}
             selected={false}
-            onClick = {()=> {console.log("asd")}}
+            onClick = {()=> {openEditResearch()}}
           >
            <EditOutlined style={{ marginRight: "16px" }}/>
             ແກ້ໄຂ
