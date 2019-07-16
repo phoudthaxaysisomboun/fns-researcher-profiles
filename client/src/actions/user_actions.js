@@ -69,7 +69,8 @@ import {
   UPDATE_RESEARCHER_RESEARCH_AREA,
   GET_AUTHOR_SUGGESTIONS,
   ADD_NEW_RESEARCH,
-  GET_COMMENTS
+  GET_COMMENTS,
+  UPDATE_NAME
 } from "./types";
 
 import {
@@ -493,6 +494,19 @@ export function updateMinorEthnicity(_id, minor_ethnicity) {
 
   return {
     type: UPDATE_USER_MINOR_ETHNICITY,
+    payload: request
+  };
+}
+
+export function updateName(dataToSubmit) {
+  const request = axios
+    .post(
+      `${RESEARCHER_SERVER}/update_name`, dataToSubmit
+    )
+    .then(response => response.data);
+
+  return {
+    type: UPDATE_NAME,
     payload: request
   };
 }

@@ -14,6 +14,7 @@ import ResearchCard from "../User/Card/research";
 import ShareDialog from "../User/Dialog/share";
 import IntorductionDialog from "../User/Dialog/add_introduction";
 import UpdateResearchArea from "../User/Dialog/update_research_area";
+import UpdateNameDialog from "../User/Dialog/edit_name";
 
 import PropTypes from "prop-types";
 
@@ -75,7 +76,20 @@ class ProfileOverview extends Component {
     openShareDialog: false,
     openIntroductionDialog: false,
     openUpdateResearchAreaDialog: false,
-    openAddResearchDialog: false
+    openAddResearchDialog: false,
+
+    openEditnameDialog: false
+  };
+handleEditnameDialogClose = () => {
+    this.setState({
+      openEditnameDialog: false
+    });
+  };
+
+  handleEditNameDialogOpen = () => {
+    this.setState({
+      openEditnameDialog: true
+    });
   };
 
   handleAddResearchClose = () => {
@@ -86,9 +100,11 @@ class ProfileOverview extends Component {
 
   handleAddResearchOpen = () => {
     this.setState({
-      openAddResearchDialog: true
+      openEditnameDialog: true
     });
   };
+
+  
 
   componentWillMount() {
     const id = this.props.match.params.id;
@@ -468,6 +484,9 @@ class ProfileOverview extends Component {
         openAddResearchDialog={() => {
           this.handleAddResearchOpen();
         }}
+        openEditName = {()=>{
+          this.handleEditNameDialogOpen()
+        }}
       >
         <Grid container style={{ paddingTop: "24px" }}>
           <Grid item xs sm={1} lg={2} md={1} />
@@ -755,6 +774,17 @@ class ProfileOverview extends Component {
               : ""
           }
           close={() => this.handleIntroductionDialogClose()}
+        />
+        <UpdateNameDialog
+          open={this.state.openEditnameDialog}
+          userData={
+            this.props.user &&
+            this.props.user &&
+            this.props.user.userDetail
+              ? this.props.user.userDetail
+              : {}
+          }
+          close={() => this.handleEditnameDialogClose()}
         />
         <UpdateResearchArea
           open={this.state.openUpdateResearchAreaDialog}

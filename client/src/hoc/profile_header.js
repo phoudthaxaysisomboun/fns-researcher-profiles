@@ -57,7 +57,8 @@ const ProfileHeader = ({
   loading,
   tab,
   openShareDialog,
-  openAddResearchDialog
+  openAddResearchDialog,
+  openEditName
 }) => {
   const userData = { ...props.user.userData };
   const profile = { ...props.user.userDetail };
@@ -293,6 +294,8 @@ const ProfileHeader = ({
                     margin: "4px",
                     position: "relative"
                   }}
+
+                  onClick={()=>openEditName()}
                 >
                   <EditOutlined fontSize="small" />
                 </IconButton>

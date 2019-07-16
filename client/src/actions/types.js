@@ -25,6 +25,7 @@ export const EDIT_RESEARCH = "edit_research"
 export const REMOVE_RESEARCH = "remove_research"
 export const REMOVE_AUTHOR = "remove_author"
 
+export const UPDATE_NAME = "update_name";
 export const UPDATE_USER_MOBILE = "update_user_mobile";
 export const UPDATE_PROFILE_DESCRIPTION = "update_profile_description";
 export const UPDATE_USER_PHONE = "update_user_phone";

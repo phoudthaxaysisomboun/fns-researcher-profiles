@@ -2606,6 +2606,27 @@ app.post("/api/researchers/update_mobile", auth, (req, res) => {
   );
 });
 
+app.post("/api/researchers/update_name", auth, (req, res) => {
+  User.findOneAndUpdate(
+    { _id: mongoose.Types.ObjectId(req.body._id) },
+    {
+      $set: req.body
+    },
+    {
+      new: true
+    },
+    (err, doc) => {
+      if (err) return res.json({ success: false, err });
+      res.status(200).json({
+        success: true,
+        prefix: doc.prefix,
+        name: doc.name,
+        lastname: doc.lastname,
+      });
+    }
+  );
+});
+
 app.post("/api/researchers/update_phone", auth, (req, res) => {
   User.findOneAndUpdate(
     { _id: req.query.userId },
@@ -3778,6 +3799,8 @@ app.post("/api/research/update_research", auth, (req, res) => {
       );
     });
   });
+
+
 
   // Research.findOneAndUpdate(
   //       {
