@@ -10,7 +10,7 @@ import {
 
 import { EditOutlined } from "@material-ui/icons";
 
-const AffiliationCard = props => {
+const AffiliationCard = ({props, editAffiliation}) => {
   const profile = { ...props.user.userDetail };
   const user = {...props.user.userData}
   const affiliation = { ...profile.affiliation };
@@ -49,7 +49,7 @@ const AffiliationCard = props => {
       <Grid item xs={6} align="right">
       {
         props.user.userDetail && (isOwner || user.isAdmin) ? 
-        <IconButton style={{ padding: 0 }}>
+        <IconButton style={{ padding: 0 }} onClick={()=>{editAffiliation()}}>
           <EditOutlined fontSize="small" />
         </IconButton>
         : null

@@ -15,6 +15,8 @@ import ShareDialog from "../User/Dialog/share";
 import IntorductionDialog from "../User/Dialog/add_introduction";
 import UpdateResearchArea from "../User/Dialog/update_research_area";
 import UpdateNameDialog from "../User/Dialog/edit_name";
+import UpdateDegreeDialog from "../User/Dialog/update_degree";
+import UpdateAffiliationDialog from "../User/Dialog/update_affiliation";
 
 import PropTypes from "prop-types";
 
@@ -78,8 +80,37 @@ class ProfileOverview extends Component {
     openUpdateResearchAreaDialog: false,
     openAddResearchDialog: false,
 
-    openEditnameDialog: false
+    openEditnameDialog: false,
+    openUpdateDegreeDialog: false,
+    openUpdateAffiliationDialog: false
   };
+
+
+  handleUpdateAffiliationClose = () => {
+    this.setState({
+      openUpdateAffiliationDialog: false
+    });
+  };
+
+  handleUpdateAffiliationOpen = () => {
+    this.setState({
+      openUpdateAffiliationDialog: true
+    });
+  };
+
+  handleUpdateDegreeClose = () => {
+    this.setState({
+      openUpdateDegreeDialog: false
+    });
+  };
+
+  handleUpdateDegreeOpen = () => {
+    this.setState({
+      openUpdateDegreeDialog: true
+    });
+  };
+
+
 handleEditnameDialogClose = () => {
     this.setState({
       openEditnameDialog: false
@@ -190,9 +221,17 @@ handleEditnameDialogClose = () => {
   componentDidMount() {}
 
   componentDidUpdate(prevProps) {
+    const id = this.props.match.params.id;
     if (prevProps.newResearch !== this.props.newResearch) {
-      const id = this.props.match.params.id;
+      
     this.props.dispatch(getProfileDetail(id))
+    }
+
+    if (prevProps.user.updatedDegree !== this.props.user.updatedDegree) {
+      this.props.dispatch(getProfileDetail(id))
+    }
+    if (prevProps.user.updatedAffiliation !== this.props.user.updatedAffiliation) {
+      this.props.dispatch(getProfileDetail(id))
     }
   }
 
@@ -487,6 +526,10 @@ handleEditnameDialogClose = () => {
         openEditName = {()=>{
           this.handleEditNameDialogOpen()
         }}
+
+        openUpdateDegree = {()=>{
+          this.handleUpdateDegreeOpen()
+        }}
       >
         <Grid container style={{ paddingTop: "24px" }}>
           <Grid item xs sm={1} lg={2} md={1} />
@@ -522,7 +565,7 @@ handleEditnameDialogClose = () => {
               <Grid item xs={12} lg sm md>
                 <Grid container spacing={24}>
                   <Grid item xs={12}>
-                    <AffiliationCard {...this.props} />
+                    <AffiliationCard props = {this.props} editAffiliation = {()=>this.handleUpdateAffiliationOpen()} />
                   </Grid>
 
                   <Grid item xs={12}>
@@ -786,6 +829,33 @@ handleEditnameDialogClose = () => {
           }
           close={() => this.handleEditnameDialogClose()}
         />
+
+        <UpdateDegreeDialog
+          open={this.state.openUpdateDegreeDialog}
+          userData={
+            this.props.user &&
+            this.props.user &&
+            this.props.user.userDetail
+              ? this.props.user.userDetail
+              : {}
+          }
+          degrees = {this.props.user.degrees ? this.props.user.degrees : []}
+          close={() => this.handleUpdateDegreeClose()}
+        />
+
+        <UpdateAffiliationDialog
+          open={this.state.openUpdateAffiliationDialog}
+          userData={
+            this.props.user &&
+            this.props.user &&
+            this.props.user.userDetail
+              ? this.props.user.userDetail
+              : {}
+          }
+          departments = {this.props.user.departments ? this.props.user.departments : []}
+          close={() => this.handleUpdateAffiliationClose()}
+        />
+
         <UpdateResearchArea
           open={this.state.openUpdateResearchAreaDialog}
           researchArea={

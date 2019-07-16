@@ -28,7 +28,8 @@ const PersonalInfoCard = ({
   runEditMinorEthnicity,
   runEditNationality,
   runEditAddress,
-  runEditPlaceOfBirth
+  runEditPlaceOfBirth,
+  openUpdateDegree
 }) => {
   const profile = { ...props.user.userDetail };
   const user = { ...props.user.userData };
@@ -100,7 +101,7 @@ const PersonalInfoCard = ({
                 onClick={() => {
                   // to do: edit degree
                   // runEditGender();
-                  console.log("edit degree")
+                  openUpdateDegree()
                 }}
               >
                 <EditOutlined fontSize="small" />

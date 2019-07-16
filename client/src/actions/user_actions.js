@@ -70,7 +70,9 @@ import {
   GET_AUTHOR_SUGGESTIONS,
   ADD_NEW_RESEARCH,
   GET_COMMENTS,
-  UPDATE_NAME
+  UPDATE_NAME,
+  UPDATE_DEGREE,
+  UPDATE_AFFILIATION
 } from "./types";
 
 import {
@@ -507,6 +509,32 @@ export function updateName(dataToSubmit) {
 
   return {
     type: UPDATE_NAME,
+    payload: request
+  };
+}
+
+export function updateAffiliation(dataToSubmit) {
+  const request = axios
+    .post(
+      `${RESEARCHER_SERVER}/update_name`, dataToSubmit
+    )
+    .then(response => response.data);
+
+  return {
+    type: UPDATE_AFFILIATION,
+    payload: request
+  };
+}
+
+export function updateDegree(dataToSubmit) {
+  const request = axios
+    .post(
+      `${RESEARCHER_SERVER}/update_degree`, dataToSubmit
+    )
+    .then(response => response.data);
+
+  return {
+    type: UPDATE_DEGREE,
     payload: request
   };
 }

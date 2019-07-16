@@ -58,7 +58,8 @@ const ProfileHeader = ({
   tab,
   openShareDialog,
   openAddResearchDialog,
-  openEditName
+  openEditName,
+  openUpdateDegree
 }) => {
   const userData = { ...props.user.userData };
   const profile = { ...props.user.userDetail };
@@ -312,7 +313,7 @@ const ProfileHeader = ({
             {profile.degree.name}
             {isOwner || userData.isAdmin ? (
               <span>
-                <IconButton style={{ padding: "4px", margin: "4px" }}>
+                <IconButton style={{ padding: "4px", margin: "4px" }} onClick={()=>openUpdateDegree()}>
                   <EditOutlined style={{ fontSize: "16px" }} />
                 </IconButton>
               </span>

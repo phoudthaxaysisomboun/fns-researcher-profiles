@@ -12,6 +12,7 @@ import LoadMoreFollowingCard from "../User/Card/load_more_following";
 import PersonalInfoCard from "../User/Card/personal_info";
 import EducationCard from "../User/Card/education";
 
+import UpdateNameDialog from "../User/Dialog/edit_name";
 import UpdateMobilePhoneNumber from "./Dialog/update_mobile_number";
 import UpdatePhoneNumber from "./Dialog/update_phone";
 import UpdateFax from "./Dialog/update_fax";
@@ -28,6 +29,9 @@ import UpdateEducationDialogue from "./Dialog/update_education";
 import ShareDialog from "../User/Dialog/share";
 import IntorductionDialog from "../User/Dialog/add_introduction";
 import UpdateResearchArea from "../User/Dialog/update_research_area";
+import UpdateDegreeDialog from "../User/Dialog/update_degree";
+
+import UpdateAffiliationDialog from "../User/Dialog/update_affiliation";
 
 import {
   Hidden,
@@ -114,7 +118,49 @@ class ProfileInfo extends Component {
 
     openIntroductionDialog: false,
     openUpdateResearchAreaDialog: false,
-    openAddResearchDialog: false
+    openAddResearchDialog: false,
+
+    openEditnameDialog: false,
+    openUpdateDegreeDialog: false,
+    openUpdateAffiliationDialog: false
+  };
+
+
+  handleUpdateAffiliationClose = () => {
+    this.setState({
+      openUpdateAffiliationDialog: false
+    });
+  };
+
+  handleUpdateAffiliationOpen = () => {
+    this.setState({
+      openUpdateAffiliationDialog: true
+    });
+  };
+
+  handleUpdateDegreeClose = () => {
+    this.setState({
+      openUpdateDegreeDialog: false
+    });
+  };
+
+  handleUpdateDegreeOpen = () => {
+    this.setState({
+      openUpdateDegreeDialog: true
+    });
+  };
+
+
+  handleEditnameDialogClose = () => {
+    this.setState({
+      openEditnameDialog: false
+    });
+  };
+
+  handleEditNameDialogOpen = () => {
+    this.setState({
+      openEditnameDialog: true
+    });
   };
 
   handleAddResearchClose = () => {
@@ -128,6 +174,15 @@ class ProfileInfo extends Component {
       openAddResearchDialog: true
     });
   };
+
+  componentDidUpdate(prevProps) {
+    const id = this.props.match.params.id;
+
+
+    if (prevProps.user.updatedDegree !== this.props.user.updatedDegree) {
+      this.props.dispatch(getProfileDetail(id))
+    }
+  }
 
   componentWillMount() {
     const id = this.props.match.params.id;
@@ -689,6 +744,12 @@ class ProfileInfo extends Component {
         openAddResearchDialog={() => {
           this.handleAddResearchOpen();
         }}
+        openEditName = {()=>{
+          this.handleEditNameDialogOpen()
+        }}
+        openUpdateDegree = {()=>{
+          this.handleUpdateDegreeOpen()
+        }}
       >
       <Grid container style={{paddingTop: "24px"}}>
       <Grid item xs sm={1} lg={2} md={1} />
@@ -706,6 +767,9 @@ class ProfileInfo extends Component {
              
 
               <PersonalInfoCard
+              openUpdateDegree = {()=>{
+                this.handleUpdateDegreeOpen()
+              }}
                 props={this.props}
                 runEditMobile={() => this.handleOpenUpdateMobileDialog()}
                 runEditPhone={() => this.handleOpenUpdatePhoneDialog()}
@@ -754,7 +818,7 @@ class ProfileInfo extends Component {
           <Grid item xs={12} lg sm md>
             <Grid container spacing={24}>
               <Grid item xs={12}>
-                <AffiliationCard {...this.props} />
+              <AffiliationCard props = {this.props} editAffiliation = {()=>this.handleUpdateAffiliationOpen()} />
               </Grid>
 
               <Grid item xs={12}>
@@ -1047,6 +1111,44 @@ class ProfileInfo extends Component {
 
 
           close={() => this.handleUpdateResearchAreaDialogClose()}
+        />
+
+        <UpdateNameDialog
+          open={this.state.openEditnameDialog}
+          userData={
+            this.props.user &&
+            this.props.user &&
+            this.props.user.userDetail
+              ? this.props.user.userDetail
+              : {}
+          }
+          close={() => this.handleEditnameDialogClose()}
+        />
+
+        <UpdateAffiliationDialog
+          open={this.state.openUpdateAffiliationDialog}
+          userData={
+            this.props.user &&
+            this.props.user &&
+            this.props.user.userDetail
+              ? this.props.user.userDetail
+              : {}
+          }
+          departments = {this.props.user.departments ? this.props.user.departments : []}
+          close={() => this.handleUpdateAffiliationClose()}
+        />
+
+        <UpdateDegreeDialog
+          open={this.state.openUpdateDegreeDialog}
+          userData={
+            this.props.user &&
+            this.props.user &&
+            this.props.user.userDetail
+              ? this.props.user.userDetail
+              : {}
+          }
+          degrees = {this.props.user.degrees ? this.props.user.degrees : []}
+          close={() => this.handleUpdateDegreeClose()}
         />
 
         <AddResearch

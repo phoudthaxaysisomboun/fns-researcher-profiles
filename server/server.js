@@ -2627,6 +2627,44 @@ app.post("/api/researchers/update_name", auth, (req, res) => {
   );
 });
 
+app.post("/api/researchers/update_degree", auth, (req, res) => {
+  User.findOneAndUpdate(
+    { _id: mongoose.Types.ObjectId(req.body._id) },
+    {
+      $set: req.body
+    },
+    {
+      new: true
+    },
+    (err, doc) => {
+      if (err) return res.json({ success: false, err });
+      res.status(200).json({
+        success: true,
+        degree: doc.degree,
+      });
+    }
+  );
+});
+
+app.post("/api/researchers/update_affiliation", auth, (req, res) => {
+  User.findOneAndUpdate(
+    { _id: mongoose.Types.ObjectId(req.body._id) },
+    {
+      $set: req.body
+    },
+    {
+      new: true
+    },
+    (err, doc) => {
+      if (err) return res.json({ success: false, err });
+      res.status(200).json({
+        success: true,
+        degree: doc.affiliation,
+      });
+    }
+  );
+});
+
 app.post("/api/researchers/update_phone", auth, (req, res) => {
   User.findOneAndUpdate(
     { _id: req.query.userId },

@@ -66,7 +66,9 @@ import {
   GET_RESEARCH_AREA,
   UPDATE_RESEARCHER_RESEARCH_AREA,
   GET_AUTHOR_SUGGESTIONS,
-  UPDATE_NAME
+  UPDATE_NAME,
+  UPDATE_DEGREE,
+  UPDATE_AFFILIATION
 } from "../actions/types";
 
 import moment from "moment";
@@ -157,6 +159,24 @@ export default function(state = {}, action) {
           name: action.payload.name,
           lastname: action.payload.lastname,
         }
+      };
+    case UPDATE_DEGREE:
+      return {
+        ...state,
+        userDetail: {
+          ...state.userDetail,
+       
+        },
+        updatedDegree: action.payload.degree
+      };
+    case UPDATE_AFFILIATION:
+      return {
+        ...state,
+        userDetail: {
+          ...state.userDetail,
+       
+        },
+        updatedAffiliation: action.payload.affiliation
       };
     case UPDATE_USER_PHONE:
       return {
