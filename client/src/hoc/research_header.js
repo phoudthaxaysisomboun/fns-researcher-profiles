@@ -66,7 +66,8 @@ const ResearchHeader = ({
   handleUploaderMenuClick,
   handleUploaderMenuClose,
   handleCoAuthorMenuClick,
-  handleCoAuthorMenuClose
+  handleCoAuthorMenuClose,
+  openDeleteResearchDialog
 }) => {
   const userData = { ...props.user.userData };
 
@@ -89,22 +90,25 @@ const ResearchHeader = ({
 
   const _id = new ObjectID();
 
-  let isAuthor = false
+  
 
-  if (research.author) {
-    research.author.map((value)=>{
-      if (value === userData._id) {
-        return isAuthor = true
-      } else {
-        return isAuthor = false
-      }
-    })
-  }
+
+
 
   const renderMoreMenu = () => {
-    console.log(userData._id)
-    console.log(research.uploader)
-    console.log(userData)
+    let isAuthor
+    if (research.author) {
+      research.author.map((value)=>{
+        if (value._id === userData._id) {
+          isAuthor = true
+          console.log("fiasdasdasdasdasd")
+          
+        } 
+        return null
+      })
+
+      console.log(isAuthor)
+    }
     if (research && research.uploader && research.uploader._id) {
         if ((userData._id === research.uploader._id) || (userData.isAdmin === true)) {
         return (
@@ -118,7 +122,8 @@ const ResearchHeader = ({
                   </IconButton>
           </>
         )
-      } else if (isAuthor && (userData._id !== research.uploader._id)) {
+      } else if (isAuthor === true ) {
+        console.log(isAuthor)
         return (
           <>
           <IconButton style={{ marginLeft: "8px" }} onClick={event => {
@@ -131,7 +136,9 @@ const ResearchHeader = ({
           </>
         )
       } else {
-        return null
+        return (
+          <></>
+        )
       }
     }
     
@@ -333,7 +340,7 @@ const ResearchHeader = ({
               fontWeight: 500
             }}
             selected={false}
-            onClick = {()=> {console.log("asd")}}
+            onClick = {()=> {openDeleteResearchDialog()}}
           >
             <svg
               style={{ marginRight: "16px" }}
@@ -1047,7 +1054,6 @@ const ResearchHeader = ({
                 </Grid>
               </Grid>
               <Grid item lg={6} md={6} sm={6} xs={12} align="right">
-              {console.log(citationString)}
               {
               //   console.log(`/api/research/download/citation/${encodeURIComponent(`${research.author.join(", ")}. (${moment(research.date).format("YYYY")}). ${research.author}.`)}&${
               //   userData._id ? userData._id : _id.toHexString()
@@ -1062,7 +1068,6 @@ const ResearchHeader = ({
                   <ForwardOutlined style={{ marginRight: "14px" }} />
                   ນໍາໄປອ້າງອີງ
                 </Button>
-                {console.log(research._id)}
                 {research &&
                 research.files &&
                 research.files.length > 0 &&

@@ -14,7 +14,9 @@ import {
   DialogContent,
   IconButton,
   Typography,
-  Button
+  Button,
+  DialogContentText,
+  DialogActions
 } from "@material-ui/core";
 
 import { like, unlike, clearLike } from "../../actions/user_actions";
@@ -25,11 +27,15 @@ import {
   addLike,
   removeLike,
   clearLikeResearch,
-  addCountToResearch
+  addCountToResearch,
+  removeResearch,
+  removeAuthor,
+  updateResearch
 } from "../../actions/research_actions";
 
 import { CloseOutlined } from "@material-ui/icons";
 import { LOCALHOST } from "../utils/misc";
+import UpdateResearch from "../utils/Dialogs/edit_research";
 import AddResearchButton from "../utils/Button/add_research_button";
 
 import AbstractCard from "../Research/Card/abstract";
@@ -48,7 +54,22 @@ class Research extends Component {
     tabIndex: 0,
     anchorUploader: null,
     anchorCoAuthor: null,
+    openDeleteResearchDialog: false,
+    openRemoveAuthorDialog: false,
+    openEditResearchDialog: false
   };
+
+  handleDeleteResearchDialogClose = () => {
+    this.setState({
+      openDeleteResearchDialog: false
+    })
+  }
+
+  handleDeleteResearchDialogOpen = () => {
+    this.setState({
+      openDeleteResearchDialog: true
+    })
+  }
 
   handleUploaderMenuClick = (event, id) => {
     this.setState({ anchorUploader: event.currentTarget });
@@ -60,18 +81,32 @@ class Research extends Component {
   //  })
   };
 
+  handleRemoveResearch = () => {
+    this.props.dispatch((removeResearch(this.props.research && this.props.research.userResearch
+      ? this.props.research.userResearch[0]._id
+      : ""))).then(response=>{
+        this.props.history.push(`/profile/${this.props.user.userData._id}`)
+      })
+  }
+
+  handleRemoveAuthor = () => {
+    this.props.dispatch((removeAuthor(this.props.research && this.props.research.userResearch
+      ? this.props.research.userResearch[0]._id
+      : "", this.props && this.props.user && this.props.user.userData ?this.props.user.userData._id : "")))
+  }
+
+  handleRemoveAuthor = () => {
+    this.props.dispatch((removeAuthor(this.props.research && this.props.research.userResearch
+      ? this.props.research.userResearch[0]._id
+      : "", this.props && this.props.user && this.props.user.userData ?this.props.user.userData._id : "")))
+  }
+
   handleUploaderMenuClose = () => {
     this.setState({ anchorUploader: null });
   };
 
   handleCoAuthorMenuClick = (event, id) => {
     this.setState({ anchorCoAuthor: event.currentTarget });
-
-  //   let educations = this.props.user.userDetail.education
-  //   let obj = educations.find(o => o._id === id);
-  //  this.setState({
-  //   selectedEducation: obj
-  //  })
   };
 
   handleCoAuthorMenuClose = () => {
@@ -182,6 +217,12 @@ class Research extends Component {
             handleCoAuthorMenuClose={event => {
               this.handleCoAuthorMenuClose(event);
             }}
+
+            openDeleteResearchDialog = {
+              () => {
+                this.handleDeleteResearchDialogOpen()
+              }
+            }
       >
         <Grid
           container
@@ -213,6 +254,42 @@ class Research extends Component {
         </Grid>
 
         <AddResearchButton />
+        {
+          // <UpdateResearch />
+        }
+
+        <Dialog
+          open={this.state.openDeleteResearchDialog}
+          maxWidth="xs"
+        >
+          <DialogTitle style={{ fontFamily: "'Noto Sans Lao UI', sans serif" }}>
+            ຕ້ອງການລຶບຂໍ້ມູນນີ້ແທ້ບໍ?
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText
+              style={{ fontFamily: "'Noto Sans Lao UI', sans serif" }}
+            >
+              ທ່ານກໍາລັງຈະລຶບຂໍ້ມູນນັກຄົ້ນຄວ້ານີ້.
+              ທ່ານແນ່ໃຈຫລືບໍ່ວ່າຈະລຶບຂໍ້ມູນດັ່ງກ່າວ?
+              ການກະທໍາຕໍ່ໄປນີ້ບໍ່ສາມາດແກ້ໄຂໄດ້
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={() => this.handleDeleteResearchDialogClose()}
+            >
+              ຍົກເລີກ
+            </Button>
+            <Button
+              onClick={this.handleRemoveResearch}
+              style={{ color: "#f44336" }}
+              autoFocus
+            >
+              ຢືນຢັນ
+            </Button>
+          </DialogActions>
+        </Dialog>
+
       </ResearchHeader>
     );
   }

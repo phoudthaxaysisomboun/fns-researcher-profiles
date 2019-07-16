@@ -1136,7 +1136,6 @@ class EditResearch extends Component {
     return (
       <Dialog
         open={this.props.open}
-        onClose={() => this.props.close()}
         aria-labelledby="max-width-dialog-title"
         fullWidth={true}
         maxWidth="md"

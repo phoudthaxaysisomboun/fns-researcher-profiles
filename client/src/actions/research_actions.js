@@ -22,7 +22,9 @@ import {
   REMOVE_REPLY,
   COUNT_READS,
   ADD_NEW_RESEARCH,
-  EDIT_RESEARCH
+  EDIT_RESEARCH,
+  REMOVE_RESEARCH,
+  REMOVE_AUTHOR
 } from "./types";
 
 import { RESEARCH_SERVER, RESEARCHER_SERVER } from "../components/utils/misc";
@@ -260,6 +262,28 @@ export function updateResearch(dataToSubmit) {
 console.log(dataToSubmit)
   const request = axios
     .post(`${RESEARCH_SERVER}/update_research`, dataToSubmit)
+    .then(response => response.data);
+
+  return {
+    type: EDIT_RESEARCH,
+    payload: request
+  };
+}
+
+export function removeResearch(researchId) {
+  const request = axios
+    .post(`${RESEARCH_SERVER}/remove_research?researchId=${researchId}`)
+    .then(response => response.data);
+
+  return {
+    type: REMOVE_RESEARCH,
+    payload: request
+  };
+}
+
+export function removeAuthor(researchId, userId) {
+  const request = axios
+    .post(`${RESEARCH_SERVER}/remove_author?researchId=${researchId}&userId=${userId}`)
     .then(response => response.data);
 
   return {
