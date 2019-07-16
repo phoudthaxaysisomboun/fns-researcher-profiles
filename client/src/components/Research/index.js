@@ -125,7 +125,7 @@ class Research extends Component {
     this.props.dispatch((removeResearch(this.props.research && this.props.research.userResearch
       ? this.props.research.userResearch[0]._id
       : ""))).then(response=>{
-        this.props.history.push(`/profile/${this.props.user.userData._id}`)
+        this.props.history.goBack()
       })
   }
 
@@ -244,7 +244,6 @@ class Research extends Component {
         runLike={id => this.like(id)}
         runUnLike={id => this.unlike(id)}
 
-
         anchorUploader={this.state.anchorUploader}
             anchorCoAuthor={this.state.anchorCoAuthor}
             handleUploaderMenuClick={(event, id) => {
@@ -305,7 +304,10 @@ class Research extends Component {
           <Grid item xs sm={1} lg={2} md={1} />
         </Grid>
 
-        <AddResearch
+        {
+          this.props.user && this.props.user.userData.isAuth ?
+          <>
+          <AddResearch
           open={this.state.openAddResearchDialog}
           close={() => this.handleAddResearchClose()}
           authorSuggestions={
@@ -320,7 +322,7 @@ class Research extends Component {
           <UpdateResearch
           open={this.state.openEditResearchDialog}
           close={() => this.handleEditResearchClose()}
-          authorSuggestions={
+          authorSuggestions={ 
             this.props && this.props.user && this.props.user.authorSuggestions ? this.props.user.authorSuggestions : []
           }
           user = {
@@ -398,6 +400,8 @@ class Research extends Component {
           </DialogActions>
         </Dialog>
         <AddResearchButton add={()=> this.handleAddResearchOpen()} />
+          </> : null
+        }
       </ResearchHeader>
     );
   }

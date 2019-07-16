@@ -464,7 +464,9 @@ const ResearchCard = ({ userData, userResearch, runLike, runUnLike }) => {
                 style={{ marginTop: "4px", marginBottom: "8px" }}
               >
               {renderLikeButton(researches._id, researches.likes)}
-                <Button
+                {
+                  user.isAuth ?
+                  <Button
                   size="small"
                   style={{
                     color: "#686868",
@@ -489,7 +491,7 @@ const ResearchCard = ({ userData, userResearch, runLike, runUnLike }) => {
                       &nbsp;
                       <NumberFormat
                         value={
-                          researches.comments
+                          researches.comments && researches.comments.length > 0
                             ? researches.comments.length
                             : null
                         }
@@ -500,6 +502,45 @@ const ResearchCard = ({ userData, userResearch, runLike, runUnLike }) => {
                     </div>
                   ) : null}
                 </Button>
+                : 
+                <Button
+                  size="small"
+                  style={{
+                    color: "#686868",
+                    minWidth: "14px",
+                    height: "36px",
+                    borderRadius: "22px"
+                  }}
+                  component = {Link}
+                  to={`/research/${researches._id}/comments`}
+                  disabled
+                >
+                  {" "}
+                  <ModeCommentOutlined fontSize="small" />
+                  {researches.comments ? (
+                    <div
+                      style={{
+                        fontSize: "13.5px",
+                        color: "#757575",
+                        fontFamily: "'Roboto', sans serif",
+                        display: "inline"
+                      }}
+                    >
+                      &nbsp;
+                      <NumberFormat
+                        value={
+                          researches.comments && researches.comments.length > 0
+                            ? researches.comments.length
+                            : null
+                        }
+                        displayType={"text"}
+                        thousandSeparator={true}
+                      />
+                      &nbsp;
+                    </div>
+                  ) : null}
+                </Button>
+                }
                 <Button
                   size="small"
                   style={{

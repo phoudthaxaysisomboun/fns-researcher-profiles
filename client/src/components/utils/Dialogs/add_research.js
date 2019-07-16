@@ -961,21 +961,19 @@ class AddResearch extends Component {
 
     
 
-    let hasAuthor = false 
+    let hasAuthor = false
     if (this.state.multi) {
-      this.state.multi.map((value)=>{
-        console.log(value.value)
-        console.log(this.props.user._id)
-        if (this.props.user.isAdmin || (value.value === this.props.user._id)) {
-          return hasAuthor = true
-        }
-        else {
-          return hasAuthor = false
-        }
-        
+     this.state.multi.map((value)=>{
+   
+        if (this.props.user.isAdmin) {
+          hasAuthor = true
+          
+        } else if (value.value === this.props.user._id){
+          hasAuthor = true
+        } 
+    return null
       })
     }
-
   
 
     if (!this.state.multi) {
@@ -987,7 +985,7 @@ class AddResearch extends Component {
       })
       console.log(this.state.formError)
 
-    } else if (!hasAuthor) {
+    } else if (hasAuthor === false) {
       this.setState({
         authorError: true,
         authorErrorMessage: "ທ່ານສາມາດເພີ່ມຜົນງານການຄົ້ນຄວ້າທີ່ມີທ່ານເປັນເຈົ້າຂອງເທົ່ານັ້ນ",
@@ -1007,8 +1005,6 @@ class AddResearch extends Component {
    
     }
 
-    console.log(this.state.multiForAdvisor)
-
 
     if (this.state.formdata.researchType.value === "5cdb83a127ba7c4214ef5779") {
       const supervisor = [];
@@ -1017,13 +1013,11 @@ class AddResearch extends Component {
           supervisor.push(value.value);
           return null;
         });
-
-        console.log(supervisor)
-  
-      
       }
       newDataToSubmit["supervisor"] = supervisor
     }
+
+    console.log(this.state.multi)
 
     if (formIsValid && !this.state.formError && !this.state.authorError && hasAuthor) {
 
@@ -1324,7 +1318,6 @@ class AddResearch extends Component {
                       onDrop={e => this.onDrop(e)}
                       multiple={false}
                       accept ='.pdf,.docx'
-                      maxSize= {20971520}
                     >
                       <Grid container alignItems="center" alignContent="center">
                         <Grid item>

@@ -173,6 +173,13 @@ class ProfileOverview extends Component {
 
   componentDidMount() {}
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.newResearch !== this.props.newResearch) {
+      const id = this.props.match.params.id;
+    this.props.dispatch(getProfileDetail(id))
+    }
+  }
+
   componentWillUnmount() {
     this.props.dispatch(clearProfileDetail());
     this.props.dispatch(clearFollower());

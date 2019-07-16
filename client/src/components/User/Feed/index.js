@@ -38,6 +38,8 @@ class Feed extends Component {
     document.title = "Feed - FNS Researcher Profiles";
   }
 
+  
+
   componentWillUnmount() {
     this.props.dispatch(clearFeed());
   }

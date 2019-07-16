@@ -211,26 +211,15 @@ export default function(state = {}, action) {
         }
       };
     case ADD_NEW_RESEARCH:
+      console.log(action.payload)
       return {
         ...state,
-        userResearch: {
-          ...state.userResearch,
-          allResearches: {
-            ...state.allResearches,
-            ...action.payload.doc
-          }
-        }
+       newResearch: action.payload.doc
       };
     case EDIT_RESEARCH:
       return {
         ...state,
-        userResearch: {
-          ...state.userResearch,
-          allResearches: {
-            ...state.allResearches,
-            ...action.payload.research
-          }
-        }
+        newResearch: action.payload.research
       };
     default:
       return state;

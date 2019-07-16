@@ -14,8 +14,13 @@ import {
   DialogContent,
   IconButton,
   Typography,
-  Button
+  Button,
+  DialogContentText,
+  DialogActions
 } from "@material-ui/core";
+
+import AddResearch from "../utils/Dialogs/add_research";
+import UpdateResearch from "../utils/Dialogs/edit_research";
 
 import { like, unlike, clearLike } from "../../actions/user_actions";
 import { getComments } from "../../actions/research_actions";
@@ -29,7 +34,10 @@ import {
   addComment,
   removeComment,
   addReply,
-  removeReply
+  removeReply,
+  removeResearch,
+  removeAuthor,
+  updateResearch
 } from "../../actions/research_actions";
 
 import { CloseOutlined } from "@material-ui/icons";
@@ -56,7 +64,106 @@ class ResearchComments extends Component {
     replyValue: "",
     showReplyTextField: false,
     commentId: "",
-    replyId: null
+    replyId: null,
+    anchorUploader: null,
+    anchorCoAuthor: null,
+    openDeleteResearchDialog: false,
+    openRemoveAuthorResearchDialog: false,
+    openRemoveAuthorDialog: false,
+    openEditResearchDialog: false,
+    openAddResearchDialog: false,
+  };
+
+  handleAddResearchClose = () => {
+    this.setState({
+      openAddResearchDialog: false
+    });
+  };
+
+  handleAddResearchOpen = () => {
+    this.setState({
+      openAddResearchDialog: true
+    });
+  };
+
+  handleEditResearchClose = () => {
+    this.setState({
+      openEditResearchDialog: false
+    });
+  };
+
+  handleEditResearchOpen = () => {
+    this.setState({
+      openEditResearchDialog: true
+    });
+  };
+
+  handleDeleteResearchDialogClose = () => {
+    this.setState({
+      openDeleteResearchDialog: false
+    })
+  }
+
+  handleDeleteResearchDialogOpen = () => {
+    this.setState({
+      openDeleteResearchDialog: true
+    })
+  }
+
+  handleRemoveAuthorResearchDialogClose = () => {
+    this.setState({
+      openRemoveAuthorResearchDialog: false
+    })
+  }
+
+  handleRemoveAuthorResearchDialogOpen = () => {
+    this.setState({
+      openRemoveAuthorResearchDialog: true
+    })
+  }
+
+  handleUploaderMenuClick = (event, id) => {
+    this.setState({ anchorUploader: event.currentTarget });
+
+  //   let educations = this.props.user.userDetail.education
+  //   let obj = educations.find(o => o._id === id);
+  //  this.setState({
+  //   selectedEducation: obj
+  //  })
+  };
+
+  handleRemoveResearch = () => {
+    this.props.dispatch((removeResearch(this.props.research && this.props.research.userResearch
+      ? this.props.research.userResearch[0]._id
+      : ""))).then(response=>{
+        this.props.history.goBack()
+      })
+  }
+
+  handleRemoveAuthor = () => {
+    this.props.dispatch((removeAuthor(this.props.research && this.props.research.userResearch
+      ? this.props.research.userResearch[0]._id
+      : "", this.props && this.props.user && this.props.user.userData ?this.props.user.userData._id : ""))).then(response => {
+       
+        this.setState({
+          anchorCoAuthor: null,
+          openRemoveAuthorResearchDialog: false
+        })
+
+        this.props.dispatch(getResearchForCard(this.props.research.userResearch[0]._id))
+      })
+  }
+
+  handleUploaderMenuClose = () => {
+    this.setState({ anchorUploader: null });
+  };
+
+  handleCoAuthorMenuClick = (event, id) => {
+    this.setState({ anchorCoAuthor: event.currentTarget });
+  };
+
+  handleCoAuthorMenuClose = () => {
+    this.setState({ anchorCoAuthor: null });
   };
 
   handleCommentTextChange = (event) => {
@@ -190,6 +297,8 @@ class ResearchComments extends Component {
     }
   };
 
+  
+
   componentWillMount() {
     const id = this.props.match.params.id;
 
@@ -255,6 +364,37 @@ class ResearchComments extends Component {
         runLike={id => this.like(id)}
         runUnLike={id => this.unlike(id)}
         tabIndex ={this.state.tabIndex}
+
+        anchorUploader={this.state.anchorUploader}
+        anchorCoAuthor={this.state.anchorCoAuthor}
+        handleUploaderMenuClick={(event, id) => {
+          this.handleUploaderMenuClick(event, id);
+        }}
+        handleUploaderMenuClose={event => {
+          this.handleUploaderMenuClose(event);
+        }}
+        handleCoAuthorMenuClick={(event) => {
+          this.handleCoAuthorMenuClick(event);
+        }}
+        handleCoAuthorMenuClose={event => {
+          this.handleCoAuthorMenuClose(event);
+        }}
+
+        openDeleteResearchDialog = {
+          () => {
+            this.handleDeleteResearchDialogOpen()
+          }
+        }
+        openRemoveAuthorDialog = {
+          () => {
+            this.handleRemoveAuthorResearchDialogOpen()
+          }
+        }
+        openEditResearch = {
+          () => {
+            this.handleEditResearchOpen()
+          }
+        }
       >
         <Grid
           container
@@ -323,7 +463,104 @@ class ResearchComments extends Component {
           <Grid item xs sm={1} lg={2} md={1} />
         </Grid>
 
-        <AddResearchButton />
+        {
+          this.props.user && this.props.user.userData.isAuth ?
+          <>
+          <AddResearch
+        open={this.state.openAddResearchDialog}
+        close={() => this.handleAddResearchClose()}
+        authorSuggestions={
+          this.props && this.props.user && this.props.user.authorSuggestions ? this.props.user.authorSuggestions : []
+        }
+        user = {
+          this.props && this.props.user && this.props.user.userData ? this.props.user.userData : {}
+        }
+        
+      />
+      
+        <UpdateResearch
+        open={this.state.openEditResearchDialog}
+        close={() => this.handleEditResearchClose()}
+        authorSuggestions={
+          this.props && this.props.user && this.props.user.authorSuggestions ? this.props.user.authorSuggestions : []
+        }
+        user = {
+          this.props && this.props.user && this.props.user.userData ? this.props.user.userData : {}
+        }
+
+        research = {
+          this.props.research && this.props.research.userResearch
+                ? this.props.research.userResearch[0]
+                : {}
+        }
+        
+      />
+      
+
+      <Dialog
+        open={this.state.openDeleteResearchDialog}
+        maxWidth="xs"
+      >
+        <DialogTitle style={{ fontFamily: "'Noto Sans Lao UI', sans serif" }}>
+          ຕ້ອງການລຶບຂໍ້ມູນນີ້ແທ້ບໍ?
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText
+            style={{ fontFamily: "'Noto Sans Lao UI', sans serif" }}
+          >
+          ທ່ານກຳລັງຈະລຶບຂໍ້ມູນຜົນງານການຄົ້ນຄວ້ານີ້.ທ່ານແນ່ໃຈຫລືບໍ່ວ່າຈະລຶບຂໍ້ມູນດັ່ງກ່າວ?
+            ການກະທໍາຕໍ່ໄປນີ້ບໍ່ສາມາດແກ້ໄຂໄດ້
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => this.handleDeleteResearchDialogClose()}
+          >
+            ຍົກເລີກ
+          </Button>
+          <Button
+            onClick={this.handleRemoveResearch}
+            style={{ color: "#f44336" }}
+            autoFocus
+          >
+            ຢືນຢັນ
+          </Button>
+        </DialogActions>
+      </Dialog>
+      
+      <Dialog
+        open={this.state.openRemoveAuthorResearchDialog}
+        maxWidth="xs"
+      >
+        <DialogTitle style={{ fontFamily: "'Noto Sans Lao UI', sans serif" }}>
+          ຕ້ອງການລຶບຂໍ້ມູນນີ້ແທ້ບໍ?
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText
+            style={{ fontFamily: "'Noto Sans Lao UI', sans serif" }}
+          >
+          ທ່ານແນ່ໃຈທີ່ຈະລຶບຕົວເອງອອກຈາກຜົນງານການຄົ້ນຄວ້ານີ້ແທ້ບໍ່.ທ່ານແນ່ໃຈຫລືບໍ່ວ່າຈະລຶບຂໍ້ມູນດັ່ງກ່າວ?
+            ການກະທໍາຕໍ່ໄປນີ້ບໍ່ສາມາດແກ້ໄຂໄດ້
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => this.handleRemoveAuthorResearchDialogClose()}
+          >
+            ຍົກເລີກ
+          </Button>
+          <Button
+            onClick={this.handleRemoveAuthor}
+            style={{ color: "#f44336" }}
+            autoFocus
+          >
+            ຢືນຢັນ
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <AddResearchButton add={()=> this.handleAddResearchOpen()} />
+          </> :null
+        }
       </ResearchHeader>
     );
   }

@@ -3993,7 +3993,7 @@ app.post("/api/researchers/addResearchArea", auth, (req, res) => {
   );
 });
 
-app.get("/api/researchers/list_for_suggestions", auth, (req, res) => {
+app.get("/api/researchers/list_for_suggestions", (req, res) => {
   let order = req.query.order ? req.query.order : "asc";
   let sortBy = req.query.sortBy ? req.query.sortBy : "name";
   // let limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 6;
