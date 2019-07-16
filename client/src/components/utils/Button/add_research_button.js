@@ -16,7 +16,7 @@ class AddResearchButton extends Component {
   render() {
     return (
       <div>
-      <Fab size="large" variant="extended" color="primary" style={fabStyle}>
+      <Fab size="large" variant="extended" color="primary" style={fabStyle} onClick={() => this.props.add()}>
         <AddOutlined fontSize="large" style={{ marginRight: "8px" }} />
         ເພີ່ມ
       </Fab>

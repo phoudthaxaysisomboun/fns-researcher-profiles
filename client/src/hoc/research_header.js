@@ -67,7 +67,8 @@ const ResearchHeader = ({
   handleUploaderMenuClose,
   handleCoAuthorMenuClick,
   handleCoAuthorMenuClose,
-  openDeleteResearchDialog
+  openDeleteResearchDialog,
+  openRemoveAuthorDialog
 }) => {
   const userData = { ...props.user.userData };
 
@@ -89,11 +90,6 @@ const ResearchHeader = ({
   const isAuth = userData.isAuth;
 
   const _id = new ObjectID();
-
-  
-
-
-
 
   const renderMoreMenu = () => {
     let isAuthor
@@ -391,7 +387,7 @@ const ResearchHeader = ({
               fontWeight: 500
             }}
             selected={false}
-            onClick = {()=> {console.log("test")}}
+            onClick = {()=> {openRemoveAuthorDialog()}}
           >
             <PersonAddDisabledOutlined style={{marginRight: "16px"}} />
             ເອົາຊື່ອອກ

@@ -35,6 +35,7 @@ import {
 
 import { CloseOutlined } from "@material-ui/icons";
 import { LOCALHOST } from "../utils/misc";
+import AddResearch from "../utils/Dialogs/add_research";
 import UpdateResearch from "../utils/Dialogs/edit_research";
 import AddResearchButton from "../utils/Button/add_research_button";
 
@@ -55,8 +56,22 @@ class Research extends Component {
     anchorUploader: null,
     anchorCoAuthor: null,
     openDeleteResearchDialog: false,
+    openRemoveAuthorResearchDialog: false,
     openRemoveAuthorDialog: false,
-    openEditResearchDialog: false
+    openEditResearchDialog: false,
+    openAddResearchDialog: false
+  };
+
+  handleAddResearchClose = () => {
+    this.setState({
+      openAddResearchDialog: false
+    });
+  };
+
+  handleAddResearchOpen = () => {
+    this.setState({
+      openAddResearchDialog: true
+    });
   };
 
   handleDeleteResearchDialogClose = () => {
@@ -68,6 +83,18 @@ class Research extends Component {
   handleDeleteResearchDialogOpen = () => {
     this.setState({
       openDeleteResearchDialog: true
+    })
+  }
+
+  handleRemoveAuthorResearchDialogClose = () => {
+    this.setState({
+      openRemoveAuthorResearchDialog: false
+    })
+  }
+
+  handleRemoveAuthorResearchDialogOpen = () => {
+    this.setState({
+      openRemoveAuthorResearchDialog: true
     })
   }
 
@@ -92,13 +119,15 @@ class Research extends Component {
   handleRemoveAuthor = () => {
     this.props.dispatch((removeAuthor(this.props.research && this.props.research.userResearch
       ? this.props.research.userResearch[0]._id
-      : "", this.props && this.props.user && this.props.user.userData ?this.props.user.userData._id : "")))
-  }
+      : "", this.props && this.props.user && this.props.user.userData ?this.props.user.userData._id : ""))).then(response => {
+       
+        this.setState({
+          anchorCoAuthor: null,
+          openRemoveAuthorResearchDialog: false
+        })
 
-  handleRemoveAuthor = () => {
-    this.props.dispatch((removeAuthor(this.props.research && this.props.research.userResearch
-      ? this.props.research.userResearch[0]._id
-      : "", this.props && this.props.user && this.props.user.userData ?this.props.user.userData._id : "")))
+        this.props.dispatch(getResearchForCard(this.props.research.userResearch[0]._id))
+      })
   }
 
   handleUploaderMenuClose = () => {
@@ -223,6 +252,11 @@ class Research extends Component {
                 this.handleDeleteResearchDialogOpen()
               }
             }
+            openRemoveAuthorDialog = {
+              () => {
+                this.handleRemoveAuthorResearchDialogOpen()
+              }
+            }
       >
         <Grid
           container
@@ -253,7 +287,17 @@ class Research extends Component {
           <Grid item xs sm={1} lg={2} md={1} />
         </Grid>
 
-        <AddResearchButton />
+        <AddResearch
+          open={this.state.openAddResearchDialog}
+          close={() => this.handleAddResearchClose()}
+          authorSuggestions={
+            this.props && this.props.user && this.props.user.authorSuggestions ? this.props.user.authorSuggestions : []
+          }
+          user = {
+            this.props && this.props.user && this.props.user.userData ? this.props.user.userData : {}
+          }
+          
+        />
         {
           // <UpdateResearch />
         }
@@ -269,8 +313,7 @@ class Research extends Component {
             <DialogContentText
               style={{ fontFamily: "'Noto Sans Lao UI', sans serif" }}
             >
-              ທ່ານກໍາລັງຈະລຶບຂໍ້ມູນນັກຄົ້ນຄວ້ານີ້.
-              ທ່ານແນ່ໃຈຫລືບໍ່ວ່າຈະລຶບຂໍ້ມູນດັ່ງກ່າວ?
+            ທ່ານກຳລັງຈະລຶບຂໍ້ມູນຜົນງານການຄົ້ນຄວ້ານີ້.ທ່ານແນ່ໃຈຫລືບໍ່ວ່າຈະລຶບຂໍ້ມູນດັ່ງກ່າວ?
               ການກະທໍາຕໍ່ໄປນີ້ບໍ່ສາມາດແກ້ໄຂໄດ້
             </DialogContentText>
           </DialogContent>
@@ -289,7 +332,38 @@ class Research extends Component {
             </Button>
           </DialogActions>
         </Dialog>
-
+        
+        <Dialog
+          open={this.state.openRemoveAuthorResearchDialog}
+          maxWidth="xs"
+        >
+          <DialogTitle style={{ fontFamily: "'Noto Sans Lao UI', sans serif" }}>
+            ຕ້ອງການລຶບຂໍ້ມູນນີ້ແທ້ບໍ?
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText
+              style={{ fontFamily: "'Noto Sans Lao UI', sans serif" }}
+            >
+            ທ່ານແນ່ໃຈທີ່ຈະລຶບຕົວເອງອອກຈາກຜົນງານການຄົ້ນຄວ້ານີ້ແທ້ບໍ່.ທ່ານແນ່ໃຈຫລືບໍ່ວ່າຈະລຶບຂໍ້ມູນດັ່ງກ່າວ?
+              ການກະທໍາຕໍ່ໄປນີ້ບໍ່ສາມາດແກ້ໄຂໄດ້
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={() => this.handleRemoveAuthorResearchDialogClose()}
+            >
+              ຍົກເລີກ
+            </Button>
+            <Button
+              onClick={this.handleRemoveAuthor}
+              style={{ color: "#f44336" }}
+              autoFocus
+            >
+              ຢືນຢັນ
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <AddResearchButton add={()=> this.handleAddResearchOpen()} />
       </ResearchHeader>
     );
   }
