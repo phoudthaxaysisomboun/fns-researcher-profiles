@@ -45,7 +45,7 @@ import {
   MoreHorizOutlined,
   SaveAltOutlined,
   RemoveRedEyeOutlined,
-
+PersonAddDisabledOutlined
 } from "@material-ui/icons";
 
 import { Link, withRouter } from "react-router-dom";
@@ -96,7 +96,7 @@ const ResearchHeader = ({
       if (value === userData._id) {
         return isAuthor = true
       } else {
-        return isAuthor = true
+        return isAuthor = false
       }
     })
   }
@@ -118,7 +118,7 @@ const ResearchHeader = ({
                   </IconButton>
           </>
         )
-      } else if (isAuthor && !(userData._id === research.uploader)) {
+      } else if (isAuthor && (userData._id !== research.uploader._id)) {
         return (
           <>
           <IconButton style={{ marginLeft: "8px" }} onClick={event => {
@@ -130,6 +130,8 @@ const ResearchHeader = ({
         </IconButton>
           </>
         )
+      } else {
+        return null
       }
     }
     
@@ -384,20 +386,8 @@ const ResearchHeader = ({
             selected={false}
             onClick = {()=> {console.log("test")}}
           >
-            <svg
-              style={{ marginRight: "16px" }}
-              width="24px"
-              height="24px"
-              viewBox="0 0 24 24"
-              fill="#212121"
-              focusable="false"
-              class="a-s-fa-Ha-pa"
-            >
-              <path d="M0 0h24v24H0z" fill="none" />
-              <path d="M15 4V3H9v1H4v2h1v13c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V6h1V4h-5zm2 15H7V6h10v13z" />
-              <path d="M9 8h2v9H9zm4 0h2v9h-2z" />
-            </svg>
-            ລຶບ
+            <PersonAddDisabledOutlined style={{marginRight: "16px"}} />
+            ເອົາຊື່ອອກ
           </MenuItem>
 
           <MenuItem
