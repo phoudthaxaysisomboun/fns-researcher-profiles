@@ -45,7 +45,37 @@ class Research extends Component {
     isUploader: false,
     isAuth: false,
     isAdmin: false,
-    tabIndex: 0
+    tabIndex: 0,
+    anchorUploader: null,
+    anchorCoAuthor: null,
+  };
+
+  handleUploaderMenuClick = (event, id) => {
+    this.setState({ anchorUploader: event.currentTarget });
+
+  //   let educations = this.props.user.userDetail.education
+  //   let obj = educations.find(o => o._id === id);
+  //  this.setState({
+  //   selectedEducation: obj
+  //  })
+  };
+
+  handleUploaderMenuClose = () => {
+    this.setState({ anchorUploader: null });
+  };
+
+  handleCoAuthorMenuClick = (event, id) => {
+    this.setState({ anchorCoAuthor: event.currentTarget });
+
+  //   let educations = this.props.user.userDetail.education
+  //   let obj = educations.find(o => o._id === id);
+  //  this.setState({
+  //   selectedEducation: obj
+  //  })
+  };
+
+  handleCoAuthorMenuClose = () => {
+    this.setState({ anchorCoAuthor: null });
   };
 
   like = id => {
@@ -136,6 +166,22 @@ class Research extends Component {
         tabIndex ={this.state.tabIndex}
         runLike={id => this.like(id)}
         runUnLike={id => this.unlike(id)}
+
+
+        anchorUploader={this.state.anchorUploader}
+            anchorCoAuthor={this.state.anchorCoAuthor}
+            handleUploaderMenuClick={(event, id) => {
+              this.handleUploaderMenuClick(event, id);
+            }}
+            handleUploaderMenuClose={event => {
+              this.handleUploaderMenuClose(event);
+            }}
+            handleCoAuthorMenuClick={(event) => {
+              this.handleCoAuthorMenuClick(event);
+            }}
+            handleCoAuthorMenuClose={event => {
+              this.handleCoAuthorMenuClose(event);
+            }}
       >
         <Grid
           container

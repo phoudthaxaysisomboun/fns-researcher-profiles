@@ -19,17 +19,18 @@ import {
   ADD_REPLY,
   REMOVE_REPLY,
   COUNT_READS,
-  ADD_NEW_RESEARCH
+  ADD_NEW_RESEARCH,
+  EDIT_RESEARCH
 } from "../actions/types";
 
 import mergeByKey from "array-merge-by-key";
 import moment from "moment";
 
-function compareDate( a, b ) {
-  if ( a.time < b.time ){
+function compareDate(a, b) {
+  if (a.time < b.time) {
     return 1;
   }
-  if ( a.time > b.time ){
+  if (a.time > b.time) {
     return -1;
   }
   return 0;
@@ -83,9 +84,9 @@ export default function(state = {}, action) {
       var allResearches = action.payload.allResearches.map(function(el, index) {
         var o = Object.assign({}, el);
         o.uploaderName = o["uploader"].name;
-        o.researchTypeName = o["researchType"].name
-        o.publicationTypeName = o["publicationType"].name
-        
+        o.researchTypeName = o["researchType"].name;
+        o.publicationTypeName = o["publicationType"].name;
+
         return o;
       });
 
@@ -94,7 +95,7 @@ export default function(state = {}, action) {
         allResearches,
         allResearchesCount: action.payload.size
       };
-      case GET_ALL_RESEARCHES_NUMBERS_REPORTS:
+    case GET_ALL_RESEARCHES_NUMBERS_REPORTS:
       console.log(action.payload);
 
       if (action.payload.allResearchesListsReports) {
@@ -123,30 +124,32 @@ export default function(state = {}, action) {
         ...state,
         allResearchesListsReports
       };
-      case GET_ALL_RESEARCHERS_LISTS_REPORTS:
+    case GET_ALL_RESEARCHERS_LISTS_REPORTS:
       console.log(action.payload);
 
       if (action.payload.allResearchesListReports) {
         var listResearchesListReports = action.payload.allResearchesListReports.map(
           function(el, index, array) {
             var o = Object.assign({}, el);
-            let author = []
-            o["researchType"] = o["researchType"].name
-            o["publicationType"] = o["publicationType"].name
-            o["likes"] = o["likes"].length
-            o["reads"] = o["reads"].length
-            o["shares"] = o["shares"].length
-            o["comments"] = o["comments"].length
-            o["citations"] = o["citations"].length
-            o["downloads"] = o["downloads"].length
-            o["date"] = moment(o["date"]).format("DD/MM/YYYY")
-            o["author"].map((value, index)=>{
-              author.push(value.lastname ? `${value.name} ${value.lastname}`: `${value.name}`)
-              return null
-            })
-            o["author"] = author.join(", ")
-
-
+            let author = [];
+            o["researchType"] = o["researchType"].name;
+            o["publicationType"] = o["publicationType"].name;
+            o["likes"] = o["likes"].length;
+            o["reads"] = o["reads"].length;
+            o["shares"] = o["shares"].length;
+            o["comments"] = o["comments"].length;
+            o["citations"] = o["citations"].length;
+            o["downloads"] = o["downloads"].length;
+            o["date"] = moment(o["date"]).format("DD/MM/YYYY");
+            o["author"].map((value, index) => {
+              author.push(
+                value.lastname
+                  ? `${value.name} ${value.lastname}`
+                  : `${value.name}`
+              );
+              return null;
+            });
+            o["author"] = author.join(", ");
 
             if (o["name"] === "ລວມ") {
               if (index !== array.length - 1) {
@@ -158,11 +161,8 @@ export default function(state = {}, action) {
               o["no"] = index + 1;
             }
             return o;
-            
           }
         );
-
-        
       }
 
       return {
@@ -170,43 +170,68 @@ export default function(state = {}, action) {
         listResearchesListReports,
         listResearchesListReportsCount: action.payload.size
       };
-      case GET_COMMENTS:
-      return { ...state, userResearch: {
-        ...state.userResearch,
-        researchComments: action.payload.sort( compareDate )
-      } };
-      case ADD_COMMENTS:
-      return { ...state, userResearch: {
-        ...state.userResearch,
-        researchComments: action.payload.sort( compareDate )
-      } };
-      case DELETE_COMMENTS:
-
-      return { ...state, userResearch: {
-        ...state.userResearch,
-        researchComments: action.payload.sort( compareDate )
-      } };
-      case ADD_REPLY:
-
-      return { ...state, userResearch: {
-        ...state.userResearch,
-        researchComments: action.payload.sort( compareDate )
-      } };
-      case REMOVE_REPLY:
-
-      return { ...state, userResearch: {
-        ...state.userResearch,
-        researchComments: action.payload.sort( compareDate )
-      } };
-      case ADD_NEW_RESEARCH:
-
-      return { ...state, userResearch: {
-        ...state.userResearch,
-        allResearches: {
-          ...state.allResearches,
-          ...action.payload.doc
+    case GET_COMMENTS:
+      return {
+        ...state,
+        userResearch: {
+          ...state.userResearch,
+          researchComments: action.payload.sort(compareDate)
         }
-      } };
+      };
+    case ADD_COMMENTS:
+      return {
+        ...state,
+        userResearch: {
+          ...state.userResearch,
+          researchComments: action.payload.sort(compareDate)
+        }
+      };
+    case DELETE_COMMENTS:
+      return {
+        ...state,
+        userResearch: {
+          ...state.userResearch,
+          researchComments: action.payload.sort(compareDate)
+        }
+      };
+    case ADD_REPLY:
+      return {
+        ...state,
+        userResearch: {
+          ...state.userResearch,
+          researchComments: action.payload.sort(compareDate)
+        }
+      };
+    case REMOVE_REPLY:
+      return {
+        ...state,
+        userResearch: {
+          ...state.userResearch,
+          researchComments: action.payload.sort(compareDate)
+        }
+      };
+    case ADD_NEW_RESEARCH:
+      return {
+        ...state,
+        userResearch: {
+          ...state.userResearch,
+          allResearches: {
+            ...state.allResearches,
+            ...action.payload.doc
+          }
+        }
+      };
+    case EDIT_RESEARCH:
+      return {
+        ...state,
+        userResearch: {
+          ...state.userResearch,
+          allResearches: {
+            ...state.allResearches,
+            ...action.payload.research
+          }
+        }
+      };
     default:
       return state;
   }

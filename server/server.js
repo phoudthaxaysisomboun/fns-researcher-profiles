@@ -3701,6 +3701,90 @@ app.post("/api/research/add_research", auth, (req, res) => {
   });
 });
 
+app.post("/api/research/update_research", auth, (req, res) => {
+  Research.find({
+    _id: req.body._id
+  }).exec((err, doc) => {
+    if (err) return res.json({ success: false, err });
+    let ids = doc.author;
+
+    Research.findOneAndUpdate(
+      {
+        _id: req.body._id
+      },
+      {
+        $set: req.body
+      },
+      {
+        new: true
+      }
+    ).exec((err, research) => {
+      if (err) return res.json({ success: false, err });
+      User.updateMany(
+        { _id: ids },
+        {
+          $pull: {
+            research: mongoose.Types.ObjectId(doc._id)
+          }
+        },
+        (err, user) => {
+          if (doc.files && doc.files.length > 0) {
+            const path = "." + `/uploads/${doc.files[0].name}`;
+
+            fs.unlink(path, err => {});
+          }
+          if (err) return res.json({ success: false, err });
+
+          let newIds = req.body.author;
+
+          User.updateMany(
+            { _id: newIds },
+            {
+              $push: {
+                research: req.body._id
+              }
+            },
+            (err, user) => {
+              if (err) return res.json({ success: false, err });
+              return res.json({
+                success: true,
+                research
+              });
+            }
+          );
+        }
+      );
+    });
+  });
+
+  research.save((err, doc) => {
+    console.log(err);
+    console.log(doc);
+    if (err) return res.json({ success: false, err });
+    res.status(200).json({
+      success: true,
+      doc
+    });
+
+    let ids = doc.author;
+
+    // REMINDER: add researches id to other authors
+
+    User.updateMany(
+      { _id: ids },
+      {
+        $push: {
+          research: mongoose.Types.ObjectId(doc._id)
+        }
+      },
+      {
+        new: true
+      },
+      (err, user) => {}
+    );
+  });
+});
+
 app.post("/api/research/remove_research", auth, (req, res) => {
   Research.findOne({ _id: req.query.researchId }).exec((err, doc) => {
     let ids = doc.author;
@@ -3721,7 +3805,7 @@ app.post("/api/research/remove_research", auth, (req, res) => {
             if (doc.files && doc.files.length > 0) {
               const path = "." + `/uploads/${doc.files[0].name}`;
 
-            fs.unlink(path, err => {});
+              fs.unlink(path, err => {});
             }
             if (err) return res.json({ success: false, err });
             res.status(200).json({

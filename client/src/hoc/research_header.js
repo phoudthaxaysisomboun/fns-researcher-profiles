@@ -12,7 +12,9 @@ import {
   Typography,
   LinearProgress,
   CircularProgress,
-  Hidden
+  Hidden,
+  MenuItem,
+  Menu
 } from "@material-ui/core";
 
 import { ObjectID } from "bson";
@@ -42,7 +44,8 @@ import {
   ForwardOutlined,
   MoreHorizOutlined,
   SaveAltOutlined,
-  RemoveRedEyeOutlined
+  RemoveRedEyeOutlined,
+
 } from "@material-ui/icons";
 
 import { Link, withRouter } from "react-router-dom";
@@ -57,7 +60,13 @@ const ResearchHeader = ({
   research,
   openShareDialog,
   runLike,
-  runUnLike
+  runUnLike,
+  anchorUploader,
+  anchorCoAuthor,
+  handleUploaderMenuClick,
+  handleUploaderMenuClose,
+  handleCoAuthorMenuClick,
+  handleCoAuthorMenuClose
 }) => {
   const userData = { ...props.user.userData };
 
@@ -79,6 +88,52 @@ const ResearchHeader = ({
   const isAuth = userData.isAuth;
 
   const _id = new ObjectID();
+
+  let isAuthor = false
+
+  if (research.author) {
+    research.author.map((value)=>{
+      if (value === userData._id) {
+        return isAuthor = true
+      } else {
+        return isAuthor = true
+      }
+    })
+  }
+
+  const renderMoreMenu = () => {
+    console.log(userData._id)
+    console.log(research.uploader)
+    console.log(userData)
+    if (research && research.uploader && research.uploader._id) {
+        if ((userData._id === research.uploader._id) || (userData.isAdmin === true)) {
+        return (
+          <>
+          <IconButton style={{ marginLeft: "8px" }} onClick={event => {
+            handleUploaderMenuClick(
+              event,
+            );
+          }}>
+                    <MoreHorizOutlined />
+                  </IconButton>
+          </>
+        )
+      } else if (isAuthor && !(userData._id === research.uploader)) {
+        return (
+          <>
+          <IconButton style={{ marginLeft: "8px" }} onClick={event => {
+            handleCoAuthorMenuClick(
+              event,
+            );
+          }}>
+          <MoreHorizOutlined />
+        </IconButton>
+          </>
+        )
+      }
+    }
+    
+  }
 
   const styles = {
     chip: {
@@ -243,6 +298,118 @@ const ResearchHeader = ({
 
   return (
     <Grid container>
+    <Menu
+          className="menu"
+          anchorEl={anchorUploader}
+          open={Boolean(anchorUploader)}
+          onClose={event => {
+            handleUploaderMenuClose(event);
+          }}
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "right"
+          }}
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "right"
+          }}
+        >
+          <MenuItem
+            style={{
+              fontFamily: "'Noto Sans Lao UI', sans-serif",
+              fontWeight: 500
+            }}
+            selected={false}
+            onClick = {()=> {console.log("asd")}}
+          >
+           <EditOutlined style={{ marginRight: "16px" }}/>
+            ແກ້ໄຂ
+          </MenuItem>
+          <MenuItem
+            style={{
+              fontFamily: "'Noto Sans Lao UI', sans-serif",
+              fontWeight: 500
+            }}
+            selected={false}
+            onClick = {()=> {console.log("asd")}}
+          >
+            <svg
+              style={{ marginRight: "16px" }}
+              width="24px"
+              height="24px"
+              viewBox="0 0 24 24"
+              fill="#212121"
+              focusable="false"
+              class="a-s-fa-Ha-pa"
+            >
+              <path d="M0 0h24v24H0z" fill="none" />
+              <path d="M15 4V3H9v1H4v2h1v13c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V6h1V4h-5zm2 15H7V6h10v13z" />
+              <path d="M9 8h2v9H9zm4 0h2v9h-2z" />
+            </svg>
+            ລຶບ
+          </MenuItem>
+
+          <MenuItem
+            style={{
+              fontFamily: "'Noto Sans Lao UI', sans-serif",
+              fontWeight: 500,
+              display: "none"
+            }}
+            selected={true}
+          />
+        </Menu>
+
+
+        <Menu
+          className="menu"
+          anchorEl={anchorCoAuthor}
+          open={Boolean(anchorCoAuthor)}
+          onClose={event => {
+            handleCoAuthorMenuClose(event);
+          }}
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "right"
+          }}
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "right"
+          }}
+        >
+          <MenuItem
+            style={{
+              fontFamily: "'Noto Sans Lao UI', sans-serif",
+              fontWeight: 500
+            }}
+            selected={false}
+            onClick = {()=> {console.log("test")}}
+          >
+            <svg
+              style={{ marginRight: "16px" }}
+              width="24px"
+              height="24px"
+              viewBox="0 0 24 24"
+              fill="#212121"
+              focusable="false"
+              class="a-s-fa-Ha-pa"
+            >
+              <path d="M0 0h24v24H0z" fill="none" />
+              <path d="M15 4V3H9v1H4v2h1v13c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V6h1V4h-5zm2 15H7V6h10v13z" />
+              <path d="M9 8h2v9H9zm4 0h2v9h-2z" />
+            </svg>
+            ລຶບ
+          </MenuItem>
+
+          <MenuItem
+            style={{
+              fontFamily: "'Noto Sans Lao UI', sans-serif",
+              fontWeight: 500,
+              display: "none"
+            }}
+            selected={true}
+          />
+        </Menu>
+
       <Grid item xs={12}>
         <Grid container>
           <Grid item xs sm={1} lg={2} md={1} />
@@ -925,9 +1092,10 @@ const ResearchHeader = ({
                   </>
                 ) : null}
 
-                <IconButton style={{ marginLeft: "8px" }}>
-                  <MoreHorizOutlined />
-                </IconButton>
+                {
+                  userData.isAuth ? renderMoreMenu() : null
+                }
+
               </Grid>
             </Grid>
             <Grid container>

@@ -109,7 +109,6 @@ class ResearchComments extends Component {
 
   submitComment = (event) => {
     event.preventDefault();
-    console.log('hgey')
     this.props.dispatch(addComment(this.props.research.userResearch[0]._id, this.props.user.userData._id, this.state.commentValue)).then((response)=>{
       this.setState({
         commentValue: ""

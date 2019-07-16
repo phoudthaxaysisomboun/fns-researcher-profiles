@@ -21,7 +21,8 @@ import {
   ADD_REPLY,
   REMOVE_REPLY,
   COUNT_READS,
-  ADD_NEW_RESEARCH
+  ADD_NEW_RESEARCH,
+  EDIT_RESEARCH
 } from "./types";
 
 import { RESEARCH_SERVER, RESEARCHER_SERVER } from "../components/utils/misc";
@@ -251,6 +252,18 @@ console.log(dataToSubmit)
 
   return {
     type: ADD_NEW_RESEARCH,
+    payload: request
+  };
+}
+
+export function updateResearch(dataToSubmit) {
+console.log(dataToSubmit)
+  const request = axios
+    .post(`${RESEARCH_SERVER}/update_research`, dataToSubmit)
+    .then(response => response.data);
+
+  return {
+    type: EDIT_RESEARCH,
     payload: request
   };
 }
