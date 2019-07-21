@@ -25,7 +25,8 @@ import {
   EDIT_RESEARCH,
   REMOVE_RESEARCH,
   REMOVE_AUTHOR,
-  COUNT_SHARES
+  COUNT_SHARES,
+  GET_SUGGESTIONS_IN_FEED
 } from "./types";
 
 import { RESEARCH_SERVER, RESEARCHER_SERVER } from "../components/utils/misc";
@@ -89,6 +90,16 @@ export function getPublicationType() {
 }
 
 export function getFeed() {
+  const request = axios
+    .get(`${RESEARCHER_SERVER}/get_suggested_user`)
+    .then(response => response.data);
+  return {
+    type: GET_SUGGESTIONS_IN_FEED,
+    payload: request
+  };
+}
+
+export function getSuggestionsInFeed() {
   const request = axios
     .get(`${RESEARCHER_SERVER}/get_feed`)
     .then(response => response.data);

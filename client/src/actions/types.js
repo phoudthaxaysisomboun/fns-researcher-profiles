@@ -74,6 +74,7 @@ export const GET_RESEARCH_TYPE = "get_research_type"
 export const GET_PUBLICATION_TYPE = "get_publication_type"
 
 export const GET_FEED = "get_users_feed"
+export const GET_SUGGESTIONS_IN_FEED = "getSuggestionsInFeed"
 export const CLEAR_FEED = "clear_users_feed"
 
 

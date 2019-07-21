@@ -500,23 +500,7 @@ class ResearchComments extends Component {
         
       />
       
-        <UpdateResearch
-        open={this.state.openEditResearchDialog}
-        close={() => this.handleEditResearchClose()}
-        authorSuggestions={
-          this.props && this.props.user && this.props.user.authorSuggestions ? this.props.user.authorSuggestions : []
-        }
-        user = {
-          this.props && this.props.user && this.props.user.userData ? this.props.user.userData : {}
-        }
-
-        research = {
-          this.props.research && this.props.research.userResearch
-                ? this.props.research.userResearch[0]
-                : {}
-        }
-        
-      />
+      
       
 
       <Dialog

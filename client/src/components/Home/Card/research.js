@@ -302,9 +302,9 @@ const ResearchCard = ({ userData, userResearch, runLike, runUnLike }) => {
                     {researches.researchType.name}
                   </div>
 
-                  <div style={styles.chipSecondary}>
-                    {researches.files ? `ມີເອກກະສານໃຫ້ອ່ານ` : null}
-                  </div>
+                  
+                    {researches.files && researches.files[0] && researches.files[0].name ? <div style={styles.chipSecondary}>ມີເອກກະສານໃຫ້ອ່ານ</div> : null}
+                  
                   <div style={styles.chipSecondary}>
                     {researches.publicationType.name}
                   </div>

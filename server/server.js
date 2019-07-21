@@ -2585,6 +2585,55 @@ app.get("/api/researchers/get_feed", auth, (req, res) => {
   });
 });
 
+
+app.get("/api/researchers/get_suggested_user", auth, (req, res) => {
+  let order = req.query.order ? req.query.order : "desc";
+  let sortBy = req.query.sortBy ? req.query.sortBy : "createdAt";
+  let limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 4;
+  let skip = parseInt(req.query.skip) ? parseInt(req.query.skip) : 0;
+
+  let type = req.query.type;
+  let items = req.query.id;
+
+  let followings = [];
+
+  // console.log(req.user)
+
+  User.findOne({ _id: req.user._id }, (err, doc) => {
+    doc.following.forEach(item => {
+      followings.push(item._id);
+    });
+
+    followings.push(req.user._id)
+
+    User.find({
+      _id: { $nin: followings },
+      emailIsVerified: true,
+      accountIsVerified: true,
+      active: true
+    })
+.limit(limit)
+      .populate("gender")
+      .populate("degree")
+      .populate("gender")
+      .select(
+        "_id name lastname prefix affiliation profileImage"
+      )
+      .populate({
+        path: "affiliation.department"
+      })
+      .populate({
+        path: "affiliation.faculty"
+      })
+      .populate({
+        path: "affiliation.institution"
+      })
+      .exec((err, result) => {
+        return res.status(200).json(result);
+      });
+  });
+});
+
 app.post("/api/researchers/update_mobile", auth, (req, res) => {
   User.findOneAndUpdate(
     { _id: req.query.userId },

@@ -68,7 +68,8 @@ import {
   GET_AUTHOR_SUGGESTIONS,
   UPDATE_NAME,
   UPDATE_DEGREE,
-  UPDATE_AFFILIATION
+  UPDATE_AFFILIATION,
+  GET_SUGGESTIONS_IN_FEED
 } from "../actions/types";
 
 import moment from "moment";
@@ -608,6 +609,7 @@ export default function(state = {}, action) {
         ...state,
         authorSuggestions: action.payload
       }
+    
     default:
       return state;
   }

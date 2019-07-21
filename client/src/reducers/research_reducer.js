@@ -21,7 +21,8 @@ import {
   COUNT_READS,
   ADD_NEW_RESEARCH,
   EDIT_RESEARCH,
-  COUNT_SHARES
+  COUNT_SHARES,
+  GET_SUGGESTIONS_IN_FEED
 } from "../actions/types";
 
 import mergeByKey from "array-merge-by-key";
@@ -56,6 +57,8 @@ export default function(state = {}, action) {
     case GET_FEED:
       console.log(action.payload);
       return { ...state, feed: action.payload };
+    case GET_SUGGESTIONS_IN_FEED:
+      return { ...state, followSuggestions: action.payload };
     case CLEAR_FEED:
       return { ...state, feed: action.payload };
     case ADD_LIKE:

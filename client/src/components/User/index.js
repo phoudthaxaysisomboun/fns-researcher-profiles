@@ -131,7 +131,7 @@ handleEditnameDialogClose = () => {
 
   handleAddResearchOpen = () => {
     this.setState({
-      openEditnameDialog: true
+      openAddResearchDialog: true
     });
   };
 
