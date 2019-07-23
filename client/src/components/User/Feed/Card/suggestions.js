@@ -203,7 +203,7 @@ const SuggestedToFollowCard = ({
                       color="primary"
                       style={{ width: "100%" }}
                       onClick={() => {
-                        runSeeAllFollower();
+                        // runSeeAllFollower();
                       }}
                     >
                       {" "}
@@ -223,7 +223,7 @@ const SuggestedToFollowCard = ({
   const renderItems = () => (
     <div>
       
-      <Paper style={{ boxShadow: "none", border: "1px solid #d8d8d8" }}>
+      <Paper style={{ boxShadow: "none", border: "1px solid #d8d8d8", marginTop: "24px" }}>
       <Grid container style={{padding: "16px", paddingBottom: 0}}>
         <Grid item xs={12}>
           <Typography
@@ -231,16 +231,10 @@ const SuggestedToFollowCard = ({
             style={{
               fontSize: "1.375rem",
               marginBottom: "8px",
-              fontWeight: "bold"
+              fontWeight: "500"
             }}
           >
-            ຜູ້ຕິດຕາມ{" "}
-            <span
-              variant="inherit"
-              style={{ fontWeight: "normal", color: "#898989" }}
-            >
-              {user.follower ? `(${user.follower.length})` : null}
-            </span>
+            ແນະນໍາໃຫ້ຕິດຕາມ
           </Typography>
         </Grid>
       </Grid>

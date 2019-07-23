@@ -334,7 +334,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                 style={{
                   boxShadow: "none",
                   border: "1px solid #d8d8d8",
-                  marginTop: "16px",
+                  marginTop: "24px",
                   padding: "16px",
                   paddingBottom: 0
                 }}
@@ -683,7 +683,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                     >
                       {" "}
                       <ReplyOutlined fontSize="small" />
-                      {research.shares ? (
+                      {researches.shares && researches.shares.length ? (
                         <div
                           style={{
                             fontSize: "13.5px",
@@ -695,7 +695,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                           &nbsp;
                           <NumberFormat
                             value={
-                              research.shares ? research.shares.length : null
+                              researches.shares && researches.shares.length > 0 ? researches.shares.length : null
                             }
                             displayType={"text"}
                             thousandSeparator={true}
@@ -742,7 +742,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
         style={{
           boxShadow: "none",
           border: "1px solid #d8d8d8",
-          marginTop: "16px",
+          marginTop: "24px",
           padding: "16px",
       
         }}

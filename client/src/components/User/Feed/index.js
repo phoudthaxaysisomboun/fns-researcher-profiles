@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Fab, Grid } from "@material-ui/core";
+import { Fab, Grid, Hidden } from "@material-ui/core";
 import { AddOutlined } from "@material-ui/icons";
 
 import { connect } from "react-redux";
@@ -15,9 +15,19 @@ import {
   removeLike,
   getSuggestionsInFeed
 } from "../../../actions/research_actions";
-import { like, unlike, clearLike, follow, addFollower, unfollow, removeFollower, getFollower, getFollowing } from "../../../actions/user_actions";
+import {
+  like,
+  unlike,
+  clearLike,
+  follow,
+  addFollower,
+  unfollow,
+  removeFollower,
+  getFollower,
+  getFollowing
+} from "../../../actions/user_actions";
 
-import SuggestionsCard from "../Feed/Card/suggestions"
+import SuggestionsCard from "../Feed/Card/suggestions";
 
 import FeedCard from "../Feed/Card/post";
 
@@ -38,13 +48,11 @@ class Feed extends Component {
   };
 
   componentWillMount() {
-    this.props.dispatch(getFeed()).then(response=>{
-      this.props.dispatch(getSuggestionsInFeed())
-    })
+    this.props.dispatch(getFeed()).then(response => {
+      this.props.dispatch(getSuggestionsInFeed());
+    });
     document.title = "Feed - FNS Researcher Profiles";
   }
-
-  
 
   componentWillUnmount() {
     this.props.dispatch(clearFeed());
@@ -62,9 +70,9 @@ class Feed extends Component {
     });
   };
 
-  comment = (id) => {
-    this.props.history.push(`/research/${id}/comments`)
-  }
+  comment = id => {
+    this.props.history.push(`/research/${id}/comments`);
+  };
 
   like = id => {
     if (this.props.user.userData.isAuth) {
@@ -95,34 +103,32 @@ class Feed extends Component {
       });
       this.props.dispatch(follow(id)).then(() => {
         this.props.dispatch(addFollower(id)).then(() => {
-          this.props
-            .dispatch(getFeed())
-            .then(response => {
-              var following = [];
-              var followingId = [];
-              var followerId = [];
-              following = response.payload.following;
-              followerId = response.payload.follower;
-              for (var key in following) {
-                followingId.push(following[key]._id);
-              }
-              this.props.dispatch(getFollowing(followingId));
-              this.props.dispatch(getFollower(followerId));
+          this.props.dispatch(getFeed()).then(response => {
+            var following = [];
+            var followingId = [];
+            var followerId = [];
+            following = response.payload.following;
+            followerId = response.payload.follower;
+            for (var key in following) {
+              followingId.push(following[key]._id);
+            }
+            this.props.dispatch(getFollowing(followingId));
+            this.props.dispatch(getFollower(followerId));
 
-              this.setState({
-                followLoading: false
-              });
-
-              // this.props.dispatch(getFollowingInLoadMore(followingId, 6, 0));
-
-              // this.props
-              //   .dispatch(getFollowerInLoadMore(followerId, 6, 0))
-              //   .then(() => {
-              //     this.setState({
-              //       followLoading: false
-              //     });
-              //   });
+            this.setState({
+              followLoading: false
             });
+
+            // this.props.dispatch(getFollowingInLoadMore(followingId, 6, 0));
+
+            // this.props
+            //   .dispatch(getFollowerInLoadMore(followerId, 6, 0))
+            //   .then(() => {
+            //     this.setState({
+            //       followLoading: false
+            //     });
+            //   });
+          });
         });
       });
     } else {
@@ -134,23 +140,21 @@ class Feed extends Component {
     if (this.props.user.userData.isAuth) {
       this.props.dispatch(unfollow(id)).then(() => {
         this.props.dispatch(removeFollower(id)).then(() => {
-          this.props
-            .dispatch(getFeed())
-            .then(response => {
-              var following = [];
-              var followingId = [];
-              var followerId = [];
-              following = response.payload.following;
-              followerId = response.payload.follower;
-              for (var key in following) {
-                followingId.push(following[key]._id);
-              }
-              this.props.dispatch(getFollowing(followingId));
-              this.props.dispatch(getFollower(followerId));
-              // this.props.dispatch(getFollowingInLoadMore(followingId, 6, 0));
+          this.props.dispatch(getFeed()).then(response => {
+            var following = [];
+            var followingId = [];
+            var followerId = [];
+            following = response.payload.following;
+            followerId = response.payload.follower;
+            for (var key in following) {
+              followingId.push(following[key]._id);
+            }
+            this.props.dispatch(getFollowing(followingId));
+            this.props.dispatch(getFollower(followerId));
+            // this.props.dispatch(getFollowingInLoadMore(followingId, 6, 0));
 
-              // this.props.dispatch(getFollowerInLoadMore(followerId, 6, 0));
-            });
+            // this.props.dispatch(getFollowerInLoadMore(followerId, 6, 0));
+          });
         });
       });
     } else {
@@ -162,38 +166,39 @@ class Feed extends Component {
     return (
       <div>
         <Grid container>
-          <Grid item xs sm lg md />
-          <Grid item xs={11} sm={11} lg={8} md={11}>
-            <Grid container spacing={24}>
-            <Grid item xs={12} lg={8} sm={12} md={6}>
-              <FeedCard
-                userResearch={
-                  this.props.user && this.props.research.feed
-                    ? this.props.research.feed
-                    : null
-                }
-                userData={
-                  this.props.user && this.props.user.userData
-                    ? this.props.user.userData
-                    : null
-                }
-                runLike={id => this.like(id)}
-                runUnLike={id => this.unlike(id)}
-                comment={id => this.comment(id)}
-              />
+          <Grid item xs sm lg={2} md />
+          <Grid item xs={11} sm={11} lg={9} md={11}>
+            <Grid container spacing={32}>
+              <Grid item xs={12} lg={7} sm={12} md={6} style={{}}>
+                <FeedCard
+                  userResearch={
+                    this.props.user && this.props.research.feed
+                      ? this.props.research.feed
+                      : null
+                  }
+                  userData={
+                    this.props.user && this.props.user.userData
+                      ? this.props.user.userData
+                      : null
+                  }
+                  runLike={id => this.like(id)}
+                  runUnLike={id => this.unlike(id)}
+                  comment={id => this.comment(id)}
+                />
               </Grid>
+              <Hidden smDown>
               <Grid item xs lg sm md>
-            <SuggestionsCard
-                      userData={this.props.user.userData}
-                      userFollower={this.props.research.followSuggestions}
-                      runFollow={id => this.followUser(id)}
-                      runUnfollow={id => this.unfollowUser(id)}
-                      runSeeAllFollower={id => this.seeAllFollower(id)}
-                      loading={this.state.loadingFollower}
-                    />
-                    </Grid>
+                <SuggestionsCard
+                  userData={this.props.user.userData}
+                  userFollower={this.props.research.followSuggestions}
+                  runFollow={id => this.followUser(id)}
+                  runUnfollow={id => this.unfollowUser(id)}
+                  runSeeAllFollower={id => this.seeAllFollower(id)}
+                  loading={this.state.loadingFollower}
+                />
+              </Grid>
+              </Hidden>
             </Grid>
-            
           </Grid>
           <Grid item xs sm lg md />
         </Grid>
@@ -213,10 +218,14 @@ class Feed extends Component {
           open={this.state.openAddResearchDialog}
           close={() => this.handleAddResearchClose()}
           authorSuggestions={
-            this.props && this.props.user && this.props.user.authorSuggestions ? this.props.user.authorSuggestions : []
+            this.props && this.props.user && this.props.user.authorSuggestions
+              ? this.props.user.authorSuggestions
+              : []
           }
-          user = {
-            this.props && this.props.user && this.props.user.userData ? this.props.user.userData : {}
+          user={
+            this.props && this.props.user && this.props.user.userData
+              ? this.props.user.userData
+              : {}
           }
         />
       </div>

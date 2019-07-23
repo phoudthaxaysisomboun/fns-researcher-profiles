@@ -5,7 +5,7 @@ import { withRouter } from "react-router-dom";
 import { logoutUser, getRequestUserCount } from "../actions/user_actions";
 import { UPLOADS_SERVER } from "../components/utils/misc";
 
-import Footer from "../components/Header_footer/Footer"
+import Footer from "../components/Header_footer/Footer";
 
 import PropTypes from "prop-types";
 import classNames from "classnames";
@@ -31,7 +31,8 @@ import {
   Grid,
   Collapse,
   ListSubheader,
-  Badge
+  Badge,
+  Hidden
 } from "@material-ui/core";
 
 import { Link } from "react-router-dom";
@@ -201,7 +202,13 @@ const styles = theme => ({
     border: "'0' !importabt"
   },
   drawerPaper: {
-    width: drawerWidth
+    [theme.breakpoints.up("sm")]: {
+      width: drawerWidth
+    },
+    [theme.breakpoints.down("xs")]: {
+      width: 300
+    },
+
   },
   drawerHeader: {
     display: "flex",
@@ -217,14 +224,16 @@ const styles = theme => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
     }),
-    marginLeft: -drawerWidth,
+    marginLeft: -drawerWidth
   },
   contentShift: {
     transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen
     }),
-    marginLeft: 0
+    [theme.breakpoints.up("sm")]: {
+      marginLeft: 0
+    }
   },
 
   nested: {
@@ -260,7 +269,7 @@ class Layout extends Component {
   };
 
   handleDrawerOpen = () => {
-    this.setState({ open: this.state.open ? false : true});
+    this.setState({ open: this.state.open ? false : true });
   };
 
   handleDrawerClose = () => {
@@ -302,9 +311,9 @@ class Layout extends Component {
   handleScroll = event => {
     let scroll = window.pageYOffset;
     if (scroll >= 232) {
-      this.setState({showHeader: true})
+      this.setState({ showHeader: true });
     } else {
-      this.setState({showHeader: false})
+      this.setState({ showHeader: false });
     }
     if (scroll > 0) {
       this.setState({ headerclass: "active" });
@@ -325,18 +334,18 @@ class Layout extends Component {
   handleSearch = event => {
     this.setState({
       searchText: event.target.value
-    })
+    });
   };
-
-  
 
   submitSearch = event => {
     event.preventDefault();
-    this.props.history.push(`/search/researchers?q=${encodeURIComponent(this.state.searchText)}`)
+    this.props.history.push(
+      `/search/researchers?q=${encodeURIComponent(this.state.searchText)}`
+    );
     this.setState({
       searchText: ""
-    })
-  }
+    });
+  };
   logoutHandler = () => {
     this.props.dispatch(logoutUser()).then(response => {
       if (response.payload.success) {
@@ -360,7 +369,9 @@ class Layout extends Component {
   };
 
   handleReportsClick = () => {
-    this.setState(state => ({ openReportsToolMenu: !state.openReportsToolMenu }));
+    this.setState(state => ({
+      openReportsToolMenu: !state.openReportsToolMenu
+    }));
   };
 
   showAccountButton = () => {
@@ -670,28 +681,31 @@ class Layout extends Component {
                 {!this.props.location.pathname.startsWith("/search") ? (
                   <>
                     <IconButton
-                          onClick={this.handleDrawerOpen}
-                          className={classNames(
-                            classes.menuButtonMain,
-                            
-                          )}
-                          color="inherit"
-                          aria-label="Open drawer"
-                        >
-                          <MenuIcon />
-                        </IconButton>
-                        <Link
-                    to="/"
-                    style={{ textDecoration: "none", color: "inherit" }}
-                  >
-                        <embed
+                      onClick={this.handleDrawerOpen}
+                      className={classNames(classes.menuButtonMain)}
+                      color="inherit"
+                      aria-label="Open drawer"
+                    >
+                      <MenuIcon />
+                    </IconButton>
+                    <Link
+                      to="/"
+                      style={{ textDecoration: "none", color: "inherit" }}
+                    >
+                      <embed
                         className={classes.logo}
-            height="28"
-            width="28"
-            style={{ marginBottom: "0", flexGrow: 0, paddingRight: "8px", paddingBottom: "6px" }}
-            type="image/svg+xml"
-            src="/images/fns.svg"
-          /></Link>
+                        height="28"
+                        width="28"
+                        style={{
+                          marginBottom: "0",
+                          flexGrow: 0,
+                          paddingRight: "8px",
+                          paddingBottom: "6px"
+                        }}
+                        type="image/svg+xml"
+                        src="/images/fns.svg"
+                      />
+                    </Link>
                   </>
                 ) : null}
                 {!this.props.location.pathname.startsWith("/search") ? (
@@ -699,13 +713,15 @@ class Layout extends Component {
                     to="/"
                     style={{ textDecoration: "none", color: "inherit" }}
                   >
-                  
                     <Typography
                       className={classes.title}
                       variant="h6"
                       color="inherit"
                       noWrap
-                      style={{ fontWeight: "bold", fontFamily: "'Roboto', sans serif" }}
+                      style={{
+                        fontWeight: "bold",
+                        fontFamily: "'Roboto', sans serif"
+                      }}
                     >
                       FNS Researcher Profiles
                     </Typography>
@@ -714,38 +730,41 @@ class Layout extends Component {
 
                 {!this.props.location.pathname.startsWith("/search") ? (
                   <>
-                  <form style={{ padding: 0, margin: 0, flexGrow: "0.4" }} onSubmit={event => this.submitSearch(event)}>
-                    <div className={classes.search}>
-                      <IconButton
-                        className={classes.searchIcon}
-                        style={{
-                          padding: "2px",
-                          margin: 0,
-                          width: "28px",
-                          height: "28px",
-                          marginTop: "8.5px",
-                          marginBottom: "8.5px",
-                          marginLeft: "8px"
-                        }}
-                        type="submit"
-                      >
-                        <SearchIcon />
-                      </IconButton>
-                      <InputBase
-                        placeholder="ຄົ້ນຫານັກຄົ້ນຄວ້າ, ຜົນງານ ຯລຯ"
-                        classes={{
-                          root: classes.inputRoot,
-                          input: classes.inputInput
-                        }}
-                        style={{
-                          fontFamily: "'Noto Sans Lao UI', sans-serif"
-                        }}
-                        value={this.state.searchText}
-                        onChange={event => {
-                          this.handleSearch(event);
-                        }}
-                      />
-                    </div>
+                    <form
+                      style={{ padding: 0, margin: 0, flexGrow: "0.4" }}
+                      onSubmit={event => this.submitSearch(event)}
+                    >
+                      <div className={classes.search}>
+                        <IconButton
+                          className={classes.searchIcon}
+                          style={{
+                            padding: "2px",
+                            margin: 0,
+                            width: "28px",
+                            height: "28px",
+                            marginTop: "8.5px",
+                            marginBottom: "8.5px",
+                            marginLeft: "8px"
+                          }}
+                          type="submit"
+                        >
+                          <SearchIcon />
+                        </IconButton>
+                        <InputBase
+                          placeholder="ຄົ້ນຫານັກຄົ້ນຄວ້າ, ຜົນງານ ຯລຯ"
+                          classes={{
+                            root: classes.inputRoot,
+                            input: classes.inputInput
+                          }}
+                          style={{
+                            fontFamily: "'Noto Sans Lao UI', sans-serif"
+                          }}
+                          value={this.state.searchText}
+                          onChange={event => {
+                            this.handleSearch(event);
+                          }}
+                        />
+                      </div>
                     </form>
                     <div className={classes.grow} />
                   </>
@@ -757,44 +776,36 @@ class Layout extends Component {
                       style={{ flexGrow: "1", margin: 0 }}
                     >
                       <Grid item xs={2} align="left">
-                      <IconButton
-                      onClick={this.handleDrawerOpen}
-                      className={classNames(
-                        classes.menuButtonMain,
-                        
-                      )}
-                      color="inherit"
-                      aria-label="Open drawer"
-                    >
-                      <MenuIcon />
-                    </IconButton>
+                        <IconButton
+                          onClick={this.handleDrawerOpen}
+                          className={classNames(classes.menuButtonMain)}
+                          color="inherit"
+                          aria-label="Open drawer"
+                        >
+                          <MenuIcon />
+                        </IconButton>
                       </Grid>
 
                       <Grid item xs={8} alignContent="center">
-                      {
-                        this.state.showHeader ?
-                        <Link
-                          to="/"
-                          style={{ textDecoration: "none", color: "inherit" }}
-                        >
-                          
-                            <Typography
-                            variant="h6"
-                            color="inherit"
-                            style={{
-                              textAlign: "center",
-                              fontWeight: "bold",
-                              fontFamily: "'Roboto', sans serif"
-                            }}
-                            noWrap
+                        {this.state.showHeader ? (
+                          <Link
+                            to="/"
+                            style={{ textDecoration: "none", color: "inherit" }}
                           >
-                            FNS Researcher Profiles
-                          </Typography>
-                          
-                        </Link>
-                        : null
-                      }
-                        
+                            <Typography
+                              variant="h6"
+                              color="inherit"
+                              style={{
+                                textAlign: "center",
+                                fontWeight: "bold",
+                                fontFamily: "'Roboto', sans serif"
+                              }}
+                              noWrap
+                            >
+                              FNS Researcher Profiles
+                            </Typography>
+                          </Link>
+                        ) : null}
                       </Grid>
 
                       <Grid item xs={2} align="right">
@@ -857,463 +868,1023 @@ class Layout extends Component {
                 ) : null}
               </Toolbar>
             </AppBar>
+            <Hidden xsDown>
+              <Drawer
+                className={classes.drawer}
+                variant="persistent"
+                anchor="left"
+                open={open}
+                classes={{
+                  paper: classes.drawerPaper
+                }}
+                style={{
+                  border: "0 !important"
+                }}
+              >
+                <div className={classes.drawerHeader} />
 
-            <Drawer
-              className={classes.drawer}
-              variant="persistent"
-              anchor="left"
-              open={open}
-              classes={{
-                paper: classes.drawerPaper
-              }}
-              style={{
-                border: "0 !important"
-              }}
-            >
-              <div className={classes.drawerHeader}>
-               
-              </div>
-              
-
-              <List>
-                {this.props &&
-                this.props.user &&
-                this.props.user.userData &&
-                this.props.user.userData.isAuth ? (
+                <List>
+                  {this.props &&
+                  this.props.user &&
+                  this.props.user.userData &&
+                  this.props.user.userData.isAuth ? (
+                    <ListItem
+                      button
+                      component={Link}
+                      to="/"
+                      selected={"/" === pathname}
+                      style={{
+                        borderTopRightRadius: "23px",
+                        borderBottomRightRadius: "23px"
+                      }}
+                    >
+                      {"/" === pathname ? (
+                        <>
+                          <ListItemIcon>
+                            <HomeOutlined color="primary" />
+                          </ListItemIcon>
+                          <ListItemText
+                            primaryTypographyProps={{
+                              style: { color: "#3f51b5", fontWeight: "500" }
+                            }}
+                            inset
+                            primary="ຫນ້າຫລັກ"
+                          />
+                        </>
+                      ) : (
+                        <>
+                          <ListItemIcon>
+                            <HomeOutlined />
+                          </ListItemIcon>
+                          <ListItemText inset primary="ຫນ້າຫລັກ" />
+                        </>
+                      )}
+                    </ListItem>
+                  ) : null}
                   <ListItem
                     button
                     component={Link}
-                    to="/"
-                    selected={"/" === pathname}
-                    style={{borderTopRightRadius: "23px", borderBottomRightRadius: "23px"}}
+                    to="/search"
+                    selected={
+                      pathname.startsWith("/search") &&
+                      !("?q=" === this.props.location.search)
+                    }
+                    style={{
+                      borderTopRightRadius: "23px",
+                      borderBottomRightRadius: "23px"
+                    }}
                   >
-                    {"/" === pathname ? (
+                    {pathname.startsWith("/search") &&
+                    !("?q=" === this.props.location.search) ? (
                       <>
                         <ListItemIcon>
-                          <HomeOutlined color="primary" />
+                          <SearchOutlined color="primary" />
                         </ListItemIcon>
                         <ListItemText
                           primaryTypographyProps={{
                             style: { color: "#3f51b5", fontWeight: "500" }
                           }}
                           inset
-                          primary="ຫນ້າຫລັກ"
+                          primary="ຄົ້ນຫາ"
                         />
                       </>
                     ) : (
                       <>
                         <ListItemIcon>
-                          <HomeOutlined />
+                          <SearchOutlined />
                         </ListItemIcon>
-                        <ListItemText inset primary="ຫນ້າຫລັກ" />
+                        <ListItemText inset primary="ຄົ້ນຫາ" />
                       </>
                     )}
                   </ListItem>
-                ) : null}
-                <ListItem
-                  button
-                  component={Link}
-                  to="/search"
-                  selected={
-                    pathname.startsWith("/search") &&
-                    !("?q=" === this.props.location.search)
-                  }
-                  style={{borderTopRightRadius: "23px", borderBottomRightRadius: "23px"}}
-                >
-                  {pathname.startsWith("/search") &&
-                  !("?q=" === this.props.location.search) ? (
-                    <>
-                      <ListItemIcon>
-                        <SearchOutlined color="primary" />
-                      </ListItemIcon>
-                      <ListItemText
-                        primaryTypographyProps={{
-                          style: { color: "#3f51b5", fontWeight: "500" }
-                        }}
-                        inset
-                        primary="ຄົ້ນຫາ"
-                      />
-                    </>
-                  ) : (
-                    <>
-                      <ListItemIcon>
-                        <SearchOutlined />
-                      </ListItemIcon>
-                      <ListItemText inset primary="ຄົ້ນຫາ" />
-                    </>
-                  )}
-                </ListItem>
-                <ListItem
-                style={{borderTopRightRadius: "23px", borderBottomRightRadius: "23px"}}
-                  button
-                  component={Link}
-                  to="/search/researchers?q="
-                  selected={
-                    "/search/researchers" === pathname &&
-                    "?q=" === this.props.location.search
-                  }
-                >
-                  {"/search/researchers" === pathname &&
-                  "?q=" === this.props.location.search ? (
-                    <>
-                      <ListItemIcon>
-                        <PersonOutlineOutlined color="primary" />
-                      </ListItemIcon>
-                      <ListItemText
-                        inset
-                        primary="ນັກຄົ້ນຄວ້າ"
-                        primaryTypographyProps={{
-                          style: { color: "#3f51b5", fontWeight: "500" }
-                        }}
-                      />
-                    </>
-                  ) : (
-                    <>
-                      <ListItemIcon>
-                        <PersonOutlineOutlined />
-                      </ListItemIcon>
-                      <ListItemText inset primary="ນັກຄົ້ນຄວ້າ" />
-                    </>
-                  )}
-                </ListItem>
-
-                <ListItem
-                  button
-                  component={Link}
-                  to="/search/researches?q="
-                  selected={
-                    "/search/researches" === pathname &&
-                    "?q=" === this.props.location.search
-                  }
-                  style={{borderTopRightRadius: "23px", borderBottomRightRadius: "23px"}}
-                >
-                  {"/search/researches" === pathname &&
-                  "?q=" === this.props.location.search ? (
-                    <>
-                      <ListItemIcon>
-                        <DescriptionOutlined color="primary" />
-                      </ListItemIcon>
-                      <ListItemText
-                        inset
-                        primaryTypographyProps={{
-                          style: { color: "#3f51b5", fontWeight: "500" }
-                        }}
-                        primary="ຜົນງານຄົ້ນຄວ້າ"
-                      />
-                    </>
-                  ) : (
-                    <>
-                      <ListItemIcon>
-                        <DescriptionOutlined />
-                      </ListItemIcon>
-                      <ListItemText inset primary="ຜົນງານຄົ້ນຄວ້າ" />
-                    </>
-                  )}
-                </ListItem>
-
-                {
-                  
-                  this.props.user && this.props.user.userData && this.props.user.userData.isAuth ?
                   <ListItem
-                  button
-                  component={Link}
-                  style={{borderTopRightRadius: "23px", borderBottomRightRadius: "23px"}}
-                  to={`/profile/${this.props.user.userData._id}`}
-                  selected={
-                     pathname.startsWith(`/profile/${this.props.user.userData._id}`)
-                  }
-                >
-          
-                  {pathname.startsWith(`/profile/${this.props.user.userData._id}`)? (
-                    <>
-                      <ListItemIcon>
-                        <AccountCircleOutlined color="primary" />
-                      </ListItemIcon>
-                      <ListItemText
-                        inset
-                        primaryTypographyProps={{
-                          style: { color: "#3f51b5", fontWeight: "500" }
-                        }}
-                        primary="ໂປຣຟາຍລ໌ຂອງຂ້ອຍ"
-                      />
-                    </>
-                  ) : (
-                    <>
-                      <ListItemIcon>
-                        <AccountCircleOutlined />
-                      </ListItemIcon>
-                      <ListItemText inset primary="ໂປຣຟາຍລ໌ຂອງຂ້ອຍ" />
-                    </>
-                  )}
-                </ListItem>
-                  : null
-                }
-
-                {this.props &&
-                this.props.user &&
-                this.props.user.userData &&
-                this.props.user.userData.isAdmin ? (
-                  <>
-                    <Divider style={{marginTop: "16px", marginBottom: "8px"}}/>
-                    <List
-                      component="nav"
-                      subheader={
-                        <ListSubheader
-                          style={{
-                            fontFamily: "'Noto Sans Lao UI', sans serif"
+                    style={{
+                      borderTopRightRadius: "23px",
+                      borderBottomRightRadius: "23px"
+                    }}
+                    button
+                    component={Link}
+                    to="/search/researchers?q="
+                    selected={
+                      "/search/researchers" === pathname &&
+                      "?q=" === this.props.location.search
+                    }
+                  >
+                    {"/search/researchers" === pathname &&
+                    "?q=" === this.props.location.search ? (
+                      <>
+                        <ListItemIcon>
+                          <PersonOutlineOutlined color="primary" />
+                        </ListItemIcon>
+                        <ListItemText
+                          inset
+                          primary="ນັກຄົ້ນຄວ້າ"
+                          primaryTypographyProps={{
+                            style: { color: "#3f51b5", fontWeight: "500" }
                           }}
-                          component="div"
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <ListItemIcon>
+                          <PersonOutlineOutlined />
+                        </ListItemIcon>
+                        <ListItemText inset primary="ນັກຄົ້ນຄວ້າ" />
+                      </>
+                    )}
+                  </ListItem>
+
+                  <ListItem
+                    button
+                    component={Link}
+                    to="/search/researches?q="
+                    selected={
+                      "/search/researches" === pathname &&
+                      "?q=" === this.props.location.search
+                    }
+                    style={{
+                      borderTopRightRadius: "23px",
+                      borderBottomRightRadius: "23px"
+                    }}
+                  >
+                    {"/search/researches" === pathname &&
+                    "?q=" === this.props.location.search ? (
+                      <>
+                        <ListItemIcon>
+                          <DescriptionOutlined color="primary" />
+                        </ListItemIcon>
+                        <ListItemText
+                          inset
+                          primaryTypographyProps={{
+                            style: { color: "#3f51b5", fontWeight: "500" }
+                          }}
+                          primary="ຜົນງານຄົ້ນຄວ້າ"
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <ListItemIcon>
+                          <DescriptionOutlined />
+                        </ListItemIcon>
+                        <ListItemText inset primary="ຜົນງານຄົ້ນຄວ້າ" />
+                      </>
+                    )}
+                  </ListItem>
+
+                  {this.props.user &&
+                  this.props.user.userData &&
+                  this.props.user.userData.isAuth ? (
+                    <ListItem
+                      button
+                      component={Link}
+                      style={{
+                        borderTopRightRadius: "23px",
+                        borderBottomRightRadius: "23px"
+                      }}
+                      to={`/profile/${this.props.user.userData._id}`}
+                      selected={pathname.startsWith(
+                        `/profile/${this.props.user.userData._id}`
+                      )}
+                    >
+                      {pathname.startsWith(
+                        `/profile/${this.props.user.userData._id}`
+                      ) ? (
+                        <>
+                          <ListItemIcon>
+                            <AccountCircleOutlined color="primary" />
+                          </ListItemIcon>
+                          <ListItemText
+                            inset
+                            primaryTypographyProps={{
+                              style: { color: "#3f51b5", fontWeight: "500" }
+                            }}
+                            primary="ໂປຣຟາຍລ໌ຂອງຂ້ອຍ"
+                          />
+                        </>
+                      ) : (
+                        <>
+                          <ListItemIcon>
+                            <AccountCircleOutlined />
+                          </ListItemIcon>
+                          <ListItemText inset primary="ໂປຣຟາຍລ໌ຂອງຂ້ອຍ" />
+                        </>
+                      )}
+                    </ListItem>
+                  ) : null}
+
+                  {this.props &&
+                  this.props.user &&
+                  this.props.user.userData &&
+                  this.props.user.userData.isAdmin ? (
+                    <>
+                      <Divider
+                        style={{ marginTop: "16px", marginBottom: "8px" }}
+                      />
+                      <List
+                        component="nav"
+                        subheader={
+                          <ListSubheader
+                            style={{
+                              fontFamily: "'Noto Sans Lao UI', sans serif"
+                            }}
+                            component="div"
+                          >
+                            ເຄື່ອງມືຜູ້ບໍລິຫານລະບົບ
+                          </ListSubheader>
+                        }
+                        className={classes.root}
+                      >
+                        <ListItem
+                          style={{
+                            borderTopRightRadius: "23px",
+                            borderBottomRightRadius: "23px"
+                          }}
+                          button
+                          onClick={this.handleMangeListClick}
                         >
-                          ເຄື່ອງມືຜູ້ບໍລິຫານລະບົບ
-                        </ListSubheader>
-                      }
-                      className={classes.root}
-                    >
-                      <ListItem style={{borderTopRightRadius: "23px", borderBottomRightRadius: "23px"}} button onClick={this.handleMangeListClick}>
-                        <ListItemIcon>
-                        
-
-                          <SettingsApplicationsOutlined />
-                        </ListItemIcon>
-                        <ListItemText inset primary="ຈັດການ" />
-                        {this.state.openManageToolMenu ? (
-                          <ExpandLessOutlined />
-                        ) : (
-                          <ExpandMoreOutlined />
-                        )}
-                      </ListItem>
-                      <Collapse
-                        in={this.state.openManageToolMenu}
-                        timeout="auto"
-                        unmountOnExit
-                      >
-                        <List component="div" disablePadding>
-                          <ListItem
-                          style={{borderTopRightRadius: "23px", borderBottomRightRadius: "23px"}}
-                            button
-                            component={Link}
-                            to="/admin/researchers"
-                            selected={pathname.startsWith("/admin/researchers")}
-                            className={classes.nested}
-                          >
-                            {pathname.startsWith("/admin/researchers") ? (
-                              <>
-                                <ListItemIcon>
-                                  {this.props &&
-                                  this.props.user &&
-                                  this.props.user.userRegisterationCount &&
-                                  this.props.user.userRegisterationCount > 0 ? (
-                                    <Badge
-                                      badgeContent={
-                                        this.props.user.userRegisterationCount
-                                      }
-                                      variant="dot"
-                                      color="secondary"
-                                    >
+                          <ListItemIcon>
+                            <SettingsApplicationsOutlined />
+                          </ListItemIcon>
+                          <ListItemText inset primary="ຈັດການ" />
+                          {this.state.openManageToolMenu ? (
+                            <ExpandLessOutlined />
+                          ) : (
+                            <ExpandMoreOutlined />
+                          )}
+                        </ListItem>
+                        <Collapse
+                          in={this.state.openManageToolMenu}
+                          timeout="auto"
+                          unmountOnExit
+                        >
+                          <List component="div" disablePadding>
+                            <ListItem
+                              style={{
+                                borderTopRightRadius: "23px",
+                                borderBottomRightRadius: "23px"
+                              }}
+                              button
+                              component={Link}
+                              to="/admin/researchers"
+                              selected={pathname.startsWith(
+                                "/admin/researchers"
+                              )}
+                              className={classes.nested}
+                            >
+                              {pathname.startsWith("/admin/researchers") ? (
+                                <>
+                                  <ListItemIcon>
+                                    {this.props &&
+                                    this.props.user &&
+                                    this.props.user.userRegisterationCount &&
+                                    this.props.user.userRegisterationCount >
+                                      0 ? (
+                                      <Badge
+                                        badgeContent={
+                                          this.props.user.userRegisterationCount
+                                        }
+                                        variant="dot"
+                                        color="secondary"
+                                      >
+                                        <PersonOutlineOutlined color="primary" />
+                                      </Badge>
+                                    ) : (
                                       <PersonOutlineOutlined color="primary" />
-                                    </Badge>
-                                  ) : (
-                                    <PersonOutlineOutlined color="primary" />
-                                  )}
-                                </ListItemIcon>
-                                <ListItemText
-                                  inset
-                                  primaryTypographyProps={{
-                                    style: {
-                                      color: "#3f51b5",
-                                      fontWeight: "500"
-                                    }
-                                  }}
-                                  primary="ນັກຄົ້ນຄວ້າ"
-                                />
-                              </>
-                            ) : (
-                              <>
-                                <ListItemIcon>
-                                  {this.props.user.userRegisterationCount >
-                                  0 ? (
-                                    <Badge
-                                      badgeContent={
-                                        this.props.user.userRegisterationCount
+                                    )}
+                                  </ListItemIcon>
+                                  <ListItemText
+                                    inset
+                                    primaryTypographyProps={{
+                                      style: {
+                                        color: "#3f51b5",
+                                        fontWeight: "500"
                                       }
-                                      variant="dot"
-                                      color="secondary"
-                                    >
+                                    }}
+                                    primary="ນັກຄົ້ນຄວ້າ"
+                                  />
+                                </>
+                              ) : (
+                                <>
+                                  <ListItemIcon>
+                                    {this.props.user.userRegisterationCount >
+                                    0 ? (
+                                      <Badge
+                                        badgeContent={
+                                          this.props.user.userRegisterationCount
+                                        }
+                                        variant="dot"
+                                        color="secondary"
+                                      >
+                                        <PersonOutlineOutlined />
+                                      </Badge>
+                                    ) : (
                                       <PersonOutlineOutlined />
-                                    </Badge>
-                                  ) : (
+                                    )}
+                                  </ListItemIcon>
+                                  <ListItemText inset primary="ນັກຄົ້ນຄວ້າ" />
+                                </>
+                              )}
+                            </ListItem>
+                          </List>
+                          <List component="div" disablePadding>
+                            <ListItem
+                              style={{
+                                borderTopRightRadius: "23px",
+                                borderBottomRightRadius: "23px"
+                              }}
+                              button
+                              component={Link}
+                              to="/admin/researches"
+                              selected={pathname.startsWith(
+                                "/admin/researches"
+                              )}
+                              className={classes.nested}
+                            >
+                              {pathname.startsWith("/admin/researches") ? (
+                                <>
+                                  <ListItemIcon>
+                                    <DescriptionOutlined color="primary" />
+                                  </ListItemIcon>
+                                  <ListItemText
+                                    inset
+                                    primaryTypographyProps={{
+                                      style: {
+                                        color: "#3f51b5",
+                                        fontWeight: "500"
+                                      }
+                                    }}
+                                    primary="ຜົນງານຄົ້ນຄວ້າ"
+                                  />
+                                </>
+                              ) : (
+                                <>
+                                  <ListItemIcon>
+                                    <DescriptionOutlined />
+                                  </ListItemIcon>
+                                  <ListItemText
+                                    inset
+                                    primary="ຜົນງານຄົ້ນຄວ້າ"
+                                  />
+                                </>
+                              )}
+                            </ListItem>
+                          </List>
+                        </Collapse>
+                      </List>
+
+                      <List component="nav" className={classes.root}>
+                        <ListItem
+                          style={{
+                            borderTopRightRadius: "23px",
+                            borderBottomRightRadius: "23px"
+                          }}
+                          button
+                          onClick={this.handleReportsClick}
+                        >
+                          <ListItemIcon>
+                            <PollOutlined />
+                          </ListItemIcon>
+                          <ListItemText inset primary="ລາຍງານ" />
+                          {this.state.openReportsToolMenu ? (
+                            <ExpandLessOutlined />
+                          ) : (
+                            <ExpandMoreOutlined />
+                          )}
+                        </ListItem>
+                        <Collapse
+                          in={this.state.openReportsToolMenu}
+                          timeout="auto"
+                          unmountOnExit
+                        >
+                          <List component="div" disablePadding>
+                            <ListItem
+                              button
+                              component={Link}
+                              style={{
+                                borderTopRightRadius: "23px",
+                                borderBottomRightRadius: "23px"
+                              }}
+                              to="/admin/reports/researchers/numbers"
+                              selected={pathname.startsWith(
+                                "/admin/reports/researchers"
+                              )}
+                              className={classes.nested}
+                            >
+                              {pathname.startsWith(
+                                "/admin/reports/researchers"
+                              ) ? (
+                                <>
+                                  <ListItemIcon>
+                                    <PersonOutlineOutlined color="primary" />
+                                  </ListItemIcon>
+                                  <ListItemText
+                                    inset
+                                    primaryTypographyProps={{
+                                      style: {
+                                        color: "#3f51b5",
+                                        fontWeight: "500"
+                                      }
+                                    }}
+                                    primary="ນັກຄົ້ນຄວ້າ"
+                                  />
+                                </>
+                              ) : (
+                                <>
+                                  <ListItemIcon>
                                     <PersonOutlineOutlined />
-                                  )}
-                                </ListItemIcon>
-                                <ListItemText inset primary="ນັກຄົ້ນຄວ້າ" />
-                              </>
-                            )}
-                          </ListItem>
-                        </List>
-                        <List component="div" disablePadding>
-                          <ListItem
-                          style={{borderTopRightRadius: "23px", borderBottomRightRadius: "23px"}}
-                            button
-                            component={Link}
-                            to="/admin/researches"
-                            selected={pathname.startsWith("/admin/researches")}
-                            className={classes.nested}
-                          >
-                            {pathname.startsWith("/admin/researches") ? (
-                              <>
-                                <ListItemIcon>
-                                <DescriptionOutlined color="primary" />
-                                </ListItemIcon>
-                                <ListItemText
-                                  inset
-                                  primaryTypographyProps={{
-                                    style: {
-                                      color: "#3f51b5",
-                                      fontWeight: "500"
-                                    }
-                                  }}
-                                  primary="ຜົນງານຄົ້ນຄວ້າ"
-                                />
-                              </>
-                            ) : (
-                              <>
-                                <ListItemIcon>
-                                <DescriptionOutlined />
-                                </ListItemIcon>
-                                <ListItemText inset primary="ຜົນງານຄົ້ນຄວ້າ" />
-                              </>
-                            )}
-                          </ListItem>
-                        </List>
-                      </Collapse>
-                    </List>
+                                  </ListItemIcon>
+                                  <ListItemText inset primary="ນັກຄົ້ນຄວ້າ" />
+                                </>
+                              )}
+                            </ListItem>
+                          </List>
+                          <List component="div" disablePadding>
+                            <ListItem
+                              style={{
+                                borderTopRightRadius: "23px",
+                                borderBottomRightRadius: "23px"
+                              }}
+                              button
+                              component={Link}
+                              to="/admin/reports/researches/numbers"
+                              selected={pathname.startsWith(
+                                "/admin/reports/researches"
+                              )}
+                              className={classes.nested}
+                            >
+                              {pathname.startsWith(
+                                "/admin/reports/researches"
+                              ) ? (
+                                <>
+                                  <ListItemIcon>
+                                    <DescriptionOutlined color="primary" />
+                                  </ListItemIcon>
+                                  <ListItemText
+                                    inset
+                                    primaryTypographyProps={{
+                                      style: {
+                                        color: "#3f51b5",
+                                        fontWeight: "500"
+                                      }
+                                    }}
+                                    primary="ຜົນງານຄົ້ນຄວ້າ"
+                                  />
+                                </>
+                              ) : (
+                                <>
+                                  <ListItemIcon>
+                                    <DescriptionOutlined />
+                                  </ListItemIcon>
+                                  <ListItemText
+                                    inset
+                                    primary="ຜົນງານຄົ້ນຄວ້າ"
+                                  />
+                                </>
+                              )}
+                            </ListItem>
+                          </List>
+                        </Collapse>
+                      </List>
+                    </>
+                  ) : null}
+                  {
+                    /*  collapse component */
+                    //     <ListItem button onClick={this.handleClick}>
+                    //   <ListItemIcon>
+                    //     <InboxOutlined />
+                    //   </ListItemIcon>
+                    //   <ListItemText inset primary="Inbox" />
+                    //   {this.state.openList ? (
+                    //     <ExpandLessOutlined />
+                    //   ) : (
+                    //     <ExpandMoreOutlined />
+                    //   )}
+                    // </ListItem>
+                    // <Collapse in={this.state.openList} timeout="auto" unmountOnExit>
+                    //   <List component="div" disablePadding>
+                    //     <ListItem button className={classes.nested}>
+                    //       <ListItemIcon>
+                    //         <InboxOutlined />
+                    //       </ListItemIcon>
+                    //       <ListItemText inset primary="Starred" />
+                    //     </ListItem>
+                    //   </List>
+                    // </Collapse>
+                  }
+                </List>
+              </Drawer>
+            </Hidden>
 
+            <Hidden smUp>
+              <Drawer
+                className={classes.drawer}
+                variant="temporary"
+                anchor="left"
+                open={open}
+                classes={{
+                  paper: classes.drawerPaper
+                }}
+                style={{
+                  border: "0 !important",
+                }}
+                onClose={this.handleDrawerClose}
+              >
+              <div className={classes.drawerHeader}>
+              <IconButton onClick={this.handleDrawerClose}>
+                {theme.direction === 'rtl' ? <ChevronRightOutlined /> : <ChevronLeftOutlined />}
+              </IconButton>
+            </div>
+            <Divider />
 
-
-                    <List
-                      component="nav"
-                      
-                      className={classes.root}
+                <List>
+                  {this.props &&
+                  this.props.user &&
+                  this.props.user.userData &&
+                  this.props.user.userData.isAuth ? (
+                    <ListItem
+                      button
+                      component={Link}
+                      to="/"
+                      selected={"/" === pathname}
+                      style={{
+             
+                      }}
+                      onClick={this.handleDrawerClose}
                     >
-                      <ListItem style={{borderTopRightRadius: "23px", borderBottomRightRadius: "23px"}} button onClick={this.handleReportsClick}>
+                      {"/" === pathname ? (
+                        <>
+                          <ListItemIcon>
+                            <HomeOutlined color="primary" />
+                          </ListItemIcon>
+                          <ListItemText
+                            primaryTypographyProps={{
+                              style: { color: "#3f51b5", fontWeight: "500" }
+                            }}
+                            inset
+                            primary="ຫນ້າຫລັກ"
+                          />
+                        </>
+                      ) : (
+                        <>
+                          <ListItemIcon>
+                            <HomeOutlined />
+                          </ListItemIcon>
+                          <ListItemText inset primary="ຫນ້າຫລັກ" />
+                        </>
+                      )}
+                    </ListItem>
+                  ) : null}
+                  <ListItem
+                    button
+                    onClick={this.handleDrawerClose}
+                    component={Link}
+                    to="/search"
+                    selected={
+                      pathname.startsWith("/search") &&
+                      !("?q=" === this.props.location.search)
+                    }
+                    style={{
+      
+                    }}
+                  >
+                    {pathname.startsWith("/search") &&
+                    !("?q=" === this.props.location.search) ? (
+                      <>
                         <ListItemIcon>
-                        
-
-                          <PollOutlined />
+                          <SearchOutlined color="primary" />
                         </ListItemIcon>
-                        <ListItemText inset primary="ລາຍງານ" />
-                        {this.state.openReportsToolMenu ? (
-                          <ExpandLessOutlined />
-                        ) : (
-                          <ExpandMoreOutlined />
-                        )}
-                      </ListItem>
-                      <Collapse
-                        in={this.state.openReportsToolMenu}
-                        timeout="auto"
-                        unmountOnExit
-                      >
-                        <List component="div" disablePadding>
-                          <ListItem
-                            button
-                            component={Link}
-                            style={{borderTopRightRadius: "23px", borderBottomRightRadius: "23px"}}
-                            to="/admin/reports/researchers/numbers"
-                            selected={pathname.startsWith("/admin/reports/researchers")}
-                            className={classes.nested}
-                          >
-                            {pathname.startsWith("/admin/reports/researchers") ? (
-                              <>
-                                <ListItemIcon>
-                                <PersonOutlineOutlined color="primary" />
-                                </ListItemIcon>
-                                <ListItemText
-                                  inset
-                                  primaryTypographyProps={{
-                                    style: {
-                                      color: "#3f51b5",
-                                      fontWeight: "500"
-                                    }
-                                  }}
-                                  primary="ນັກຄົ້ນຄວ້າ"
-                                />
-                              </>
-                            ) : (
-                              <>
-                                <ListItemIcon>
-                                <PersonOutlineOutlined />
-                                </ListItemIcon>
-                                <ListItemText inset primary="ນັກຄົ້ນຄວ້າ" />
-                              </>
-                            )}
-                          </ListItem>
-                        </List>
-                        <List component="div" disablePadding>
-                          <ListItem
-                          style={{borderTopRightRadius: "23px", borderBottomRightRadius: "23px"}}
-                            button
-                            component={Link}
-                            to="/admin/reports/researches/numbers"
-                            selected={pathname.startsWith("/admin/reports/researches")}
-                            className={classes.nested}
-                          >
-                            {pathname.startsWith("/admin/reports/researches") ? (
-                              <>
-                                <ListItemIcon>
-                                <DescriptionOutlined color="primary" />
-                                </ListItemIcon>
-                                <ListItemText
-                                  inset
-                                  primaryTypographyProps={{
-                                    style: {
-                                      color: "#3f51b5",
-                                      fontWeight: "500"
-                                    }
-                                  }}
-                                  primary="ຜົນງານຄົ້ນຄວ້າ"
-                                />
-                              </>
-                            ) : (
-                              <>
-                                <ListItemIcon>
-                                <DescriptionOutlined />
-                                </ListItemIcon>
-                                <ListItemText inset primary="ຜົນງານຄົ້ນຄວ້າ" />
-                              </>
-                            )}
-                          </ListItem>
-                        </List>
-                      </Collapse>
-                    </List>
-                  </>
-                ) : null}
-                {
-                  /*  collapse component */
-                  //     <ListItem button onClick={this.handleClick}>
-                  //   <ListItemIcon>
-                  //     <InboxOutlined />
-                  //   </ListItemIcon>
-                  //   <ListItemText inset primary="Inbox" />
-                  //   {this.state.openList ? (
-                  //     <ExpandLessOutlined />
-                  //   ) : (
-                  //     <ExpandMoreOutlined />
-                  //   )}
-                  // </ListItem>
-                  // <Collapse in={this.state.openList} timeout="auto" unmountOnExit>
-                  //   <List component="div" disablePadding>
-                  //     <ListItem button className={classes.nested}>
-                  //       <ListItemIcon>
-                  //         <InboxOutlined />
-                  //       </ListItemIcon>
-                  //       <ListItemText inset primary="Starred" />
-                  //     </ListItem>
-                  //   </List>
-                  // </Collapse>
-                }
-              </List>
-            </Drawer>
+                        <ListItemText
+                          primaryTypographyProps={{
+                            style: { color: "#3f51b5", fontWeight: "500" }
+                          }}
+                          inset
+                          primary="ຄົ້ນຫາ"
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <ListItemIcon>
+                          <SearchOutlined />
+                        </ListItemIcon>
+                        <ListItemText inset primary="ຄົ້ນຫາ" />
+                      </>
+                    )}
+                  </ListItem>
+                  <ListItem
+                    style={{
+            
+                    }}
+                    onClick={this.handleDrawerClose}
+                    button
+                    component={Link}
+                    to="/search/researchers?q="
+                    selected={
+                      "/search/researchers" === pathname &&
+                      "?q=" === this.props.location.search
+                    }
+                  >
+                    {"/search/researchers" === pathname &&
+                    "?q=" === this.props.location.search ? (
+                      <>
+                        <ListItemIcon>
+                          <PersonOutlineOutlined color="primary" />
+                        </ListItemIcon>
+                        <ListItemText
+                          inset
+                          primary="ນັກຄົ້ນຄວ້າ"
+                          primaryTypographyProps={{
+                            style: { color: "#3f51b5", fontWeight: "500" }
+                          }}
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <ListItemIcon>
+                          <PersonOutlineOutlined />
+                        </ListItemIcon>
+                        <ListItemText inset primary="ນັກຄົ້ນຄວ້າ" />
+                      </>
+                    )}
+                  </ListItem>
 
+                  <ListItem
+                  onClick={this.handleDrawerClose}
+                    button
+                    component={Link}
+                    to="/search/researches?q="
+                    selected={
+                      "/search/researches" === pathname &&
+                      "?q=" === this.props.location.search
+                    }
+                    style={{
+       
+                    }}
+                  >
+                    {"/search/researches" === pathname &&
+                    "?q=" === this.props.location.search ? (
+                      <>
+                        <ListItemIcon>
+                          <DescriptionOutlined color="primary" />
+                        </ListItemIcon>
+                        <ListItemText
+                          inset
+                          primaryTypographyProps={{
+                            style: { color: "#3f51b5", fontWeight: "500" }
+                          }}
+                          primary="ຜົນງານຄົ້ນຄວ້າ"
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <ListItemIcon>
+                          <DescriptionOutlined />
+                        </ListItemIcon>
+                        <ListItemText inset primary="ຜົນງານຄົ້ນຄວ້າ" />
+                      </>
+                    )}
+                  </ListItem>
+
+                  {this.props.user &&
+                  this.props.user.userData &&
+                  this.props.user.userData.isAuth ? (
+                    <ListItem
+                      button
+                      component={Link}
+                      onClick={this.handleDrawerClose}
+                      style={{
+     
+                      }}
+                      to={`/profile/${this.props.user.userData._id}`}
+                      selected={pathname.startsWith(
+                        `/profile/${this.props.user.userData._id}`
+                      )}
+                    >
+                      {pathname.startsWith(
+                        `/profile/${this.props.user.userData._id}`
+                      ) ? (
+                        <>
+                          <ListItemIcon>
+                            <AccountCircleOutlined color="primary" />
+                          </ListItemIcon>
+                          <ListItemText
+                            inset
+                            primaryTypographyProps={{
+                              style: { color: "#3f51b5", fontWeight: "500" }
+                            }}
+                            primary="ໂປຣຟາຍລ໌ຂອງຂ້ອຍ"
+                          />
+                        </>
+                      ) : (
+                        <>
+                          <ListItemIcon>
+                            <AccountCircleOutlined />
+                          </ListItemIcon>
+                          <ListItemText inset primary="ໂປຣຟາຍລ໌ຂອງຂ້ອຍ" />
+                        </>
+                      )}
+                    </ListItem>
+                  ) : null}
+
+                  {this.props &&
+                  this.props.user &&
+                  this.props.user.userData &&
+                  this.props.user.userData.isAdmin ? (
+                    <>
+                      <Divider
+                        style={{ marginTop: "16px", marginBottom: "8px" }}
+                      />
+                      <List
+                        component="nav"
+                        subheader={
+                          <ListSubheader
+                            style={{
+                              fontFamily: "'Noto Sans Lao UI', sans serif"
+                            }}
+                            component="div"
+                          >
+                            ເຄື່ອງມືຜູ້ບໍລິຫານລະບົບ
+                          </ListSubheader>
+                        }
+                        className={classes.root}
+                      >
+                        <ListItem
+                          style={{
+       
+                          }}
+                          button
+                          onClick={this.handleMangeListClick}
+                        >
+                          <ListItemIcon>
+                            <SettingsApplicationsOutlined />
+                          </ListItemIcon>
+                          <ListItemText inset primary="ຈັດການ" />
+                          {this.state.openManageToolMenu ? (
+                            <ExpandLessOutlined />
+                          ) : (
+                            <ExpandMoreOutlined />
+                          )}
+                        </ListItem>
+                        <Collapse
+                          in={this.state.openManageToolMenu}
+                          timeout="auto"
+                          unmountOnExit
+                        >
+                          <List component="div" disablePadding>
+                            <ListItem
+                              style={{
+           
+                              }}
+                              button
+                              component={Link}
+                              to="/admin/researchers"
+                              selected={pathname.startsWith(
+                                "/admin/researchers"
+                              )}
+                              className={classes.nested}
+                              onClick={this.handleDrawerClose}
+                            >
+                              {pathname.startsWith("/admin/researchers") ? (
+                                <>
+                                  <ListItemIcon>
+                                    {this.props &&
+                                    this.props.user &&
+                                    this.props.user.userRegisterationCount &&
+                                    this.props.user.userRegisterationCount >
+                                      0 ? (
+                                      <Badge
+                                        badgeContent={
+                                          this.props.user.userRegisterationCount
+                                        }
+                                        variant="dot"
+                                        color="secondary"
+                                      >
+                                        <PersonOutlineOutlined color="primary" />
+                                      </Badge>
+                                    ) : (
+                                      <PersonOutlineOutlined color="primary" />
+                                    )}
+                                  </ListItemIcon>
+                                  <ListItemText
+                                    inset
+                                    primaryTypographyProps={{
+                                      style: {
+                                        color: "#3f51b5",
+                                        fontWeight: "500"
+                                      }
+                                    }}
+                                    primary="ນັກຄົ້ນຄວ້າ"
+                                  />
+                                </>
+                              ) : (
+                                <>
+                                  <ListItemIcon>
+                                    {this.props.user.userRegisterationCount >
+                                    0 ? (
+                                      <Badge
+                                        badgeContent={
+                                          this.props.user.userRegisterationCount
+                                        }
+                                        variant="dot"
+                                        color="secondary"
+                                      >
+                                        <PersonOutlineOutlined />
+                                      </Badge>
+                                    ) : (
+                                      <PersonOutlineOutlined />
+                                    )}
+                                  </ListItemIcon>
+                                  <ListItemText inset primary="ນັກຄົ້ນຄວ້າ" />
+                                </>
+                              )}
+                            </ListItem>
+                          </List>
+                          <List component="div" disablePadding>
+                            <ListItem
+                              style={{
+                         
+                              }}
+                              onClick={this.handleDrawerClose}
+                              button
+                              component={Link}
+                              to="/admin/researches"
+                              selected={pathname.startsWith(
+                                "/admin/researches"
+                              )}
+                              className={classes.nested}
+                            >
+                              {pathname.startsWith("/admin/researches") ? (
+                                <>
+                                  <ListItemIcon>
+                                    <DescriptionOutlined color="primary" />
+                                  </ListItemIcon>
+                                  <ListItemText
+                                    inset
+                                    primaryTypographyProps={{
+                                      style: {
+                                        color: "#3f51b5",
+                                        fontWeight: "500"
+                                      }
+                                    }}
+                                    primary="ຜົນງານຄົ້ນຄວ້າ"
+                                  />
+                                </>
+                              ) : (
+                                <>
+                                  <ListItemIcon>
+                                    <DescriptionOutlined />
+                                  </ListItemIcon>
+                                  <ListItemText
+                                    inset
+                                    primary="ຜົນງານຄົ້ນຄວ້າ"
+                                  />
+                                </>
+                              )}
+                            </ListItem>
+                          </List>
+                        </Collapse>
+                      </List>
+
+                      <List component="nav" className={classes.root}>
+                        <ListItem
+                          style={{
+               
+                          }}
+                          button
+                          onClick={this.handleReportsClick}
+                        >
+                          <ListItemIcon>
+                            <PollOutlined />
+                          </ListItemIcon>
+                          <ListItemText inset primary="ລາຍງານ" />
+                          {this.state.openReportsToolMenu ? (
+                            <ExpandLessOutlined />
+                          ) : (
+                            <ExpandMoreOutlined />
+                          )}
+                        </ListItem>
+                        <Collapse
+                          in={this.state.openReportsToolMenu}
+                          timeout="auto"
+                          unmountOnExit
+                        >
+                          <List component="div" disablePadding>
+                            <ListItem
+                              button
+                              component={Link}
+                              style={{
+            
+                              }}
+                              onClick={this.handleDrawerClose}
+                              to="/admin/reports/researchers/numbers"
+                              selected={pathname.startsWith(
+                                "/admin/reports/researchers"
+                              )}
+                              className={classes.nested}
+                            >
+                              {pathname.startsWith(
+                                "/admin/reports/researchers"
+                              ) ? (
+                                <>
+                                  <ListItemIcon>
+                                    <PersonOutlineOutlined color="primary" />
+                                  </ListItemIcon>
+                                  <ListItemText
+                                    inset
+                                    primaryTypographyProps={{
+                                      style: {
+                                        color: "#3f51b5",
+                                        fontWeight: "500"
+                                      }
+                                    }}
+                                    primary="ນັກຄົ້ນຄວ້າ"
+                                  />
+                                </>
+                              ) : (
+                                <>
+                                  <ListItemIcon>
+                                    <PersonOutlineOutlined />
+                                  </ListItemIcon>
+                                  <ListItemText inset primary="ນັກຄົ້ນຄວ້າ" />
+                                </>
+                              )}
+                            </ListItem>
+                          </List>
+                          <List component="div" disablePadding>
+                            <ListItem
+                              style={{
+                         
+                              }}
+                              button
+                              component={Link}
+                              to="/admin/reports/researches/numbers"
+                              selected={pathname.startsWith(
+                                "/admin/reports/researches"
+                              )}
+                              className={classes.nested}
+                              onClick={this.handleDrawerClose}
+                            >
+                              {pathname.startsWith(
+                                "/admin/reports/researches"
+                              ) ? (
+                                <>
+                                  <ListItemIcon>
+                                    <DescriptionOutlined color="primary" />
+                                  </ListItemIcon>
+                                  <ListItemText
+                                    inset
+                                    primaryTypographyProps={{
+                                      style: {
+                                        color: "#3f51b5",
+                                        fontWeight: "500"
+                                      }
+                                    }}
+                                    primary="ຜົນງານຄົ້ນຄວ້າ"
+                                  />
+                                </>
+                              ) : (
+                                <>
+                                  <ListItemIcon>
+                                    <DescriptionOutlined />
+                                  </ListItemIcon>
+                                  <ListItemText
+                                    inset
+                                    primary="ຜົນງານຄົ້ນຄວ້າ"
+                                  />
+                                </>
+                              )}
+                            </ListItem>
+                          </List>
+                        </Collapse>
+                      </List>
+                    </>
+                  ) : null}
+                  {
+                    /*  collapse component */
+                    //     <ListItem button onClick={this.handleClick}>
+                    //   <ListItemIcon>
+                    //     <InboxOutlined />
+                    //   </ListItemIcon>
+                    //   <ListItemText inset primary="Inbox" />
+                    //   {this.state.openList ? (
+                    //     <ExpandLessOutlined />
+                    //   ) : (
+                    //     <ExpandMoreOutlined />
+                    //   )}
+                    // </ListItem>
+                    // <Collapse in={this.state.openList} timeout="auto" unmountOnExit>
+                    //   <List component="div" disablePadding>
+                    //     <ListItem button className={classes.nested}>
+                    //       <ListItemIcon>
+                    //         <InboxOutlined />
+                    //       </ListItemIcon>
+                    //       <ListItemText inset primary="Starred" />
+                    //     </ListItem>
+                    //   </List>
+                    // </Collapse>
+                  }
+                </List>
+              </Drawer>
+            </Hidden>
             {renderMenu}
             {renderMobileMenu()}
           </div>
@@ -1357,7 +1928,7 @@ class Layout extends Component {
           })}
           style={{ padding: 0 }}
         >
-          <div className="page_container" style={{ marginLeft: drawerWidth,  }}>
+          <div className="page_container" style={{ marginLeft: drawerWidth }}>
             {this.props.children}
           </div>
         </main>
