@@ -9,7 +9,8 @@ import {
   Divider,
   Button,
   Typography,
-  LinearProgress
+  LinearProgress,
+  CircularProgress
 } from "@material-ui/core";
 
 import {
@@ -213,15 +214,13 @@ const SuggestedToFollowCard = ({
                   </Grid>
                 </Grid>
         </div>
-        : <div style={{ margin: "20px" }}>
-        <Typography variant="inherit" align="center">
-          ຍັງບໍ່ມີຜູ້ຕິດຕາມ
-        </Typography>
+        : <div style={{ margin: "20px", textAlign: "center", maxWidth:"460px"  }}>
+        <CircularProgress  />
       </div>}
     </div>
   );
   const renderItems = () => (
-    <div>
+    <div style={{maxWidth: "460px"}}>
       
       <Paper style={{ boxShadow: "none", border: "1px solid #d8d8d8", marginTop: "24px" }}>
       <Grid container style={{padding: "16px", paddingBottom: 0}}>

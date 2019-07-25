@@ -165,11 +165,12 @@ class Feed extends Component {
   render() {
     return (
       <div>
+      {console.log(this.props)}
         <Grid container>
-          <Grid item xs sm lg={2} md />
+          <Grid item xs sm lg md />
           <Grid item xs={11} sm={11} lg={9} md={11}>
             <Grid container spacing={32}>
-              <Grid item xs={12} lg={7} sm={12} md={6} style={{}}>
+              <Grid item xs={12} lg={7} sm={12} md={6}>
                 <FeedCard
                   userResearch={
                     this.props.user && this.props.research.feed
@@ -187,7 +188,7 @@ class Feed extends Component {
                 />
               </Grid>
               <Hidden smDown>
-              <Grid item xs lg sm md>
+              <Grid item xs lg sm md >
                 <SuggestionsCard
                   userData={this.props.user.userData}
                   userFollower={this.props.research.followSuggestions}

@@ -2608,6 +2608,7 @@ app.get("/api/researchers/get_suggested_user", auth, (req, res) => {
 
     User.find({
       _id: { $nin: followings },
+      "affiliation.department": doc.affiliation.department,
       emailIsVerified: true,
       accountIsVerified: true,
       active: true
@@ -3623,28 +3624,18 @@ app.get("/api/research/download/:id&:userId&:researchId", (req, res) => {
 app.get(
   "/api/research/download/citation/:citation&:userId&:researchId&:researchTitle",
   (req, res) => {
-    let text_ready = "";
+    var text_ready = req.params.citation;
 
-    let i = 1
-    do {
-      text_ready.concat(`.MuiDrawer-paperAnchorDockedLeft-${i} {
-        border: 0 !important
-      }`)
-      i++
-    } while (i < 8000)
+    res.writeHead(200, {
+      "Content-Type": "application/force-download",
+      "Content-disposition":
+        "attachment; filename=" +
+        "citation_for_" +
+        req.params.researchTitle.trim() +
+        ".txt"
+    });
 
-    if (i < 8000) {
-      res.writeHead(200, {
-        "Content-Type": "application/force-download",
-        "Content-disposition":
-          "attachment; filename=" +
-          "citation_for_" +
-          req.params.researchTitle.trim() +
-          ".txt"
-      });
-  
-      res.end(text_ready);
-    }
+    res.end(text_ready);
 
     Research.findOneAndUpdate(
       { _id: mongoose.Types.ObjectId(req.params.researchId) },
@@ -4162,5 +4153,7 @@ app.get("/api/researchers/list_for_suggestions", (req, res) => {
 const port = process.env.PORT || 3002;
 
 app.listen(port, () => {
-  console.log(`Server Running at ${port}`);  
+  console.log(`Server Running at ${port}`);
+ 
+  
 });

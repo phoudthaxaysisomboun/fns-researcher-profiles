@@ -325,440 +325,443 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
   };
 
   const renderItems = () => (
-    <Grid item xs={12}>
-      {userResearch ? (
-        <div>
-          {userResearch.map(researches => (
+    userResearch ? (
+      <Grid item xs={12}>
+      <div style={{ float: "right", }} >
+      {userResearch.map(researches => (
+        <>
+          <Paper
+            style={{
+              boxShadow: "none",
+              border: "1px solid #d8d8d8",
+              marginTop: "24px",
+              padding: "16px",
+              paddingBottom: 0,
+              maxWidth: "700px"
+            }}
+          >
+            <Grid container>
+              <Grid
+                item
+                style={{
+                  marginRight: "4px",
+                  marginBottom: "8px",
+                  width: "52px"
+                }}
+              >
+                {researches.uploader.profileImage &&
+                researches.uploader.profileImage[0] &&
+                researches.uploader.profileImage[0].name ? (
+                  <ReactLink
+                    to={`/profile/${researches.uploader._id}`}
+                    style={{ color: "inherit", textDecoration: "none" }}
+                  >
+                    <Avatar
+                      style={{
+                        width: "46px",
+                        height: "46px",
+                        borderStyle: "solid",
+                        borderColor: "#CFCECE",
+                        borderWidth: "1px"
+                      }}
+                      alt="profile image"
+                      src={`${UPLOADS_SERVER}/images/${
+                        researches.uploader.profileImage[0].name
+                      }`}
+                    />
+                  </ReactLink>
+                ) : (
+                  <ReactLink
+                    to={`/profile/${researches.uploader._id}`}
+                    style={{ color: "inherit", textDecoration: "none" }}
+                  >
+                    <Avatar
+                      style={{
+                        width: "46px",
+                        height: "46px",
+                        backgroundColor: `${`${researches.uploader.name}${
+                          researches.uploader.lastname
+                        }`.toColor()}`,
+                        fontFamily: "'Noto Sans Lao UI', sans serif",
+                        fontWeight: "normal",
+                        fontSize: "8px"
+                      }}
+                      alt="profile image"
+                    >
+                      <Typography variant="inherit">
+                        {`${researches.uploader.name.charAt(
+                          0
+                        )}${researches.uploader.lastname.charAt(0)}`}
+                      </Typography>
+                    </Avatar>
+                  </ReactLink>
+                )}
+              </Grid>
+              <Grid item xs>
+                <ReactLink
+                  to={`/profile/${researches.uploader._id}`}
+                  style={{ color: "inherit", textDecoration: "none" }}
+                >
+                  <Typography
+                    variant="inherit"
+                    style={{
+                      display: "inline",
+                      fontWeight: 500,
+                      fontSize: "18px"
+                    }}
+                  >
+                    {researches.uploader.prefix} {researches.uploader.name}{" "}
+                    {researches.uploader.lastname}
+                  </Typography>
+                </ReactLink>{" "}
+                <Typography
+                  variant="body1"
+                  style={{
+                    display: "inline",
+                    fontWeight: "400",
+                    color: "rgb(140, 140, 140)",
+                    fontSize: "16px",
+                    fontFamily: "'Noto Sans Lao UI', sans serif"
+                  }}
+                >
+                  ໄດ້ເພີ່ມຜົນງານການຄົ້ນຄວ້າ
+                </Typography>
+                {showTime(researches.createdAt)}
+              </Grid>
+            </Grid>
+            <Paper
+              style={{
+                boxShadow: "none",
+                border: "1px solid #d8d8d8",
+                marginTop: "0"
+              }}
+            >
+              <Grid container style={{ padding: "8px" }} wrap="nowrap">
+                <Grid
+                  item
+                  xs={6}
+                  style={{ paddingTop: "8px", paddingLeft: "8px" }}
+                >
+                  <Typography
+                    
+                    style={{
+                      fontFamily: "'Roboto', sans-serif",
+                      fontSize: "12px",
+                      letterSpacing: "1.5 px",
+                      fontWeight: "600",
+                      color: "#00695C"
+                    }}
+                  >
+                    {moment(researches.date).format("DD/MM/YYYY")}
+                  </Typography>
+                </Grid>
+                <Grid
+                  item
+                  xs={6}
+                  align="right"
+                  style={{
+                    paddingRight: "4px",
+                    objectFit: "contain"
+                  }}
+                >
+                  {isOwner ? (
+                    <IconButton style={{ padding: 0 }}>
+                      <MoreVertOutlined fontSize="small" />
+                    </IconButton>
+                  ) : null}
+                </Grid>
+              </Grid>
+              <Grid
+                container
+                style={{ paddingLeft: "16px", paddingRight: "16px" }}
+              >
+                <Grid item xs zeroMinWidth style={{ paddingRight: "16px" }}>
+                  <ReactLink
+                    to={`/research/${researches._id}`}
+                    style={{ textDecoration: "none", color: "inherit" }}
+                  >
+                    <LinesEllipsis
+                      text={researches.title}
+                      maxLine="2"
+                      ellipsis="..."
+                      trimRight
+                      basedOn="letters"
+                      style={{ fontSize: "20px", fontWeight: "500" }}
+                    />
+                  </ReactLink>
+                  <Grid container />
+                  <Grid
+                    container
+                    style={{ marginTop: "4px", marginBottom: "8px" }}
+                  >
+                    <div style={styles.chip}>
+                      {researches.researchType.name}
+                    </div>
+
+                    {researches.files[0] ? (
+                      <div style={styles.chipSecondary}>
+                        ມີເອກກະສານໃຫ້ອ່ານ
+                      </div>
+                    ) : null}
+
+                    <div style={styles.chipSecondary}>
+                      {researches.publicationType.name}
+                    </div>
+                  </Grid>
+                </Grid>
+                {true ? null : (
+                  <Grid item align="right">
+                    <img
+                      style={{
+                        marginRight: "4px",
+                        borderRadius: "6px",
+                        objectFit: "cover"
+                      }}
+                      src="http://hespokestyle.com/wp-content/uploads/2017/04/navy-cotton-linen-blazer-tan-chinos-polo-shirt-mens-spring-fashion-trends-8-800x533.jpg"
+                      alt="nothing"
+                      width={80}
+                      height={80}
+                    />
+                  </Grid>
+                )}
+                <Grid container style={{}}>
+                  {researches.author.map((value, item, array) => (
+                    <>
+                      <Grid
+                        item
+                        style={{
+                          marginRight: "4px",
+                          marginBottom: "8px"
+                        }}
+                      >
+                        {value.profileImage &&
+                        value.profileImage[0] &&
+                        value.profileImage[0].name ? (
+                          <Avatar
+                            style={{
+                              width: "18px",
+                              height: "18px",
+                              borderStyle: "solid",
+                              borderColor: "#CFCECE",
+                              borderWidth: "1px"
+                            }}
+                            alt="profile image"
+                            src={`${UPLOADS_SERVER}/images/${
+                              value.profileImage[0].name
+                            }`}
+                          />
+                        ) : (
+                          <Avatar
+                            style={{
+                              width: "18px",
+                              height: "18px",
+                              backgroundColor: `${`${value.name}${
+                                value.lastname
+                              }`.toColor()}`,
+                              fontFamily: "'Noto Sans Lao UI', sans serif",
+                              fontWeight: "normal",
+                              fontSize: "8px"
+                            }}
+                            alt="profile image"
+                          >
+                            <Typography variant="inherit">
+                              {`${value.name.charAt(
+                                0
+                              )}${value.lastname.charAt(0)}`}
+                            </Typography>
+                          </Avatar>
+                        )}
+                      </Grid>
+                      <Grid item>
+                        <Typography
+                          variant="inherit"
+                          style={{
+                            height: "18px",
+                            lineHeight: "18px",
+                            marginBottom: "8px",
+                            fontWeight: "500",
+                            marginRight: "4px"
+                          }}
+                        >
+                          {`${value.name} ${value.lastname}`}{" "}
+                          {item !== array.length - 1 ? " • " : null}
+                        </Typography>
+                      </Grid>
+                    </>
+                  ))}
+                </Grid>
+                <Grid
+                  container
+                  style={{ marginTop: "4px", marginBottom: "4px" }}
+                >
+                  <Grid item>
+                    <LinesEllipsis
+                      text={researches.abstract}
+                      maxLine="3"
+                      ellipsis="..."
+                      trimRight
+                      basedOn="words"
+                      style={{
+                        fontSize: "16px",
+                        color: "#666666",
+                        fontWeight: "normal"
+                      }}
+                    />
+                  </Grid>
+                </Grid>
+                <Grid
+                  container
+                  style={{ marginTop: "4px", marginBottom: "16px" }}
+                  alignItems="flex-end"
+                >
+                  <Grid item xs={6}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      component={ReactLink}
+                      to={`/research/${researches._id}`}
+                    >
+                      ອ່ານ
+                    </Button>
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Paper>
+            <Grid
+              container
+              style={{ marginTop: "4px", marginBottom: "4px" }}
+              alignItems="center"
+            >
+              <Grid item xs={6} align="left" alignItems="flex-start">
+                {isAuth
+                  ? renderLikeButton(researches._id, researches.likes)
+                  : null}
+
+                <Button
+                  size="small"
+                  style={{
+                    color: "#686868",
+                    minWidth: "14px",
+                    height: "36px",
+                    borderRadius: "22px",
+                    textDecoration:"none"
+                  }}
+                  onClick={()=>comment(researches._id)}
+                >
+                  {" "}
+                  <ModeCommentOutlined fontSize="small" />
+                  {researches.comments.length > 0 ? (
+                    <div
+                      style={{
+                        fontSize: "13.5px",
+                        color: "#757575",
+                        fontFamily: "'Roboto', sans serif",
+                        display: "inline"
+                      }}
+                    >
+                      &nbsp;
+                      <NumberFormat
+                        value={
+                          researches.comments
+                            ? researches.comments.length
+                            : null
+                        }
+                        displayType={"text"}
+                        thousandSeparator={true}
+                      />
+                      &nbsp;
+                    </div>
+                  ) : null}
+                </Button>
+                <Button
+                  size="small"
+                  style={{
+                    color: "#686868",
+                    minWidth: "14px",
+                    height: "36px",
+                    borderRadius: "22px"
+                  }}
+                >
+                  {" "}
+                  <ReplyOutlined fontSize="small" />
+                  {researches.shares && researches.shares.length ? (
+                    <div
+                      style={{
+                        fontSize: "13.5px",
+                        color: "#757575",
+                        fontFamily: "'Roboto', sans serif",
+                        display: "inline"
+                      }}
+                    >
+                      &nbsp;
+                      <NumberFormat
+                        value={
+                          researches.shares && researches.shares.length > 0 ? researches.shares.length : null
+                        }
+                        displayType={"text"}
+                        thousandSeparator={true}
+                      />
+                      &nbsp;
+                    </div>
+                  ) : null}
+                </Button>
+              </Grid>
+              <Grid item xs={6} align="right" alignItems="flex-end">
+                <span style={{ fontSize: "13.5px", color: "#757575" }}>
+                  ອ່ານ
+                </span>
+                <div
+                  style={{
+                    fontSize: "13.5px",
+                    color: "#757575",
+                    fontFamily: "'Roboto', sans serif",
+                    display: "inline",
+                    fontWeight: "500"
+                  }}
+                >
+                  &nbsp;
+                  <NumberFormat
+                    value={researches.reads ? researches.reads.length : 0}
+                    displayType={"text"}
+                    thousandSeparator={true}
+                  />
+                  &nbsp;
+                </div>
+                <span style={{ fontSize: "13.5px", color: "#757575" }}>
+                  ຄັ້ງ
+                </span>
+              </Grid>
+            </Grid>
+          </Paper>
+        </>
+      ))}
+      <div style={{ height: "24px" }} />
+    </div>
+        </Grid>
+      ) : (
+        <div style={{ float: "right"}}>
+      
             <>
+            <Grid container style={{}}>
               <Paper
                 style={{
                   boxShadow: "none",
                   border: "1px solid #d8d8d8",
                   marginTop: "24px",
                   padding: "16px",
-                  paddingBottom: 0
+                  paddingBottom: 0,
+                  
                 }}
               >
-                <Grid container>
-                  <Grid
-                    item
-                    style={{
-                      marginRight: "4px",
-                      marginBottom: "8px",
-                      width: "52px"
-                    }}
-                  >
-                    {researches.uploader.profileImage &&
-                    researches.uploader.profileImage[0] &&
-                    researches.uploader.profileImage[0].name ? (
-                      <ReactLink
-                        to={`/profile/${researches.uploader._id}`}
-                        style={{ color: "inherit", textDecoration: "none" }}
-                      >
-                        <Avatar
-                          style={{
-                            width: "46px",
-                            height: "46px",
-                            borderStyle: "solid",
-                            borderColor: "#CFCECE",
-                            borderWidth: "1px"
-                          }}
-                          alt="profile image"
-                          src={`${UPLOADS_SERVER}/images/${
-                            researches.uploader.profileImage[0].name
-                          }`}
-                        />
-                      </ReactLink>
-                    ) : (
-                      <ReactLink
-                        to={`/profile/${researches.uploader._id}`}
-                        style={{ color: "inherit", textDecoration: "none" }}
-                      >
-                        <Avatar
-                          style={{
-                            width: "46px",
-                            height: "46px",
-                            backgroundColor: `${`${researches.uploader.name}${
-                              researches.uploader.lastname
-                            }`.toColor()}`,
-                            fontFamily: "'Noto Sans Lao UI', sans serif",
-                            fontWeight: "normal",
-                            fontSize: "8px"
-                          }}
-                          alt="profile image"
-                        >
-                          <Typography variant="inherit">
-                            {`${researches.uploader.name.charAt(
-                              0
-                            )}${researches.uploader.lastname.charAt(0)}`}
-                          </Typography>
-                        </Avatar>
-                      </ReactLink>
-                    )}
-                  </Grid>
-                  <Grid item xs>
-                    <ReactLink
-                      to={`/profile/${researches.uploader._id}`}
-                      style={{ color: "inherit", textDecoration: "none" }}
-                    >
-                      <Typography
-                        variant="inherit"
-                        style={{
-                          display: "inline",
-                          fontWeight: 500,
-                          fontSize: "18px"
-                        }}
-                      >
-                        {researches.uploader.prefix} {researches.uploader.name}{" "}
-                        {researches.uploader.lastname}
-                      </Typography>
-                    </ReactLink>{" "}
-                    <Typography
-                      variant="body1"
-                      style={{
-                        display: "inline",
-                        fontWeight: "400",
-                        color: "rgb(140, 140, 140)",
-                        fontSize: "16px",
-                        fontFamily: "'Noto Sans Lao UI', sans serif"
-                      }}
-                    >
-                      ໄດ້ເພີ່ມຜົນງານການຄົ້ນຄວ້າ
-                    </Typography>
-                    {showTime(researches.createdAt)}
-                  </Grid>
-                </Grid>
-                <Paper
-                  style={{
-                    boxShadow: "none",
-                    border: "1px solid #d8d8d8",
-                    marginTop: "0"
-                  }}
-                >
-                  <Grid container style={{ padding: "8px" }} wrap="nowrap">
-                    <Grid
-                      item
-                      xs={6}
-                      style={{ paddingTop: "8px", paddingLeft: "8px" }}
-                    >
-                      <Typography
-                        
-                        style={{
-                          fontFamily: "'Roboto', sans-serif",
-                          fontSize: "12px",
-                          letterSpacing: "1.5 px",
-                          fontWeight: "600",
-                          color: "#00695C"
-                        }}
-                      >
-                        {moment(researches.date).format("DD/MM/YYYY")}
-                      </Typography>
-                    </Grid>
-                    <Grid
-                      item
-                      xs={6}
-                      align="right"
-                      style={{
-                        paddingRight: "4px",
-                        objectFit: "contain"
-                      }}
-                    >
-                      {isOwner ? (
-                        <IconButton style={{ padding: 0 }}>
-                          <MoreVertOutlined fontSize="small" />
-                        </IconButton>
-                      ) : null}
-                    </Grid>
-                  </Grid>
-                  <Grid
-                    container
-                    style={{ paddingLeft: "16px", paddingRight: "16px" }}
-                  >
-                    <Grid item xs zeroMinWidth style={{ paddingRight: "16px" }}>
-                      <ReactLink
-                        to={`/research/${researches._id}`}
-                        style={{ textDecoration: "none", color: "inherit" }}
-                      >
-                        <LinesEllipsis
-                          text={researches.title}
-                          maxLine="2"
-                          ellipsis="..."
-                          trimRight
-                          basedOn="letters"
-                          style={{ fontSize: "20px", fontWeight: "500" }}
-                        />
-                      </ReactLink>
-                      <Grid container />
-                      <Grid
-                        container
-                        style={{ marginTop: "4px", marginBottom: "8px" }}
-                      >
-                        <div style={styles.chip}>
-                          {researches.researchType.name}
-                        </div>
-
-                        {researches.files[0] ? (
-                          <div style={styles.chipSecondary}>
-                            ມີເອກກະສານໃຫ້ອ່ານ
-                          </div>
-                        ) : null}
-
-                        <div style={styles.chipSecondary}>
-                          {researches.publicationType.name}
-                        </div>
-                      </Grid>
-                    </Grid>
-                    {true ? null : (
-                      <Grid item align="right">
-                        <img
-                          style={{
-                            marginRight: "4px",
-                            borderRadius: "6px",
-                            objectFit: "cover"
-                          }}
-                          src="http://hespokestyle.com/wp-content/uploads/2017/04/navy-cotton-linen-blazer-tan-chinos-polo-shirt-mens-spring-fashion-trends-8-800x533.jpg"
-                          alt="nothing"
-                          width={80}
-                          height={80}
-                        />
-                      </Grid>
-                    )}
-                    <Grid container style={{}}>
-                      {researches.author.map((value, item, array) => (
-                        <>
-                          <Grid
-                            item
-                            style={{
-                              marginRight: "4px",
-                              marginBottom: "8px"
-                            }}
-                          >
-                            {value.profileImage &&
-                            value.profileImage[0] &&
-                            value.profileImage[0].name ? (
-                              <Avatar
-                                style={{
-                                  width: "18px",
-                                  height: "18px",
-                                  borderStyle: "solid",
-                                  borderColor: "#CFCECE",
-                                  borderWidth: "1px"
-                                }}
-                                alt="profile image"
-                                src={`${UPLOADS_SERVER}/images/${
-                                  value.profileImage[0].name
-                                }`}
-                              />
-                            ) : (
-                              <Avatar
-                                style={{
-                                  width: "18px",
-                                  height: "18px",
-                                  backgroundColor: `${`${value.name}${
-                                    value.lastname
-                                  }`.toColor()}`,
-                                  fontFamily: "'Noto Sans Lao UI', sans serif",
-                                  fontWeight: "normal",
-                                  fontSize: "8px"
-                                }}
-                                alt="profile image"
-                              >
-                                <Typography variant="inherit">
-                                  {`${value.name.charAt(
-                                    0
-                                  )}${value.lastname.charAt(0)}`}
-                                </Typography>
-                              </Avatar>
-                            )}
-                          </Grid>
-                          <Grid item>
-                            <Typography
-                              variant="inherit"
-                              style={{
-                                height: "18px",
-                                lineHeight: "18px",
-                                marginBottom: "8px",
-                                fontWeight: "500",
-                                marginRight: "4px"
-                              }}
-                            >
-                              {`${value.name} ${value.lastname}`}{" "}
-                              {item !== array.length - 1 ? " • " : null}
-                            </Typography>
-                          </Grid>
-                        </>
-                      ))}
-                    </Grid>
-                    <Grid
-                      container
-                      style={{ marginTop: "4px", marginBottom: "4px" }}
-                    >
-                      <Grid item>
-                        <LinesEllipsis
-                          text={researches.abstract}
-                          maxLine="3"
-                          ellipsis="..."
-                          trimRight
-                          basedOn="words"
-                          style={{
-                            fontSize: "16px",
-                            color: "#666666",
-                            fontWeight: "normal"
-                          }}
-                        />
-                      </Grid>
-                    </Grid>
-                    <Grid
-                      container
-                      style={{ marginTop: "4px", marginBottom: "16px" }}
-                      alignItems="flex-end"
-                    >
-                      <Grid item xs={6}>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          component={ReactLink}
-                          to={`/research/${researches._id}`}
-                        >
-                          ອ່ານ
-                        </Button>
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                </Paper>
-                <Grid
-                  container
-                  style={{ marginTop: "4px", marginBottom: "4px" }}
-                  alignItems="center"
-                >
-                  <Grid item xs={6} align="left" alignItems="flex-start">
-                    {isAuth
-                      ? renderLikeButton(researches._id, researches.likes)
-                      : null}
-
-                    <Button
-                      size="small"
-                      style={{
-                        color: "#686868",
-                        minWidth: "14px",
-                        height: "36px",
-                        borderRadius: "22px",
-                        textDecoration:"none"
-                      }}
-                      onClick={()=>comment(researches._id)}
-                    >
-                      {" "}
-                      <ModeCommentOutlined fontSize="small" />
-                      {researches.comments.length > 0 ? (
-                        <div
-                          style={{
-                            fontSize: "13.5px",
-                            color: "#757575",
-                            fontFamily: "'Roboto', sans serif",
-                            display: "inline"
-                          }}
-                        >
-                          &nbsp;
-                          <NumberFormat
-                            value={
-                              researches.comments
-                                ? researches.comments.length
-                                : null
-                            }
-                            displayType={"text"}
-                            thousandSeparator={true}
-                          />
-                          &nbsp;
-                        </div>
-                      ) : null}
-                    </Button>
-                    <Button
-                      size="small"
-                      style={{
-                        color: "#686868",
-                        minWidth: "14px",
-                        height: "36px",
-                        borderRadius: "22px"
-                      }}
-                    >
-                      {" "}
-                      <ReplyOutlined fontSize="small" />
-                      {researches.shares && researches.shares.length ? (
-                        <div
-                          style={{
-                            fontSize: "13.5px",
-                            color: "#757575",
-                            fontFamily: "'Roboto', sans serif",
-                            display: "inline"
-                          }}
-                        >
-                          &nbsp;
-                          <NumberFormat
-                            value={
-                              researches.shares && researches.shares.length > 0 ? researches.shares.length : null
-                            }
-                            displayType={"text"}
-                            thousandSeparator={true}
-                          />
-                          &nbsp;
-                        </div>
-                      ) : null}
-                    </Button>
-                  </Grid>
-                  <Grid item xs={6} align="right" alignItems="flex-end">
-                    <span style={{ fontSize: "13.5px", color: "#757575" }}>
-                      ອ່ານ
-                    </span>
-                    <div
-                      style={{
-                        fontSize: "13.5px",
-                        color: "#757575",
-                        fontFamily: "'Roboto', sans serif",
-                        display: "inline",
-                        fontWeight: "500"
-                      }}
-                    >
-                      &nbsp;
-                      <NumberFormat
-                        value={researches.reads ? researches.reads.length : 0}
-                        displayType={"text"}
-                        thousandSeparator={true}
-                      />
-                      &nbsp;
-                    </div>
-                    <span style={{ fontSize: "13.5px", color: "#757575" }}>
-                      ຄັ້ງ
-                    </span>
-                  </Grid>
-                </Grid>
+                
+              <CircularProgress style={{margin: "20px"}} />
               </Paper>
+              </Grid>
             </>
-          ))}
-          <div style={{ height: "24px" }} />
-        </div>
-      ) : (
-        <div>
-        <Paper
-        style={{
-          boxShadow: "none",
-          border: "1px solid #d8d8d8",
-          marginTop: "24px",
-          padding: "16px",
-      
-        }}
-      >
-        <Grid container alignContent="center" alignItems="center" justify="center">
-          <Grid item align="center">
-          <CircularProgress style={{padding: "24px"}} />
-          </Grid>
-        </Grid>
+          
 
-
-      </Paper>
-          <div style={{ height: "24px" }} />
         </div>
-      )}
-    </Grid>
+      )
   );
 
   return renderItems();

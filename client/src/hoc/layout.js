@@ -71,11 +71,24 @@ const styles = theme => ({
     width: "100%"
   },
   grow: {
-    flexGrow: 1
+   
+    [theme.breakpoints.up("sm")]: {
+      flexGrow: 1
+    },
+    [theme.breakpoints.down("xs")]: {
+      flexGrow: 0
+    },
   },
   menuButtonMain: {
-    marginLeft: -12,
-    marginRight: 20
+
+    [theme.breakpoints.up("sm")]: {
+      marginLeft: -12,
+    marginRight: 20,
+    },
+    [theme.breakpoints.down("xs")]: {
+      marginLeft: 0,
+    marginRight: 20,
+    },
   },
   title: {
     fontWeight: "600",
@@ -89,6 +102,22 @@ const styles = theme => ({
     [theme.breakpoints.up("sm")]: {
       display: "block"
     }
+  },
+  formSearch: {
+    [theme.breakpoints.up("sm")]: {
+      flexGrow: 0.4
+    },
+    [theme.breakpoints.down("xs")]: {
+      flexGrow: 1
+    },
+  },
+  moreIcon: {
+    [theme.breakpoints.up("sm")]: {
+      marginLeft: 0
+    },
+    [theme.breakpoints.down("xs")]: {
+      marginLeft: "20px"
+    },
   },
   search: {
     position: "relative",
@@ -207,8 +236,7 @@ const styles = theme => ({
     },
     [theme.breakpoints.down("xs")]: {
       width: 300
-    },
-
+    }
   },
   drawerHeader: {
     display: "flex",
@@ -731,7 +759,12 @@ class Layout extends Component {
                 {!this.props.location.pathname.startsWith("/search") ? (
                   <>
                     <form
-                      style={{ padding: 0, margin: 0, flexGrow: "0.4" }}
+                      style={{
+                        padding: 0,
+                        margin: 0,
+                        
+                      }}
+                      className= {classes.formSearch}
                       onSubmit={event => this.submitSearch(event)}
                     >
                       <div className={classes.search}>
@@ -829,6 +862,7 @@ class Layout extends Component {
                             aria-haspopup="true"
                             onClick={this.handleMobileMenuOpen}
                             color="inherit"
+                            className={classes.moreIcon}
                           >
                             <MoreIcon />
                           </IconButton>
@@ -860,6 +894,7 @@ class Layout extends Component {
                         aria-haspopup="true"
                         onClick={this.handleMobileMenuOpen}
                         color="inherit"
+                        className={classes.moreIcon}
                       >
                         <MoreIcon />
                       </IconButton>
@@ -1385,16 +1420,67 @@ class Layout extends Component {
                   paper: classes.drawerPaper
                 }}
                 style={{
-                  border: "0 !important",
+                  border: "0 !important"
                 }}
                 onClose={this.handleDrawerClose}
               >
-              <div className={classes.drawerHeader}>
-              <IconButton onClick={this.handleDrawerClose}>
-                {theme.direction === 'rtl' ? <ChevronRightOutlined /> : <ChevronLeftOutlined />}
-              </IconButton>
-            </div>
-            <Divider />
+                <div
+                  style={{
+                    alignItems: "center",
+                    padding: "0 8px",
+                    paddingLeft: "16px",
+                    ...theme.mixins.toolbar,
+                    justifyContent: "flex-start"
+                  }}
+                >
+                  <Grid
+                    style={{
+                      height: "100%",
+                      paddingTop: "22px",
+                      paddingBottom: "32px"
+                    }}
+                    alignItems="center"
+                  >
+                    <Grid item>
+                      <Link
+                        to="/"
+                        style={{ textDecoration: "none", color: "inherit" }}
+                      >
+                        <Link
+                          to="/"
+                          style={{ textDecoration: "none", color: "inherit" }}
+                        >
+                          <embed
+                            height="28"
+                            width="28"
+                            style={{
+                              marginBottom: "0",
+                              flexGrow: 0,
+                              paddingRight: "8px",
+                              position: "absolute",
+                              top: "20px"
+                            }}
+                            type="image/svg+xml"
+                            src="/images/fns.svg"
+                          />
+                        </Link>
+                        <Typography
+                          variant="h6"
+                          color="inherit"
+                          noWrap
+                          style={{
+                            fontWeight: "bold",
+                            fontFamily: "'Roboto', sans serif",
+                            display: "inline",
+                            paddingLeft: "36px"
+                          }}
+                        >
+                          FNS Researcher Profiles
+                        </Typography>
+                      </Link>
+                    </Grid>
+                  </Grid>
+                </div>
 
                 <List>
                   {this.props &&
@@ -1406,9 +1492,7 @@ class Layout extends Component {
                       component={Link}
                       to="/"
                       selected={"/" === pathname}
-                      style={{
-             
-                      }}
+                      style={{}}
                       onClick={this.handleDrawerClose}
                     >
                       {"/" === pathname ? (
@@ -1443,9 +1527,7 @@ class Layout extends Component {
                       pathname.startsWith("/search") &&
                       !("?q=" === this.props.location.search)
                     }
-                    style={{
-      
-                    }}
+                    style={{}}
                   >
                     {pathname.startsWith("/search") &&
                     !("?q=" === this.props.location.search) ? (
@@ -1471,9 +1553,7 @@ class Layout extends Component {
                     )}
                   </ListItem>
                   <ListItem
-                    style={{
-            
-                    }}
+                    style={{}}
                     onClick={this.handleDrawerClose}
                     button
                     component={Link}
@@ -1508,7 +1588,7 @@ class Layout extends Component {
                   </ListItem>
 
                   <ListItem
-                  onClick={this.handleDrawerClose}
+                    onClick={this.handleDrawerClose}
                     button
                     component={Link}
                     to="/search/researches?q="
@@ -1516,9 +1596,7 @@ class Layout extends Component {
                       "/search/researches" === pathname &&
                       "?q=" === this.props.location.search
                     }
-                    style={{
-       
-                    }}
+                    style={{}}
                   >
                     {"/search/researches" === pathname &&
                     "?q=" === this.props.location.search ? (
@@ -1551,9 +1629,7 @@ class Layout extends Component {
                       button
                       component={Link}
                       onClick={this.handleDrawerClose}
-                      style={{
-     
-                      }}
+                      style={{}}
                       to={`/profile/${this.props.user.userData._id}`}
                       selected={pathname.startsWith(
                         `/profile/${this.props.user.userData._id}`
@@ -1608,9 +1684,7 @@ class Layout extends Component {
                         className={classes.root}
                       >
                         <ListItem
-                          style={{
-       
-                          }}
+                          style={{}}
                           button
                           onClick={this.handleMangeListClick}
                         >
@@ -1631,9 +1705,7 @@ class Layout extends Component {
                         >
                           <List component="div" disablePadding>
                             <ListItem
-                              style={{
-           
-                              }}
+                              style={{}}
                               button
                               component={Link}
                               to="/admin/researchers"
@@ -1700,9 +1772,7 @@ class Layout extends Component {
                           </List>
                           <List component="div" disablePadding>
                             <ListItem
-                              style={{
-                         
-                              }}
+                              style={{}}
                               onClick={this.handleDrawerClose}
                               button
                               component={Link}
@@ -1746,9 +1816,7 @@ class Layout extends Component {
 
                       <List component="nav" className={classes.root}>
                         <ListItem
-                          style={{
-               
-                          }}
+                          style={{}}
                           button
                           onClick={this.handleReportsClick}
                         >
@@ -1771,9 +1839,7 @@ class Layout extends Component {
                             <ListItem
                               button
                               component={Link}
-                              style={{
-            
-                              }}
+                              style={{}}
                               onClick={this.handleDrawerClose}
                               to="/admin/reports/researchers/numbers"
                               selected={pathname.startsWith(
@@ -1811,9 +1877,7 @@ class Layout extends Component {
                           </List>
                           <List component="div" disablePadding>
                             <ListItem
-                              style={{
-                         
-                              }}
+                              style={{}}
                               button
                               component={Link}
                               to="/admin/reports/researches/numbers"
@@ -1928,7 +1992,7 @@ class Layout extends Component {
           })}
           style={{ padding: 0 }}
         >
-          <div className="page_container" style={{ marginLeft: drawerWidth }}>
+          <div className="page_container" style={{ marginLeft: drawerWidth }} open={this.state.open}>
             {this.props.children}
           </div>
         </main>
