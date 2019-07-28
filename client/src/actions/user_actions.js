@@ -516,7 +516,7 @@ export function updateName(dataToSubmit) {
 export function updateAffiliation(dataToSubmit) {
   const request = axios
     .post(
-      `${RESEARCHER_SERVER}/update_name`, dataToSubmit
+      `${RESEARCHER_SERVER}/update_affiliation`, dataToSubmit
     )
     .then(response => response.data);
 

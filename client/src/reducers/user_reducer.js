@@ -171,13 +171,13 @@ export default function(state = {}, action) {
         updatedDegree: action.payload.degree
       };
     case UPDATE_AFFILIATION:
+      console.log(action.payload.affiliation)
       return {
         ...state,
         userDetail: {
           ...state.userDetail,
-       
-        },
-        updatedAffiliation: action.payload.affiliation
+          affiliation: action.payload.affiliation
+        }
       };
     case UPDATE_USER_PHONE:
       return {

@@ -2707,10 +2707,30 @@ app.post("/api/researchers/update_affiliation", auth, (req, res) => {
     },
     (err, doc) => {
       if (err) return res.json({ success: false, err });
-      res.status(200).json({
-        success: true,
-        degree: doc.affiliation,
-      });
+      console.log(doc.affiliation)
+
+      Department.populate(doc, { path: "affiliation.department" }, function(
+        err,
+        populatedDepartment
+      ) {
+
+        Faculty.populate(populatedDepartment, { path: "affiliation.faculty" }, function(
+          err,
+          populatedFaculty
+        ) {
+          Institution.populate(doc, { path: "affiliation.institution" }, function(
+            err,
+            populatedInstitution
+          ) {
+            return res.status(200).json({
+              success: true,
+              affiliation: populatedInstitution.affiliation,
+            });
+          })
+        })
+      })
+
+     
     }
   );
 });

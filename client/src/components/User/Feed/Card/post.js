@@ -337,7 +337,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
               marginTop: "24px",
               padding: "16px",
               paddingBottom: 0,
-              maxWidth: "700px"
+              maxWidth: "640px"
             }}
           >
             <Grid container>

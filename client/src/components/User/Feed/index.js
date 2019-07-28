@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Fab, Grid, Hidden } from "@material-ui/core";
+import { Fab, Grid, Hidden, CircularProgress, Paper } from "@material-ui/core";
 import { AddOutlined } from "@material-ui/icons";
 
 import { connect } from "react-redux";
@@ -169,6 +169,7 @@ class Feed extends Component {
         <Grid container>
           <Grid item xs sm lg md />
           <Grid item xs={11} sm={11} lg={9} md={11}>
+          {this.props.user && this.props.research.feed ?
             <Grid container spacing={32}>
               <Grid item xs={12} lg={7} sm={12} md={6}>
                 <FeedCard
@@ -200,6 +201,26 @@ class Feed extends Component {
               </Grid>
               </Hidden>
             </Grid>
+
+            :
+
+            <>
+            
+            <Grid container justify="center">
+            <Grid item xs={12} align="center">
+            <Paper
+              style={{
+                boxShadow: "none",
+                border: "1px solid #d8d8d8",
+                marginTop: "24px",
+                maxWidth: "700px"
+              }}
+            >
+            <CircularProgress style={{margin: "24px"}} />
+            </Paper>
+            </Grid>
+            </Grid>
+            </>}
           </Grid>
           <Grid item xs sm lg md />
         </Grid>
