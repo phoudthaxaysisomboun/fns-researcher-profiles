@@ -566,7 +566,6 @@ class AddResearch extends Component {
     axios
       .post(`/api/research/remove_publication_file?filename=${this.state.files[0].name}`)
       .then(response => {
-        console.log(response.data)
         if (response.data.success) {
 
           this.setState({
@@ -815,7 +814,6 @@ class AddResearch extends Component {
   componentDidUpdate(prevProps, prevState) {
     let multi = [];
     if (this.props && this.props.other && (prevProps.other.value !== this.props.other)) {
-      console.log(this.props.other.value)
       multi[0] = {
         value: this.props.other.value,
         label: this.props.other.label
@@ -828,8 +826,6 @@ class AddResearch extends Component {
     }
     
     if (prevProps.authorSuggestions !== this.props.authorSuggestions) {
-      console.log(this.props)
-      
       
       this.props.authorSuggestions.map(value => {
         suggestions.push({
@@ -883,7 +879,6 @@ class AddResearch extends Component {
         "publicationType"
       );
       this.updateFields(newFormdata);
-      console.log(this.props.research);
     }
 
     const prevRTState = prevState.formdata.researchType.value;
@@ -893,7 +888,6 @@ class AddResearch extends Component {
       this.setState({
         currentResearchType: curRTState
       });
-      console.log(this.state);
     }
   }
 
@@ -983,7 +977,6 @@ class AddResearch extends Component {
         // formError: true,
         // formErrorMessage: "ກະລຸນາຕື່ມນັກຄົ້ນຄວ້າ"
       })
-      console.log(this.state.formError)
 
     } else if (hasAuthor === false) {
       this.setState({
@@ -992,7 +985,6 @@ class AddResearch extends Component {
         // formError: true,
         // formErrorMessage: "ທ່ານສາມາດເພີ່ມຜົນງານການຄົ້ນຄວ້າທີ່ມີທ່ານເປັນເຈົ້າຂອງເທົ່ານັ້ນ"
       })
-      console.log(this.state.formError)
 
     } else {
       this.setState({
@@ -1017,14 +1009,9 @@ class AddResearch extends Component {
       newDataToSubmit["supervisor"] = supervisor
     }
 
-    console.log(this.state.multi)
-
     if (formIsValid && !this.state.formError && !this.state.authorError && hasAuthor) {
 
-      console.log(newDataToSubmit)
-
       this.props.dispatch(addNewResearch(newDataToSubmit)).then((response) => {
-        console.log(response)
         if (response.payload.success) {
           this.setState({
                     formError: false,
@@ -1045,7 +1032,6 @@ class AddResearch extends Component {
             });
           });
 
-      console.log(newDataToSubmit)
       // this.props
       //   .dispatch(
       //     addResearchDialog(
@@ -1248,9 +1234,6 @@ class AddResearch extends Component {
                 </Grid>
               </Grid>
             ) : null}
-{
-  console.log(this.state.files)
-}
             {this.state.files && this.state.files[0] ? (
               <>
                 <Paper

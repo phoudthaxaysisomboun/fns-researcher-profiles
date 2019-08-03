@@ -66,9 +66,6 @@ class UpdateDegreeDialog extends Component {
   componentDidUpdate(prevProps, prevState) {
       if (prevProps.userData !== this.props.userData) {
 
-        console.log(this.props)
-        
-
         const newFormData = {...this.state.formdata}
         
         newFormData["degree"].value = this.props.userData.degree && this.props.userData.degree._id ? this.props.userData.degree._id : ""
@@ -126,7 +123,6 @@ class UpdateDegreeDialog extends Component {
 
 
     if (formIsValid & !this.state.formError) {
-        console.log(newDataToSubmit)
         this.props
           .dispatch(
             updateDegree(newDataToSubmit)

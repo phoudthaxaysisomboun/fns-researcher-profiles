@@ -38,10 +38,20 @@ function compareDate(a, b) {
   return 0;
 }
 
+function compareResearchDate(a, b) {
+  if (a.date < b.date) {
+    return 1;
+  }
+  if (a.date > b.date) {
+    return -1;
+  }
+  return 0;
+}
+
 export default function(state = {}, action) {
   switch (action.type) {
     case GET_RESEARCH_FOR_CARD:
-      return { ...state, userResearch: action.payload };
+      return { ...state, userResearch: action.payload.sort(compareResearchDate) };
     case COUNT_READS:
       return { ...state };
     case CLEAR_RESEARCH_CARD:

@@ -267,8 +267,6 @@ class UpdateResearchArea extends Component {
       });
     }
 
-    console.log(this.props)
-
     if (prevProps.researchAreas !== this.props.researchAreas) {
       if (this.props.researchAreas) {
         this.props.researchAreas.map((value, index)=>{
@@ -277,7 +275,6 @@ class UpdateResearchArea extends Component {
         })
         
       }
-      console.log(suggestions)
     }
   }
 
@@ -296,7 +293,6 @@ class UpdateResearchArea extends Component {
   };
 
   componentWillMount() {
-    console.log(suggestions)
     this.props.dispatch(getResearchArea())
   }
 
@@ -314,8 +310,6 @@ class UpdateResearchArea extends Component {
     this.props.dispatch(updateResearchArea(this.props.userId, researchArea)).then((response)=>{
       this.props.close();
     })
-
-    console.log(researchArea)
 
     if (formIsValid & !this.state.formError) {
       // this.props

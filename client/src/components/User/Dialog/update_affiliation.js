@@ -81,10 +81,6 @@ class UpdateAffiliationDialog extends Component {
 
   componentDidUpdate(prevProps, prevState) {
       if (prevProps.userData !== this.props.userData) {
-
-        console.log(this.props)
-        
-
         const newFormData = {...this.state.formdata}
         
         newFormData["department"].value = this.props.userData.affiliation && this.props.userData.affiliation.department ? this.props.userData.affiliation.department._id : ""
@@ -158,7 +154,6 @@ class UpdateAffiliationDialog extends Component {
 
 
     if (formIsValid & !this.state.formError) {
-        console.log(myData)
         this.props
           .dispatch(
             updateAffiliation(myData)

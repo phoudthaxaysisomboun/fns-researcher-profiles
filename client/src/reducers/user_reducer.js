@@ -94,6 +94,16 @@ export default function(state = {}, action) {
     return toReturn;
   };
 
+  function compareDate(a, b) {
+    if (a.date < b.date) {
+      return 1;
+    }
+    if (a.date > b.date) {
+      return -1;
+    }
+    return 0;
+  }
+
   switch (action.type) {
     case LOGIN_USER:
       return { ...state, loginSuccess: action.payload };
@@ -106,7 +116,10 @@ export default function(state = {}, action) {
     case GET_DEGRESS:
       return { ...state, degrees: action.payload };
     case GET_USER_DETAIL:
-      return { ...state, userDetail: action.payload };
+      console.log(action.payload.research)
+      return { ...state, userDetail: 
+        action.payload,
+       };
     case CLEAR_USER_DETAIL:
       return { ...state, userDetail: action.payload };
     case LOGOUT_USER:
