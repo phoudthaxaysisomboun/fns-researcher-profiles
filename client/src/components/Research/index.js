@@ -6,14 +6,14 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
 import {
-  Hidden,
+  // Hidden,
   Grid,
   Dialog,
   DialogTitle,
-  Divider,
+  // Divider,
   DialogContent,
-  IconButton,
-  Typography,
+  // IconButton,
+  // Typography,
   Button,
   DialogContentText,
   DialogActions
@@ -30,11 +30,13 @@ import {
   addCountToResearch,
   removeResearch,
   removeAuthor,
-  updateResearch,
+  // updateResearch,
   addShareCount
 } from "../../actions/research_actions";
 
-import { CloseOutlined } from "@material-ui/icons";
+import Measure from 'react-measure'
+
+// import { CloseOutlined } from "@material-ui/icons";
 import { LOCALHOST } from "../utils/misc";
 import ShareDialog from "../utils/Dialogs/share_research";
 import AddResearch from "../utils/Dialogs/add_research";
@@ -46,9 +48,16 @@ import FileViwerCard from "../Research/Card/file_viewer";
 
 import { ObjectID } from "bson";
 
+
 let shareUrl;
 
 class Research extends Component {
+
+  constructor(props){
+    super(props)
+    this.myInput = React.createRef()
+  }
+
   state = {
     isAuthor: false,
     isUploader: false,
@@ -62,7 +71,8 @@ class Research extends Component {
     openRemoveAuthorDialog: false,
     openEditResearchDialog: false,
     openAddResearchDialog: false,
-    openShareDialog: false
+    openShareDialog: false,
+    seeFullText: false
   };
 
   handleShareDialogClose = () => {
@@ -141,6 +151,7 @@ class Research extends Component {
   //   selectedEducation: obj
   //  })
   };
+  
 
   handleRemoveResearch = () => {
     this.props.dispatch((removeResearch(this.props.research && this.props.research.userResearch
@@ -198,15 +209,31 @@ class Research extends Component {
     }
   };
 
+  handleSeeFullText = () => {
+    const _id = new ObjectID();
+    
+    this.setState({
+      seeFullText: true
+    })
+
+    this.props.dispatch(addCountToResearch(this.props.research && this.props.research.userResearch
+      ? this.props.research.userResearch[0]._id
+      : "", this.props && this.props.user && this.props.user.userData && this.props.user.userData._id ? this.props.user.userData._id : _id.toHexString()))
+  }
+
+  componentDidMount() {
+ 
+  }
+
   componentWillMount() {
     const id = this.props.match.params.id;
-    const _id = new ObjectID();
+    
 
     this.props.dispatch(getResearchForCard(id)).then(response => {
       shareUrl = `${LOCALHOST}/research/${response.payload[0]._id}`;
       document.title = `${response.payload[0].title} - FNS Researcher Profiles`;
 
-      this.props.dispatch(addCountToResearch(response.payload[0]._id, this.props && this.props.user && this.props.user.userData && this.props.user.userData._id ? this.props.user.userData._id : _id.toHexString()))
+      
 
       const author = response.payload[0].author.find(
         array => array._id === this.props.user.userData._id
@@ -257,6 +284,12 @@ class Research extends Component {
     }
 
     
+
+    
+  }
+
+  setMyCompWidth (width) {
+    console.log(width)
   }
 
   render() {
@@ -312,6 +345,7 @@ class Research extends Component {
           container
           spacing={0}
           style={{ paddingTop: "24px", paddingBottom: "24px" }}
+          justify="center"
         >
           <Grid item xs sm={1} lg={2} md={1} />
 
@@ -324,6 +358,7 @@ class Research extends Component {
                   : ""
               }
             />
+
             <FileViwerCard
               user={this.props.user.userData}
               research={
@@ -331,7 +366,16 @@ class Research extends Component {
                   ? this.props.research.userResearch[0]
                   : ""
               }
+              seeFullText = {this.state.seeFullText}
+              handleSeeFullText = {
+                () => {
+                  this.handleSeeFullText()
+                }
+              }
+
+             
             />
+
           </Grid>
 
           <Grid item xs sm={1} lg={2} md={1} />

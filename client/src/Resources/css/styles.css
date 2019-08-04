@@ -99,6 +99,11 @@ span {
   font-family: "Noto Sans Lao UI", sans-serif !important;
 }
 
+#my-pdf {
+  width: 100% !important;
+  height: auto !important;
+}
+
 .research-card-title {
   max-lines: 2;
 }
