@@ -6,6 +6,8 @@ import NumberFormat from "react-number-format";
 
 import LinesEllipsis from "react-lines-ellipsis";
 
+import { PDFReader, MobilePDFReader } from "reactjs-pdf-reader";
+
 import moment from "moment";
 
 import {
@@ -392,25 +394,78 @@ const ResearchCard = ({ userData, userResearch, runLike, runUnLike }) => {
                   </>
                 ))}
               </Grid>
-              <Grid
-                container
-                style={{ marginTop: "4px", marginBottom: "4px" }}
-              >
-                <Grid item>
-                  <LinesEllipsis
-                    text={researches.abstract}
-                    maxLine="3"
-                    ellipsis="..."
-                    trimRight
-                    basedOn="words"
-                    style={{
-                      fontSize: "16px",
-                      color: "#666666",
-                      fontWeight: "normal"
-                    }}
-                  />
-                </Grid>
-              </Grid>
+              <Link
+                        to={`/profile/${researches._id}`}
+                        style={{ color: "inherit", textDecoration: "none" }}
+                      >
+                        <Grid
+                          container
+                          style={{ marginBottom: "4px", cursor: "pointer" }}
+                        >
+                          <Grid item>
+                            {researches.files[0] && researches.files[0].name ? (
+                              <Grid container spacing={8}>
+                                <Grid
+                                  item
+                                  style={{
+                                    maxWidth: "80px",
+                                    maxHeight: "120px",
+                                    marginTop: "8px",
+                                    marginBottom: "8px"
+                                  }}
+                                >
+                                  <Paper
+                                    style={{
+                                      border: "1px solid #e5e5e5",
+                                      borderRadius: 0,
+                                      boxShadow: "none"
+                                    }}
+                                  >
+                                    <PDFReader
+                                      width={80}
+                                      page={1}
+                                      withCredentials={false}
+                                      url={`${UPLOADS_SERVER}${
+                                        researches.files[0].name
+                                      }`}
+                                    />
+                                  </Paper>
+                                </Grid>
+                                <Grid item xs>
+                                  <LinesEllipsis
+                                    text={researches.abstract}
+                                    maxLine="5"
+                                    ellipsis="..."
+                                    trimRight
+                                    basedOn="words"
+                                    style={{
+                                      fontSize: "16px",
+                                      color: "#666666",
+                                      fontWeight: "normal",
+                                      marginTop: "4px",
+                                      marginLeft: "8px"
+                                    }}
+                                  />
+                                </Grid>
+                              </Grid>
+                            ) : (
+                              <LinesEllipsis
+                                text={researches.abstract}
+                                maxLine="3"
+                                ellipsis="..."
+                                trimRight
+                                basedOn="words"
+                                style={{
+                                  fontSize: "16px",
+                                  color: "#666666",
+                                  fontWeight: "normal",
+                                  marginTop: "4px"
+                                }}
+                              />
+                            )}
+                          </Grid>
+                        </Grid>
+                      </Link>
               <Grid
                 container
                 style={{ marginTop: "4px", marginBottom: "4px" }}

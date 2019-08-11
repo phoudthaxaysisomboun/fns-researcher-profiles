@@ -48,6 +48,10 @@ class Feed extends Component {
   };
 
   componentWillMount() {
+    
+  }
+
+  componentDidMount() {
     this.props.dispatch(getFeed()).then(response => {
       this.props.dispatch(getSuggestionsInFeed());
     });

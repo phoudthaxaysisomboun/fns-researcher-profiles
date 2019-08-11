@@ -5,6 +5,8 @@ import { connect } from "react-redux";
 
 import PropTypes from "prop-types";
 
+
+
 import {
   // Hidden,
   Grid,
@@ -34,7 +36,7 @@ import {
   addShareCount
 } from "../../actions/research_actions";
 
-import Measure from 'react-measure'
+import { withSize, SizeMe } from 'react-sizeme'
 
 // import { CloseOutlined } from "@material-ui/icons";
 import { LOCALHOST } from "../utils/misc";
@@ -50,6 +52,7 @@ import { ObjectID } from "bson";
 
 
 let shareUrl;
+let size = 0
 
 class Research extends Component {
 
@@ -72,7 +75,8 @@ class Research extends Component {
     openEditResearchDialog: false,
     openAddResearchDialog: false,
     openShareDialog: false,
-    seeFullText: false
+    seeFullText: false,
+    canvasSize: 0
   };
 
   handleShareDialogClose = () => {
@@ -282,14 +286,19 @@ class Research extends Component {
         anchorUploader: false
       })
     }
-
-    
-
-    
   }
 
-  setMyCompWidth (width) {
-    console.log(width)
+  setSize (width) {
+
+    
+
+    if (false) {
+      // this.setState({
+      //   canvasSize: Math.round(width)
+      // })
+    }
+
+    size = Math.round(width)
   }
 
   render() {
@@ -358,23 +367,25 @@ class Research extends Component {
                   : ""
               }
             />
-
-            <FileViwerCard
-              user={this.props.user.userData}
-              research={
-                this.props.research && this.props.research.userResearch
-                  ? this.props.research.userResearch[0]
-                  : ""
+            <SizeMe>
+            {({ size }) =>  <FileViwerCard
+            user={this.props.user.userData}
+            research={
+              this.props.research && this.props.research.userResearch
+                ? this.props.research.userResearch[0]
+                : ""
+            }
+            seeFullText = {this.state.seeFullText}
+            handleSeeFullText = {
+              () => {
+                this.handleSeeFullText()
               }
-              seeFullText = {this.state.seeFullText}
-              handleSeeFullText = {
-                () => {
-                  this.handleSeeFullText()
-                }
-              }
+            }
 
-             
-            />
+           size={size.width}
+          />}
+          </SizeMe>
+           
 
           </Grid>
 
@@ -411,6 +422,8 @@ class Research extends Component {
                   ? this.props.research.userResearch[0]
                   : {}
           }
+
+          size= {this.size}
           
         />
         

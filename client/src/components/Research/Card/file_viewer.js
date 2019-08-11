@@ -19,7 +19,13 @@ import { UPLOADS_SERVER } from "../../../components/utils/misc";
 import { Document, Page } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 
-const FileViwerCard = ({ user, research, seeFullText, handleSeeFullText }) => {
+const FileViwerCard = ({
+  user,
+  research,
+  seeFullText,
+  handleSeeFullText,
+  size
+}) => {
   let name;
   name =
     research && research.files && research.files[0]
@@ -35,50 +41,59 @@ const FileViwerCard = ({ user, research, seeFullText, handleSeeFullText }) => {
         <>
           {seeFullText ? (
             <Paper
-          style={{
-            boxShadow: "none",
-            border: "1px solid #d8d8d8",
-            padding: "16px",
-            marginTop: "24px",
-            fontFamily: "'Phetsarath', sans-serif",
-            borderRadius: 0,
-            textAlign: "center",
-            overflow: "auto"
-          }}
-        >
-            <PDFReader showAllPage withCredentials={false} url={file} />
+              style={{
+                boxShadow: "none",
+                border: "1px solid #d8d8d8",
+                padding: "16px",
+                marginTop: "24px",
+                fontFamily: "'Phetsarath', sans-serif",
+                borderRadius: 0,
+                textAlign: "center",
+                overflow: "auto"
+              }}
+            >
+              <PDFReader width={size} showAllPage withCredentials={false} url={file} />
             </Paper>
           ) : (
             <>
-            <Paper
-          style={{
-            boxShadow: "none",
-            border: "1px solid #d8d8d8",
-            padding: "16px",
-            marginTop: "24px",
-            fontFamily: "'Phetsarath', sans-serif",
-            borderRadius: 0,
-            textAlign: "center",
-            overflow: "auto"
-          }}
-        >
-              <PDFReader page={1} withCredentials={false} url={file} />
-              <Grid container justify="center" style={{marginBottom: "16px"}}>
-                <Grid item xs={12}>
-                  <Button
-                    variant="outlined"
-                    onClick={() => handleSeeFullText()}
-                    color="primary"
-                    size="large"
-                  >
-                    ອ່ານເອກະສານທັງຫມົດ
-                  </Button>
+              <Paper
+                style={{
+                  boxShadow: "none",
+                  border: "1px solid #d8d8d8",
+                  padding: "16px",
+                  marginTop: "24px",
+                  fontFamily: "'Phetsarath', sans-serif",
+                  borderRadius: 0,
+                  textAlign: "center",
+                  overflow: "auto"
+                }}
+              >
+                {console.log(size)}
+                <PDFReader
+                  width={size}
+                  page={1}
+                  withCredentials={false}
+                  url={file}
+                />
+                <Grid
+                  container
+                  justify="center"
+                  style={{ marginBottom: "16px" }}
+                >
+                  <Grid item xs={12}>
+                    <Button
+                      variant="outlined"
+                      onClick={() => handleSeeFullText()}
+                      color="primary"
+                      size="large"
+                    >
+                      ອ່ານເອກະສານທັງຫມົດ
+                    </Button>
+                  </Grid>
                 </Grid>
-              </Grid>
               </Paper>
             </>
           )}
-         
         </>
       ) : (
         <Paper

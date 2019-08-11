@@ -2548,6 +2548,8 @@ app.get("/api/researchers/get_feed", auth, (req, res) => {
       followings.push(item._id);
     });
 
+    followings.push(req.user._id);
+
     Research.find({ uploader: followings })
       .sort([[sortBy, order]])
       .populate({

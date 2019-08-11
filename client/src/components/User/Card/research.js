@@ -10,6 +10,8 @@ import moment from "moment";
 
 import {UPLOADS_SERVER} from "../../../components/utils/misc"
 
+import { PDFReader, MobilePDFReader } from "reactjs-pdf-reader";
+
 import {
   Grid,
   Paper,
@@ -219,9 +221,9 @@ const ResearchCard = ({ userData, userDetail, userResearch, loading, openAddRese
                             {researches.researchType.name}
                           </div>
 
-                          <div style={styles.chipSecondary}>
-                            {researches.files ? `ມີເອກກະສານໃຫ້ອ່ານ` : null}
-                          </div>
+                          
+                            {researches.files[0] && researches.files[0].name  ? <div style={styles.chipSecondary}>ມີເອກກະສານໃຫ້ອ່ານ</div> : null}
+                          
                           <div style={styles.chipSecondary}>
                             {researches.publicationType.name}
                           </div>
@@ -311,25 +313,78 @@ const ResearchCard = ({ userData, userDetail, userResearch, loading, openAddRese
                           </>
                         ))}
                       </Grid>
-                      <Grid
-                        container
-                        style={{ marginTop: "4px", marginBottom: "4px" }}
+                      <ReactLink
+                        to={`/profile/${researches._id}`}
+                        style={{ color: "inherit", textDecoration: "none" }}
                       >
-                        <Grid item>
-                          <LinesEllipsis
-                            text={researches.abstract}
-                            maxLine="3"
-                            ellipsis="..."
-                            trimRight
-                            basedOn="words"
-                            style={{
-                              fontSize: "16px",
-                              color: "#666666",
-                              fontWeight: "normal"
-                            }}
-                          />
+                        <Grid
+                          container
+                          style={{ marginBottom: "4px", cursor: "pointer" }}
+                        >
+                          <Grid item>
+                            {researches.files[0] && researches.files[0].name ? (
+                              <Grid container spacing={8}>
+                                <Grid
+                                  item
+                                  style={{
+                                    maxWidth: "80px",
+                                    maxHeight: "120px",
+                                    marginTop: "8px",
+                                    marginBottom: "8px"
+                                  }}
+                                >
+                                  <Paper
+                                    style={{
+                                      border: "1px solid #e5e5e5",
+                                      borderRadius: 0,
+                                      boxShadow: "none"
+                                    }}
+                                  >
+                                    <PDFReader
+                                      width={80}
+                                      page={1}
+                                      withCredentials={false}
+                                      url={`${UPLOADS_SERVER}${
+                                        researches.files[0].name
+                                      }`}
+                                    />
+                                  </Paper>
+                                </Grid>
+                                <Grid item xs>
+                                  <LinesEllipsis
+                                    text={researches.abstract}
+                                    maxLine="5"
+                                    ellipsis="..."
+                                    trimRight
+                                    basedOn="words"
+                                    style={{
+                                      fontSize: "16px",
+                                      color: "#666666",
+                                      fontWeight: "normal",
+                                      marginTop: "4px",
+                                      marginLeft: "8px"
+                                    }}
+                                  />
+                                </Grid>
+                              </Grid>
+                            ) : (
+                              <LinesEllipsis
+                                text={researches.abstract}
+                                maxLine="3"
+                                ellipsis="..."
+                                trimRight
+                                basedOn="words"
+                                style={{
+                                  fontSize: "16px",
+                                  color: "#666666",
+                                  fontWeight: "normal",
+                                  marginTop: "4px"
+                                }}
+                              />
+                            )}
+                          </Grid>
                         </Grid>
-                      </Grid>
+                      </ReactLink>
                       <Grid
                         container
                         style={{ marginTop: "4px", marginBottom: "4px" }}
@@ -452,7 +507,7 @@ const ResearchCard = ({ userData, userDetail, userResearch, loading, openAddRese
                         >
                           {" "}
                           <ReplyOutlined fontSize="small" />
-                          {research.shares ? (
+                          {researches.shares && researches.shares.length ? (
                             <div
                               style={{
                                 fontSize: "13.5px",
@@ -464,8 +519,8 @@ const ResearchCard = ({ userData, userDetail, userResearch, loading, openAddRese
                               &nbsp;
                               <NumberFormat
                                 value={
-                                  research.shares
-                                    ? research.shares.length
+                                  researches.shares && researches.shares.length > 0
+                                    ? researches.shares.length
                                     : null
                                 }
                                 displayType={"text"}
