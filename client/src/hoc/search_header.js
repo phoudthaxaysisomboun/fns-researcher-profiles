@@ -92,7 +92,8 @@ const styles = {
     alignItems: "center",
     width: "100%",
     boxShadow: "0 1px 6px 0 rgba(32,33,36,0.28)",
-    borderColor: "rgba(223,225,229,0)"
+    borderColor: "rgba(223,225,229,0)",
+    borderRadius: "24px"
   },
   input: {
     marginLeft: 8,
@@ -177,7 +178,7 @@ const SearchHeader = ({
           </Grid>
           <Grid container>
             <Grid item xs sm lg md />
-            <Grid item xs={11} sm={11} lg={5} md={8} style={{ paddingTop: "24px",
+            <Grid item xs={10} sm={10} lg={5} md={8} style={{ paddingTop: "24px",
             borderRadius: 0,
             boxShadow: "none",
             border: "1px solid #d8d8d8",
