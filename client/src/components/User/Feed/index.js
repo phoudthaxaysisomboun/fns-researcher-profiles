@@ -59,7 +59,7 @@ class Feed extends Component {
   }
 
   componentWillUnmount() {
-    this.props.dispatch(clearFeed());
+    // this.props.dispatch(clearFeed());
   }
 
   handleAddResearchClose = () => {
@@ -220,7 +220,7 @@ class Feed extends Component {
                 maxWidth: "700px"
               }}
             >
-            <CircularProgress style={{margin: "24px"}} />
+            <CircularProgress style={{color: "#909090", margin: "20px"}} thickness={5}  size={30} variant="indeterminate"/>
             </Paper>
             </Grid>
             </Grid>

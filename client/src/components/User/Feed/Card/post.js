@@ -850,7 +850,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                 paddingBottom: 0
               }}
             >
-              <CircularProgress style={{ margin: "20px" }} />
+            <CircularProgress style={{color: "#909090", margin: "40px"}} thickness={5}  size={30} variant="indeterminate"/>
             </Paper>
           </Grid>
         </>

@@ -43,7 +43,7 @@ export default function(ComposedClass, reload, adminRoute) {
             if(this.state.loading) {
                 return (
                     <div className="progress">
-                        <CircularProgress thickness={5}  size={40} variant="indeterminate"/>
+                        <CircularProgress style={{color: "#909090"}} thickness={5}  size={30} variant="indeterminate"/>
                     </div>
                 );
             }
