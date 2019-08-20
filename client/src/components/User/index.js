@@ -18,6 +18,9 @@ import UpdateNameDialog from "../User/Dialog/edit_name";
 import UpdateDegreeDialog from "../User/Dialog/update_degree";
 import UpdateAffiliationDialog from "../User/Dialog/update_affiliation";
 
+import withWidth from '@material-ui/core/withWidth';
+import compose from 'recompose/compose';
+
 import PropTypes from "prop-types";
 
 import {
@@ -532,8 +535,9 @@ handleEditnameDialogClose = () => {
         }}
       >
         <Grid container style={{ paddingTop: "24px" }}>
-          <Grid item xs sm={1} lg={2} md={1} />
-          <Grid item xs={10} sm={10} lg={8} md={10}>
+          <Grid item xs sm lg md />
+ 
+          <Grid item xs={11} sm={10} lg={8} md={11}>
             <Grid container spacing={24}>
               <Grid item xs={12} lg={7} sm={12} md={6}>
                 <Grid container spacing={24}>
@@ -595,7 +599,7 @@ handleEditnameDialogClose = () => {
               </Grid>
             </Grid>
           </Grid>
-          <Grid item xs sm={1} lg={2} md={1} />
+          <Grid item xs sm lg md />
         </Grid>
 
         {
@@ -913,4 +917,14 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(ProfileOverview);
+const enhance = compose(
+  // withRouter,
+  withWidth(),
+  // withStyles(styles, { withTheme: true }),
+  // withWidth(),
+  connect(mapStateToProps, null),
+)
+
+export default enhance(ProfileOverview);
+
+

@@ -214,13 +214,13 @@ const SuggestedToFollowCard = ({
                   </Grid>
                 </Grid>
         </div>
-        : <div style={{ margin: "20px", textAlign: "center", maxWidth:"460px"  }}>
+        : <div style={{ margin: "20px", textAlign: "center",   }}>
         <CircularProgress  />
       </div>}
     </div>
   );
   const renderItems = () => (
-    <div style={{maxWidth: "460px"}}>
+    <div style={{}}>
       
       <Paper style={{ boxShadow: "none", border: "1px solid #d8d8d8", marginTop: "24px" }}>
       <Grid container style={{padding: "16px", paddingBottom: 0}}>

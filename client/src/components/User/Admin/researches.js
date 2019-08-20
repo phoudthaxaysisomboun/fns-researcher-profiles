@@ -590,7 +590,7 @@ class ResearcherAdmin extends React.Component {
           <Grid
             container
             spacing={0}
-            style={{ paddingTop: "0", paddingBottom: "24px" }}
+            style={{ paddingTop: "0", paddingBottom: "24px", }}
           >
             <Grid item xs sm lg md />
 

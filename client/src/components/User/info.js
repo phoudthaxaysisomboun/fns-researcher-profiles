@@ -752,8 +752,8 @@ class ProfileInfo extends Component {
         }}
       >
       <Grid container style={{paddingTop: "24px"}}>
-      <Grid item xs sm={1} lg={2} md={1} />
-      <Grid item xs={10} sm={10} lg={8} md={10}>
+      <Grid item xs sm lg md />
+      <Grid item xs={11} sm={10} lg={8} md={11}>
       
       <Grid container spacing={24}>
          
@@ -848,7 +848,7 @@ class ProfileInfo extends Component {
           </Grid>
         </Grid>
       </Grid>
-      <Grid item xs sm={1} lg={2} md={1} />
+      <Grid item xs sm lg md />
       </Grid>
         
 

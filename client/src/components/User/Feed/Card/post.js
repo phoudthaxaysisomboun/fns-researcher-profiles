@@ -357,7 +357,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                   marginTop: "24px",
                   padding: "16px",
                   paddingBottom: 0,
-                  maxWidth: "640px"
+                  // maxWidth: "640px"
                 }}
                 
               >
@@ -647,7 +647,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                                 <Grid
                                   item
                                   style={{
-                                    maxWidth: "80px",
+                                    // maxWidth: "80px",
                                     maxHeight: "120px",
                                     marginTop: "8px",
                                     marginBottom: "8px"

@@ -178,7 +178,7 @@ const SearchHeader = ({
           </Grid>
           <Grid container>
             <Grid item xs sm lg md />
-            <Grid item xs={10} sm={10} lg={5} md={8} style={{ paddingTop: "24px",
+            <Grid item xs={11} sm={11} lg={7} xl={5} md={10} style={{ paddingTop: "24px",
             borderRadius: 0,
             boxShadow: "none",
             border: "1px solid #d8d8d8",

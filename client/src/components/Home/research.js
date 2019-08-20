@@ -114,7 +114,7 @@ class ResearchSearch extends Component {
         >
           <Grid container>
             <Grid item xs sm lg md />
-            <Grid item xs={11} sm={11} lg={5} md={8}>
+            <Grid item xs={11} sm={11} lg={7} xl={5} md={10}>
               <Grid container justify="center">
               {
                 (query && query.q.trim() === "") ?

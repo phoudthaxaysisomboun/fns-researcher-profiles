@@ -62,10 +62,10 @@ body {
   background-color: white;
 }
 
-.page_container {
+/* .page_container {
   min-height: 75vh;
   padding-top: 64px;
-}
+} */
 
 .center_vertical_and_horizontal {
   /* position: absolute; */

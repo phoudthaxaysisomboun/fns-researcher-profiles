@@ -25,7 +25,7 @@ const ResgisterLogin = () => {
   return (
     <Grid container justify="center" spacing={0} style={{marginTop: "40px",marginBottom: "40px"}}>
       <Grid item lg md sm xs/>
-      <Grid item lg={4} md={6}  sm={9} xs={11}>
+      <Grid item lg={4} xl={4} md={8}  sm={11} xs={11}>
         <Paper style={styles.container} elevation={0} >
           <embed
           height="160px"

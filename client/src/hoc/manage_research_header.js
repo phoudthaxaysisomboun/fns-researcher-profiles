@@ -1,6 +1,7 @@
 import React from "react";
 
 import { Link, withRouter } from "react-router-dom";
+import withWidth from '@material-ui/core/withWidth';
 
 import {
   IconButton,
@@ -17,13 +18,13 @@ import {
   Divider, Badge
 } from "@material-ui/core";
 
-const ManageResearchHeader = ({ tab, props, children, requestCount }) => {
+const ManageResearchHeader = ({ tab, props, children, requestCount, width }) => {
   return (
     <>
       <Grid
         container
         spacing={0}
-        style={{ paddingTop: "24px",}}
+        style={{ paddingTop: "24px", paddingLeft: width === "lg" ? 180 : 0}}
       >
         <Grid item xs sm lg md />
 
@@ -115,4 +116,4 @@ const ManageResearchHeader = ({ tab, props, children, requestCount }) => {
   );
 };
 
-export default ManageResearchHeader;
+export default withWidth()(ManageResearchHeader);

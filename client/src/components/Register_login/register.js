@@ -395,7 +395,7 @@ class Register extends Component {
           style={{ marginTop: "40px", marginBottom: "40px" }}
         >
           <Grid item lg md sm xs />
-          <Grid item lg={6} md={7} sm={9} xs={11}>
+          <Grid item lg={5} md={8} sm={9} xs={11}>
             <Paper style={styles.container} elevation={0}>
               <Typography
                 variant="inherit"

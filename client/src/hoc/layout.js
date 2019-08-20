@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 
+import withWidth from '@material-ui/core/withWidth';
+
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { logoutUser, getRequestUserCount } from "../actions/user_actions";
@@ -10,6 +12,7 @@ import Footer from "../components/Header_footer/Footer";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import { withStyles } from "@material-ui/core/styles";
+import compose from 'recompose/compose';
 import {
   AppBar,
   Toolbar,
@@ -24,7 +27,6 @@ import {
   Drawer,
   List,
   ListItem,
-  ListItemAvatar,
   ListItemIcon,
   ListItemText,
   Divider,
@@ -66,6 +68,8 @@ import {
 
 import { colorPallete } from "../components/utils/misc";
 
+
+
 const styles = theme => ({
   root: {
     width: "100%"
@@ -81,13 +85,15 @@ const styles = theme => ({
   },
   menuButtonMain: {
 
-    [theme.breakpoints.up("sm")]: {
+    [theme.breakpoints.up("md")]: {
       marginLeft: -12,
     marginRight: 20,
+    display: "none"
     },
-    [theme.breakpoints.down("xs")]: {
+    [theme.breakpoints.down("sm")]: {
       marginLeft: 0,
     marginRight: 20,
+    display: ""
     },
   },
   title: {
@@ -231,11 +237,11 @@ const styles = theme => ({
     border: "'0' !importabt"
   },
   drawerPaper: {
-    [theme.breakpoints.up("sm")]: {
+    [theme.breakpoints.up("md")]: {
       width: drawerWidth
     },
-    [theme.breakpoints.down("xs")]: {
-      width: 300
+    [theme.breakpoints.down("sm")]: {
+      width: 340
     }
   },
   drawerHeader: {
@@ -259,14 +265,31 @@ const styles = theme => ({
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen
     }),
-    [theme.breakpoints.up("sm")]: {
+    [theme.breakpoints.up("md")]: {
       marginLeft: 0
     }
   },
 
   nested: {
     paddingLeft: theme.spacing.unit * 4
-  }
+  },
+  layout: {
+    minHeight: "75vh",
+  paddingTop: "64px",
+  // marginLeft: this.state.margin,
+  [theme.breakpoints.up("xl")]: {
+    marginLeft: 0
+  },
+    [theme.breakpoints.down("lg")]: {
+      marginLeft: 60
+    },
+    [theme.breakpoints.down("md")]: {
+      marginLeft: 240
+    },
+    [theme.breakpoints.down("sm")]: {
+      marginLeft: 240
+    },
+  },
 });
 
 String.prototype.toColor = function() {
@@ -288,12 +311,13 @@ class Layout extends Component {
   state = {
     anchorEl: null,
     mobileMoreAnchorEl: null,
-    open: false,
+    open: true,
     headerclass: "",
     openManageToolMenu: true,
     openReportsToolMenu: true,
     showHeader: false,
-    searchText: ""
+    searchText: "",
+    margin: 240
   };
 
   handleDrawerOpen = () => {
@@ -305,6 +329,21 @@ class Layout extends Component {
   };
 
   componentDidMount() {
+
+    // const width = this.props.width
+    // if (width === "xs" || width === "sm") {
+    //   this.setState({open: false })
+    // } else  {
+    //   this.setState({open: true })
+    // } 
+
+    // if (width === "lg" || width === "xl") {
+      
+    //   this.setState({margin: 60 })
+    // } else {
+    //   this.setState({margin: 240 })
+    // }
+
     if (
       this.props.user &&
       this.props.user.userData &&
@@ -329,6 +368,22 @@ class Layout extends Component {
           // console.log(response.data);
         });
       }
+    }
+
+    if (prevProps.width !== this.props.width) {
+      const width = this.props.width
+        if (width === "xs" || width === "sm") {
+          this.setState({open: false })
+        } else  {
+          this.setState({open: true })
+        } 
+
+        if (width === "lg" || width === "xl") {
+
+          this.setState({margin: 60 })
+        } else {
+          this.setState({margin: 240 })
+        }
     }
   }
 
@@ -499,7 +554,7 @@ class Layout extends Component {
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
     const { open } = this.state;
-
+    console.log(`width: ${this.props.width}`)
     const renderMenu = (
       <Menu
         anchorEl={anchorEl}
@@ -697,14 +752,16 @@ class Layout extends Component {
               })}
               style={{
                 background: "white",
-                boxShadow: "none"
-                // zIndex: 1201
+                boxShadow: "none",
+                // zIndex: 1201,
+                
               }}
             >
               <Toolbar
                 // disableGutters={!open}
                 variant="regular"
-                style={{ height: "64px" }}
+                style={{ height: "64px", paddingLeft: "16px",
+                paddingRight: "16px" }}
               >
                 {!this.props.location.pathname.startsWith("/search") ? (
                   <>
@@ -903,7 +960,7 @@ class Layout extends Component {
                 ) : null}
               </Toolbar>
             </AppBar>
-            <Hidden xsDown>
+            <Hidden smDown>
               <Drawer
                 className={classes.drawer}
                 variant="persistent"
@@ -913,7 +970,8 @@ class Layout extends Component {
                   paper: classes.drawerPaper
                 }}
                 style={{
-                  border: "0 !important"
+                  border: "0 !important",
+                  transition: "1s"
                 }}
               >
                 <div className={classes.drawerHeader} />
@@ -1410,7 +1468,7 @@ class Layout extends Component {
               </Drawer>
             </Hidden>
 
-            <Hidden smUp>
+            <Hidden mdUp>
               <Drawer
                 className={classes.drawer}
                 variant="temporary"
@@ -1420,7 +1478,8 @@ class Layout extends Component {
                   paper: classes.drawerPaper
                 }}
                 style={{
-                  border: "0 !important"
+                  border: "0 !important",
+                  transition: "1s"
                 }}
                 onClose={this.handleDrawerClose}
               >
@@ -1437,7 +1496,7 @@ class Layout extends Component {
                     style={{
                       height: "100%",
                       paddingTop: "22px",
-                      paddingBottom: "32px"
+                      
                     }}
                     alignItems="center"
                   >
@@ -1992,7 +2051,13 @@ class Layout extends Component {
           })}
           style={{ padding: 0 }}
         >
-          <div className="page_container" style={{ marginLeft: drawerWidth }} open={this.state.open}>
+        {
+          console.log(this.props.width)
+
+          // <div className={classes.layout} style={{ marginLeft: drawerWidth }} open={this.state.open}></div>
+        }
+          <div className={classes.layout} open={this.state.open}>
+         
             {this.props.children}
           </div>
         </main>
@@ -2004,7 +2069,8 @@ class Layout extends Component {
 
 Layout.propTypes = {
   classes: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired
+  theme: PropTypes.object.isRequired,
+  width: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = state => {
@@ -2015,6 +2081,16 @@ const mapStateToProps = state => {
 
 // export default withStyles(styles, { withTheme: true })(Layout);
 // export default withRouter(connect(mapStateToProps)(withStyles(styles)(Layout)));
-export default withRouter(
-  connect(mapStateToProps)(withStyles(styles, { withTheme: true })(Layout))
-);
+// export default withRouter(
+//   connect(mapStateToProps)(withStyles(styles, { withTheme: true })(Layout))
+// );
+
+const enhance = compose(
+  withRouter,
+  withWidth(),
+  withStyles(styles, { withTheme: true }),
+  // withWidth(),
+  connect(mapStateToProps, null),
+)
+
+export default enhance(Layout);

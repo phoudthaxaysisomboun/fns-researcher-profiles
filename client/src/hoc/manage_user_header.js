@@ -17,13 +17,13 @@ import {
   Divider, Badge
 } from "@material-ui/core";
 
-const ManageUserHeader = ({ tab, props, children, requestCount }) => {
+const ManageUserHeader = ({ tab, props, children, requestCount, width }) => {
   return (
     <>
       <Grid
         container
         spacing={0}
-        style={{ paddingTop: "24px",}}
+        style={{ paddingTop: "24px", paddingLeft: width === "lg" || width === "xl" ? 180 : 0}}
       >
         <Grid item xs sm lg md />
 

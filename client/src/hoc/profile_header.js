@@ -59,7 +59,8 @@ const ProfileHeader = ({
   openShareDialog,
   openAddResearchDialog,
   openEditName,
-  openUpdateDegree
+  openUpdateDegree,
+  width
 }) => {
   const userData = { ...props.user.userData };
   const profile = { ...props.user.userDetail };
@@ -327,12 +328,13 @@ const ProfileHeader = ({
   };
   return (
     <Grid container>
+ 
       <Grid item xs={12}>
 
 
       <Grid container>
             <Grid item xs sm lg md />
-            <Grid item xs={10} sm={10} lg={8} md={10} style={{paddingTop: "24px",borderRadius: 0,
+            <Grid item xs={11} sm={10} lg={8} md={11} style={{paddingTop: "24px",borderRadius: 0,
             boxShadow: "none",
             border: "1px solid #d8d8d8",
             borderLeft: 0,

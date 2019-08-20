@@ -172,10 +172,10 @@ class Feed extends Component {
       {console.log(this.props)}
         <Grid container>
           <Grid item xs sm lg md />
-          <Grid item xs={11} sm={11} lg={9} md={11}>
+          <Grid item xs={11} sm={11} lg={8} md={11}>
           {this.props.user && this.props.research.feed ?
-            <Grid container spacing={32}>
-              <Grid item xs={12} lg={7} sm={12} md={6}>
+            <Grid container spacing={16}>
+              <Grid item xs={12} lg={7} sm={12} md={12}>
                 <FeedCard
                   userResearch={
                     this.props.user && this.props.research.feed
@@ -192,7 +192,7 @@ class Feed extends Component {
                   comment={id => this.comment(id)}
                 />
               </Grid>
-              <Hidden smDown>
+              <Hidden mdDown>
               <Grid item xs lg sm md >
                 <SuggestionsCard
                   userData={this.props.user.userData}
@@ -217,7 +217,7 @@ class Feed extends Component {
                 boxShadow: "none",
                 border: "1px solid #d8d8d8",
                 marginTop: "24px",
-                maxWidth: "700px"
+         
               }}
             >
             <CircularProgress style={{color: "#909090", margin: "20px"}} thickness={5}  size={30} variant="indeterminate"/>
