@@ -21,18 +21,19 @@ import {
 
 import {colorPallete} from "../../utils/misc"
 
-String.prototype.toColor = function() {
-	var colors = colorPallete
-	
-    var hash = 0;
-	if (this.length === 0) return hash;
-    for (var i = 0; i < this.length; i++) {
-        hash = this.charCodeAt(i) + ((hash << 5) - hash);
-        hash = hash & hash;
-    }
-    hash = ((hash % colors.length) + colors.length) % colors.length;
-    return colors[hash];
-}
+const toColor = (str) => {
+  var colors = colorPallete;
+
+  var hash = 0;
+  if (str.length === 0) return hash;
+  for (var i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    hash = hash & hash;
+  }
+  hash = ((hash % colors.length) + colors.length) % colors.length;
+  return colors[hash];
+};
+
 
 const LoadMoreFollowingCard = ({
   userData,
@@ -167,9 +168,9 @@ const LoadMoreFollowingCard = ({
                           style={{
                             width: "46px",
                             height: "46px",
-                            backgroundColor: `${`${followings.name}${
+                            backgroundColor: toColor(`${followings.name}${
                               followings.lastname
-                            }`.toColor()}`,
+                            }`),
                             fontFamily: "'Noto Sans Lao UI', sans serif",
                             fontWeight: "500"
                           }}

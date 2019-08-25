@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+// import React, { Component } from "react";
 
 export const validate = (element, formdata = []) => {
   let error = [true, ""];

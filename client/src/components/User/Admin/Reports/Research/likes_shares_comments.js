@@ -23,19 +23,11 @@ import {
   Toolbar,
   Typography,
   Paper,
-  Checkbox,
   IconButton,
   Tooltip,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Button,
   CircularProgress,
   MenuItem,
   InputLabel,
-  OutlinedInput,
   Select,
   FormControl,
   Input,
@@ -47,8 +39,8 @@ import { SaveAltOutlined } from "@material-ui/icons";
 import { lighten } from "@material-ui/core/styles/colorManipulator";
 
 import {
-  clearAllResearchersListsReports,
-  getAllResearchersListsReports,
+  // clearAllResearchersListsReports,
+  // getAllResearchersListsReports,
   getDepartments
 } from "../../../../../actions/user_actions";
 
@@ -257,7 +249,7 @@ class EnhancedTableToolbar extends React.Component {
   render() {
     const {
       numSelected,
-      selected,
+      // selected,
       classes,
       researchersCount,
       departments,

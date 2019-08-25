@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
 import FormField from "../../utils/Form/formfield";
-import moment from "moment";
+// import moment from "moment";
 import {
   update,
   generateData,
@@ -9,24 +9,19 @@ import {
   populateOptionFields
 } from "../../utils/Form/formActions";
 import {
-  FormControl,
   Grid,
   Button,
   Typography,
   Dialog,
   DialogTitle,
-  Divider,
   DialogContent,
-  FormControlLabel,
   FormHelperText,
   IconButton,
-  TextField,
-  Checkbox
 } from "@material-ui/core";
 
 import { CloseOutlined } from "@material-ui/icons";
 
-import { updateProfileDescription, getCountry, updateDegree, getDegrees, getDepartments } from "../../../actions/user_actions";
+import { updateDegree, getDegrees } from "../../../actions/user_actions";
 
 import { connect } from "react-redux";
 

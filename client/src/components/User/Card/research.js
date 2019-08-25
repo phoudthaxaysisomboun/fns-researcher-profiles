@@ -10,49 +10,41 @@ import moment from "moment";
 
 import {UPLOADS_SERVER} from "../../../components/utils/misc"
 
-import { PDFReader, MobilePDFReader } from "reactjs-pdf-reader";
+import { PDFReader } from "reactjs-pdf-reader";
 
 import {
   Grid,
   Paper,
   Avatar,
   Divider,
-  Link,
   Button,
   Typography,
   IconButton,
   LinearProgress,
-  Chip,
-  Fab
 } from "@material-ui/core";
 
 import {
-  CheckOutlined,
   ListOutlined,
-  PersonAddOutlined,
-  CommentOutlined,
   ModeCommentOutlined,
   ReplyOutlined,
-  FavoriteOutlined,
   FavoriteBorderOutlined,
-  MoreVertOutlined,
   AddOutlined
 } from "@material-ui/icons";
 
 import {colorPallete} from "../../utils/misc"
 
-String.prototype.toColor = function() {
-	var colors = colorPallete
-	
-    var hash = 0;
-	if (this.length === 0) return hash;
-    for (var i = 0; i < this.length; i++) {
-        hash = this.charCodeAt(i) + ((hash << 5) - hash);
-        hash = hash & hash;
-    }
-    hash = ((hash % colors.length) + colors.length) % colors.length;
-    return colors[hash];
-}
+const toColor = (str) => {
+  var colors = colorPallete;
+
+  var hash = 0;
+  if (str.length === 0) return hash;
+  for (var i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    hash = hash & hash;
+  }
+  hash = ((hash % colors.length) + colors.length) % colors.length;
+  return colors[hash];
+};
 
 
 const styles = {
@@ -279,9 +271,9 @@ const ResearchCard = ({ userData, userDetail, userResearch, loading, openAddRese
                                   style={{
                                     width: "18px",
                                     height: "18px",
-                                    backgroundColor: `${`${value.name}${
+                                    backgroundColor: toColor(`${value.name}${
                                       value.lastname
-                                    }`.toColor()}`,
+                                    }`),
                                     fontFamily:
                                       "'Noto Sans Lao UI', sans serif",
                                     fontWeight: "normal",

@@ -11,14 +11,16 @@ import ResearchCard from "../Home/Card/research";
 
 import { withRouter } from "react-router-dom";
 
-import { getProfileAndResearchCount,like, unlike, clearLike } from "../../actions/user_actions";
+import { getProfileAndResearchCount,like, unlike, 
+  // clearLike
+ } from "../../actions/user_actions";
 
 import {
   searchResearches,
   clearSearchResearches,
   addLike,
   removeLike,
-  clearLikeResearch
+  // clearLikeResearch
 } from "../../actions/research_actions";
 let query = ""
 class ResearchSearch extends Component {

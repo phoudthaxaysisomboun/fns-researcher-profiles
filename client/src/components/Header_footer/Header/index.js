@@ -8,11 +8,10 @@ import { logoutUser } from "../../../actions/user_actions";
 
 import {UPLOADS_SERVER} from "../../../components/utils/misc"
 
-import classNames from 'classnames';
+// import classNames from 'classnames';
 
 import PropTypes from 'prop-types';
 
-import CssBaseline from '@material-ui/core/CssBaseline';
 
 import {
   AppBar,
@@ -41,25 +40,23 @@ import {
   SettingsOutlined,
   ExitToAppOutlined,
   AddOutlined,
-  PersonOutlined,ChevronLeftOutlined, ChevronRightOutlined, InboxOutlined, MailOutlineOutlined
+  PersonOutlined,
 } from "@material-ui/icons";
 
 import { colorPallete } from "../../../components/utils/misc";
 
-String.prototype.toColor = function() {
+const toColor = (str) => {
   var colors = colorPallete;
 
   var hash = 0;
-  if (this.length === 0) return hash;
-  for (var i = 0; i < this.length; i++) {
-    hash = this.charCodeAt(i) + ((hash << 5) - hash);
+  if (str.length === 0) return hash;
+  for (var i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
     hash = hash & hash;
   }
   hash = ((hash % colors.length) + colors.length) % colors.length;
   return colors[hash];
 };
-
-const drawerWidth = 240;
 
 const styles = theme => ({
   root: {
@@ -236,9 +233,9 @@ class Header extends Component {
                   style={{
                     width: "32px",
                     height: "32px",
-                    backgroundColor: `${`${this.props.user.userData.name}${
+                    backgroundColor: toColor(`${this.props.user.userData.name}${
                       this.props.user.userData.lastname
-                    }`.toColor()}`,
+                    }`),
                     fontFamily: "'Noto Sans Lao UI', sans serif",
                     fontSize: "14px",
                     fontWeight: "500"
@@ -469,7 +466,7 @@ class Header extends Component {
       }
     };
 
-    const { open } = this.state;
+    // const { open } = this.state;
 
     return (
       <>

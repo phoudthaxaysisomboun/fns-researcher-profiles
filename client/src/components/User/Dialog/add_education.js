@@ -4,24 +4,19 @@ import FormField from "../../utils/Form/formfield";
 import moment from "moment";
 import {
   update,
-  generateData,
+  // generateData,
   isFormValid,
   populateOptionFields
 } from "../../utils/Form/formActions";
 import {
-  FormControl,
   Grid,
   Button,
   Typography,
   Dialog,
   DialogTitle,
-  Divider,
   DialogContent,
-  FormControlLabel,
   FormHelperText,
   IconButton,
-  TextField,
-  Checkbox
 } from "@material-ui/core";
 
 import { CloseOutlined } from "@material-ui/icons";

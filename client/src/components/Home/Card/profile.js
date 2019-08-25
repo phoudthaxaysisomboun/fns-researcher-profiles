@@ -1,6 +1,4 @@
 import React from "react";
-import AutoLinkText from "react-autolink-text2";
-import ReactTextFormat from "react-text-format";
 
 import LinesEllipsis from "react-lines-ellipsis";
 
@@ -8,18 +6,16 @@ import NumberFormat from "react-number-format";
 import {UPLOADS_SERVER} from "../../../components/utils/misc"
 
 import {
-  IconButton,
   Grid,
   Paper,
   Typography,
   Button,
-  LinearProgress,
+  // LinearProgress,
   Avatar,
   CircularProgress
 } from "@material-ui/core";
 
 import {
-  EditOutlined,
   CheckOutlined,
   PersonAddOutlined,
   ReplyOutlined
@@ -29,21 +25,17 @@ import { colorPallete } from "../../utils/misc";
 
 import { Link } from "react-router-dom";
 
-String.prototype.toColor = function() {
+const toColor = (str) => {
   var colors = colorPallete;
 
   var hash = 0;
-  if (this.length === 0) return hash;
-  for (var i = 0; i < this.length; i++) {
-    hash = this.charCodeAt(i) + ((hash << 5) - hash);
+  if (str.length === 0) return hash;
+  for (var i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
     hash = hash & hash;
   }
   hash = ((hash % colors.length) + colors.length) % colors.length;
   return colors[hash];
-};
-
-const renderNoData = () => {
-  return <LinearProgress style={{ margin: "16px" }} />;
 };
 
 const ProfileCard = ({ resercher, user, runFollow,runUnfollow }) => {
@@ -52,6 +44,7 @@ const ProfileCard = ({ resercher, user, runFollow,runUnfollow }) => {
     let list = "";
     researchArea.map((value, index, array) => {
       researchArealabel.push(value);
+      return null
     });
     list = researchArealabel.join(" • ");
     console.log(list);
@@ -169,9 +162,7 @@ const ProfileCard = ({ resercher, user, runFollow,runUnfollow }) => {
                       style={{
                         width: "46px",
                         height: "46px",
-                        backgroundColor: `${`${value.name}${
-                          value.lastname
-                        }`.toColor()}`,
+                        backgroundColor: toColor(`${value.name}${value.lastname}`),
                         fontFamily: "'Noto Sans Lao UI', sans serif",
                         fontWeight: "500"
                       }}

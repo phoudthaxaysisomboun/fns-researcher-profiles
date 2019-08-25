@@ -1,19 +1,14 @@
 import React from "react";
 
-import { Link, withRouter } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import {
-  IconButton,
   Grid,
-  Fab,
-  Paper,
-  Avatar,
-  Button,
+  
   Tabs,
   Tab,
   Typography,
-  LinearProgress,
-  CircularProgress,
+
   Divider, Badge
 } from "@material-ui/core";
 

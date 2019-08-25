@@ -1,10 +1,6 @@
 import React from "react";
 import AutoLinkText from "react-autolink-text2";
-import ReactTextFormat from "react-text-format";
 
-import LinesEllipsis from "react-lines-ellipsis";
-
-import NumberFormat from "react-number-format";
 import { UPLOADS_SERVER } from "../../../components/utils/misc";
 
 import moment from "moment";
@@ -19,35 +15,28 @@ import {
   Menu,
   Avatar,
   CircularProgress,
-  TextField,
-  Link as MaterialUILink
+  TextField
 } from "@material-ui/core";
 
-import {
-  EditOutlined,
-  CheckOutlined,
-  PersonAddOutlined,
-  ReplyOutlined,
-
-  MoreVertOutlined
-} from "@material-ui/icons";
+import { MoreVertOutlined } from "@material-ui/icons";
 
 import { colorPallete } from "../../utils/misc";
 
 import { Link } from "react-router-dom";
 
-String.prototype.toColor = function() {
+const toColor = (str) => {
   var colors = colorPallete;
 
   var hash = 0;
-  if (this.length === 0) return hash;
-  for (var i = 0; i < this.length; i++) {
-    hash = this.charCodeAt(i) + ((hash << 5) - hash);
+  if (str.length === 0) return hash;
+  for (var i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
     hash = hash & hash;
   }
   hash = ((hash % colors.length) + colors.length) % colors.length;
   return colors[hash];
 };
+
 
 const styles = {
   chip: {
@@ -129,11 +118,13 @@ const CommentsCard = ({
         >
           <MenuItem
             style={{
-              fontFamily: "'Noto Sans Lao UI', sans-serif",
+              fontFamily: "'Roboto', 'Noto Sans Lao UI', sans-serif",
               fontWeight: 500
             }}
             selected={false}
-            onClick = {()=> {deleleComment()}}
+            onClick={() => {
+              deleleComment();
+            }}
           >
             <svg
               style={{ marginRight: "16px" }}
@@ -153,14 +144,13 @@ const CommentsCard = ({
 
           <MenuItem
             style={{
-              fontFamily: "'Noto Sans Lao UI', sans-serif",
+              fontFamily: "'Roboto', 'Noto Sans Lao UI', sans-serif",
               fontWeight: 500,
               display: "none"
             }}
             selected={true}
           />
         </Menu>
-
 
         <Menu
           className="menu"
@@ -180,11 +170,13 @@ const CommentsCard = ({
         >
           <MenuItem
             style={{
-              fontFamily: "'Noto Sans Lao UI', sans-serif",
+              fontFamily: "'Roboto', 'Noto Sans Lao UI', sans-serif",
               fontWeight: 500
             }}
             selected={false}
-            onClick = {()=> {deleleReply()}}
+            onClick={() => {
+              deleleReply();
+            }}
           >
             <svg
               style={{ marginRight: "16px" }}
@@ -204,7 +196,7 @@ const CommentsCard = ({
 
           <MenuItem
             style={{
-              fontFamily: "'Noto Sans Lao UI', sans-serif",
+              fontFamily: "'Roboto', 'Noto Sans Lao UI', sans-serif",
               fontWeight: 500,
               display: "none"
             }}
@@ -239,9 +231,7 @@ const CommentsCard = ({
                       user.profileImage[0] &&
                       user.profileImage[0].name ? (
                         <Avatar
-                          src={`${UPLOADS_SERVER}/images/${
-                            user.profileImage[0].name
-                          }`}
+                          src={`${UPLOADS_SERVER}/images/${user.profileImage[0].name}`}
                           alt="profile image"
                           style={{
                             width: "40px",
@@ -257,10 +247,9 @@ const CommentsCard = ({
                           style={{
                             width: "40px",
                             height: "40px",
-                            backgroundColor: `${`${user.name}${
-                              user.lastname
-                            }`.toColor()}`,
-                            fontFamily: "'Noto Sans Lao UI', sans serif",
+                            backgroundColor: toColor( `${user.name}${user.lastname}`),
+                            fontFamily:
+                              "'Roboto', 'Noto Sans Lao UI', sans-serif",
                             fontWeight: "500"
                           }}
                         >
@@ -275,53 +264,56 @@ const CommentsCard = ({
                     <Grid container>
                       <Grid item xs>
                         <Grid container>
-                        <form style={{ padding: 0, margin: 0, width: "100%" }} onSubmit={event => submitComment(event)}>
-                        
-                        <Grid item xs={12}>
-                            <TextField
-                              id="commentTextField"
-                              style={{ margin: 8 }}
-                              placeholder="ເພີ່ມຄໍາເຫັນໃຫ້ແກ່ຜົນງານນີ້"
-                              fullWidth
-                              multiline
-                              value={commentText}
-                              onChange={event => handleCommentTextChange(event)}
-                              margin="normal"
-                              InputLabelProps={{
-                                shrink: true
-                              }}
-                              autoFocus
-                            />
-                          </Grid>
-                          <Grid item xs={12} align="right">
-                            
-                            {commentText.trim() !== "" ? (
-                              <>
-                              <Button
-                              onClick={() => clearComment()}
-                              style={{ marginRight: "8px" }}
-                            >
-                              ຍົກເລີກ
-                            </Button>
-                            <Button variant="contained" color="primary" type="submit">
-                                ໃຫ້ຄໍາເຫັນ
-                              </Button>
-                              </>
-                              
-                            ) : (
-                              <Button
-                                disabled
-                                variant="contained"
-                                color="primary"
-                                
-                              >
-                                ໃຫ້ຄໍາເຫັນ
-                              </Button>
-                            )}
-                          </Grid>
-                        
-                        </form>
-                          
+                          <form
+                            style={{ padding: 0, margin: 0, width: "100%" }}
+                            onSubmit={event => submitComment(event)}
+                          >
+                            <Grid item xs={12}>
+                              <TextField
+                                id="commentTextField"
+                                style={{ margin: 8 }}
+                                placeholder="ເພີ່ມຄໍາເຫັນໃຫ້ແກ່ຜົນງານນີ້"
+                                fullWidth
+                                multiline
+                                value={commentText}
+                                onChange={event =>
+                                  handleCommentTextChange(event)
+                                }
+                                margin="normal"
+                                InputLabelProps={{
+                                  shrink: true
+                                }}
+                                autoFocus
+                              />
+                            </Grid>
+                            <Grid item xs={12} align="right">
+                              {commentText.trim() !== "" ? (
+                                <>
+                                  <Button
+                                    onClick={() => clearComment()}
+                                    style={{ marginRight: "8px" }}
+                                  >
+                                    ຍົກເລີກ
+                                  </Button>
+                                  <Button
+                                    variant="contained"
+                                    color="primary"
+                                    type="submit"
+                                  >
+                                    ໃຫ້ຄໍາເຫັນ
+                                  </Button>
+                                </>
+                              ) : (
+                                <Button
+                                  disabled
+                                  variant="contained"
+                                  color="primary"
+                                >
+                                  ໃຫ້ຄໍາເຫັນ
+                                </Button>
+                              )}
+                            </Grid>
+                          </form>
                         </Grid>
                       </Grid>
                     </Grid>
@@ -366,9 +358,7 @@ const CommentsCard = ({
                             value.user.profileImage[0] &&
                             value.user.profileImage[0].name ? (
                               <Avatar
-                                src={`${UPLOADS_SERVER}/images/${
-                                  value.user.profileImage[0].name
-                                }`}
+                                src={`${UPLOADS_SERVER}/images/${value.user.profileImage[0].name}`}
                                 alt="profile image"
                                 style={{
                                   width: "40px",
@@ -384,10 +374,9 @@ const CommentsCard = ({
                                 style={{
                                   width: "40px",
                                   height: "40px",
-                                  backgroundColor: `${`${value.user.name}${
-                                    value.user.lastname
-                                  }`.toColor()}`,
-                                  fontFamily: "'Noto Sans Lao UI', sans serif",
+                                  backgroundColor: toColor(`${value.user.name}${value.user.lastname}`),
+                                  fontFamily:
+                                    "'Roboto', 'Noto Sans Lao UI', sans-serif",
                                   fontWeight: "500"
                                 }}
                               >
@@ -472,19 +461,17 @@ const CommentsCard = ({
                                       style={{ marginTop: "10px" }}
                                     >
                                       <Button
-                                      onClick={(event) => {
-                                        openReplyTextField(
-                                          event,
-                                          value._id
-                                        );
-                                      }}
-                                   variant="outlined"
-                                      style={{padding: 0}}
+                                        onClick={event => {
+                                          openReplyTextField(event, value._id);
+                                        }}
+                                        variant="outlined"
+                                        style={{ padding: 0 }}
                                       >
                                         ຕອບກັບ
                                       </Button>
                                     </Grid>
-                                    {showReplyTextField && commentId === value._id ? (
+                                    {showReplyTextField &&
+                                    commentId === value._id ? (
                                       <Grid item xs={12}>
                                         <Grid item>
                                           <Paper
@@ -522,10 +509,7 @@ const CommentsCard = ({
                                                   user.profileImage[0] &&
                                                   user.profileImage[0].name ? (
                                                     <Avatar
-                                                      src={`${UPLOADS_SERVER}/images/${
-                                                        user.profileImage[0]
-                                                          .name
-                                                      }`}
+                                                      src={`${UPLOADS_SERVER}/images/${user.profileImage[0].name}`}
                                                       alt="profile image"
                                                       style={{
                                                         width: "24px",
@@ -541,13 +525,9 @@ const CommentsCard = ({
                                                       style={{
                                                         width: "24px",
                                                         height: "24px",
-                                                        backgroundColor: `${`${
-                                                          user.name
-                                                        }${
-                                                          user.lastname
-                                                        }`.toColor()}`,
+                                                        backgroundColor: toColor(`${user.name}${user.lastname}`),
                                                         fontFamily:
-                                                          "'Noto Sans Lao UI', sans serif",
+                                                          "'Roboto', 'Noto Sans Lao UI', sans-serif",
                                                         fontWeight: "500"
                                                       }}
                                                     >
@@ -566,79 +546,89 @@ const CommentsCard = ({
                                                 <Grid container>
                                                   <Grid item xs>
                                                     <Grid container>
-                                                    <form style={{ padding: 0, margin: 0, width: "100%" }} onSubmit={event => submitReply(event)}>
-                                                    <Grid item xs={12}>
-                                                        <TextField
-                                                          id="replyTextField"
-                                                          style={{ margin: 8 }}
-                                                          placeholder="ໃສ່ຄໍາໃຫ້ແກ່ຄໍາເຫັນນີ້"
-                                                          fullWidth
-                                                          value={replyValue}
-                                                          onChange={event =>
-                                                            handleReplyTextChange(
-                                                              event
-                                                            )
-                                                          }
-                                                          multiline
-                                                          margin="normal"
-                                                          InputLabelProps={{
-                                                            shrink: true
-                                                          }}
-                                                          autoFocus
-                                                        />
-                                                      </Grid>
-                                                      <Grid
-                                                        item
-                                                        xs={12}
-                                                        align="right"
+                                                      <form
+                                                        style={{
+                                                          padding: 0,
+                                                          margin: 0,
+                                                          width: "100%"
+                                                        }}
+                                                        onSubmit={event =>
+                                                          submitReply(event)
+                                                        }
                                                       >
-                                                     
-                                                        {replyValue.trim() !==
-                                                        "" ? (
-                                                          <>
-                                                          <Button
-                                                          onClick={() =>
-                                                            cancelReply()
-                                                          }
-                                                          style={{
-                                                            marginRight: "8px"
-                                                          }}
+                                                        <Grid item xs={12}>
+                                                          <TextField
+                                                            id="replyTextField"
+                                                            style={{
+                                                              margin: 8
+                                                            }}
+                                                            placeholder="ໃສ່ຄໍາໃຫ້ແກ່ຄໍາເຫັນນີ້"
+                                                            fullWidth
+                                                            value={replyValue}
+                                                            onChange={event =>
+                                                              handleReplyTextChange(
+                                                                event
+                                                              )
+                                                            }
+                                                            multiline
+                                                            margin="normal"
+                                                            InputLabelProps={{
+                                                              shrink: true
+                                                            }}
+                                                            autoFocus
+                                                          />
+                                                        </Grid>
+                                                        <Grid
+                                                          item
+                                                          xs={12}
+                                                          align="right"
                                                         >
-                                                          ຍົກເລີກ
-                                                        </Button>
-                                                          <Button
-                                                            variant="contained"
-                                                            color="primary"
-                                                            type="submit"
-                                                          >
-                                                            ໃຫ້ຄໍາຕອບກັບ
-                                                          </Button>
-                                                          </>
-                                                        ) : (
-                                                          <>
-                                                          <Button
-                                                          onClick={() =>
-                                                            cancelReply()
-                                                          }
-                                                          style={{
-                                                            marginRight: "8px"
-                                                          }}
-                                                        >
-                                                          ຍົກເລີກ
-                                                        </Button>
-                                                          <Button
-                                                            disabled
-                                                            variant="contained"
-                                                            color="primary"
-                                                          >
-                                                            ໃຫ້ຄໍາຕອບກັບ
-                                                          </Button>
-                                                          </>
-                                                        )}
-                                                      </Grid>
-                                                    
-                                                    </form>
-                                                      
+                                                          {replyValue.trim() !==
+                                                          "" ? (
+                                                            <>
+                                                              <Button
+                                                                onClick={() =>
+                                                                  cancelReply()
+                                                                }
+                                                                style={{
+                                                                  marginRight:
+                                                                    "8px"
+                                                                }}
+                                                              >
+                                                                ຍົກເລີກ
+                                                              </Button>
+                                                              <Button
+                                                                variant="contained"
+                                                                color="primary"
+                                                                type="submit"
+                                                              >
+                                                                ໃຫ້ຄໍາຕອບກັບ
+                                                              </Button>
+                                                            </>
+                                                          ) : (
+                                                            <>
+                                                              <Button
+                                                                onClick={() =>
+                                                                  cancelReply()
+                                                                }
+                                                                style={{
+                                                                  marginRight:
+                                                                    "8px"
+                                                                }}
+                                                              >
+                                                                ຍົກເລີກ
+                                                              </Button>
+                                                              <Button
+                                                                disabled
+                                                                variant="contained"
+                                                                color="primary"
+                                                              >
+                                                                ໃຫ້ຄໍາຕອບກັບ
+                                                              </Button>
+                                                            </>
+                                                          )}
+                                                        </Grid>
+                                                      </form>
                                                     </Grid>
                                                   </Grid>
                                                 </Grid>
@@ -646,7 +636,6 @@ const CommentsCard = ({
                                             </Grid>
                                           </Paper>
                                         </Grid>
-                                        
                                       </Grid>
                                     ) : null}
                                   </>
@@ -714,11 +703,7 @@ const CommentsCard = ({
                                                     value.user.profileImage[0]
                                                       .name ? (
                                                       <Avatar
-                                                        src={`${UPLOADS_SERVER}/images/${
-                                                          reply.user
-                                                            .profileImage[0]
-                                                            .name
-                                                        }`}
+                                                        src={`${UPLOADS_SERVER}/images/${reply.user.profileImage[0].name}`}
                                                         alt="profile image"
                                                         style={{
                                                           width: "24px",
@@ -735,13 +720,9 @@ const CommentsCard = ({
                                                         style={{
                                                           width: "24px",
                                                           height: "24px",
-                                                          backgroundColor: `${`${
-                                                            reply.user.name
-                                                          }${
-                                                            reply.user.lastname
-                                                          }`.toColor()}`,
+                                                          backgroundColor: toColor(`${reply.user.name}${reply.user.lastname}`),
                                                           fontFamily:
-                                                            "'Noto Sans Lao UI', sans serif",
+                                                            "'Roboto', 'Noto Sans Lao UI', sans-serif",
                                                           fontWeight: "500"
                                                         }}
                                                       >
@@ -762,16 +743,18 @@ const CommentsCard = ({
                                                       <Grid container>
                                                         <Grid item xs={11}>
                                                           <Link
-                                                            to={`/profile/${
-                                                              reply.user._id
-                                                            }`}
+                                                            to={`/profile/${reply.user._id}`}
                                                             style={{
                                                               textDecoration:
-                                                                "none"
+                                                                "none",
+                                                              fontFamily:
+                                                                "'Roboto', 'Noto Sans Lao UI', sans-serif"
                                                             }}
                                                           >
                                                             <Typography
                                                               style={{
+                                                                fontFamily:
+                                                                  "'Roboto', 'Noto Sans Lao UI', sans-serif",
                                                                 fontWeight:
                                                                   "600",
                                                                 color:
@@ -781,6 +764,7 @@ const CommentsCard = ({
                                                                 display:
                                                                   "inline"
                                                               }}
+                                                              variant="inherit"
                                                             >
                                                               {reply.user.name}{" "}
                                                               {
@@ -823,7 +807,8 @@ const CommentsCard = ({
                                                           user._id ===
                                                             reply.user._id ||
                                                           user._id ===
-                                                            research.uploader._id ? (
+                                                            research.uploader
+                                                              ._id ? (
                                                             <IconButton
                                                               style={{
                                                                 padding: 0

@@ -3,7 +3,7 @@ import classNames from "classnames";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 
-import { Link, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 
 import compose from 'recompose/compose';
 import withWidth from '@material-ui/core/withWidth';
@@ -41,9 +41,6 @@ import {
 import {
   DeleteOutline,
   FilterListOutlined,
-  EditOutlined,
-  VisibilityOutlined,
-  CancelOutlined,
   CloseOutlined,
   CheckCircleOutlineOutlined
 } from "@material-ui/icons";
@@ -54,7 +51,7 @@ import {
   getRequestUser,
   confirmUser,
   removeUser,
-  cancelUsers
+  // cancelUsers
 } from "../../../actions/user_actions";
 // function createData(name, calories, fat, carbs, protein) {
 //   counter += 1;

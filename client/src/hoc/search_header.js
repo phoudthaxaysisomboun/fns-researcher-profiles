@@ -3,18 +3,18 @@ import React from "react";
 import {
   IconButton,
   Grid,
-  Fab,
+  
   Paper,
-  Avatar,
-  Button,
+  
+  
   Tabs,
   Tab,
   Typography,
-  LinearProgress,
-  CircularProgress,
-  Hidden,
+  
+  
+  
   InputBase,
-  Divider
+  
 } from "@material-ui/core";
 
 import PropTypes from "prop-types";
@@ -22,38 +22,15 @@ import { withStyles } from "@material-ui/core/styles";
 
 import NumberFormat from "react-number-format";
 
-import moment from "moment";
-
-import LinesEllipsis from "react-lines-ellipsis";
-
 import { Link } from "react-router-dom";
 
 import {
-  Mail,
-  Phone,
-  PersonAddOutlined,
-  AddOutlined,
-  EditOutlined,
-  ReplyOutlined,
-  CheckOutlined,
-  Web,
-  PublicOutlined,
-  ListOutlined,
-  CommentOutlined,
-  ModeCommentOutlined,
-  FavoriteOutlined,
-  FavoriteBorderOutlined,
-  MoreVertOutlined,
-  ForwardOutlined,
-  MoreHorizOutlined,
-  RemoveRedEyeOutlined,
-  MenuOutlined,
-  DirectionsOutlined,
+
   SearchOutlined,
   CloseOutlined
 } from "@material-ui/icons";
 
-import { Link as ReactLink, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 
 const styles = {
   chip: {

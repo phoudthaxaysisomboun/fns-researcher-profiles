@@ -14,9 +14,9 @@ import moment from "moment";
 import { connect } from "react-redux";
 
 import {
-  getAllResearchersReports,
+  // getAllResearchersReports,
   getDepartments,
-  clearAllResearchersReports
+  // clearAllResearchersReports
 } from "../../../../../actions/user_actions";
 import {
   getAllResearchesNumbersReports
@@ -28,25 +28,17 @@ import {
   TableBody,
   TableCell,
   TableHead,
-  TablePagination,
+  // TablePagination,
   TableRow,
   TableSortLabel,
   Toolbar,
   Typography,
   Paper,
-  Checkbox,
+  // Checkbox,
   IconButton,
   Tooltip,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Button,
-  FormHelperText,
   MenuItem,
   InputLabel,
-  OutlinedInput,
   Select,
   FormControl,
   CircularProgress,
@@ -55,10 +47,6 @@ import {
 } from "@material-ui/core";
 
 import {
-  DeleteOutline,
-  FilterListOutlined,
-  EditOutlined,
-  VisibilityOutlined,
   SaveAltOutlined
 } from "@material-ui/icons";
 
@@ -69,7 +57,7 @@ import ReactExport from "react-data-export";
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
-const ExcelRow = ReactExport.ExcelFile.ExcelRow;
+// const ExcelRow = ReactExport.ExcelFile.ExcelRow;
 
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -109,11 +97,11 @@ class EnhancedTableHead extends React.Component {
 
   render() {
     const {
-      onSelectAllClick,
+      // onSelectAllClick,
       order,
-      orderBy,
-      numSelected,
-      rowCount,
+      // orderBy,
+      // numSelected,
+      // rowCount,
       rows
     } = this.props;
 

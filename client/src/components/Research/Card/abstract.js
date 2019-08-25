@@ -1,12 +1,11 @@
 import React from "react";
 import AutoLinkText from "react-autolink-text2";
-import ReactTextFormat from "react-text-format";
 import {
   IconButton,
   Grid,
   Paper,
   Typography,
-  LinearProgress,
+
   CircularProgress
 } from "@material-ui/core";
 

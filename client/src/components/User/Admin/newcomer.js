@@ -18,9 +18,9 @@ import FormField from "../../utils/Form/formfield";
 
 import {
   update,
-  generateData,
+  // generateData,
   isFormValid,
-  populateOptionFields
+  // populateOptionFields
 } from "../../utils/Form/formActions";
 
 import { connect } from "react-redux";
@@ -54,9 +54,6 @@ import {
   FilterListOutlined,
   EditOutlined,
   VisibilityOutlined,
-  CancelOutlined,
-  CloseOutlined,
-  CheckCircleOutlineOutlined
 } from "@material-ui/icons";
 
 import { lighten } from "@material-ui/core/styles/colorManipulator";

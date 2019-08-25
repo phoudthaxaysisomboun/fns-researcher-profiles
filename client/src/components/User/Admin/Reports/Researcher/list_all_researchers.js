@@ -3,19 +3,19 @@ import classNames from "classnames";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 
-import Chart from 'react-apexcharts'
 
-import { Link, withRouter } from "react-router-dom";
+
+import { withRouter } from "react-router-dom";
 
 import {
-    XYPlot,
-    XAxis,
-    YAxis,
-    VerticalGridLines,
-    HorizontalGridLines,
-    VerticalBarSeries,
-    VerticalBarSeriesCanvas,
-    LabelSeries
+    // XYPlot,
+    // XAxis,
+    // YAxis,
+    // VerticalGridLines,
+    // HorizontalGridLines,
+    // VerticalBarSeries,
+    // VerticalBarSeriesCanvas,
+    // LabelSeries
   } from "react-vis"
 
 import moment from "moment";
@@ -36,19 +36,11 @@ import {
   Toolbar,
   Typography,
   Paper,
-  Checkbox,
   IconButton,
   Tooltip,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Button,
   CircularProgress,
   MenuItem,
   InputLabel,
-  OutlinedInput,
   Select,
   FormControl,
   Input,
@@ -63,7 +55,7 @@ import { lighten } from "@material-ui/core/styles/colorManipulator";
 
 import {
 
-  clearAllResearchersListsReports,
+  // clearAllResearchersListsReports,
   getAllResearchersListsReports,
   getDepartments
 } from "../../../../../actions/user_actions";
@@ -77,16 +69,7 @@ import ReactExport from "react-data-export";
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
-const ExcelRow = ReactExport.ExcelFile.ExcelRow;
 
-const greenData = [{x: 'A', y: 10}, {x: 'B', y: 5}, {x: 'C', y: 15}];
-
-const blueData = [{x: 'A', y: 12}, {x: 'B', y: 2}, {x: 'C', y: 11}];
-
-const labelData = greenData.map((d, idx) => ({
-  x: d.x,
-  y: Math.max(greenData[idx].y, blueData[idx].y)
-}));
 
 
 function desc(a, b, orderBy) {
@@ -259,7 +242,7 @@ class EnhancedTableToolbar extends React.Component {
   render() {
     const {
         numSelected,
-        selected,
+        // selected,
         classes,
         researchersCount,
         departments,
@@ -690,9 +673,9 @@ class AllResearchersList extends React.Component {
     const emptyRows =
       rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
-      const {useCanvas} = this.state;
-    const content = useCanvas ? 'TOGGLE TO SVG' : 'TOGGLE TO CANVAS';
-    const BarSeries = useCanvas ? VerticalBarSeriesCanvas : VerticalBarSeries;
+      // const {useCanvas} = this.state;
+    // const content = useCanvas ? 'TOGGLE TO SVG' : 'TOGGLE TO CANVAS';
+    // const BarSeries = useCanvas ? VerticalBarSeriesCanvas : VerticalBarSeries;
 
     return (
       <>

@@ -1,21 +1,17 @@
 import React from "react";
 
-import { Link, withRouter } from "react-router-dom";
+import { Link } from "react-router-dom";
 import withWidth from '@material-ui/core/withWidth';
 
 import {
-  IconButton,
+  
   Grid,
-  Fab,
-  Paper,
-  Avatar,
-  Button,
+  
   Tabs,
   Tab,
   Typography,
-  LinearProgress,
-  CircularProgress,
-  Divider, Badge
+  
+  Divider, 
 } from "@material-ui/core";
 
 const ManageResearchHeader = ({ tab, props, children, requestCount, width }) => {

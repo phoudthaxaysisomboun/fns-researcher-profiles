@@ -3,8 +3,6 @@ import React, { Component } from "react";
 import ResearchHeader from "../../hoc/research_header";
 import { connect } from "react-redux";
 
-import PropTypes from "prop-types";
-
 
 
 import {
@@ -21,7 +19,9 @@ import {
   DialogActions
 } from "@material-ui/core";
 
-import { like, unlike, clearLike } from "../../actions/user_actions";
+import { like, unlike, 
+  // clearLike
+ } from "../../actions/user_actions";
 
 import {
   getResearchForCard,
@@ -36,7 +36,7 @@ import {
   addShareCount
 } from "../../actions/research_actions";
 
-import { withSize, SizeMe } from 'react-sizeme'
+import { SizeMe } from 'react-sizeme'
 
 // import { CloseOutlined } from "@material-ui/icons";
 import { LOCALHOST } from "../utils/misc";
@@ -52,7 +52,7 @@ import { ObjectID } from "bson";
 
 
 let shareUrl;
-let size = 0
+// let size = 0
 
 class Research extends Component {
 
@@ -288,18 +288,7 @@ class Research extends Component {
     }
   }
 
-  setSize (width) {
 
-    
-
-    if (false) {
-      // this.setState({
-      //   canvasSize: Math.round(width)
-      // })
-    }
-
-    size = Math.round(width)
-  }
 
   render() {
     return (

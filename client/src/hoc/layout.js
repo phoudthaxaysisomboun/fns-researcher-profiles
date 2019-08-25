@@ -9,7 +9,7 @@ import { UPLOADS_SERVER } from "../components/utils/misc";
 
 import Footer from "../components/Header_footer/Footer";
 
-import { enableDynamicTheme, disableDynamicTheme } from "darkreader-api"
+// import { enableDynamicTheme, disableDynamicTheme } from "darkreader-api"
 
 import PropTypes from "prop-types";
 import classNames from "classnames";
@@ -51,18 +51,16 @@ import {
   ExitToAppOutlined,
   AddOutlined,
   PersonOutlined,
-  ChevronLeftOutlined,
-  ChevronRightOutlined,
+
   ExpandLessOutlined,
   ExpandMoreOutlined,
   HomeOutlined,
-  Home,
-  Person,
+
   PersonOutlineOutlined,
-  Description,
+
   DescriptionOutlined,
   SearchOutlined,
-  BuildOutlined,
+
   SettingsApplicationsOutlined,
   AccountCircleOutlined,
   PollOutlined
@@ -294,18 +292,19 @@ const styles = theme => ({
   },
 });
 
-String.prototype.toColor = function() {
+const toColor = (str) => {
   var colors = colorPallete;
 
   var hash = 0;
-  if (this.length === 0) return hash;
-  for (var i = 0; i < this.length; i++) {
-    hash = this.charCodeAt(i) + ((hash << 5) - hash);
+  if (str.length === 0) return hash;
+  for (var i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
     hash = hash & hash;
   }
   hash = ((hash % colors.length) + colors.length) % colors.length;
   return colors[hash];
 };
+
 
 const drawerWidth = 240;
 
@@ -498,9 +497,9 @@ class Layout extends Component {
                     style={{
                       width: "32px",
                       height: "32px",
-                      backgroundColor: `${`${this.props.user.userData.name}${
+                      backgroundColor: toColor(`${this.props.user.userData.name}${
                         this.props.user.userData.lastname
-                      }`.toColor()}`,
+                      }`),
                       fontFamily: "'Noto Sans Lao UI', sans serif",
                       fontSize: "14px",
                       fontWeight: "500"
@@ -807,7 +806,7 @@ class Layout extends Component {
                       noWrap
                       style={{
                         fontWeight: "bold",
-                        fontFamily: "'Roboto', sans serif"
+                        // fontFamily: "'Roboto', sans serif"
                       }}
                     >
                       FNS Researcher Profiles
@@ -890,7 +889,7 @@ class Layout extends Component {
                               style={{
                                 textAlign: "center",
                                 fontWeight: "bold",
-                                fontFamily: "'Roboto', sans serif"
+                                // fontFamily: "'Roboto', sans serif"
                               }}
                               noWrap
                             >
@@ -1531,7 +1530,7 @@ class Layout extends Component {
                           noWrap
                           style={{
                             fontWeight: "bold",
-                            fontFamily: "'Roboto', sans serif",
+                            // fontFamily: "'Roboto', sans serif",
                             display: "inline",
                             paddingLeft: "36px"
                           }}

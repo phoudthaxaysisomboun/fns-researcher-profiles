@@ -25,7 +25,6 @@ import {
   GET_SUGGESTIONS_IN_FEED
 } from "../actions/types";
 
-import mergeByKey from "array-merge-by-key";
 import moment from "moment";
 
 function compareDate(a, b) {

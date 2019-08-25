@@ -1,32 +1,27 @@
 import React, { Component } from "react";
 
 import FormField from "../../utils/Form/formfield";
-import moment from "moment";
+
 import {
   update,
-  generateData,
-  isFormValid,
-  populateOptionFields
+  // generateData,
+  isFormValid
+  // populateOptionFields
 } from "../../utils/Form/formActions";
 import {
-  FormControl,
   Grid,
   Button,
   Typography,
   Dialog,
   DialogTitle,
-  Divider,
   DialogContent,
-  FormControlLabel,
   FormHelperText,
-  IconButton,
-  TextField,
-  Checkbox
+  IconButton
 } from "@material-ui/core";
 
 import { CloseOutlined } from "@material-ui/icons";
 
-import { updateProfileDescription, getCountry } from "../../../actions/user_actions";
+import { updateProfileDescription } from "../../../actions/user_actions";
 
 import { connect } from "react-redux";
 
@@ -36,61 +31,56 @@ class AddIntroductionDialogue extends Component {
     formErrorMessage: "ມີບາງຂໍ້ມູນບໍ່ຖືກຕ້ອງກະລຸນາກວດສອບຂໍ້ມູນຄືນ",
     formSuccess: false,
     formdata: {
-        description: {
-            element: "input",
-            value: "",
-            config: {
-              name: "abstract_input",
-              type: "text",
-              label: "ຄໍາແນະນໍາກ່ຽວກັບຕົນເອງ",
-    
-              placeholder: "",
-              multiline: true,
-              rows: 9,
-              autoFocus: true
-            },
-            validation: {
-              required: false
-            },
-            valid: false,
-            touched: true,
-            validationMessage: ""
-          }
+      description: {
+        element: "input",
+        value: "",
+        config: {
+          name: "abstract_input",
+          type: "text",
+          label: "ຄໍາແນະນໍາກ່ຽວກັບຕົນເອງ",
+
+          placeholder: "",
+          multiline: true,
+          rows: 9,
+          autoFocus: true
+        },
+        validation: {
+          required: false
+        },
+        valid: false,
+        touched: true,
+        validationMessage: ""
       }
     }
- 
+  };
 
   componentDidMount() {
     // const formdata = this.state.formdata;
     // console.log(this.state);
-
     // this.props.dispatch(getCountry()).then(response => {
     //   const newFormdata = populateOptionFields(
     //     formdata,
     //     this.props.province,
     //     "country"
     //   );
-
     //   this.updateFields(newFormdata);
     // });
-
     // const newFormdata = {
     //   ...this.state.formdata
     // };
     // newFormdata["country"].value = "5cb447959c03a67fad711b7b";
-
     // this.setState({ formdata: newFormdata });
   }
 
   componentDidUpdate(prevProps, prevState) {
-      if (prevProps.profileDescription !== this.props.profileDescription) {
-        const newFormData = {...this.state.formdata}
-        
-        newFormData["description"].value = this.props.profileDescription
-        this.setState({
-            formdata: newFormData
-        })
-      }
+    if (prevProps.profileDescription !== this.props.profileDescription) {
+      const newFormData = { ...this.state.formdata };
+
+      newFormData["description"].value = this.props.profileDescription;
+      this.setState({
+        formdata: newFormData
+      });
+    }
     // const prevPlaceOfBirth =
     //   prevProps.profile && prevProps.profile.placeOfBirth
     //     ? prevProps.profile.placeOfBirth
@@ -132,11 +122,7 @@ class AddIntroductionDialogue extends Component {
   }
 
   updateForm = element => {
-    const newFormdata = update(
-      element,
-      this.state.formdata,
-      "addIntroduction"
-    );
+    const newFormdata = update(element, this.state.formdata, "addIntroduction");
     this.setState({
       formError: false,
       formdata: newFormdata
@@ -149,55 +135,47 @@ class AddIntroductionDialogue extends Component {
     });
   };
 
-  componentWillMount() {
-      
-  }
+  componentWillMount() {}
 
   submitForm = event => {
     event.preventDefault();
     let formIsValid = isFormValid(this.state.formdata, "addIntroduction");
 
-    const profileDescription = this.state.formdata.description.value
+    const profileDescription = this.state.formdata.description.value;
     if (formIsValid & !this.state.formError) {
-        this.props
-          .dispatch(
-            updateProfileDescription(
-              this.props.profile._id,
-              profileDescription
-            )
-          )
-          .then(response => {
-            if (response.payload.success) {
-              this.setState({
-                formError: false,
-                formSuccess: true
-              });
-              this.props.close();
-            } else {
-              this.setState({
-                formError: true,
-                formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນໄດ້`
-              });
-            }
-          })
-          .catch(e => {
+      this.props
+        .dispatch(
+          updateProfileDescription(this.props.profile._id, profileDescription)
+        )
+        .then(response => {
+          if (response.payload.success) {
+            this.setState({
+              formError: false,
+              formSuccess: true
+            });
+            this.props.close();
+          } else {
             this.setState({
               formError: true,
               formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນໄດ້`
             });
+          }
+        })
+        .catch(e => {
+          this.setState({
+            formError: true,
+            formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນໄດ້`
           });
-      } else {
-        this.setState({
-          formError: true,
-          formErrorMessage: "ມີບາງຂໍ້ມູນບໍ່ຖືກຕ້ອງກະລຸນາກວດສອບຂໍ້ມູນຄືນ"
         });
-      }
+    } else {
+      this.setState({
+        formError: true,
+        formErrorMessage: "ມີບາງຂໍ້ມູນບໍ່ຖືກຕ້ອງກະລຸນາກວດສອບຂໍ້ມູນຄືນ"
+      });
+    }
   };
 
-  
-
   render() {
-      
     return (
       <Dialog
         open={this.props.open}
@@ -231,39 +209,37 @@ class AddIntroductionDialogue extends Component {
         </DialogTitle>
         <DialogContent style={{ padding: "24px", paddingTop: 0 }}>
           <form onSubmit={event => this.submitForm(event)}>
-          <Grid container spacing={24}>
-                <Grid item xs={12}>
-                  <Typography
+            <Grid container spacing={24}>
+              <Grid item xs={12}>
+                <Typography
                   variant="inherit"
-                    style={{
-            
-                      
-                      color: "rgb(102, 102, 102)"
-                    }}
-                  >
-                    ແກ້ໄຂຂໍ້ມູນການແນະນໍາກ່ຽວກັບຕົວຂອງທ່ານເພື່ອບອກໃຫ້ຄົນອື່ນຮູ້ກ່ຽວກັບວຽກ ຫລື ງານວິໄຈທີ່ທ່ານກໍາລັງເຮັດຢູ່. ຂໍ້ຄໍາແນະນໍາກ່ຽວກັບຕົວຂອງທ່ານທີ່ຖືກຕ້ອງຈະຊ່ວຍໃຫ້ຄົນອື່ນເຂົ້າໃຈວຽກຂອງທ່ານຍິ່ງຂຶ້ນ.
-                  </Typography>
-                </Grid>
+                  style={{
+                    color: "rgb(102, 102, 102)"
+                  }}
+                >
+                  ແກ້ໄຂຂໍ້ມູນການແນະນໍາກ່ຽວກັບຕົວຂອງທ່ານເພື່ອບອກໃຫ້ຄົນອື່ນຮູ້ກ່ຽວກັບວຽກ
+                  ຫລື ງານວິໄຈທີ່ທ່ານກໍາລັງເຮັດຢູ່.
+                  ຂໍ້ຄໍາແນະນໍາກ່ຽວກັບຕົວຂອງທ່ານທີ່ຖືກຕ້ອງຈະຊ່ວຍໃຫ້ຄົນອື່ນເຂົ້າໃຈວຽກຂອງທ່ານຍິ່ງຂຶ້ນ.
+                </Typography>
               </Grid>
-           
-              <FormField
+            </Grid>
+
+            <FormField
               id={"description"}
               formdata={this.state.formdata.description}
               change={element => this.updateForm(element)}
               maxlength={500}
             />
-           
-            
-            
+
             {
-            //     <FormControlLabel
-            //   control={
-            //     <Checkbox checked={true} color="primary" value="checkedA" />
-            //   }
-            //   label="Secondary"
-            // />
-        }
-            
+              //     <FormControlLabel
+              //   control={
+              //     <Checkbox checked={true} color="primary" value="checkedA" />
+              //   }
+              //   label="Secondary"
+              // />
+            }
+
             {this.state.formError ? (
               <Grid container spacing={24}>
                 <Grid item xs={12}>
@@ -300,7 +276,6 @@ class AddIntroductionDialogue extends Component {
     );
   }
 }
-
 
 const mapStateToProps = state => {
   return {

@@ -3,15 +3,11 @@ import React from "react";
 import {
   IconButton,
   Grid,
-  Fab,
-  Paper,
   Avatar,
   Button,
   Tabs,
   Tab,
   Typography,
-  LinearProgress,
-  CircularProgress,
   Hidden,
   MenuItem,
   Menu
@@ -23,24 +19,12 @@ import NumberFormat from "react-number-format";
 
 import moment from "moment";
 
-import LinesEllipsis from "react-lines-ellipsis";
-
 import {
-  Mail,
-  Phone,
-  PersonAddOutlined,
-  AddOutlined,
   EditOutlined,
   ReplyOutlined,
-  CheckOutlined,
-  Web,
-  PublicOutlined,
-  ListOutlined,
-  CommentOutlined,
   ModeCommentOutlined,
   FavoriteOutlined,
   FavoriteBorderOutlined,
-  MoreVertOutlined,
   ForwardOutlined,
   MoreHorizOutlined,
   SaveAltOutlined,
@@ -50,7 +34,8 @@ PersonAddDisabledOutlined
 
 import { Link, withRouter } from "react-router-dom";
 
-import { UPLOADS_SERVER } from "../components/utils/misc";
+import { UPLOADS_SERVER, colorPallete } from "../components/utils/misc";
+
 
 const ResearchHeader = ({
   props,
@@ -88,7 +73,23 @@ const ResearchHeader = ({
     researchTitle = research.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()
   }
 
+  
+
   const isAuth = userData.isAuth;
+
+  const toColor = (str) => {
+    var colors = colorPallete;
+  
+    var hash = 0;
+    if (str.length === 0) return hash;
+    for (var i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+      hash = hash & hash;
+    }
+    hash = ((hash % colors.length) + colors.length) % colors.length;
+    return colors[hash];
+  };
+  
 
   const _id = new ObjectID();
 
@@ -178,7 +179,7 @@ const ResearchHeader = ({
     let likeCount =
       research.likes && research.likes ? research.likes.length : 0;
     let duplicate = false;
-    let hasLike = false;
+    // let hasLike = false;
     if (userData.likes) {
       userData.likes.forEach(item => {
         if (item === id) {
@@ -187,13 +188,13 @@ const ResearchHeader = ({
       });
     }
 
-    if (research.likes) {
-      research.likes.forEach((item, index) => {
-        if (item) {
-          hasLike = true;
-        }
-      });
-    }
+    // if (research.likes) {
+    //   research.likes.forEach((item, index) => {
+    //     if (item) {
+    //       hasLike = true;
+    //     }
+    //   });
+    // }
 
     if (duplicate) {
       return (
@@ -218,7 +219,7 @@ const ResearchHeader = ({
                 style={{
                   fontSize: "1rem",
                   color: "#d32f2f",
-                  fontFamily: "'Roboto', sans serif",
+                  // fontFamily: "'Roboto', sans serif",
                   display: "inline"
                 }}
               >
@@ -235,7 +236,7 @@ const ResearchHeader = ({
                 style={{
                   fontSize: "1rem",
 
-                  fontFamily: "'Roboto', sans serif",
+                  // fontFamily: "'Roboto', sans serif",
                   display: "inline"
                 }}
               >
@@ -268,7 +269,7 @@ const ResearchHeader = ({
                 style={{
                   fontSize: "1rem",
                   color: "#757575",
-                  fontFamily: "'Roboto', sans serif",
+                  // fontFamily: "'Roboto', sans serif",
                   display: "inline"
                 }}
               >
@@ -285,7 +286,7 @@ const ResearchHeader = ({
                 style={{
                   fontSize: "1rem",
 
-                  fontFamily: "'Roboto', sans serif",
+                  // fontFamily: "'Roboto', sans serif",
                   display: "inline"
                 }}
               >
@@ -322,7 +323,7 @@ const ResearchHeader = ({
         >
           <MenuItem
             style={{
-              fontFamily: "'Noto Sans Lao UI', sans-serif",
+              fontFamily: "'Roboto', 'Noto Sans Lao UI', sans-serif",
               fontWeight: 500
             }}
             selected={false}
@@ -333,7 +334,7 @@ const ResearchHeader = ({
           </MenuItem>
           <MenuItem
             style={{
-              fontFamily: "'Noto Sans Lao UI', sans-serif",
+              fontFamily: "'Roboto', 'Noto Sans Lao UI', sans-serif",
               fontWeight: 500
             }}
             selected={false}
@@ -357,7 +358,7 @@ const ResearchHeader = ({
 
           <MenuItem
             style={{
-              fontFamily: "'Noto Sans Lao UI', sans-serif",
+              fontFamily: "'Roboto', 'Noto Sans Lao UI', sans-serif",
               fontWeight: 500,
               display: "none"
             }}
@@ -384,7 +385,7 @@ const ResearchHeader = ({
         >
           <MenuItem
             style={{
-              fontFamily: "'Noto Sans Lao UI', sans-serif",
+              fontFamily: "'Roboto', 'Noto Sans Lao UI', sans-serif",
               fontWeight: 500
             }}
             selected={false}
@@ -396,7 +397,7 @@ const ResearchHeader = ({
 
           <MenuItem
             style={{
-              fontFamily: "'Noto Sans Lao UI', sans-serif",
+              fontFamily: "'Roboto', 'Noto Sans Lao UI', sans-serif",
               fontWeight: 500,
               display: "none"
             }}
@@ -448,7 +449,7 @@ const ResearchHeader = ({
                       <Typography
                         variant="inherit"
                         style={{
-                          fontFamily: "'Noto Sans Lao UI', sans serif",
+                          fontFamily: "'Roboto', 'Noto Sans Lao UI', sans serif",
                           fontWeight: 700,
                           fontSize: "24px"
                         }}
@@ -460,7 +461,7 @@ const ResearchHeader = ({
                       <Typography
                         variant="body2"
                         style={{
-                          fontFamily: "'Roboto', sans-serif",
+                          // fontFamily: "'Roboto', sans-serif",
                           fontSize: "12px",
                           letterSpacing: "1.5 px",
                           fontWeight: "600",
@@ -506,9 +507,9 @@ const ResearchHeader = ({
                                   style={{
                                     width: "18px",
                                     height: "18px",
-                                    backgroundColor: `${`${value.name}${
+                                    backgroundColor: toColor(`${value.name}${
                                       value.lastname
-                                    }`.toColor()}`,
+                                    }`),
 
                                     fontWeight: "normal",
                                     fontSize: "8px"
@@ -613,9 +614,9 @@ const ResearchHeader = ({
                                       style={{
                                         width: "18px",
                                         height: "18px",
-                                        backgroundColor: `${`${value.name}${
+                                        backgroundColor: toColor(`${value.name}${
                                           value.lastname
-                                        }`.toColor()}`,
+                                        }`),
     
                                         fontWeight: "normal",
                                         fontSize: "8px"
@@ -717,7 +718,7 @@ const ResearchHeader = ({
                           <div
                             style={{
                               color: "#757575",
-                              fontFamily: "'Roboto', sans serif",
+                              // fontFamily: "'Roboto', sans serif",
                               display: "inline",
                               fontWeight: "500"
                             }}
@@ -751,7 +752,7 @@ const ResearchHeader = ({
                           <div
                             style={{
                               color: "#757575",
-                              fontFamily: "'Roboto', sans serif",
+                              // fontFamily: "'Roboto', sans serif",
                               display: "inline",
                               fontWeight: "500"
                             }}
@@ -785,7 +786,7 @@ const ResearchHeader = ({
                           <div
                             style={{
                               color: "#757575",
-                              fontFamily: "'Roboto', sans serif",
+                              // fontFamily: "'Roboto', sans serif",
                               display: "inline",
                               fontWeight: "500"
                             }}
@@ -816,7 +817,7 @@ const ResearchHeader = ({
                               <div
                                 style={{
                                   color: "#757575",
-                                  fontFamily: "'Roboto', sans serif",
+                                  // fontFamily: "'Roboto', sans serif",
                                   display: "inline",
                                   fontWeight: "500"
                                 }}
@@ -855,7 +856,7 @@ const ResearchHeader = ({
                               <div
                                 style={{
                                   color: "#757575",
-                                  fontFamily: "'Roboto', sans serif",
+                                  // fontFamily: "'Roboto', sans serif",
                                   display: "inline",
                                   fontWeight: "500"
                                 }}
@@ -892,7 +893,7 @@ const ResearchHeader = ({
                               <div
                                 style={{
                                   color: "#757575",
-                                  fontFamily: "'Roboto', sans serif",
+                                  // fontFamily: "'Roboto', sans serif",
                                   display: "inline",
                                   fontWeight: "500"
                                 }}
@@ -966,7 +967,7 @@ const ResearchHeader = ({
                           style={{
                             fontSize: "1rem",
                             color: "#757575",
-                            fontFamily: "'Roboto', sans serif",
+                            // fontFamily: "'Roboto', sans serif",
                             display: "inline"
                           }}
                         >
@@ -987,7 +988,7 @@ const ResearchHeader = ({
                           style={{
                             fontSize: "1rem",
 
-                            fontFamily: "'Roboto', sans serif",
+                            // fontFamily: "'Roboto', sans serif",
                             display: "inline"
                           }}
                         >
@@ -1022,7 +1023,7 @@ const ResearchHeader = ({
                           style={{
                             fontSize: "1rem",
                             color: "#757575",
-                            fontFamily: "'Roboto', sans serif",
+                            // fontFamily: "'Roboto', sans serif",
                             display: "inline"
                           }}
                         >
@@ -1041,7 +1042,7 @@ const ResearchHeader = ({
                           style={{
                             fontSize: "1rem",
 
-                            fontFamily: "'Roboto', sans serif",
+                            // fontFamily: "'Roboto', sans serif",
                             display: "inline"
                           }}
                         >

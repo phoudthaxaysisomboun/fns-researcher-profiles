@@ -69,7 +69,7 @@ import {
   UPDATE_NAME,
   UPDATE_DEGREE,
   UPDATE_AFFILIATION,
-  GET_SUGGESTIONS_IN_FEED
+  // GET_SUGGESTIONS_IN_FEED
 } from "../actions/types";
 
 import moment from "moment";
@@ -94,15 +94,15 @@ export default function(state = {}, action) {
     return toReturn;
   };
 
-  function compareDate(a, b) {
-    if (a.date < b.date) {
-      return 1;
-    }
-    if (a.date > b.date) {
-      return -1;
-    }
-    return 0;
-  }
+  // function compareDate(a, b) {
+  //   if (a.date < b.date) {
+  //     return 1;
+  //   }
+  //   if (a.date > b.date) {
+  //     return -1;
+  //   }
+  //   return 0;
+  // }
 
   switch (action.type) {
     case LOGIN_USER:

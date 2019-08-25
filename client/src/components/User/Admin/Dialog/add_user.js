@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
 import FormField from "../../../utils/Form/formfield";
-import moment from "moment";
+// import moment from "moment";
 import {
   update,
   generateData,
@@ -9,44 +9,28 @@ import {
   populateOptionFields
 } from "../../../utils/Form/formActions";
 import {
-  FormControl,
   Grid,
   Button,
   Typography,
   Dialog,
   DialogTitle,
-  Divider,
   DialogContent,
   FormControlLabel,
   FormHelperText,
   IconButton,
-  TextField,
-  Checkbox,
-  DialogActions,
   RadioGroup,
-  Paper,
   Radio,
-  DialogContentText
 } from "@material-ui/core";
 
 import { CloseOutlined } from "@material-ui/icons";
 
-import { Link as ReactLink, withRouter } from "react-router-dom";
+// import { Link as ReactLink, withRouter } from "react-router-dom";
 
 import { getDepartments, registerUser, getDegrees } from "../../../../actions/user_actions";
 
 import { connect } from "react-redux";
 
-const styles = {
-  container: {
-    padding: "26px",
-    border: "1px solid #d8d8d8"
-  },
-  font: {
-    fontFamily: "'Noto Sans Lao UI', sans-serif",
-    fontWeight: "700"
-  }
-};
+
 
 class AddUserDialog extends Component {
   state = {

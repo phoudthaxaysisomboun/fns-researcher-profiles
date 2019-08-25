@@ -3,7 +3,7 @@ import ProfileHeader from "../../hoc/profile_header";
 import { connect } from "react-redux";
 
 import AffiliationCard from "../User/Card/affiliation";
-import MiniStatsCard from "../User/Card/mini_stats";
+// import MiniStatsCard from "../User/Card/mini_stats";
 import IntroductionCard from "../User/Card/introduction";
 import ResearchaAreaCard from "../User/Card/research_area";
 import FollowingCard from "../User/Card/following";
@@ -24,7 +24,7 @@ import compose from 'recompose/compose';
 import PropTypes from "prop-types";
 
 import {
-  Hidden,
+  // Hidden,
   Grid,
   Dialog,
   DialogTitle,
@@ -32,7 +32,7 @@ import {
   DialogContent,
   IconButton,
   Typography,
-  Button
+  // Button
 } from "@material-ui/core";
 
 import {

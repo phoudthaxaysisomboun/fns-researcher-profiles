@@ -4,7 +4,7 @@ import {
   IconButton,
   Grid,
   Fab,
-  Paper,
+
   Avatar,
   Button,
   Tabs,
@@ -27,22 +27,20 @@ import {
   EditOutlined,
   ReplyOutlined,
   CheckOutlined,
-  Web,
   PublicOutlined,
-  PersonOutlined
 } from "@material-ui/icons";
 
 import { Link as ReactLink, withRouter } from "react-router-dom";
 
 import { colorPallete } from "../components/utils/misc";
 
-String.prototype.toColor = function() {
+const toColor = (str) => {
   var colors = colorPallete;
 
   var hash = 0;
-  if (this.length === 0) return hash;
-  for (var i = 0; i < this.length; i++) {
-    hash = this.charCodeAt(i) + ((hash << 5) - hash);
+  if (str.length === 0) return hash;
+  for (var i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
     hash = hash & hash;
   }
   hash = ((hash % colors.length) + colors.length) % colors.length;
@@ -363,9 +361,9 @@ const ProfileHeader = ({
                       style={{
                         width: "96px",
                         height: "96px",
-                        backgroundColor: `${`${profile.name}${
+                        backgroundColor: toColor(`${profile.name}${
                           profile.lastname
-                        }`.toColor()}`,
+                        }`),
                         fontWeight: "500",
                         fontSize: "46px"
                       }}

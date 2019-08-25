@@ -34,7 +34,7 @@ import ResearchLikesCommentsSharesReports from './components/User/Admin/Reports/
 import ResearchReadsReports from './components/User/Admin/Reports/Research/reads'
 import ResearchDownloadsReports from './components/User/Admin/Reports/Research/downloads'
 import ResearchCitationsReports from './components/User/Admin/Reports/Research/citations'
-import research from "./components/User/Card/research";
+// import research from "./components/User/Card/research";
 
 const Routes = () => {
   return (

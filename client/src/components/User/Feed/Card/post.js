@@ -3,7 +3,7 @@ import React from "react";
 import { Link as ReactLink, withRouter } from "react-router-dom";
 
 import NumberFormat from "react-number-format";
-import { PDFReader, MobilePDFReader } from "reactjs-pdf-reader";
+import { PDFReader } from "reactjs-pdf-reader";
 
 import LinesEllipsis from "react-lines-ellipsis";
 import 'moment/locale/lo'
@@ -14,28 +14,18 @@ import {
   Grid,
   Paper,
   Avatar,
-  Divider,
-  Link,
   Button,
   Typography,
   IconButton,
-  CircularProgress,
-  Chip,
-  Fab,
-  LinearProgress
+  CircularProgress
 } from "@material-ui/core";
 
 import {
-  CheckOutlined,
-  ListOutlined,
-  PersonAddOutlined,
-  CommentOutlined,
   ModeCommentOutlined,
   ReplyOutlined,
   FavoriteOutlined,
   FavoriteBorderOutlined,
   MoreVertOutlined,
-  AddOutlined
 } from "@material-ui/icons";
 
 import { colorPallete } from "../../../../components/utils/misc";
@@ -44,13 +34,13 @@ import { UPLOADS_SERVER } from "../../../../components/utils/misc";
 
 moment.locale('lo');
 
-String.prototype.toColor = function() {
+const toColor = (str) => {
   var colors = colorPallete;
 
   var hash = 0;
-  if (this.length === 0) return hash;
-  for (var i = 0; i < this.length; i++) {
-    hash = this.charCodeAt(i) + ((hash << 5) - hash);
+  if (str.length === 0) return hash;
+  for (var i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
     hash = hash & hash;
   }
   hash = ((hash % colors.length) + colors.length) % colors.length;
@@ -249,14 +239,14 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
     //                   </Typography>
   };
 
-  let name;
-  name =
-    research && research.files && research.files[0]
-      ? research.files[0].name
-      : "";
+  // let name;
+  // name =
+  //   research && research.files && research.files[0]
+  //     ? research.files[0].name
+  //     : "";
 
-  const file = `${UPLOADS_SERVER}${name}`;
-  const type = file.split(".").pop();
+  // const file = `${UPLOADS_SERVER}${name}`;
+  // const type = file.split(".").pop();
 
   const renderLikeButton = (id, researchLike) => {
     let likeCount = researchLike ? researchLike.length : 0;
@@ -400,9 +390,9 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                           style={{
                             width: "46px",
                             height: "46px",
-                            backgroundColor: `${`${researches.uploader.name}${
+                            backgroundColor: toColor(`${researches.uploader.name}${
                               researches.uploader.lastname
-                            }`.toColor()}`,
+                            }`),
                             fontFamily: "'Noto Sans Lao UI', sans serif",
                             fontWeight: "normal",
                             fontSize: "8px"
@@ -597,9 +587,9 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                                   style={{
                                     width: "18px",
                                     height: "18px",
-                                    backgroundColor: `${`${value.name}${
+                                    backgroundColor: toColor(`${value.name}${
                                       value.lastname
-                                    }`.toColor()}`,
+                                    }`),
                                     fontFamily:
                                       "'Noto Sans Lao UI', sans serif",
                                     fontWeight: "normal",

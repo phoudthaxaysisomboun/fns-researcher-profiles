@@ -1,20 +1,13 @@
 import React from "react";
 
-import { Link, withRouter } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import {
-  IconButton,
   Grid,
-  Fab,
-  Paper,
-  Avatar,
-  Button,
   Tabs,
   Tab,
   Typography,
-  LinearProgress,
-  CircularProgress,
-  Divider, Badge
+  Divider, 
 } from "@material-ui/core";
 
 const ResearchReportsHeader = ({ tab, props, children, width }) => {

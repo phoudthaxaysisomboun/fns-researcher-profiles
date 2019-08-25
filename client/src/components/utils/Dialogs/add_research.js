@@ -22,19 +22,17 @@ import {
   populateOptionFields
 } from "../../utils/Form/formActions";
 import {
-  FormControl,
+  // FormControl,
   Grid,
   Button,
   Typography,
   Dialog,
   DialogTitle,
-  Divider,
+  // Divider,
   DialogContent,
-  FormControlLabel,
   FormHelperText,
   IconButton,
   TextField,
-  Checkbox,
   Chip,
   MenuItem,
   Paper,
@@ -46,8 +44,6 @@ import { emphasize } from "@material-ui/core/styles/colorManipulator";
 
 import {
   CloseOutlined,
-  Close,
-  CancelOutlined,
   Cancel,
   DescriptionOutlined,
   AccountCircleOutlined

@@ -8,7 +8,7 @@ import { Link, withRouter } from "react-router-dom";
 import compose from 'recompose/compose';
 import withWidth from '@material-ui/core/withWidth';
 
-import LinesEllipsis from "react-lines-ellipsis";
+// import LinesEllipsis from "react-lines-ellipsis";
 
 import moment from "moment";
 
@@ -266,7 +266,7 @@ let EnhancedTableToolbar = props => {
     openDeleteDialog,
     researchesCount,
     openAddResearchDialog,
-    handleAddNewUser,
+    // handleAddNewUser,
     userId
   } = props;
   let isUser = false;

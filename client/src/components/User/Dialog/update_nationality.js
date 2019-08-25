@@ -1,32 +1,27 @@
 import React, { Component } from "react";
 
 import FormField from "../../utils/Form/formfield";
-import moment from "moment";
+// import moment from "moment";
 import {
   update,
-  generateData,
+  // generateData,
   isFormValid
 } from "../../utils/Form/formActions";
 import {
-  FormControl,
   Grid,
   Button,
   Typography,
   Dialog,
   DialogTitle,
-  Divider,
   DialogContent,
-  FormControlLabel,
-  FormHelperText,
-  IconButton,
-  TextField
+  IconButton
 } from "@material-ui/core";
 
 import { CloseOutlined } from "@material-ui/icons";
 
-import { Link as ReactLink, withRouter } from "react-router-dom";
+// import { Link as ReactLink, withRouter } from "react-router-dom";
 
-import { updateNationality} from "../../../actions/user_actions";
+import { updateNationality } from "../../../actions/user_actions";
 
 import { connect } from "react-redux";
 
@@ -36,7 +31,7 @@ class UpdateNationalityDialogue extends Component {
     formErrorMessage: "ມີບາງຂໍ້ມູນບໍ່ຖືກຕ້ອງກະລຸນາກວດສອບຂໍ້ມູນຄືນ",
     formSuccess: false,
     formdata: {
-        nationality: {
+      nationality: {
         element: "input",
         value: "",
         config: {
@@ -61,14 +56,18 @@ class UpdateNationalityDialogue extends Component {
     };
 
     newFormdata["nationality"].value =
-    this.props.profile && this.props.profile.nationality
-      ? this.props.profile.nationality
-      : "";
+      this.props.profile && this.props.profile.nationality
+        ? this.props.profile.nationality
+        : "";
     this.setState({ formdata: newFormdata });
   }
 
   updateForm = element => {
-    const newFormdata = update(element, this.state.formdata, "updateNationality");
+    const newFormdata = update(
+      element,
+      this.state.formdata,
+      "updateNationality"
+    );
     this.setState({
       formError: false,
       formdata: newFormdata
@@ -88,7 +87,10 @@ class UpdateNationalityDialogue extends Component {
     if (formIsValid) {
       this.props
         .dispatch(
-            updateNationality(this.props.profile._id, this.state.formdata.nationality.value)
+          updateNationality(
+            this.props.profile._id,
+            this.state.formdata.nationality.value
+          )
         )
         .then(response => {
           if (response.payload.success) {
@@ -100,8 +102,7 @@ class UpdateNationalityDialogue extends Component {
           } else {
             this.setState({
               formError: true,
-              formErrorMessage:
-                `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນ${this.state.formdata.nationality.config.label}ໄດ້`
+              formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນ${this.state.formdata.nationality.config.label}ໄດ້`
             });
           }
         })

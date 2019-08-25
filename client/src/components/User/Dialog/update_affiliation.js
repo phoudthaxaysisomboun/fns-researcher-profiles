@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 
 import FormField from "../../utils/Form/formfield";
-import moment from "moment";
 import {
   update,
   generateData,
@@ -9,24 +8,22 @@ import {
   populateOptionFields
 } from "../../utils/Form/formActions";
 import {
-  FormControl,
   Grid,
   Button,
   Typography,
   Dialog,
   DialogTitle,
-  Divider,
   DialogContent,
-  FormControlLabel,
   FormHelperText,
-  IconButton,
-  TextField,
-  Checkbox
+  IconButton
 } from "@material-ui/core";
 
 import { CloseOutlined } from "@material-ui/icons";
 
-import { updateProfileDescription, getCountry, updateAffiliation, getDegrees, getDepartments } from "../../../actions/user_actions";
+import {
+  updateAffiliation,
+  getDepartments
+} from "../../../actions/user_actions";
 
 import { connect } from "react-redux";
 
@@ -36,80 +33,79 @@ class UpdateAffiliationDialog extends Component {
     formErrorMessage: "ມີບາງຂໍ້ມູນບໍ່ຖືກຕ້ອງກະລຸນາກວດສອບຂໍ້ມູນຄືນ",
     formSuccess: false,
     formdata: {
-        department: {
-            element: "select",
-            value: "",
-            config: {
-              label: "ພາກວິຊາ",
-              name: "department_select",
-              options: [],
-              labelWidth: 50
-            },
-            validation: {
-              required: true
-            },
-            valid: true,
-            touched: false,
-            validationMessage: "",
-            showlabel: true
-          },
-          position: {
-            element: "input",
-            value: "",
-            config: {
-              label: "ຕໍາແຫນ່ງ",
-              placeholder: "ນັກຮຽນ, ອາຈານ, ຫົວຫນ້າພາກ",
-              name: "position_input",
-              type: "text"
-            },
-            validation: {
-              required: true
-            },
-            valid: true,
-            touched: false,
-            validationMessage: ""
-          }
+      department: {
+        element: "select",
+        value: "",
+        config: {
+          label: "ພາກວິຊາ",
+          name: "department_select",
+          options: [],
+          labelWidth: 50
+        },
+        validation: {
+          required: true
+        },
+        valid: true,
+        touched: false,
+        validationMessage: "",
+        showlabel: true
+      },
+      position: {
+        element: "input",
+        value: "",
+        config: {
+          label: "ຕໍາແຫນ່ງ",
+          placeholder: "ນັກຮຽນ, ອາຈານ, ຫົວຫນ້າພາກ",
+          name: "position_input",
+          type: "text"
+        },
+        validation: {
+          required: true
+        },
+        valid: true,
+        touched: false,
+        validationMessage: ""
       }
     }
- 
+  };
 
   componentDidMount() {
-    this.props.dispatch(getDepartments()).then(response => {
-    });
-
+    this.props.dispatch(getDepartments()).then(response => {});
   }
 
   componentDidUpdate(prevProps, prevState) {
-      if (prevProps.userData !== this.props.userData) {
-        const newFormData = {...this.state.formdata}
-        
-        newFormData["department"].value = this.props.userData.affiliation && this.props.userData.affiliation.department ? this.props.userData.affiliation.department._id : ""
-        newFormData["position"].value = this.props.userData.affiliation && this.props.userData.affiliation.department ? this.props.userData.affiliation.position : ""
-        this.setState({
-            formdata: newFormData
-        })
-      }
+    if (prevProps.userData !== this.props.userData) {
+      const newFormData = { ...this.state.formdata };
 
+      newFormData["department"].value =
+        this.props.userData.affiliation &&
+        this.props.userData.affiliation.department
+          ? this.props.userData.affiliation.department._id
+          : "";
+      newFormData["position"].value =
+        this.props.userData.affiliation &&
+        this.props.userData.affiliation.department
+          ? this.props.userData.affiliation.position
+          : "";
+      this.setState({
+        formdata: newFormData
+      });
+    }
 
-      if (prevProps.departments !== this.props.departments) {
-        const formdata = this.state.formdata;
-        const newFormdata = populateOptionFields(
-            formdata,
-            this.props.departments,
-            "department"
-          );
-    
-          this.updateFields(newFormdata);
-      }
+    if (prevProps.departments !== this.props.departments) {
+      const formdata = this.state.formdata;
+      const newFormdata = populateOptionFields(
+        formdata,
+        this.props.departments,
+        "department"
+      );
 
+      this.updateFields(newFormdata);
+    }
   }
 
   updateForm = element => {
-    const newFormdata = update(
-      element,
-      this.state.formdata,
-      "updateDegree"
-    );
+    const newFormdata = update(element, this.state.formdata, "updateDegree");
     this.setState({
       formError: false,
       formdata: newFormdata
@@ -122,9 +118,7 @@ class UpdateAffiliationDialog extends Component {
     });
   };
 
-  componentWillMount() {
-      
-  }
+  componentWillMount() {}
 
   submitForm = event => {
     event.preventDefault();
@@ -132,64 +126,57 @@ class UpdateAffiliationDialog extends Component {
     let dataToSubmit = generateData(this.state.formdata, "updateDepartments");
 
     let newDataToSubmit = {
-        ...dataToSubmit
-    }
+      ...dataToSubmit
+    };
 
-    newDataToSubmit["_id"] = this.props.userData._id
-    let department = newDataToSubmit.department
-    let position = newDataToSubmit.position
+    newDataToSubmit["_id"] = this.props.userData._id;
+    let department = newDataToSubmit.department;
+    let position = newDataToSubmit.position;
 
     let affiliation = {
-        department,
-        position,
-        institution: this.props.userData.affiliation.institution,
-        faculty: this.props.userData.affiliation.faculty,
-    }
+      department,
+      position,
+      institution: this.props.userData.affiliation.institution,
+      faculty: this.props.userData.affiliation.faculty
+    };
 
     let myData = {
-        _id: this.props.userData._id,
-        affiliation: affiliation
-    }
-
-
+      _id: this.props.userData._id,
+      affiliation: affiliation
+    };
 
     if (formIsValid & !this.state.formError) {
-        this.props
-          .dispatch(
-            updateAffiliation(myData)
-          )
-          .then(response => {
-            if (response.payload.success) {
-              this.setState({
-                formError: false,
-                formSuccess: true
-              });
-              this.props.close();
-            } else {
-              this.setState({
-                formError: true,
-                formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນໄດ້`
-              });
-            }
-          })
-          .catch(e => {
+      this.props
+        .dispatch(updateAffiliation(myData))
+        .then(response => {
+          if (response.payload.success) {
+            this.setState({
+              formError: false,
+              formSuccess: true
+            });
+            this.props.close();
+          } else {
             this.setState({
               formError: true,
               formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນໄດ້`
             });
+          }
+        })
+        .catch(e => {
+          this.setState({
+            formError: true,
+            formErrorMessage: `ຂໍອະໄພມີບາງຢ່າງຜິດພາດ,ບໍ່ສາມາດແກ້ໄຂຂໍ້ມູນໄດ້`
           });
-      } else {
-        this.setState({
-          formError: true,
-          formErrorMessage: "ມີບາງຂໍ້ມູນບໍ່ຖືກຕ້ອງກະລຸນາກວດສອບຂໍ້ມູນຄືນ"
         });
-      }
+    } else {
+      this.setState({
+        formError: true,
+        formErrorMessage: "ມີບາງຂໍ້ມູນບໍ່ຖືກຕ້ອງກະລຸນາກວດສອບຂໍ້ມູນຄືນ"
+      });
+    }
   };
 
-  
-
   render() {
-      
     return (
       <Dialog
         open={this.props.open}
@@ -223,32 +210,27 @@ class UpdateAffiliationDialog extends Component {
         </DialogTitle>
         <DialogContent style={{ padding: "24px", paddingTop: 0 }}>
           <form onSubmit={event => this.submitForm(event)}>
+            <FormField
+              id={"position"}
+              formdata={this.state.formdata.position}
+              change={element => this.updateForm(element)}
+            />
+            <FormField
+              labelWidth={this.state.formdata.department.config.labelWidth}
+              id={"department"}
+              formdata={this.state.formdata.department}
+              change={element => this.updateForm(element)}
+            />
 
-           
-          <FormField
-          id={"position"}
-          formdata={this.state.formdata.position}
-          change={element => this.updateForm(element)}
-        />
-        <FormField
-        labelWidth={
-          this.state.formdata.department.config.labelWidth
-        }
-        id={"department"}
-        formdata={this.state.formdata.department}
-        change={element => this.updateForm(element)}
-      />
-            
-            
             {
-            //     <FormControlLabel
-            //   control={
-            //     <Checkbox checked={true} color="primary" value="checkedA" />
-            //   }
-            //   label="Secondary"
-            // />
-        }
-            
+              //     <FormControlLabel
+              //   control={
+              //     <Checkbox checked={true} color="primary" value="checkedA" />
+              //   }
+              //   label="Secondary"
+              // />
+            }
+
             {this.state.formError ? (
               <Grid container spacing={24}>
                 <Grid item xs={12}>
@@ -285,7 +267,6 @@ class UpdateAffiliationDialog extends Component {
     );
   }
 }
-
 
 const mapStateToProps = state => {
   return {

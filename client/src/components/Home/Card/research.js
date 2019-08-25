@@ -6,7 +6,7 @@ import NumberFormat from "react-number-format";
 
 import LinesEllipsis from "react-lines-ellipsis";
 
-import { PDFReader, MobilePDFReader } from "reactjs-pdf-reader";
+import { PDFReader } from "reactjs-pdf-reader";
 
 import moment from "moment";
 
@@ -14,44 +14,38 @@ import {
   Grid,
   Paper,
   Avatar,
-  Divider,
   Button,
   Typography,
   IconButton,
   CircularProgress,
-  Chip,
-  Fab
+  
 } from "@material-ui/core";
 
 import {
-  CheckOutlined,
-  ListOutlined,
-  PersonAddOutlined,
-  CommentOutlined,
   ModeCommentOutlined,
   ReplyOutlined,
   FavoriteOutlined,
   FavoriteBorderOutlined,
   MoreVertOutlined,
-  AddOutlined
 } from "@material-ui/icons";
 
 import { colorPallete } from "../../utils/misc";
 
 import { UPLOADS_SERVER } from "../../../components/utils/misc";
 
-String.prototype.toColor = function() {
+const toColor = (str) => {
   var colors = colorPallete;
 
   var hash = 0;
-  if (this.length === 0) return hash;
-  for (var i = 0; i < this.length; i++) {
-    hash = this.charCodeAt(i) + ((hash << 5) - hash);
+  if (str.length === 0) return hash;
+  for (var i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
     hash = hash & hash;
   }
   hash = ((hash % colors.length) + colors.length) % colors.length;
   return colors[hash];
 };
+
 
 const styles = {
   chip: {
@@ -97,7 +91,6 @@ const ResearchCard = ({ userData, userResearch, runLike, runUnLike }) => {
     author.push(profileResearch[key].author);
   }
 
-  const isAuth = user.isAuth;
   let isOwner = false;
 
   const renderLikeButton = (id, researchLike) => {
@@ -358,9 +351,9 @@ const ResearchCard = ({ userData, userResearch, runLike, runUnLike }) => {
                           style={{
                             width: "18px",
                             height: "18px",
-                            backgroundColor: `${`${value.name}${
+                            backgroundColor: toColor(`${value.name}${
                               value.lastname
-                            }`.toColor()}`,
+                            }`),
                             fontFamily:
                               "'Noto Sans Lao UI', sans serif",
                             fontWeight: "normal",

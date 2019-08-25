@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import FormField from "../../utils/Form/formfield";
+// import FormField from "../../utils/Form/formfield";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import Select from "react-select";
@@ -12,24 +12,20 @@ import {getResearchArea} from "../../../actions/user_actions"
 
 import {
   update,
-  generateData,
+  // generateData,
   isFormValid,
-  populateOptionFields,
+  // populateOptionFields,
 } from "../../utils/Form/formActions";
 import {
-  FormControl,
   Grid,
   Button,
   Typography,
   Dialog,
   DialogTitle,
-  Divider,
   DialogContent,
-  FormControlLabel,
   FormHelperText,
   IconButton,
   TextField,
-  Checkbox,
   Chip,
   MenuItem,
   Paper
@@ -40,14 +36,10 @@ import { emphasize } from "@material-ui/core/styles/colorManipulator";
 import {
   CloseOutlined,
   CancelOutlined,
-  DescriptionOutlined
+  
 } from "@material-ui/icons";
 
 import { updateResearchArea } from "../../../actions/user_actions";
-import {
-  getResearchType,
-  getPublicationType
-} from "../../../actions/research_actions";
 
 import { connect } from "react-redux";
 

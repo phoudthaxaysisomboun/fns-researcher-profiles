@@ -49,7 +49,7 @@ import { lighten } from "@material-ui/core/styles/colorManipulator";
 
 import {
   getAllResearchers,
-  clearAllResearchers,
+  // clearAllResearchers,
   removeResearchers,
   getRequestUserCount
 } from "../../../actions/user_actions";
@@ -235,7 +235,7 @@ let EnhancedTableToolbar = props => {
     openDeleteDialog,
     researchersCount,
     openAddUserDialog,
-    handleAddNewUser,
+    // handleAddNewUser,
     userId
   } = props;
   let isUser = false;

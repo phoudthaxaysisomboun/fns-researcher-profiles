@@ -1,8 +1,6 @@
 import React from "react";
 
-import { Link as ReactLink, withRouter } from "react-router-dom";
-
-import NumberFormat from "react-number-format";
+import {  withRouter } from "react-router-dom";
 
 import LinesEllipsis from "react-lines-ellipsis";
 
@@ -11,33 +9,24 @@ import moment from "moment";
 import {
   Grid,
   Paper,
-  Avatar,
+  
   Divider,
-  Link,
-  Button,
+  
+  
   Typography,
   IconButton,
   LinearProgress,
-  Chip,
-  Fab,
+  
+  
   Menu,
   MenuItem,
-  MenuList
+  
 } from "@material-ui/core";
 
 import {
-  CheckOutlined,
-  ListOutlined,
-  PersonAddOutlined,
-  CommentOutlined,
-  ModeCommentOutlined,
-  ReplyOutlined,
-  FavoriteOutlined,
-  FavoriteBorderOutlined,
   MoreVertOutlined,
   AddOutlined,
   EditOutlined,
-  DeleteOutline
 } from "@material-ui/icons";
 
 const EducationCard = ({

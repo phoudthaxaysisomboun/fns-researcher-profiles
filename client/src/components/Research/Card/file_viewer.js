@@ -2,21 +2,16 @@ import React from "react";
 
 import FileViewer from "react-file-viewer";
 
-import { PDFReader, MobilePDFReader } from "reactjs-pdf-reader";
+import { PDFReader } from "reactjs-pdf-reader";
 
 import {
-  IconButton,
   Grid,
   Paper,
-  Typography,
-  LinearProgress,
-  CircularProgress,
   Button
 } from "@material-ui/core";
 
-import { EditOutlined } from "@material-ui/icons";
 import { UPLOADS_SERVER } from "../../../components/utils/misc";
-import { Document, Page } from "react-pdf";
+// import { Document, Page } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 
 const FileViwerCard = ({

@@ -68,8 +68,8 @@ import {
   GET_RESEARCH_AREA,
   UPDATE_RESEARCHER_RESEARCH_AREA,
   GET_AUTHOR_SUGGESTIONS,
-  ADD_NEW_RESEARCH,
-  GET_COMMENTS,
+  // ADD_NEW_RESEARCH,
+  // GET_COMMENTS,
   UPDATE_NAME,
   UPDATE_DEGREE,
   UPDATE_AFFILIATION
@@ -885,7 +885,7 @@ export function getResearchArea() {
 
 export function updateResearchArea(userId, researchArea) {
   // console.log(`${RESEARCHER_SERVER}/like?researchId=${_id}`)
-  const queryString = require('query-string');
+  // const queryString = require('query-string');
   let parsed = []
   researchArea.map((value)=>{
     parsed.push(encodeURIComponent(value))

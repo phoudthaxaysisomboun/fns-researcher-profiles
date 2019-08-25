@@ -10,7 +10,7 @@ import AddResearch from "../../../components/utils/Dialogs/add_research";
 
 import {
   getFeed,
-  clearFeed,
+  // clearFeed,
   addLike,
   removeLike,
   getSuggestionsInFeed
@@ -18,7 +18,7 @@ import {
 import {
   like,
   unlike,
-  clearLike,
+  // clearLike,
   follow,
   addFollower,
   unfollow,

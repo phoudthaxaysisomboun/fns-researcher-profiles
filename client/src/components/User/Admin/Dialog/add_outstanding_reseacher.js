@@ -201,19 +201,19 @@ const toolbarStyles = theme => ({
 let EnhancedTableToolbar = props => {
   const {
     numSelected,
-    selected,
+    // selected,
     classes,
     openAddOutstandingResearcherDialog,
-    userId
+    // userId
   } = props;
-  let isUser = false;
-  selected.map((value, index, array) => {
-    if (value === userId) {
-      return (isUser = true);
-    } else {
-      return null;
-    }
-  });
+  // let isUser = false;
+  // selected.map((value, index, array) => {
+  //   if (value === userId) {
+  //     return (isUser = true);
+  //   } else {
+  //     return null;
+  //   }
+  // });
   return (
     <>
       {numSelected > 0 ? (

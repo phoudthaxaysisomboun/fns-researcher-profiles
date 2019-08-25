@@ -3,26 +3,22 @@ import React, { Component } from "react";
 import ResearchHeader from "../../hoc/research_header";
 import { connect } from "react-redux";
 import ShareDialog from "../utils/Dialogs/share_research";
-import PropTypes from "prop-types";
 
 import {
-  Hidden,
   Grid,
   Dialog,
   DialogTitle,
-  Divider,
   DialogContent,
-  IconButton,
-  Typography,
   Button,
   DialogContentText,
   DialogActions
 } from "@material-ui/core";
 
 import AddResearch from "../utils/Dialogs/add_research";
-import UpdateResearch from "../utils/Dialogs/edit_research";
 
-import { like, unlike, clearLike } from "../../actions/user_actions";
+import { like, unlike, 
+  // clearLike
+ } from "../../actions/user_actions";
 import { getComments } from "../../actions/research_actions";
 
 import {
@@ -37,21 +33,18 @@ import {
   removeReply,
   removeResearch,
   removeAuthor,
-  updateResearch,
   addShareCount
 } from "../../actions/research_actions";
 
-import { CloseOutlined } from "@material-ui/icons";
 import { LOCALHOST } from "../utils/misc";
 import AddResearchButton from "../utils/Button/add_research_button";
 
-import AbstractCard from "../Research/Card/abstract";
-import FileViwerCard from "../Research/Card/file_viewer";
+
 import CommentsCard from "../Research/Card/comments";
 import { ObjectID } from "bson";
 
 let shareUrl;
-let commentId
+// let commentId
 
 class ResearchComments extends Component {
   state = {
@@ -227,7 +220,7 @@ class ResearchComments extends Component {
   }
 
   openReplyTextField = (event, id) => {
-    commentId = id
+    // commentId = id
     
     this.setState({
       commentId: id,
