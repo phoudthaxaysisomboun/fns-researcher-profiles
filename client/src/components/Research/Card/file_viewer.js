@@ -106,6 +106,7 @@ const FileViwerCard = ({
             borderRadius: 0
           }}
         >
+
           {name !== "" ? <FileViewer fileType={type} filePath={file} /> : null}
         </Paper>
       )}

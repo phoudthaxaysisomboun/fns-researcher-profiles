@@ -8,7 +8,6 @@ import {
   InputLabel,
   MenuItem
 } from "@material-ui/core";
-import { string } from "prop-types";
 
 const FormField = ({ formdata, change, id, labelWidth, maxlength = null }) => {
   const showError = () => {
@@ -90,7 +89,7 @@ const FormField = ({ formdata, change, id, labelWidth, maxlength = null }) => {
                     maxLength: 4,
                     min: "1900",
                     max: "9999",
-                    pattern: String("/^-?\d+\.?\d*$/")
+           
                   }}
                 />
               ) : (
@@ -105,7 +104,7 @@ const FormField = ({ formdata, change, id, labelWidth, maxlength = null }) => {
                     maxLength: 4,
                     min: "1900",
                     max: "9999",
-                    pattern: String("/^-?\d+\.?\d*$/")
+            
                   }}
                 />
               )}

@@ -6,57 +6,36 @@ import {
   TwitterShareButton,
   TelegramShareButton,
   WhatsappShareButton,
-  PinterestShareButton,
   VKShareButton,
-  OKShareButton,
   RedditShareButton,
-  TumblrShareButton,
-  LivejournalShareButton,
-  MailruShareButton,
   ViberShareButton,
-  WorkplaceShareButton,
   LineShareButton,
   PocketShareButton,
   InstapaperShareButton,
   EmailShareButton,
-  FacebookShareCount,
-  PinterestShareCount,
-  VKShareCount,
-  OKShareCount,
-  RedditShareCount,
-  TumblrShareCount,
   FacebookIcon,
   TwitterIcon,
   TelegramIcon,
   WhatsappIcon,
   LinkedinIcon,
-  PinterestIcon,
-  VKIcon,
-  OKIcon,
   RedditIcon,
-  TumblrIcon,
-  LivejournalIcon,
-  MailruIcon,
   ViberIcon,
-  WorkplaceIcon,
   LineIcon,
   PocketIcon,
   InstapaperIcon,
-  EmailIcon
+  EmailIcon,
+  VKIcon
 } from "react-share";
 
 import {
-  Hidden,
   Grid,
   Dialog,
   DialogTitle,
-  Divider,
   DialogContent,
   IconButton,
   Typography,
   Button,
   TextField,
-  Snackbar
 } from "@material-ui/core";
 
 import { CopyToClipboard } from "react-copy-to-clipboard";
@@ -388,7 +367,7 @@ const ShareDialog = ({
             <CopyToClipboard
               text={url}
             >
-            <Button color= "primary">ຄັດລອກ</Button>
+            <Button onClick={close} color= "primary">ຄັດລອກ</Button>
             </CopyToClipboard>
             
           </Grid>

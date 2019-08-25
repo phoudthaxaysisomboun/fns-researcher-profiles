@@ -403,7 +403,7 @@ const ResearchCard = ({ userData, userResearch, runLike, runUnLike }) => {
                           style={{ marginBottom: "4px", cursor: "pointer" }}
                         >
                           <Grid item>
-                            {researches.files[0] && researches.files[0].name ? (
+                            {researches.files[0] && researches.files[0].name && (researches.files[0].name.split(".").pop() === 'pdf') ? (
                               <Grid container spacing={8}>
                                 <Grid
                                   item

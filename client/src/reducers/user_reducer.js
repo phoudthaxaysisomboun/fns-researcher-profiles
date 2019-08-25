@@ -116,7 +116,6 @@ export default function(state = {}, action) {
     case GET_DEGRESS:
       return { ...state, degrees: action.payload };
     case GET_USER_DETAIL:
-      console.log(action.payload.research)
       return { ...state, userDetail: 
         action.payload,
        };
@@ -184,7 +183,6 @@ export default function(state = {}, action) {
         updatedDegree: action.payload.degree
       };
     case UPDATE_AFFILIATION:
-      console.log(action.payload.affiliation)
       return {
         ...state,
         userDetail: {
@@ -386,7 +384,6 @@ export default function(state = {}, action) {
         userRegisterationCount: action.payload.size
       };
     case GET_OUTSTANDING_RESEARCHER:
-      console.log(action.payload);
       const outstanding = action.payload.outstandingResearcher;
       let outstandingResearcher = outstanding.map(value => {
         return flattenObject(value);
@@ -482,15 +479,10 @@ export default function(state = {}, action) {
         allResearchersReports: action.payload
       };
     case GET_ALL_RESEARCHERS_REPORTS:
-      console.log(action.payload);
-
       if (action.payload.allResearchersReports) {
         var allResearchersReports = action.payload.allResearchersReports.map(
           function(el, index, array) {
             var o = Object.assign({}, el);
-
-            console.log(array.length - 1);
-            console.log(index);
             if (o["deapartmentName"] === "ລວມ") {
               if (index !== array.length - 1) {
                 o["no"] = index + 1;
@@ -536,7 +528,6 @@ export default function(state = {}, action) {
         allResearchersListsReportsCount: action.payload.size
       };
     case GET_OUTSTANDING_REPORTS:
-      console.log(action.payload);
       var outstandingReports;
 
       if (action.payload.outstandingReports) {

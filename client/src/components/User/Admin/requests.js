@@ -5,11 +5,12 @@ import { withStyles } from "@material-ui/core/styles";
 
 import { Link, withRouter } from "react-router-dom";
 
+import compose from 'recompose/compose';
+import withWidth from '@material-ui/core/withWidth';
+
 import moment from "moment";
 
 import ManageUserHeader from "../../../hoc/manage_user_header";
-
-import AddUserDialog from "../Admin/Dialog/add_user";
 
 import { connect } from "react-redux";
 
@@ -534,11 +535,12 @@ class RequestRegisterAdmin extends React.Component {
           tab={this.state.tabNumber}
           changeTab={tabNumber => this.changeTab(tabNumber)}
           requestCount={this.props.user.userRegisterationCount}
+          width={this.props.width}
         >
           <Grid
             container
             spacing={0}
-            style={{ paddingTop: "0", paddingBottom: "24px" }}
+            style={{ paddingTop: "0", paddingBottom: "24px", paddingLeft: this.props.width === "xl" ? 240 : this.props.width === "lg" ? 180 : 0 }}
           >
             <Grid item xs sm lg md />
 
@@ -830,7 +832,9 @@ class RequestRegisterAdmin extends React.Component {
 }
 
 RequestRegisterAdmin.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  width: PropTypes.string.isRequired,
+
 };
 
 const mapStateToProps = state => {
@@ -839,6 +843,11 @@ const mapStateToProps = state => {
   };
 };
 
-export default withRouter(
-  connect(mapStateToProps)(withStyles(styles)(RequestRegisterAdmin))
-);
+const enhance = compose(
+  withRouter,
+  withWidth(),
+  withStyles(styles),
+  connect(mapStateToProps, null),
+)
+
+export default enhance(RequestRegisterAdmin);

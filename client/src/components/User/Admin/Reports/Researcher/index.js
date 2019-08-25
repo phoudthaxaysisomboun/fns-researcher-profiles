@@ -5,6 +5,9 @@ import classNames from "classnames";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 
+import compose from 'recompose/compose';
+import withWidth from '@material-ui/core/withWidth';
+
 import { withRouter } from "react-router-dom";
 
 import Chart from "react-apexcharts";
@@ -699,6 +702,7 @@ class AllResearcherReports extends Component {
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   componentWillMount() {
+    console.log(this.props.width)
     this.props.dispatch(getDepartments());
     this.props
       .dispatch(getAllResearchersReports("", this.state.start, this.state.end))
@@ -726,7 +730,6 @@ class AllResearcherReports extends Component {
       department: event.target.value,
       departmentText: event.nativeEvent.srcElement.innerText
     });
-    console.log("click");
   };
 
   handleEndChange = event => {
@@ -870,11 +873,12 @@ class AllResearcherReports extends Component {
           children={this.props.children}
           tab={this.state.tabNumber}
           changeTab={tabNumber => this.changeTab(tabNumber)}
+          width={this.props.width}
         >
           <Grid
             container
             spacing={0}
-            style={{ paddingTop: "0", paddingBottom: "24px" }}
+            style={{ paddingTop: "0", paddingBottom: "24px", paddingLeft: this.props.width === "xl" ? 240 : this.props.width === "lg" ? 180 : 0 }}
           >
             <Grid item xs sm lg md />
 
@@ -933,7 +937,6 @@ class AllResearcherReports extends Component {
                                     scope="row"
                                     padding="dense"
                                   >
-                                    {console.log(n)}
                                     {n.no}
                                   </TableCell>
                                   <TableCell
@@ -1038,7 +1041,6 @@ class AllResearcherReports extends Component {
                       </Table>
                     </div>
                   </Paper>
-                  {console.log(this.state.data.length)}
                   {this.state.department === "" &&
                   this.state.series.length > 0 ? (
                     <Grid container spacing={16} style={{ marginTop: "16px" }}>
@@ -1275,9 +1277,17 @@ AllResearcherReports.propTypes = {
 
 const mapStateToProps = state => {
   return {
-    user: state.user
+    user: state.user,
+    width: PropTypes.string.isRequired,
+
   };
 };
-export default withRouter(
-  connect(mapStateToProps)(withStyles(styles)(AllResearcherReports))
-);
+
+const enhance = compose(
+  withRouter,
+  withWidth(),
+  withStyles(styles),
+  connect(mapStateToProps, null),
+)
+
+export default enhance(AllResearcherReports);

@@ -9,6 +9,8 @@ import { UPLOADS_SERVER } from "../components/utils/misc";
 
 import Footer from "../components/Header_footer/Footer";
 
+import { enableDynamicTheme, disableDynamicTheme } from "darkreader-api"
+
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import { withStyles } from "@material-ui/core/styles";
@@ -329,6 +331,7 @@ class Layout extends Component {
   };
 
   componentDidMount() {
+    // enableDynamicTheme()
 
     // const width = this.props.width
     // if (width === "xs" || width === "sm") {
@@ -554,7 +557,6 @@ class Layout extends Component {
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
     const { open } = this.state;
-    console.log(`width: ${this.props.width}`)
     const renderMenu = (
       <Menu
         anchorEl={anchorEl}
@@ -2052,7 +2054,7 @@ class Layout extends Component {
           style={{ padding: 0 }}
         >
         {
-          console.log(this.props.width)
+
 
           // <div className={classes.layout} style={{ marginLeft: drawerWidth }} open={this.state.open}></div>
         }

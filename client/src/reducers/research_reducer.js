@@ -65,7 +65,6 @@ export default function(state = {}, action) {
     case GET_PUBLICATION_TYPE:
       return { ...state, publicationType: action.payload };
     case GET_FEED:
-      console.log(action.payload);
       return { ...state, feed: action.payload };
     case GET_SUGGESTIONS_IN_FEED:
       return { ...state, followSuggestions: action.payload };
@@ -110,15 +109,11 @@ export default function(state = {}, action) {
         allResearchesCount: action.payload.size
       };
     case GET_ALL_RESEARCHES_NUMBERS_REPORTS:
-      console.log(action.payload);
 
       if (action.payload.allResearchesListsReports) {
         var allResearchesListsReports = action.payload.allResearchesListsReports.map(
           function(el, index, array) {
             var o = Object.assign({}, el);
-
-            console.log(array.length - 1);
-            console.log(index);
             if (o["name"] === "ລວມ") {
               if (index !== array.length - 1) {
                 o["no"] = index + 1;
@@ -139,8 +134,6 @@ export default function(state = {}, action) {
         allResearchesListsReports
       };
     case GET_ALL_RESEARCHERS_LISTS_REPORTS:
-      console.log(action.payload);
-
       if (action.payload.allResearchesListReports) {
         var listResearchesListReports = action.payload.allResearchesListReports.map(
           function(el, index, array) {
@@ -225,7 +218,6 @@ export default function(state = {}, action) {
         }
       };
     case ADD_NEW_RESEARCH:
-      console.log(action.payload)
       return {
         ...state,
        newResearch: action.payload.doc

@@ -94,6 +94,8 @@ const ResearchCard = ({ userData, userDetail, userResearch, loading, openAddRese
   const research = { ...userResearch };
   const profileResearch = { ...research.userResearch };
 
+  
+
   let author = [];
 
   for (var key in profileResearch) {
@@ -322,7 +324,7 @@ const ResearchCard = ({ userData, userDetail, userResearch, loading, openAddRese
                           style={{ marginBottom: "4px", cursor: "pointer" }}
                         >
                           <Grid item>
-                            {researches.files[0] && researches.files[0].name ? (
+                            {researches.files[0] && researches.files[0].name && (researches.files[0].name.split(".").pop() === 'pdf') ? (
                               <Grid container spacing={8}>
                                 <Grid
                                   item

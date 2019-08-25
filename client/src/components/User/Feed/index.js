@@ -175,7 +175,7 @@ class Feed extends Component {
           <Grid item xs={11} sm={11} lg={8} md={11}>
           {this.props.user && this.props.research.feed ?
             <Grid container spacing={16}>
-              <Grid item xs={12} lg={7} sm={12} md={12}>
+              <Grid item xs={12} lg={7} sm={12} md={10}>
                 <FeedCard
                   userResearch={
                     this.props.user && this.props.research.feed

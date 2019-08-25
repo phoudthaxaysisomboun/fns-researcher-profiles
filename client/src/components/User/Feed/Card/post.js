@@ -347,7 +347,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
   const renderItems = () =>
     userResearch ? (
       <Grid item xs={12}>
-        <div style={{ float: "right" }}>
+        <div style={{ }}>
           {userResearch.map(researches => (
             <>
               <Paper
@@ -642,7 +642,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                           style={{ marginBottom: "4px", cursor: "pointer" }}
                         >
                           <Grid item>
-                            {researches.files[0] && researches.files[0].name ? (
+                            {researches.files[0] && researches.files[0].name && (researches.files[0].name.split(".").pop() === 'pdf') ? (
                               <Grid container spacing={8}>
                                 <Grid
                                   item
@@ -838,7 +838,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
         </div>
       </Grid>
     ) : (
-      <div style={{ float: "right" }}>
+      <div style={{ }}>
         <>
           <Grid container style={{}}>
             <Paper

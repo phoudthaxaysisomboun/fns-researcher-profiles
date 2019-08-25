@@ -5,6 +5,9 @@ import { withStyles } from "@material-ui/core/styles";
 
 import { Link, withRouter } from "react-router-dom";
 
+import compose from 'recompose/compose';
+import withWidth from '@material-ui/core/withWidth';
+
 import AddOutstandingResearcherDialog from "../Admin/Dialog/add_outstanding_reseacher";
 
 import moment from "moment";
@@ -672,11 +675,13 @@ class OutstandingResearchersAdmin extends React.Component {
           tab={this.state.tabNumber}
           changeTab={tabNumber => this.changeTab(tabNumber)}
           requestCount={this.props.user.userRegisterationCount}
+          width={this.props.width}
+
         >
           <Grid
             container
             spacing={0}
-            style={{ paddingTop: "0", paddingBottom: "24px" }}
+            style={{ paddingTop: "0", paddingBottom: "24px", paddingLeft: this.props.width === "xl" ? 240 : this.props.width === "lg" ? 180 : 0 }}
           >
             <Grid item xs sm lg md />
 
@@ -979,7 +984,8 @@ class OutstandingResearchersAdmin extends React.Component {
 }
 
 OutstandingResearchersAdmin.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  width: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = state => {
@@ -988,6 +994,11 @@ const mapStateToProps = state => {
   };
 };
 
-export default withRouter(
-  connect(mapStateToProps)(withStyles(styles)(OutstandingResearchersAdmin))
-);
+const enhance = compose(
+  withRouter,
+  withWidth(),
+  withStyles(styles),
+  connect(mapStateToProps, null),
+)
+
+export default enhance(OutstandingResearchersAdmin)

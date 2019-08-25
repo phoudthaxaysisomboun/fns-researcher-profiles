@@ -24,7 +24,7 @@ const ManageResearchHeader = ({ tab, props, children, requestCount, width }) => 
       <Grid
         container
         spacing={0}
-        style={{ paddingTop: "24px", paddingLeft: width === "lg" ? 180 : 0}}
+        style={{ paddingTop: "24px", paddingLeft: width === "xl" ? 240 : width === "lg" ? 180 : 0}}
       >
         <Grid item xs sm lg md />
 
