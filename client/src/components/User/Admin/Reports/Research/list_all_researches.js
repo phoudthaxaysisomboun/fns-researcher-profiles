@@ -11,6 +11,9 @@ import ResearchReportsHeader from "../../../../../hoc/research_reports_header";
 
 import { connect } from "react-redux";
 
+import compose from "recompose/compose";
+import withWidth from "@material-ui/core/withWidth";
+
 import {
   Grid,
   Table,
@@ -38,9 +41,7 @@ import { SaveAltOutlined } from "@material-ui/icons";
 
 import { lighten } from "@material-ui/core/styles/colorManipulator";
 
-import {
-  getDepartments
-} from "../../../../../actions/user_actions";
+import { getDepartments } from "../../../../../actions/user_actions";
 
 import {
   getAllResearchesListsReports,
@@ -58,7 +59,6 @@ const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 // const ExcelRow = ReactExport.ExcelFile.ExcelRow;
-
 
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -502,7 +502,11 @@ class EnhancedTableToolbar extends React.Component {
                 </Select>
               </FormControl>
               <ExcelFile
-                filename={`ລາຍການຜົນງານຄົ້ນຄວ້າ (${moment(startValue).format("DD-MM-YYYY")} - ${moment(endValue).format("DD-MM-YYYY")}) ${selectedValue} ຄວທ`}
+                filename={`ລາຍການຜົນງານຄົ້ນຄວ້າ (${moment(startValue).format(
+                  "DD-MM-YYYY"
+                )} - ${moment(endValue).format(
+                  "DD-MM-YYYY"
+                )}) ${selectedValue} ຄວທ`}
                 element={
                   <Tooltip title="ດາວໂຫລດຟາຍລ໌ Excel">
                     <IconButton style={{ marginRight: "0px" }}>
@@ -619,7 +623,7 @@ class AllResearchesList extends React.Component {
   };
 
   handleClick = (event, id) => {
-    this.props.history.push(`/profile/${id}`);
+    this.props.history.push(`/research/${id}`);
   };
 
   handleChangePage = (event, page) => {
@@ -664,7 +668,7 @@ class AllResearchesList extends React.Component {
           this.state.researchType,
           this.state.publicationType,
           this.state.order,
-          this.state.orderBy,
+          this.state.orderBy
         )
       )
       .then(response => {
@@ -764,11 +768,21 @@ class AllResearchesList extends React.Component {
           children={this.props.children}
           tab={this.state.tabNumber}
           changeTab={tabNumber => this.changeTab(tabNumber)}
+          width={this.props.width}
         >
           <Grid
             container
             spacing={0}
-            style={{ paddingTop: "0", paddingBottom: "24px" }}
+            style={{
+              paddingTop: "0",
+              paddingBottom: "24px",
+              paddingLeft:
+                this.props.width === "xl"
+                  ? 240
+                  : this.props.width === "lg"
+                  ? 180
+                  : 0
+            }}
           >
             <Grid item xs sm lg md />
 
@@ -796,8 +810,8 @@ class AllResearchesList extends React.Component {
                     handleResearchTypeChange={event =>
                       this.handleResearchTypeChange(event)
                     }
-                    selectedResearchType = {this.state.researchType}
-                    selectedPublicationType = {this.state.publicationType}
+                    selectedResearchType={this.state.researchType}
+                    selectedPublicationType={this.state.publicationType}
                     handlePublicationTypeChange={event =>
                       this.handlePublicationTypeChange(event)
                     }
@@ -868,9 +882,7 @@ class AllResearchesList extends React.Component {
                                         color: "inherit"
                                       }}
                                     >
-                                      <Typography variant="inherit">{`${
-                                        n.title
-                                      }`}</Typography>
+                                      <Typography variant="inherit">{`${n.title}`}</Typography>
                                     </Link>
                                   </TableCell>
                                   <TableCell
@@ -879,9 +891,7 @@ class AllResearchesList extends React.Component {
                                     scope="row"
                                     padding="dense"
                                   >
-                                    <Typography variant="inherit">{`${
-                                      n.author
-                                    }`}</Typography>
+                                    <Typography variant="inherit">{`${n.author}`}</Typography>
                                   </TableCell>
                                   <TableCell align="left" padding="dense">
                                     {n.date}
@@ -966,7 +976,8 @@ class AllResearchesList extends React.Component {
 }
 
 AllResearchesList.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  width: PropTypes.string.isRequired
 };
 
 const mapStateToProps = state => {
@@ -975,7 +986,14 @@ const mapStateToProps = state => {
     research: state.research
   };
 };
-
-export default withRouter(
-  connect(mapStateToProps)(withStyles(styles)(AllResearchesList))
+const enhance = compose(
+  withRouter,
+  withWidth(),
+  withStyles(styles),
+  connect(
+    mapStateToProps,
+    null
+  )
 );
+
+export default enhance(AllResearchesList);

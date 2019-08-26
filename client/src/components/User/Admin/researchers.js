@@ -2,9 +2,9 @@ import React from "react";
 import classNames from "classnames";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
-import withWidth from '@material-ui/core/withWidth';
+import withWidth from "@material-ui/core/withWidth";
 import { Link, withRouter } from "react-router-dom";
-import compose from 'recompose/compose';
+import compose from "recompose/compose";
 
 import moment from "moment";
 
@@ -76,7 +76,6 @@ function stableSort(array, cmp) {
     return a[1] - b[1];
   });
 
-  
   return stabilizedThis.map(el => el[0]);
 }
 
@@ -338,38 +337,38 @@ let EnhancedTableToolbar = props => {
                   </>
                 ) : (
                   <>
-                  {numSelected === 1 ? (
-                    <>
-                      <Tooltip title="ແກ້ໄຂ">
-                        <IconButton
-                          onClick={() => {
-                            console.log("click");
-                          }}
-                          style={{ marginRight: "0px" }}
-                        >
-                          <EditOutlined />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="ເບິ່ງ">
-                        <IconButton
-                          component={Link}
-                          to={`/profile/${selected[0]}`}
-                          style={{ marginRight: "0px" }}
-                        >
-                          <VisibilityOutlined />
-                        </IconButton>
-                      </Tooltip>
-                    </>
-                  ) : null}
-                  <Tooltip title="ລຶບ">
-                    <IconButton
-                      aria-label="Delete"
-                      disabled
-                      style={{ marginRight: "8px" }}
-                    >
-                      <DeleteOutline />
-                    </IconButton>
-                  </Tooltip>
+                    {numSelected === 1 ? (
+                      <>
+                        <Tooltip title="ແກ້ໄຂ">
+                          <IconButton
+                            onClick={() => {
+                              console.log("click");
+                            }}
+                            style={{ marginRight: "0px" }}
+                          >
+                            <EditOutlined />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="ເບິ່ງ">
+                          <IconButton
+                            component={Link}
+                            to={`/profile/${selected[0]}`}
+                            style={{ marginRight: "0px" }}
+                          >
+                            <VisibilityOutlined />
+                          </IconButton>
+                        </Tooltip>
+                      </>
+                    ) : null}
+                    <Tooltip title="ລຶບ">
+                      <IconButton
+                        aria-label="Delete"
+                        disabled
+                        style={{ marginRight: "8px" }}
+                      >
+                        <DeleteOutline />
+                      </IconButton>
+                    </Tooltip>
                   </>
                 )}
               </>
@@ -573,7 +572,16 @@ class ResearcherAdmin extends React.Component {
           <Grid
             container
             spacing={0}
-            style={{ paddingTop: "0", paddingBottom: "24px", paddingLeft: this.props.width === "xl" ? 240 : this.props.width === "lg" ? 180 : 0 }}
+            style={{
+              paddingTop: "0",
+              paddingBottom: "24px",
+              paddingLeft:
+                this.props.width === "xl"
+                  ? 240
+                  : this.props.width === "lg"
+                  ? 180
+                  : 0
+            }}
           >
             <Grid item xs sm lg md />
 
@@ -651,9 +659,7 @@ class ResearcherAdmin extends React.Component {
                                     scope="row"
                                     padding="dense"
                                   >
-                                    <Typography variant="inherit">{`${
-                                      n.prefix
-                                    } ${n.name} ${n.lastname}`}</Typography>
+                                    <Typography variant="inherit">{`${n.prefix} ${n.name} ${n.lastname}`}</Typography>
                                   </TableCell>
                                   <TableCell
                                     align="left"
@@ -804,10 +810,8 @@ class ResearcherAdmin extends React.Component {
 
 ResearcherAdmin.propTypes = {
   classes: PropTypes.object.isRequired,
-  width: PropTypes.string.isRequired,
+  width: PropTypes.string.isRequired
 };
-
-
 
 const mapStateToProps = state => {
   return {
@@ -820,8 +824,11 @@ const enhance = compose(
   withWidth(),
   withStyles(styles),
   // withWidth(),
-  connect(mapStateToProps, null),
-)
+  connect(
+    mapStateToProps,
+    null
+  )
+);
 
 export default enhance(ResearcherAdmin);
 

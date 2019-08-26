@@ -5,6 +5,9 @@ import classNames from "classnames";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 
+import compose from "recompose/compose";
+import withWidth from "@material-ui/core/withWidth";
+
 import { withRouter } from "react-router-dom";
 
 import Chart from "react-apexcharts";
@@ -15,12 +18,10 @@ import { connect } from "react-redux";
 
 import {
   // getAllResearchersReports,
-  getDepartments,
+  getDepartments
   // clearAllResearchersReports
 } from "../../../../../actions/user_actions";
-import {
-  getAllResearchesNumbersReports
-} from "../../../../../actions/research_actions";
+import { getAllResearchesNumbersReports } from "../../../../../actions/research_actions";
 
 import {
   Grid,
@@ -46,9 +47,7 @@ import {
   TextField
 } from "@material-ui/core";
 
-import {
-  SaveAltOutlined
-} from "@material-ui/icons";
+import { SaveAltOutlined } from "@material-ui/icons";
 
 import { lighten } from "@material-ui/core/styles/colorManipulator";
 
@@ -85,10 +84,6 @@ function getSorting(order, orderBy) {
     ? (a, b) => desc(a, b, orderBy)
     : (a, b) => -desc(a, b, orderBy);
 }
-
-
-
-
 
 class EnhancedTableHead extends React.Component {
   createSortHandler = property => event => {
@@ -370,83 +365,87 @@ class EnhancedTableToolbar extends React.Component {
                       id="age-label-placeholder"
                     />
                   }
-                  
                 >
-                 
-             
-                    <MenuItem
-                      style={{
-                        fontFamily: "'Noto Sans Lao UI', sans serif"
-                      }}
-                      value={"researchType"}
-                    >
-                      <Typography variant="inherit">ປະເພດຜົນງານ</Typography>{" "}
-                    </MenuItem>
-                    <MenuItem
-                      style={{
-                        fontFamily: "'Noto Sans Lao UI', sans serif"
-                      }}
-                      value={"publicationType"}
-                    >
-                      <Typography variant="inherit">ປະເພດການຕີພິມ</Typography>{" "}
-                    </MenuItem>
-            
+                  <MenuItem
+                    style={{
+                      fontFamily: "'Noto Sans Lao UI', sans serif"
+                    }}
+                    value={"researchType"}
+                  >
+                    <Typography variant="inherit">ປະເພດຜົນງານ</Typography>{" "}
+                  </MenuItem>
+                  <MenuItem
+                    style={{
+                      fontFamily: "'Noto Sans Lao UI', sans serif"
+                    }}
+                    value={"publicationType"}
+                  >
+                    <Typography variant="inherit">ປະເພດການຕີພິມ</Typography>{" "}
+                  </MenuItem>
                 </Select>
               </FormControl>
-              {
-                by === "researchType" ?
+              {by === "researchType" ? (
                 <ExcelFile
-                filename={`ລາຍງານຈໍານວນຜົນງານຄົ້ນຄວ້າ ຄວທ ແບ່ງຕາມປະເພດຜົນງານ (${moment(
-                  startValue
-                ).format("DD-MM-YYYY")} - ${moment(endValue).format(
-                  "DD-MM-YYYY"
-                )})`}
-                element={
-                  <Tooltip title="ດາວໂຫລດຟາຍລ໌ Excel">
-                    <IconButton style={{ marginRight: "0px" }}>
-                      <SaveAltOutlined />
-                    </IconButton>
-                  </Tooltip>
-                }
-              >
-                <ExcelSheet data={data} name="ລາຍງານຈໍານວນຜົນງານຄົ້ນຄວ້າ ຄວທ ແບ່ງຕາມປະເພດຜົນງານ">
-                  <ExcelColumn name="Saysettha OT" label="ລ/ດ" value="no" />
-                  <ExcelColumn label="ປະເພດຜົນງານ" value="name" />
-                  <ExcelColumn label="ຕີພິມພາຍໃນ" value="nationalCount" />
-                  <ExcelColumn label="ຕີພິມພາຍຕ່າງປະເທດ" value="internationalCount" />
-                  <ExcelColumn label="ທັງຫມົດ" value="count" />
-                  {
-                    // <ExcelColumn label="Marital Status"
-                    //            value={(col) => col.is_married ? "Married" : "Single"}/>
+                  filename={`ລາຍງານຈໍານວນຜົນງານຄົ້ນຄວ້າ ຄວທ ແບ່ງຕາມປະເພດຜົນງານ (${moment(
+                    startValue
+                  ).format("DD-MM-YYYY")} - ${moment(endValue).format(
+                    "DD-MM-YYYY"
+                  )})`}
+                  element={
+                    <Tooltip title="ດາວໂຫລດຟາຍລ໌ Excel">
+                      <IconButton style={{ marginRight: "0px" }}>
+                        <SaveAltOutlined />
+                      </IconButton>
+                    </Tooltip>
                   }
-                </ExcelSheet>
-              </ExcelFile>
-              :
-              <ExcelFile
-                filename={`ລາຍງານຈໍານວນຜົນງານຄົ້ນຄວ້າ ຄວທ ແບ່ງຕາມປະເພດການຕີພິມ (${moment(
-                  startValue
-                ).format("DD-MM-YYYY")} - ${moment(endValue).format(
-                  "DD-MM-YYYY"
-                )})`}
-                element={
-                  <Tooltip title="ດາວໂຫລດຟາຍລ໌ Excel">
-                    <IconButton style={{ marginRight: "0px" }}>
-                      <SaveAltOutlined />
-                    </IconButton>
-                  </Tooltip>
-                }
-              >
-                <ExcelSheet data={data} name="ລາຍງານຈໍານວນຜົນງານຄົ້ນຄວ້າ ຄວທ ແບ່ງຕາມປະເພດການຕີພິມ">
-                  <ExcelColumn name="Saysettha OT" label="ລ/ດ" value="no" />
-                  <ExcelColumn label="ປະເພດການຕີພິມ" value="name" />
-                  <ExcelColumn label="ທັງຫມົດ" value="count" />
-                  {
-                    // <ExcelColumn label="Marital Status"
-                    //            value={(col) => col.is_married ? "Married" : "Single"}/>
+                >
+                  <ExcelSheet
+                    data={data}
+                    name="ລາຍງານຈໍານວນຜົນງານຄົ້ນຄວ້າ ຄວທ ແບ່ງຕາມປະເພດຜົນງານ"
+                  >
+                    <ExcelColumn name="Saysettha OT" label="ລ/ດ" value="no" />
+                    <ExcelColumn label="ປະເພດຜົນງານ" value="name" />
+                    <ExcelColumn label="ຕີພິມພາຍໃນ" value="nationalCount" />
+                    <ExcelColumn
+                      label="ຕີພິມພາຍຕ່າງປະເທດ"
+                      value="internationalCount"
+                    />
+                    <ExcelColumn label="ທັງຫມົດ" value="count" />
+                    {
+                      // <ExcelColumn label="Marital Status"
+                      //            value={(col) => col.is_married ? "Married" : "Single"}/>
+                    }
+                  </ExcelSheet>
+                </ExcelFile>
+              ) : (
+                <ExcelFile
+                  filename={`ລາຍງານຈໍານວນຜົນງານຄົ້ນຄວ້າ ຄວທ ແບ່ງຕາມປະເພດການຕີພິມ (${moment(
+                    startValue
+                  ).format("DD-MM-YYYY")} - ${moment(endValue).format(
+                    "DD-MM-YYYY"
+                  )})`}
+                  element={
+                    <Tooltip title="ດາວໂຫລດຟາຍລ໌ Excel">
+                      <IconButton style={{ marginRight: "0px" }}>
+                        <SaveAltOutlined />
+                      </IconButton>
+                    </Tooltip>
                   }
-                </ExcelSheet>
-              </ExcelFile>
-              }
+                >
+                  <ExcelSheet
+                    data={data}
+                    name="ລາຍງານຈໍານວນຜົນງານຄົ້ນຄວ້າ ຄວທ ແບ່ງຕາມປະເພດການຕີພິມ"
+                  >
+                    <ExcelColumn name="Saysettha OT" label="ລ/ດ" value="no" />
+                    <ExcelColumn label="ປະເພດການຕີພິມ" value="name" />
+                    <ExcelColumn label="ທັງຫມົດ" value="count" />
+                    {
+                      // <ExcelColumn label="Marital Status"
+                      //            value={(col) => col.is_married ? "Married" : "Single"}/>
+                    }
+                  </ExcelSheet>
+                </ExcelFile>
+              )}
             </div>
           </Grid>
         </Grid>
@@ -602,7 +601,7 @@ class ResearchNumbersReports extends Component {
         }
       }
     },
-    seriesByPub: [],    
+    seriesByPub: []
   };
 
   handleRequestSort = (event, property) => {
@@ -658,12 +657,20 @@ class ResearchNumbersReports extends Component {
   componentWillMount() {
     this.props.dispatch(getDepartments());
     this.props
-      .dispatch(getAllResearchesNumbersReports("", this.state.start, this.state.end, this.state.by)).then((response)=>{
+      .dispatch(
+        getAllResearchesNumbersReports(
+          "",
+          this.state.start,
+          this.state.end,
+          this.state.by
+        )
+      )
+      .then(response => {
         this.setState({
           data: this.props.research.allResearchesListsReports,
           rowsPerPage: this.props.research.allResearchesListsReports.length
         });
-      })
+      });
     // this.props
     //   .dispatch(getAllResearchersReports("", this.state.start, this.state.end))
     //   .then(response => {
@@ -693,13 +700,10 @@ class ResearchNumbersReports extends Component {
     console.log("click");
   };
 
-
   handleByChange = event => {
     this.setState({
-      by: event.target.value,
+      by: event.target.value
     });
-
-
   };
 
   handleEndChange = event => {
@@ -714,12 +718,20 @@ class ResearchNumbersReports extends Component {
       this.setState({ end: moment().format("YYYY-MM-DD") });
     }
     this.props
-      .dispatch(getAllResearchesNumbersReports(this.state.department, this.state.start, this.state.end, this.state.by)).then((response)=>{
+      .dispatch(
+        getAllResearchesNumbersReports(
+          this.state.department,
+          this.state.start,
+          this.state.end,
+          this.state.by
+        )
+      )
+      .then(response => {
         this.setState({
           data: this.props.research.allResearchesListsReports,
           rowsPerPage: this.props.research.allResearchesListsReports.length
         });
-      })
+      });
   };
 
   handleStartChange = event => {
@@ -735,12 +747,20 @@ class ResearchNumbersReports extends Component {
     }
 
     this.props
-      .dispatch(getAllResearchesNumbersReports(this.state.department, this.state.start, this.state.end, this.state.by)).then((response)=>{
+      .dispatch(
+        getAllResearchesNumbersReports(
+          this.state.department,
+          this.state.start,
+          this.state.end,
+          this.state.by
+        )
+      )
+      .then(response => {
         this.setState({
           data: this.props.research.allResearchesListsReports,
           rowsPerPage: this.props.research.allResearchesListsReports.length
         });
-      })
+      });
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -750,22 +770,25 @@ class ResearchNumbersReports extends Component {
     const prevData = prevState.data;
     const currData = this.state.data;
 
-    const prevBy = prevState.by
-    const currBy = this.state.by
+    const prevBy = prevState.by;
+    const currBy = this.state.by;
 
     if (prevBy !== currBy) {
       this.props
-      .dispatch(getAllResearchesNumbersReports(this.state.department, this.state.start, this.state.end, this.state.by)).then((response)=>{
-        this.setState({
-          data: this.props.research.allResearchesListsReports,
-          rowsPerPage: this.props.research.allResearchesListsReports.length
+        .dispatch(
+          getAllResearchesNumbersReports(
+            this.state.department,
+            this.state.start,
+            this.state.end,
+            this.state.by
+          )
+        )
+        .then(response => {
+          this.setState({
+            data: this.props.research.allResearchesListsReports,
+            rowsPerPage: this.props.research.allResearchesListsReports.length
+          });
         });
-
-        
-      })
-      
-
-      
     }
 
     if (prevData !== currData && currData.length > 0) {
@@ -802,11 +825,11 @@ class ResearchNumbersReports extends Component {
               disablePadding: false,
               label: "ທັງຫມົດ"
             }
-          ],
-        })
+          ]
+        });
       } else {
         this.setState({
-          rows:[
+          rows: [
             {
               id: "no",
               numeric: false,
@@ -825,17 +848,17 @@ class ResearchNumbersReports extends Component {
               disablePadding: false,
               label: "ທັງຫມົດ"
             }
-          ],
-        })
+          ]
+        });
       }
 
       if (this.state.data.length > 0) {
         let name = [];
         let countByResearchType = [];
-        let countNationalPublication =[]
-        let countInternationalPublication =[]
+        let countNationalPublication = [];
+        let countInternationalPublication = [];
 
-        let countByPublicationType = []
+        let countByPublicationType = [];
 
         this.state.data.map(function(el, index, array) {
           var o = Object.assign({}, el);
@@ -843,14 +866,12 @@ class ResearchNumbersReports extends Component {
             name.push(o.name);
             countByResearchType.push(o["count"]);
             countByPublicationType.push(o["count"]);
-            countNationalPublication.push(o["nationalCount"])
-            countInternationalPublication.push(o["internationalCount"])
+            countNationalPublication.push(o["nationalCount"]);
+            countInternationalPublication.push(o["internationalCount"]);
           } else {
-            
           }
           return null;
         });
-
 
         let newlabelData = { ...this.state.options };
         newlabelData["labels"] = name;
@@ -859,7 +880,7 @@ class ResearchNumbersReports extends Component {
           options: newlabelData,
           optionsByPub: newlabelData,
           series: countByResearchType,
-          seriesByPub: countByPublicationType,
+          seriesByPub: countByPublicationType
           // seriesDegree: countByDegree,
           // seriesGender: countByGender,
           // seriesAge: countByAge
@@ -869,12 +890,20 @@ class ResearchNumbersReports extends Component {
 
     if (prevDepartment !== currDepartment) {
       this.props
-      .dispatch(getAllResearchesNumbersReports(this.state.department, this.state.start, this.state.end, this.state.by)).then((response)=>{
-        this.setState({
-          data: this.props.research.allResearchesListsReports,
-          rowsPerPage: this.props.research.allResearchesListsReports.length
+        .dispatch(
+          getAllResearchesNumbersReports(
+            this.state.department,
+            this.state.start,
+            this.state.end,
+            this.state.by
+          )
+        )
+        .then(response => {
+          this.setState({
+            data: this.props.research.allResearchesListsReports,
+            rowsPerPage: this.props.research.allResearchesListsReports.length
+          });
         });
-      })
     }
   }
 
@@ -890,18 +919,25 @@ class ResearchNumbersReports extends Component {
           children={this.props.children}
           tab={this.state.tabNumber}
           changeTab={tabNumber => this.changeTab(tabNumber)}
+          width={this.props.width}
+
         >
           <Grid
             container
             spacing={0}
-            style={{ paddingTop: "0", paddingBottom: "24px" }}
+            style={{ paddingTop: "0", paddingBottom: "24px",paddingLeft:
+            this.props.width === "xl"
+              ? 240
+              : this.props.width === "lg"
+              ? 180
+              : 0 }}
           >
             <Grid item xs sm lg md />
 
             <Grid item xs={11} sm={11} lg={11} md={11}>
               {this.props.research.allResearchesListsReports ? (
                 <>
-                {console.log(this.state.data)}
+                  {console.log(this.state.data)}
                   <EnhancedTableToolbar
                     numSelected={selected.length}
                     selected={this.state.selected}
@@ -911,10 +947,8 @@ class ResearchNumbersReports extends Component {
                     handleDepartmentChange={event =>
                       this.handleDepartmentChange(event)
                     }
-                    by = {this.state.by}
-                    handleByChange={event =>
-                      this.handleByChange(event)
-                    }
+                    by={this.state.by}
+                    handleByChange={event => this.handleByChange(event)}
                     endValue={this.state.end}
                     startValue={this.state.start}
                     handleEndChange={event => this.handleEndChange(event)}
@@ -922,136 +956,95 @@ class ResearchNumbersReports extends Component {
                     handleStartChange={event => this.handleStartChange(event)}
                     handleStartBlur={event => this.handleStartBlur(event)}
                   />
-                <Grid container spacing={8}>
+                  <Grid container spacing={8}>
                     <Grid item lg={8} sm={12}>
-                    <Paper
-                    style={{
-                      boxShadow: "none",
-                      border: "1px solid #d8d8d8",
+                      <Paper
+                        style={{
+                          boxShadow: "none",
+                          border: "1px solid #d8d8d8",
 
-                      borderRadius: 0,
-                      borderBottom: 0
-                    }}
-                  >
-                    <div className={classes.tableWrapper}>
-                      <Table
-                        className={classes.table}
-                        aria-labelledby="tableTitle"
+                          borderRadius: 0,
+                          borderBottom: 0
+                        }}
                       >
-                        <EnhancedTableHead
-                          numSelected={selected.length}
-                          order={order}
-                          orderBy={orderBy}
-                          onSelectAllClick={this.handleSelectAllClick}
-                          onRequestSort={this.handleRequestSort}
-                          rowCount={data.length}
-                          rows = {this.state.rows}
-                        />
-                        <TableBody>
-                          {stableSort(data, getSorting(order, orderBy))
-                            .slice(
-                              page * rowsPerPage,
-                              page * rowsPerPage + rowsPerPage
-                            )
-                            .map((n, index) => {
-                              return (
-                                <TableRow tabIndex={-1} key={n.id}>
-                                  <TableCell
-                                    component="th"
-                                    scope="row"
-                                    padding="dense"
-                                  >
-                                    {console.log(n)}
-                                    {n.no}
-                                  </TableCell>
-                                  <TableCell
-                                    component="th"
-                                    scope="row"
-                                    padding="dense"
-                                  >
-                                    <Typography variant="inherit">{`${
-                                      n.name
-                                    }`}</Typography>
-                                  </TableCell>
-                                  {
-                                    this.state.by === "researchType" ?
-                                    <>
-                                    <TableCell
-                                    component="th"
-                                    scope="row"
-                                    padding="dense"
-                                  >
-                                    <Typography variant="inherit">{`${
-                                      n.nationalCount
-                                    }`}</Typography>
-                                  </TableCell>
-                                  <TableCell
-                                    component="th"
-                                    scope="row"
-                                    padding="dense"
-                                  >
-                                    <Typography variant="inherit">{`${
-                                      n.internationalCount
-                                    }`}</Typography>
-                                  </TableCell>
-                                    </> : null
-                                  }
-                                  <TableCell
-                                    component="th"
-                                    scope="row"
-                                    padding="dense"
-                                  >
-                                    <Typography variant="inherit">{`${
-                                      n.count
-                                    }`}</Typography>
-                                  </TableCell>
-                                  
+                        <div className={classes.tableWrapper}>
+                          <Table
+                            className={classes.table}
+                            aria-labelledby="tableTitle"
+                          >
+                            <EnhancedTableHead
+                              numSelected={selected.length}
+                              order={order}
+                              orderBy={orderBy}
+                              onSelectAllClick={this.handleSelectAllClick}
+                              onRequestSort={this.handleRequestSort}
+                              rowCount={data.length}
+                              rows={this.state.rows}
+                            />
+                            <TableBody>
+                              {stableSort(data, getSorting(order, orderBy))
+                                .slice(
+                                  page * rowsPerPage,
+                                  page * rowsPerPage + rowsPerPage
+                                )
+                                .map((n, index) => {
+                                  return (
+                                    <TableRow tabIndex={-1} key={n.id}>
+                                      <TableCell
+                                        component="th"
+                                        scope="row"
+                                        padding="dense"
+                                      >
+                                        {console.log(n)}
+                                        {n.no}
+                                      </TableCell>
+                                      <TableCell
+                                        component="th"
+                                        scope="row"
+                                        padding="dense"
+                                      >
+                                        <Typography variant="inherit">{`${n.name}`}</Typography>
+                                      </TableCell>
+                                      {this.state.by === "researchType" ? (
+                                        <>
+                                          <TableCell
+                                            component="th"
+                                            scope="row"
+                                            padding="dense"
+                                          >
+                                            <Typography variant="inherit">{`${n.nationalCount}`}</Typography>
+                                          </TableCell>
+                                          <TableCell
+                                            component="th"
+                                            scope="row"
+                                            padding="dense"
+                                          >
+                                            <Typography variant="inherit">{`${n.internationalCount}`}</Typography>
+                                          </TableCell>
+                                        </>
+                                      ) : null}
+                                      <TableCell
+                                        component="th"
+                                        scope="row"
+                                        padding="dense"
+                                      >
+                                        <Typography variant="inherit">{`${n.count}`}</Typography>
+                                      </TableCell>
+                                    </TableRow>
+                                  );
+                                })}
+                              {emptyRows > 0 && (
+                                <TableRow style={{ height: 49 * emptyRows }}>
+                                  <TableCell colSpan={6} />
                                 </TableRow>
-                              );
-                            })}
-                          {emptyRows > 0 && (
-                            <TableRow style={{ height: 49 * emptyRows }}>
-                              <TableCell colSpan={6} />
-                            </TableRow>
-                          )}
-                        </TableBody>
-                      </Table>
-                    </div>
-                  </Paper>
+                              )}
+                            </TableBody>
+                          </Table>
+                        </div>
+                      </Paper>
                     </Grid>
                     <Grid item lg={4} sm={12}>
-                     {
-                       this.state.by === "researchType" ?
-                       <Paper
-                          style={{
-                            boxShadow: "none",
-                            border: "1px solid #d8d8d8",
-                            maxHeight: "400px",
-                            padding: "16px"
-                          }}
-                        >
-                        <Typography
-                            variant="inherit"
-                            style={{
-                              fontSize: "18px",
-                              fontWeight: 500
-                            }}
-                          >
-                            ຈໍານວນຜົນງານຄົ້ນຄວ້າແບ່ງຕາມປະເພດ
-                          </Typography>
-                                   {
-                                    this.state.rowsPerPage > 1 ?
-                                     <Chart
-                            options={this.state.options}
-                            labels={this.state.options.labels}
-                            series={this.state.series}
-                            props
-                            type="pie"
-                            height={260}
-                          /> : null
-                                   }
-                        </Paper> : 
-
+                      {this.state.by === "researchType" ? (
                         <Paper
                           style={{
                             boxShadow: "none",
@@ -1060,7 +1053,36 @@ class ResearchNumbersReports extends Component {
                             padding: "16px"
                           }}
                         >
-                        <Typography
+                          <Typography
+                            variant="inherit"
+                            style={{
+                              fontSize: "18px",
+                              fontWeight: 500
+                            }}
+                          >
+                            ຈໍານວນຜົນງານຄົ້ນຄວ້າແບ່ງຕາມປະເພດ
+                          </Typography>
+                          {this.state.rowsPerPage > 1 ? (
+                            <Chart
+                              options={this.state.options}
+                              labels={this.state.options.labels}
+                              series={this.state.series}
+                              props
+                              type="pie"
+                              height={260}
+                            />
+                          ) : null}
+                        </Paper>
+                      ) : (
+                        <Paper
+                          style={{
+                            boxShadow: "none",
+                            border: "1px solid #d8d8d8",
+                            maxHeight: "400px",
+                            padding: "16px"
+                          }}
+                        >
+                          <Typography
                             variant="inherit"
                             style={{
                               fontSize: "18px",
@@ -1069,223 +1091,221 @@ class ResearchNumbersReports extends Component {
                           >
                             ຈໍານວນຜົນງານຄົ້ນຄວ້າແບ່ງຕາມການຕີພິມ
                           </Typography>
-                                   {
-                                     this.state.rowsPerPage > 1 ?
-                                     <Chart
-                            options={this.state.optionsByPub}
-                            labels={this.state.optionsByPub.labels}
-                            series={this.state.seriesByPub}
-                            props
-                            type="pie"
-                            height={260}
-                          />
-                          : null
-                                   }
+                          {this.state.rowsPerPage > 1 ? (
+                            <Chart
+                              options={this.state.optionsByPub}
+                              labels={this.state.optionsByPub.labels}
+                              series={this.state.seriesByPub}
+                              props
+                              type="pie"
+                              height={260}
+                            />
+                          ) : null}
                         </Paper>
-                     }
+                      )}
                     </Grid>
-                </Grid>
+                  </Grid>
                   {console.log(this.state.data.length)}
-                {
-                  // {this.state.department === "" &&
-                  // this.state.series.length > 0 ? (
-                  //   <Grid container spacing={16} style={{ marginTop: "16px" }}>
-                  //     <Grid item lg={4} md={6} sm={6} xs={12}>
-                  //       <Paper
-                  //         style={{
-                  //           boxShadow: "none",
-                  //           border: "1px solid #d8d8d8",
-                  //           maxHeight: "400px",
-                  //           padding: "16px"
-                  //         }}
-                  //       >
-                  //         <Typography
-                  //           variant="inherit"
-                  //           style={{
-                  //             fontSize: "18px",
-                  //             fontWeight: 500
-                  //           }}
-                  //         >
-                  //           ຈໍານວນຜົນງານຄົ້ນຄວ້າແບ່ງຕາມພາກ
-                  //         </Typography>
-                  //         <Chart
-                  //           options={this.state.options}
-                  //           labels={this.state.department}
-                  //           series={this.state.series}
-                  //           props
-                  //           type="pie"
-                  //           height={260}
-                  //         />
-                  //       </Paper>
-                  //     </Grid>
-                  //     <Grid item lg={4} md={6} sm={6} xs={12}>
-                  //       <Paper
-                  //         style={{
-                  //           boxShadow: "none",
-                  //           border: "1px solid #d8d8d8",
-                  //           padding: "16px"
-                  //         }}
-                  //       >
-                  //         <Typography
-                  //           variant="inherit"
-                  //           style={{
-                  //             fontSize: "18px",
-                  //             fontWeight: 500
-                  //           }}
-                  //         >
-                  //           ຈໍານວນຜົນງານຄົ້ນຄວ້າແບ່ງຕາມວຸດທິ
-                  //         </Typography>
-                  //         <Chart
-                  //           options={this.state.optionsDegree}
-                  //           labels={this.state.optionsDegree.labels}
-                  //           series={this.state.seriesDegree}
-                  //           props
-                  //           type="pie"
-                  //           height={260}
-                  //         />
-                  //       </Paper>
-                  //     </Grid>
-                  //     <Grid item lg={4} md={6} sm={6} xs={12}>
-                  //       <Paper
-                  //         style={{
-                  //           boxShadow: "none",
-                  //           border: "1px solid #d8d8d8",
-                  //           padding: "16px"
-                  //         }}
-                  //       >
-                  //         <Typography
-                  //           variant="inherit"
-                  //           style={{
-                  //             fontSize: "18px",
-                  //             fontWeight: 500
-                  //           }}
-                  //         >
-                  //           ຈໍານວນຜົນງານຄົ້ນຄວ້າແບ່ງຕາມເພດ
-                  //         </Typography>
-                  //         <Chart
-                  //           options={this.state.optionsGender}
-                  //           labels={this.state.optionsGender.labels}
-                  //           series={this.state.seriesGender}
-                  //           props
-                  //           type="pie"
-                  //           height={260}
-                  //         />
-                  //       </Paper>
-                  //     </Grid>
-                  //     <Grid item lg={4} md={6} sm={6} xs={12}>
-                  //       <Paper
-                  //         style={{
-                  //           boxShadow: "none",
-                  //           border: "1px solid #d8d8d8",
-                  //           padding: "16px"
-                  //         }}
-                  //       >
-                  //         <Typography
-                  //           variant="inherit"
-                  //           style={{
-                  //             fontSize: "18px",
-                  //             fontWeight: 500
-                  //           }}
-                  //         >
-                  //           ຈໍານວນຜົນງານຄົ້ນຄວ້າແບ່ງອາຍຸ
-                  //         </Typography>
-                  //         <Chart
-                  //           options={this.state.optionsAge}
-                  //           labels={this.state.optionsAge.labels}
-                  //           series={this.state.seriesAge}
-                  //           props
-                  //           type="pie"
-                  //           height={260}
-                  //         />
-                  //       </Paper>
-                  //     </Grid>
-                  //   </Grid>
-                  // ) : (
-                  //   <Grid container spacing={16} style={{ marginTop: "16px" }}>
-                  //     <Grid item lg={4} md={6} sm={6} xs={12}>
-                  //       <Paper
-                  //         style={{
-                  //           boxShadow: "none",
-                  //           border: "1px solid #d8d8d8",
-                  //           padding: "16px"
-                  //         }}
-                  //       >
-                  //         <Typography
-                  //           variant="inherit"
-                  //           style={{
-                  //             fontSize: "18px",
-                  //             fontWeight: 500
-                  //           }}
-                  //         >
-                  //           ຈໍານວນຜົນງານຄົ້ນຄວ້າແບ່ງຕາມວຸດທິ
-                  //         </Typography>
-                  //         <Chart
-                  //           options={this.state.optionsDegree}
-                  //           labels={this.state.optionsDegree.labels}
-                  //           series={this.state.seriesDegree}
-                  //           props
-                  //           type="pie"
-                  //           height={260}
-                  //         />
-                  //       </Paper>
-                  //     </Grid>
-                  //     <Grid item lg={4} md={6} sm={6} xs={12}>
-                  //       <Paper
-                  //         style={{
-                  //           boxShadow: "none",
-                  //           border: "1px solid #d8d8d8",
-                  //           padding: "16px"
-                  //         }}
-                  //       >
-                  //         <Typography
-                  //           variant="inherit"
-                  //           style={{
-                  //             fontSize: "18px",
-                  //             fontWeight: 500
-                  //           }}
-                  //         >
-                  //           ຈໍານວນຜົນງານຄົ້ນຄວ້າແບ່ງຕາມເພດ
-                  //         </Typography>
-                  //         <Chart
-                  //           options={this.state.optionsGender}
-                  //           labels={this.state.optionsGender.labels}
-                  //           series={this.state.seriesGender}
-                  //           props
-                  //           type="pie"
-                  //           height={260}
-                  //         />
-                  //       </Paper>
-                  //     </Grid>
-                  //     <Grid item lg={4} md={6} sm={6} xs={12}>
-                  //       <Paper
-                  //         style={{
-                  //           boxShadow: "none",
-                  //           border: "1px solid #d8d8d8",
-                  //           padding: "16px"
-                  //         }}
-                  //       >
-                  //         <Typography
-                  //           variant="inherit"
-                  //           style={{
-                  //             fontSize: "18px",
-                  //             fontWeight: 500
-                  //           }}
-                  //         >
-                  //           ຈໍານວນຜົນງານຄົ້ນຄວ້າແບ່ງອາຍຸ
-                  //         </Typography>
-                  //         <Chart
-                  //           options={this.state.optionsAge}
-                  //           labels={this.state.optionsAge.labels}
-                  //           series={this.state.seriesAge}
-                  //           props
-                  //           type="pie"
-                  //           height={260}
-                  //         />
-                  //       </Paper>
-                  //     </Grid>
-                  //   </Grid>
-                  // )}
-                }
+                  {
+                    // {this.state.department === "" &&
+                    // this.state.series.length > 0 ? (
+                    //   <Grid container spacing={16} style={{ marginTop: "16px" }}>
+                    //     <Grid item lg={4} md={6} sm={6} xs={12}>
+                    //       <Paper
+                    //         style={{
+                    //           boxShadow: "none",
+                    //           border: "1px solid #d8d8d8",
+                    //           maxHeight: "400px",
+                    //           padding: "16px"
+                    //         }}
+                    //       >
+                    //         <Typography
+                    //           variant="inherit"
+                    //           style={{
+                    //             fontSize: "18px",
+                    //             fontWeight: 500
+                    //           }}
+                    //         >
+                    //           ຈໍານວນຜົນງານຄົ້ນຄວ້າແບ່ງຕາມພາກ
+                    //         </Typography>
+                    //         <Chart
+                    //           options={this.state.options}
+                    //           labels={this.state.department}
+                    //           series={this.state.series}
+                    //           props
+                    //           type="pie"
+                    //           height={260}
+                    //         />
+                    //       </Paper>
+                    //     </Grid>
+                    //     <Grid item lg={4} md={6} sm={6} xs={12}>
+                    //       <Paper
+                    //         style={{
+                    //           boxShadow: "none",
+                    //           border: "1px solid #d8d8d8",
+                    //           padding: "16px"
+                    //         }}
+                    //       >
+                    //         <Typography
+                    //           variant="inherit"
+                    //           style={{
+                    //             fontSize: "18px",
+                    //             fontWeight: 500
+                    //           }}
+                    //         >
+                    //           ຈໍານວນຜົນງານຄົ້ນຄວ້າແບ່ງຕາມວຸດທິ
+                    //         </Typography>
+                    //         <Chart
+                    //           options={this.state.optionsDegree}
+                    //           labels={this.state.optionsDegree.labels}
+                    //           series={this.state.seriesDegree}
+                    //           props
+                    //           type="pie"
+                    //           height={260}
+                    //         />
+                    //       </Paper>
+                    //     </Grid>
+                    //     <Grid item lg={4} md={6} sm={6} xs={12}>
+                    //       <Paper
+                    //         style={{
+                    //           boxShadow: "none",
+                    //           border: "1px solid #d8d8d8",
+                    //           padding: "16px"
+                    //         }}
+                    //       >
+                    //         <Typography
+                    //           variant="inherit"
+                    //           style={{
+                    //             fontSize: "18px",
+                    //             fontWeight: 500
+                    //           }}
+                    //         >
+                    //           ຈໍານວນຜົນງານຄົ້ນຄວ້າແບ່ງຕາມເພດ
+                    //         </Typography>
+                    //         <Chart
+                    //           options={this.state.optionsGender}
+                    //           labels={this.state.optionsGender.labels}
+                    //           series={this.state.seriesGender}
+                    //           props
+                    //           type="pie"
+                    //           height={260}
+                    //         />
+                    //       </Paper>
+                    //     </Grid>
+                    //     <Grid item lg={4} md={6} sm={6} xs={12}>
+                    //       <Paper
+                    //         style={{
+                    //           boxShadow: "none",
+                    //           border: "1px solid #d8d8d8",
+                    //           padding: "16px"
+                    //         }}
+                    //       >
+                    //         <Typography
+                    //           variant="inherit"
+                    //           style={{
+                    //             fontSize: "18px",
+                    //             fontWeight: 500
+                    //           }}
+                    //         >
+                    //           ຈໍານວນຜົນງານຄົ້ນຄວ້າແບ່ງອາຍຸ
+                    //         </Typography>
+                    //         <Chart
+                    //           options={this.state.optionsAge}
+                    //           labels={this.state.optionsAge.labels}
+                    //           series={this.state.seriesAge}
+                    //           props
+                    //           type="pie"
+                    //           height={260}
+                    //         />
+                    //       </Paper>
+                    //     </Grid>
+                    //   </Grid>
+                    // ) : (
+                    //   <Grid container spacing={16} style={{ marginTop: "16px" }}>
+                    //     <Grid item lg={4} md={6} sm={6} xs={12}>
+                    //       <Paper
+                    //         style={{
+                    //           boxShadow: "none",
+                    //           border: "1px solid #d8d8d8",
+                    //           padding: "16px"
+                    //         }}
+                    //       >
+                    //         <Typography
+                    //           variant="inherit"
+                    //           style={{
+                    //             fontSize: "18px",
+                    //             fontWeight: 500
+                    //           }}
+                    //         >
+                    //           ຈໍານວນຜົນງານຄົ້ນຄວ້າແບ່ງຕາມວຸດທິ
+                    //         </Typography>
+                    //         <Chart
+                    //           options={this.state.optionsDegree}
+                    //           labels={this.state.optionsDegree.labels}
+                    //           series={this.state.seriesDegree}
+                    //           props
+                    //           type="pie"
+                    //           height={260}
+                    //         />
+                    //       </Paper>
+                    //     </Grid>
+                    //     <Grid item lg={4} md={6} sm={6} xs={12}>
+                    //       <Paper
+                    //         style={{
+                    //           boxShadow: "none",
+                    //           border: "1px solid #d8d8d8",
+                    //           padding: "16px"
+                    //         }}
+                    //       >
+                    //         <Typography
+                    //           variant="inherit"
+                    //           style={{
+                    //             fontSize: "18px",
+                    //             fontWeight: 500
+                    //           }}
+                    //         >
+                    //           ຈໍານວນຜົນງານຄົ້ນຄວ້າແບ່ງຕາມເພດ
+                    //         </Typography>
+                    //         <Chart
+                    //           options={this.state.optionsGender}
+                    //           labels={this.state.optionsGender.labels}
+                    //           series={this.state.seriesGender}
+                    //           props
+                    //           type="pie"
+                    //           height={260}
+                    //         />
+                    //       </Paper>
+                    //     </Grid>
+                    //     <Grid item lg={4} md={6} sm={6} xs={12}>
+                    //       <Paper
+                    //         style={{
+                    //           boxShadow: "none",
+                    //           border: "1px solid #d8d8d8",
+                    //           padding: "16px"
+                    //         }}
+                    //       >
+                    //         <Typography
+                    //           variant="inherit"
+                    //           style={{
+                    //             fontSize: "18px",
+                    //             fontWeight: 500
+                    //           }}
+                    //         >
+                    //           ຈໍານວນຜົນງານຄົ້ນຄວ້າແບ່ງອາຍຸ
+                    //         </Typography>
+                    //         <Chart
+                    //           options={this.state.optionsAge}
+                    //           labels={this.state.optionsAge.labels}
+                    //           series={this.state.seriesAge}
+                    //           props
+                    //           type="pie"
+                    //           height={260}
+                    //         />
+                    //       </Paper>
+                    //     </Grid>
+                    //   </Grid>
+                    // )}
+                  }
                 </>
               ) : (
                 <Paper
@@ -1319,7 +1339,9 @@ class ResearchNumbersReports extends Component {
 }
 
 ResearchNumbersReports.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired, 
+  width: PropTypes.string.isRequired
+
 };
 
 const mapStateToProps = state => {
@@ -1328,6 +1350,15 @@ const mapStateToProps = state => {
     research: state.research
   };
 };
-export default withRouter(
-  connect(mapStateToProps)(withStyles(styles)(ResearchNumbersReports))
+
+const enhance = compose(
+  withRouter,
+  withWidth(),
+  withStyles(styles),
+  connect(
+    mapStateToProps,
+    null
+  )
 );
+
+export default enhance(ResearchNumbersReports);

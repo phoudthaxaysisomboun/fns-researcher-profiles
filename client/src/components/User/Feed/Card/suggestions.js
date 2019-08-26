@@ -221,9 +221,9 @@ const SuggestedToFollowCard = ({
     </div>
   );
   const renderItems = () => (
-    <div style={{}}>
+
       
-      <Paper style={{ boxShadow: "none", border: "1px solid #d8d8d8", marginTop: "24px" }}>
+      <Paper style={{ boxShadow: "none", border: "1px solid #d8d8d8", marginTop: "24px", position: "" }}>
       <Grid container style={{padding: "16px", paddingBottom: 0}}>
         <Grid item xs={12}>
           <Typography
@@ -244,7 +244,7 @@ const SuggestedToFollowCard = ({
           <LinearProgress style={{ margin: "16px" }} />
         )}
       </Paper>
-    </div>
+
   );
 
   return <div>{renderItems()}</div>;

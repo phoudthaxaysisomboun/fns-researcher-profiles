@@ -7,6 +7,9 @@ import { Link, withRouter } from "react-router-dom";
 
 import moment from "moment";
 
+import compose from "recompose/compose";
+import withWidth from "@material-ui/core/withWidth";
+
 import ResearchReportsHeader from "../../../../../hoc/research_reports_header";
 
 import { connect } from "react-redux";
@@ -635,7 +638,7 @@ class ResearchReadsReports extends React.Component {
   };
 
   handleClick = (event, id) => {
-    this.props.history.push(`/profile/${id}`);
+    this.props.history.push(`/research/${id}`);
   };
 
   handleChangePage = (event, page) => {
@@ -780,11 +783,18 @@ class ResearchReadsReports extends React.Component {
           children={this.props.children}
           tab={this.state.tabNumber}
           changeTab={tabNumber => this.changeTab(tabNumber)}
+          width={this.props.width}
+
         >
           <Grid
             container
             spacing={0}
-            style={{ paddingTop: "0", paddingBottom: "24px" }}
+            style={{ paddingTop: "0", paddingBottom: "24px",paddingLeft:
+            this.props.width === "xl"
+              ? 240
+              : this.props.width === "lg"
+              ? 180
+              : 0 }}
           >
             <Grid item xs sm lg md />
 
@@ -991,7 +1001,9 @@ class ResearchReadsReports extends React.Component {
 }
 
 ResearchReadsReports.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  width: PropTypes.string.isRequired
+
 };
 
 const mapStateToProps = state => {
@@ -1001,6 +1013,14 @@ const mapStateToProps = state => {
   };
 };
 
-export default withRouter(
-  connect(mapStateToProps)(withStyles(styles)(ResearchReadsReports))
+const enhance = compose(
+  withRouter,
+  withWidth(),
+  withStyles(styles),
+  connect(
+    mapStateToProps,
+    null
+  )
 );
+
+export default enhance(ResearchReadsReports);

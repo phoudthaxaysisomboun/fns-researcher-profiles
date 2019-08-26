@@ -5,8 +5,8 @@ import classNames from "classnames";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 
-import compose from 'recompose/compose';
-import withWidth from '@material-ui/core/withWidth';
+import compose from "recompose/compose";
+import withWidth from "@material-ui/core/withWidth";
 
 import { withRouter } from "react-router-dom";
 
@@ -18,7 +18,7 @@ import { connect } from "react-redux";
 
 import {
   getAllResearchersReports,
-  getDepartments,
+  getDepartments
   // clearAllResearchersReports
 } from "../../../../../actions/user_actions";
 
@@ -34,7 +34,6 @@ import {
   Toolbar,
   Typography,
   Paper,
-
   IconButton,
   Tooltip,
   MenuItem,
@@ -46,10 +45,7 @@ import {
   TextField
 } from "@material-ui/core";
 
-import {
-
-  SaveAltOutlined
-} from "@material-ui/icons";
+import { SaveAltOutlined } from "@material-ui/icons";
 
 import { lighten } from "@material-ui/core/styles/colorManipulator";
 
@@ -164,7 +160,7 @@ class EnhancedTableHead extends React.Component {
   render() {
     const {
       // onSelectAllClick,
-      order,
+      order
       // orderBy,
       // numSelected,
       // rowCount
@@ -278,7 +274,10 @@ class EnhancedTableToolbar extends React.Component {
         <Grid
           container
           alignItems="center"
-          style={{ marginTop: "16px", marginBottom: "16px" }}
+          style={{ 
+            marginTop: "8px", 
+            marginBottom: "8px"
+           }}
         >
           <Grid item xs>
             <div>
@@ -313,7 +312,9 @@ class EnhancedTableToolbar extends React.Component {
                 style={{
                   minWidth: 120,
                   textAlign: "-webkit-left",
-                  marginRight: "8px"
+                  marginRight: "8px",
+                  marginTop: "8px",
+                  marginBottom: "8px"
                 }}
               >
                 <TextField
@@ -334,7 +335,9 @@ class EnhancedTableToolbar extends React.Component {
                 style={{
                   minWidth: 120,
                   textAlign: "-webkit-left",
-                  marginRight: "8px"
+                  marginRight: "8px",
+                  marginTop: "8px",
+                  marginBottom: "8px"
                 }}
               >
                 <TextField
@@ -356,7 +359,9 @@ class EnhancedTableToolbar extends React.Component {
                 style={{
                   minWidth: 120,
                   textAlign: "-webkit-left",
-                  marginRight: "8px"
+                  marginRight: "8px",
+                  marginTop: "8px",
+                  marginBottom: "8px"
                 }}
               >
                 <InputLabel shrink htmlFor="age-label-placeholder">
@@ -415,7 +420,8 @@ class EnhancedTableToolbar extends React.Component {
                 )})`}
                 element={
                   <Tooltip title="ດາວໂຫລດຟາຍລ໌ Excel">
-                    <IconButton style={{ marginRight: "0px" }}>
+                    <IconButton style={{ marginRight: "0px", marginTop: "8px",
+                    marginBottom: "8px" }}>
                       <SaveAltOutlined />
                     </IconButton>
                   </Tooltip>
@@ -691,7 +697,7 @@ class AllResearcherReports extends Component {
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   componentWillMount() {
-    console.log(this.props.width)
+    console.log(this.props);
     this.props.dispatch(getDepartments());
     this.props
       .dispatch(getAllResearchersReports("", this.state.start, this.state.end))
@@ -867,7 +873,16 @@ class AllResearcherReports extends Component {
           <Grid
             container
             spacing={0}
-            style={{ paddingTop: "0", paddingBottom: "24px", paddingLeft: this.props.width === "xl" ? 240 : this.props.width === "lg" ? 180 : 0 }}
+            style={{
+              paddingTop: "0",
+              paddingBottom: "24px",
+              paddingLeft:
+                this.props.width === "xl"
+                  ? 240
+                  : this.props.width === "lg"
+                  ? 180
+                  : 0
+            }}
           >
             <Grid item xs sm lg md />
 
@@ -933,90 +948,70 @@ class AllResearcherReports extends Component {
                                     scope="row"
                                     padding="dense"
                                   >
-                                    <Typography variant="inherit">{`${
-                                      n.deapartmentName
-                                    }`}</Typography>
+                                    <Typography variant="inherit">{`${n.deapartmentName}`}</Typography>
                                   </TableCell>
                                   <TableCell
                                     component="th"
                                     scope="row"
                                     padding="dense"
                                   >
-                                    <Typography variant="inherit">{`${
-                                      n.bachelorCount
-                                    }`}</Typography>
+                                    <Typography variant="inherit">{`${n.bachelorCount}`}</Typography>
                                   </TableCell>
                                   <TableCell
                                     component="th"
                                     scope="row"
                                     padding="dense"
                                   >
-                                    <Typography variant="inherit">{`${
-                                      n.masterCount
-                                    }`}</Typography>
+                                    <Typography variant="inherit">{`${n.masterCount}`}</Typography>
                                   </TableCell>
                                   <TableCell
                                     component="th"
                                     scope="row"
                                     padding="dense"
                                   >
-                                    <Typography variant="inherit">{`${
-                                      n.doctorialCount
-                                    }`}</Typography>
+                                    <Typography variant="inherit">{`${n.doctorialCount}`}</Typography>
                                   </TableCell>
                                   <TableCell
                                     component="th"
                                     scope="row"
                                     padding="dense"
                                   >
-                                    <Typography variant="inherit">{`${
-                                      n.femaleCount
-                                    }`}</Typography>
+                                    <Typography variant="inherit">{`${n.femaleCount}`}</Typography>
                                   </TableCell>
                                   <TableCell
                                     component="th"
                                     scope="row"
                                     padding="dense"
                                   >
-                                    <Typography variant="inherit">{`${
-                                      n.maleCount
-                                    }`}</Typography>
+                                    <Typography variant="inherit">{`${n.maleCount}`}</Typography>
                                   </TableCell>
                                   <TableCell
                                     component="th"
                                     scope="row"
                                     padding="dense"
                                   >
-                                    <Typography variant="inherit">{`${
-                                      n.age18to30Count
-                                    }`}</Typography>
+                                    <Typography variant="inherit">{`${n.age18to30Count}`}</Typography>
                                   </TableCell>
                                   <TableCell
                                     component="th"
                                     scope="row"
                                     padding="dense"
                                   >
-                                    <Typography variant="inherit">{`${
-                                      n.age31to45Count
-                                    }`}</Typography>
+                                    <Typography variant="inherit">{`${n.age31to45Count}`}</Typography>
                                   </TableCell>
                                   <TableCell
                                     component="th"
                                     scope="row"
                                     padding="dense"
                                   >
-                                    <Typography variant="inherit">{`${
-                                      n.age46to65Count
-                                    }`}</Typography>
+                                    <Typography variant="inherit">{`${n.age46to65Count}`}</Typography>
                                   </TableCell>
                                   <TableCell
                                     component="th"
                                     scope="row"
                                     padding="dense"
                                   >
-                                    <Typography variant="inherit">{`${
-                                      n.countByDepartment
-                                    }`}</Typography>
+                                    <Typography variant="inherit">{`${n.countByDepartment}`}</Typography>
                                   </TableCell>
                                 </TableRow>
                               );
@@ -1261,14 +1256,14 @@ class AllResearcherReports extends Component {
 }
 
 AllResearcherReports.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  width: PropTypes.string.isRequired
 };
 
 const mapStateToProps = state => {
   return {
-    user: state.user,
-    width: PropTypes.string.isRequired,
-
+    user: state.user
+   
   };
 };
 
@@ -1276,7 +1271,10 @@ const enhance = compose(
   withRouter,
   withWidth(),
   withStyles(styles),
-  connect(mapStateToProps, null),
-)
+  connect(
+    mapStateToProps,
+    null
+  )
+);
 
 export default enhance(AllResearcherReports);

@@ -830,7 +830,7 @@ class EditResearch extends Component {
     //   this.setState({ formdata: newFormdata });
     // }
 
-    console.log(this.props._research)
+    // console.log(this.props._research)
 
     if (prevProps._research.researchType !== this.props._research.researchType) {
       
@@ -916,7 +916,7 @@ class EditResearch extends Component {
   
     
     if (prevProps.authorSuggestions !== this.props.authorSuggestions) {
-      console.log(this.props)
+      // console.log(this.props)
       
       
       this.props.authorSuggestions.map(value => {
@@ -982,7 +982,7 @@ class EditResearch extends Component {
       this.setState({
         currentResearchType: curRTState
       });
-      console.log(this.state);
+      // console.log(this.state);
     }
   }
 
@@ -1066,7 +1066,7 @@ class EditResearch extends Component {
         // formError: true,
         // formErrorMessage: "ກະລຸນາຕື່ມນັກຄົ້ນຄວ້າ"
       })
-      console.log(this.state.formError)
+      // console.log(this.state.formError)
 
     } else if (hasAuthor === false) {
       this.setState({
@@ -1102,10 +1102,10 @@ class EditResearch extends Component {
 
     if (formIsValid && !this.state.formError && !this.state.authorError && hasAuthor) {
 
-      console.log(newDataToSubmit)
+      // console.log(newDataToSubmit)
 
       this.props.dispatch(updateResearch(newDataToSubmit)).then((response) => {
-        console.log(response)
+        // console.log(response)
         if (response.payload.success) {
           this.setState({
                     formError: false,
@@ -1330,7 +1330,7 @@ class EditResearch extends Component {
               </Grid>
             ) : null}
 {
-  console.log(this.state.files)
+  // console.log(this.state.files)
   //89
 }
 
