@@ -448,7 +448,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                   }}
                 >
                   <ReactLink
-                    to={`/profile/${researches._id}}`}
+                    to={`/research/${researches._id}}`}
                     style={{
                       color: "inherit",
                       textDecoration: "none",
@@ -491,7 +491,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                     </Grid>
                   </ReactLink>
                   <ReactLink
-                    to={`/profile/${researches._id}}`}
+                    to={`/research/${researches._id}}`}
                     style={{
                       color: "inherit",
                       textDecoration: "none",
@@ -624,7 +624,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                         ))}
                       </Grid>
                       <ReactLink
-                        to={`/profile/${researches._id}`}
+                        to={`/research/${researches._id}`}
                         style={{ color: "inherit", textDecoration: "none" }}
                       >
                         <Grid

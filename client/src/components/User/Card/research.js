@@ -308,7 +308,7 @@ const ResearchCard = ({ userData, userDetail, userResearch, loading, openAddRese
                         ))}
                       </Grid>
                       <ReactLink
-                        to={`/profile/${researches._id}`}
+                        to={`/research/${researches._id}`}
                         style={{ color: "inherit", textDecoration: "none" }}
                       >
                         <Grid

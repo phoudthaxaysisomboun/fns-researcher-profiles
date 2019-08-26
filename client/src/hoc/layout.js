@@ -40,7 +40,7 @@ import {
 } from "@material-ui/core";
 
 import { Link } from "react-router-dom";
-import { fade } from "@material-ui/core/styles/colorManipulator";
+// import { fade } from "@material-ui/core/styles/colorManipulator";
 import MenuIcon from "@material-ui/icons/MenuOutlined";
 import SearchIcon from "@material-ui/icons/SearchOutlined";
 import AccountCircle from "@material-ui/icons/AccountCircleOutlined";
@@ -110,11 +110,15 @@ const styles = theme => ({
     }
   },
   formSearch: {
+
     [theme.breakpoints.up("sm")]: {
       flexGrow: 0.4
     },
     [theme.breakpoints.down("xs")]: {
       flexGrow: 1
+    },
+    [theme.breakpoints.up("md")]: {
+      flexGrow: 0.8
     },
   },
   moreIcon: {
@@ -127,11 +131,12 @@ const styles = theme => ({
   },
   search: {
     position: "relative",
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: fade(theme.palette.common.black, 0.05),
-    "&:hover": {
-      backgroundColor: fade(theme.palette.common.black, 0.03)
-    },
+    borderRadius: "8px",
+    backgroundColor: "#f1f3f4",
+    maxWidth: "580px",
+    // "&:hover": {
+    //   backgroundColor: fade(theme.palette.common.black, 0.03)
+    // },
     marginRight: theme.spacing.unit * 2,
     marginLeft: 0,
     width: "100%",

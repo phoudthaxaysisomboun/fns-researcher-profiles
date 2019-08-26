@@ -72,7 +72,7 @@ import { LOCALHOST } from "../utils/misc";
 
 import AddResearch from "../utils/Dialogs/add_research";
 
-let shareUrl
+let shareUrl;
 
 class ProfileInfo extends Component {
   state = {
@@ -125,7 +125,6 @@ class ProfileInfo extends Component {
     openUpdateAffiliationDialog: false
   };
 
-
   handleUpdateAffiliationClose = () => {
     this.setState({
       openUpdateAffiliationDialog: false
@@ -149,7 +148,6 @@ class ProfileInfo extends Component {
       openUpdateDegreeDialog: true
     });
   };
-
 
   handleEditnameDialogClose = () => {
     this.setState({
@@ -178,9 +176,8 @@ class ProfileInfo extends Component {
   componentDidUpdate(prevProps) {
     const id = this.props.match.params.id;
 
-
     if (prevProps.user.updatedDegree !== this.props.user.updatedDegree) {
-      this.props.dispatch(getProfileDetail(id))
+      this.props.dispatch(getProfileDetail(id));
     }
   }
 
@@ -191,60 +188,67 @@ class ProfileInfo extends Component {
     var followerId = [];
 
     this.props.dispatch(getProfileDetail(id)).then(response => {
-      following = response.payload.following;
-      followerId = response.payload.follower;
-      for (var key in following) {
-        followingId.push(following[key]._id);
-      }
+      if (response.payload) {
+        following = response.payload.following;
+        followerId = response.payload.follower;
+        for (var key in following) {
+          followingId.push(following[key]._id);
+        }
 
-      shareUrl =  `${LOCALHOST}/profile/${response.payload._id}/info`
+        shareUrl = `${LOCALHOST}/profile/${response.payload._id}/info`;
 
-      if (following.length > 0) {
-        this.props.dispatch(getFollowing(followingId)).then(() => {
+        if (following.length > 0) {
+          this.props.dispatch(getFollowing(followingId)).then(() => {
+            this.setState({
+              loadingFollowing: false
+            });
+          });
+
+          this.props.dispatch(
+            getFollowingInLoadMore(
+              followingId,
+              this.state.followingLimit,
+              this.state.followingSkip
+            )
+          );
+        } else {
           this.setState({
             loadingFollowing: false
           });
-        });
+        }
 
-        this.props.dispatch(
-          getFollowingInLoadMore(
-            followingId,
-            this.state.followingLimit,
-            this.state.followingSkip
-          )
-        );
-      } else {
-        this.setState({
-          loadingFollowing: false
-        });
-      }
+        if (response.payload.follower.length > 0) {
+          this.props.dispatch(getFollower(followerId)).then(() => {
+            this.setState({
+              loadingFollower: false
+            });
+          });
 
-      if (response.payload.follower.length > 0) {
-        this.props.dispatch(getFollower(followerId)).then(() => {
+          this.props.dispatch(
+            getFollowerInLoadMore(
+              followerId,
+              this.state.followerLimit,
+              this.state.followerSkip
+            )
+          );
+        } else {
           this.setState({
             loadingFollower: false
           });
-        });
+        }
 
-        this.props.dispatch(
-          getFollowerInLoadMore(
-            followerId,
-            this.state.followerLimit,
-            this.state.followerSkip
-          )
-        );
+        if (
+          response.payload.address &&
+          response.payload.address.province &&
+          response.payload.address.province._id
+        ) {
+          this.props.dispatch(
+            getDistrict(response.payload.address.province._id)
+          );
+        }
       } else {
-        this.setState({
-          loadingFollower: false
-        });
-      }
-
-      if (
-        response.payload.address &&
-        response.payload.address.province &&
-        response.payload.address.province._id
-      ) {
-        this.props.dispatch(getDistrict(response.payload.address.province._id));
+        // TO DO: Do something when there's no user
+        this.props.history.push("/");
       }
     });
   }
@@ -642,11 +646,11 @@ class ProfileInfo extends Component {
       educationId: id
     });
 
-    let educations = this.props.user.userDetail.education
+    let educations = this.props.user.userDetail.education;
     let obj = educations.find(o => o._id === id);
-   this.setState({
-    selectedEducation: obj
-   })
+    this.setState({
+      selectedEducation: obj
+    });
   };
 
   handleEducationMenuClose = () => {
@@ -668,19 +672,23 @@ class ProfileInfo extends Component {
   };
 
   handleEducationDeletion = () => {
-    console.log(this.state.educationId)
+    console.log(this.state.educationId);
     if (this.state.educationId.trim() !== "") {
       this.props
-      .dispatch(removeEducation(this.props.user.userDetail._id, this.state.educationId))
-      .then(response => {
-        this.setState({
-          openRemoveEducationConformationDialog: false,
-          anchorElEducation: null
+        .dispatch(
+          removeEducation(
+            this.props.user.userDetail._id,
+            this.state.educationId
+          )
+        )
+        .then(response => {
+          this.setState({
+            openRemoveEducationConformationDialog: false,
+            anchorElEducation: null
+          });
+          if (response.success) {
+          }
         });
-        if(response.success) {
-          
-        }
-      });
     }
   };
 
@@ -724,9 +732,7 @@ class ProfileInfo extends Component {
     const { fullScreen } = this.props;
 
     if (this.props.user.userDetail) {
-      document.title = ` ປະຫວັດ: ${this.props.user.userDetail.name} ${
-        this.props.user.userDetail.lastname
-      } - FNS Researcher Profiles`;
+      document.title = ` ປະຫວັດ: ${this.props.user.userDetail.name} ${this.props.user.userDetail.lastname} - FNS Researcher Profiles`;
     }
     return (
       <ProfileHeader
@@ -744,113 +750,118 @@ class ProfileInfo extends Component {
         openAddResearchDialog={() => {
           this.handleAddResearchOpen();
         }}
-        openEditName = {()=>{
-          this.handleEditNameDialogOpen()
+        openEditName={() => {
+          this.handleEditNameDialogOpen();
         }}
-        openUpdateDegree = {()=>{
-          this.handleUpdateDegreeOpen()
+        openUpdateDegree={() => {
+          this.handleUpdateDegreeOpen();
         }}
       >
-      <Grid container style={{paddingTop: "24px"}}>
-      <Grid item xs sm lg md />
-      <Grid item xs={11} sm={10} lg={8} md={11}>
-      
-      <Grid container spacing={24}>
-         
-      <Grid item xs={12} lg={7} sm={12} md={6}>
+        <Grid container style={{ paddingTop: "24px" }}>
+          <Grid item xs sm lg md />
+          <Grid item xs={11} sm={10} lg={8} md={11}>
             <Grid container spacing={24}>
-            <IntroductionCard
-            props={this.props}
-            openEditDialog={() => this.handleIntroductionDialogOpen()}
-          />
-          <ResearchaAreaCard props={this.props} runOpenUpdateDialog={()=>{this.handleUpdateResearchAreaDialogOpen()}} />
-             
+              <Grid item xs={12} lg={7} sm={12} md={6}>
+                <Grid container spacing={24}>
+                  <IntroductionCard
+                    props={this.props}
+                    openEditDialog={() => this.handleIntroductionDialogOpen()}
+                  />
+                  <ResearchaAreaCard
+                    props={this.props}
+                    runOpenUpdateDialog={() => {
+                      this.handleUpdateResearchAreaDialogOpen();
+                    }}
+                  />
 
-              <PersonalInfoCard
-              openUpdateDegree = {()=>{
-                this.handleUpdateDegreeOpen()
-              }}
-                props={this.props}
-                runEditMobile={() => this.handleOpenUpdateMobileDialog()}
-                runEditPhone={() => this.handleOpenUpdatePhoneDialog()}
-                runEditFax={() => this.handleOpenUpdateFaxDialog()}
-                runEditWebsite={() => this.handleOpenUpdateWebsiteDialog()}
-                runEditDateOfBirth={() =>
-                  this.handleOpenUpdateDateOfBirthDialog()
-                }
-                runEditFacebook={() => this.handleOpenUpdateFacebookDialog()}
-                runEditGender={() => this.handleOpenUpdateGenderDialog()}
-                runEditMinorEthnicity={() =>
-                  this.handleOpenUpdateMinorEthinicityDialog()
-                }
-                runEditNationality={() =>
-                  this.handleOpenUpdateNationalityDialog()
-                }
-                runEditAddress={() => this.handleOpenUpdateAddressDialog()}
-                runEditPlaceOfBirth={() =>
-                  this.handleOpenUpdatePlaceOfBirthDialog()
-                }
-              />
+                  <PersonalInfoCard
+                    openUpdateDegree={() => {
+                      this.handleUpdateDegreeOpen();
+                    }}
+                    props={this.props}
+                    runEditMobile={() => this.handleOpenUpdateMobileDialog()}
+                    runEditPhone={() => this.handleOpenUpdatePhoneDialog()}
+                    runEditFax={() => this.handleOpenUpdateFaxDialog()}
+                    runEditWebsite={() => this.handleOpenUpdateWebsiteDialog()}
+                    runEditDateOfBirth={() =>
+                      this.handleOpenUpdateDateOfBirthDialog()
+                    }
+                    runEditFacebook={() =>
+                      this.handleOpenUpdateFacebookDialog()
+                    }
+                    runEditGender={() => this.handleOpenUpdateGenderDialog()}
+                    runEditMinorEthnicity={() =>
+                      this.handleOpenUpdateMinorEthinicityDialog()
+                    }
+                    runEditNationality={() =>
+                      this.handleOpenUpdateNationalityDialog()
+                    }
+                    runEditAddress={() => this.handleOpenUpdateAddressDialog()}
+                    runEditPlaceOfBirth={() =>
+                      this.handleOpenUpdatePlaceOfBirthDialog()
+                    }
+                  />
 
-              <EducationCard
-                userData={this.props.user.userData}
-                userDetail={this.props.user.userDetail}
-                props={this.props}
-                runAddEducation={() => this.handleOpenAddEducationDialog()}
-                handleClick={(event, id) => {
-                  this.handleEducationMenuClick(event, id);
-                }}
-                handleClose={event => {
-                  this.handleEducationMenuClose(event);
-                }}
-                anchorEl={this.state.anchorElEducation}
-                runDelete={() => {
-                  this.handleOpenDeleteEducationConfirmationDialogue();
-                }}
-                runEdit={() => {
-                  this.handleOpenEditEducationDialog();
-                }}
-                
-              />
+                  <EducationCard
+                    userData={this.props.user.userData}
+                    userDetail={this.props.user.userDetail}
+                    props={this.props}
+                    runAddEducation={() => this.handleOpenAddEducationDialog()}
+                    handleClick={(event, id) => {
+                      this.handleEducationMenuClick(event, id);
+                    }}
+                    handleClose={event => {
+                      this.handleEducationMenuClose(event);
+                    }}
+                    anchorEl={this.state.anchorElEducation}
+                    runDelete={() => {
+                      this.handleOpenDeleteEducationConfirmationDialogue();
+                    }}
+                    runEdit={() => {
+                      this.handleOpenEditEducationDialog();
+                    }}
+                  />
+                </Grid>
+              </Grid>
+
+              <Grid item xs={12} lg sm md>
+                <Grid container spacing={24}>
+                  <Grid item xs={12}>
+                    <AffiliationCard
+                      props={this.props}
+                      editAffiliation={() => this.handleUpdateAffiliationOpen()}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <FollowerCard
+                      userData={this.props.user.userData}
+                      userDetail={this.props.user.userDetail}
+                      userFollower={this.props.user.follower}
+                      runFollow={id => this.followUser(id)}
+                      runUnfollow={id => this.unfollowUser(id)}
+                      runSeeAllFollower={id => this.seeAllFollower(id)}
+                      loading={this.state.loadingFollower}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <FollowingCard
+                      userData={this.props.user.userData}
+                      userDetail={this.props.user.userDetail}
+                      userFollowing={this.props.user.following}
+                      runFollow={id => this.followUser(id)}
+                      runUnfollow={id => this.unfollowUser(id)}
+                      runSeeAllFollowing={id => this.seeAllFollowing(id)}
+                      loading={this.state.loadingFollowing}
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
-
-          <Grid item xs={12} lg sm md>
-            <Grid container spacing={24}>
-              <Grid item xs={12}>
-              <AffiliationCard props = {this.props} editAffiliation = {()=>this.handleUpdateAffiliationOpen()} />
-              </Grid>
-
-              <Grid item xs={12}>
-                <FollowerCard
-                  userData={this.props.user.userData}
-                  userDetail={this.props.user.userDetail}
-                  userFollower={this.props.user.follower}
-                  runFollow={id => this.followUser(id)}
-                  runUnfollow={id => this.unfollowUser(id)}
-                  runSeeAllFollower={id => this.seeAllFollower(id)}
-                  loading={this.state.loadingFollower}
-                />
-              </Grid>
-
-              <Grid item xs={12}>
-                <FollowingCard
-                  userData={this.props.user.userData}
-                  userDetail={this.props.user.userDetail}
-                  userFollowing={this.props.user.following}
-                  runFollow={id => this.followUser(id)}
-                  runUnfollow={id => this.unfollowUser(id)}
-                  runSeeAllFollowing={id => this.seeAllFollowing(id)}
-                  loading={this.state.loadingFollowing}
-                />
-              </Grid>
-            </Grid>
-          </Grid>
+          <Grid item xs sm lg md />
         </Grid>
-      </Grid>
-      <Grid item xs sm lg md />
-      </Grid>
-        
 
         <Dialog
           fullWidth={this.state.fullWidth}
@@ -1028,8 +1039,10 @@ class ProfileInfo extends Component {
         <UpdateEducationDialogue
           open={this.state.openEditEducationDialog}
           close={() => this.handleEditEducationClose()}
-          education = {this.state.selectedEducation}
-          closeMenu={()=>{this.handleEducationMenuClose()}}
+          education={this.state.selectedEducation}
+          closeMenu={() => {
+            this.handleEducationMenuClose();
+          }}
         />
 
         <Dialog
@@ -1067,11 +1080,33 @@ class ProfileInfo extends Component {
           open={this.state.openShareDialog}
           close={() => this.handleShareDialogClose()}
           url={shareUrl}
-          profile={this.props && this.props.user && this.props.user.userDetail ? this.props.user.userDetail : null}
-          user={this.props.user.userData ? this.props.user.userData : this.props}
-          handleShareCount = {()=>{console.log(`shared`)}}
-          title = {this.props && this.props.user && this.props.user.userDetail && this.props.user.userDetail.name ? `ປະຫວັດ${this.props.user.userDetail.prefix} ${this.props.user.userDetail.name} ${this.props.user.userDetail.lastname} - FNS Researcher Profiles` : ""}
-          description = {this.props && this.props.user && this.props.user.userDetail && this.props.user.userDetail.name ? `ປະຫວັດ ແລະ ຂໍ້ມູນນັກຄົ້ນຄວ້າຂອງ${this.props.user.userDetail.prefix} ${this.props.user.userDetail.name} ${this.props.user.userDetail.lastname} - FNS Researcher Profiles` : ""}
+          profile={
+            this.props && this.props.user && this.props.user.userDetail
+              ? this.props.user.userDetail
+              : null
+          }
+          user={
+            this.props.user.userData ? this.props.user.userData : this.props
+          }
+          handleShareCount={() => {
+            console.log(`shared`);
+          }}
+          title={
+            this.props &&
+            this.props.user &&
+            this.props.user.userDetail &&
+            this.props.user.userDetail.name
+              ? `ປະຫວັດ${this.props.user.userDetail.prefix} ${this.props.user.userDetail.name} ${this.props.user.userDetail.lastname} - FNS Researcher Profiles`
+              : ""
+          }
+          description={
+            this.props &&
+            this.props.user &&
+            this.props.user.userDetail &&
+            this.props.user.userDetail.name
+              ? `ປະຫວັດ ແລະ ຂໍ້ມູນນັກຄົ້ນຄວ້າຂອງ${this.props.user.userDetail.prefix} ${this.props.user.userDetail.name} ${this.props.user.userDetail.lastname} - FNS Researcher Profiles`
+              : ""
+          }
         />
 
         <IntorductionDialog
@@ -1103,22 +1138,17 @@ class ProfileInfo extends Component {
               : ""
           }
           researchAreas={
-            this.props.user &&
-            this.props.user.researchAreas
+            this.props.user && this.props.user.researchAreas
               ? this.props.user.researchAreas
               : ""
           }
-
-
           close={() => this.handleUpdateResearchAreaDialogClose()}
         />
 
         <UpdateNameDialog
           open={this.state.openEditnameDialog}
           userData={
-            this.props.user &&
-            this.props.user &&
-            this.props.user.userDetail
+            this.props.user && this.props.user && this.props.user.userDetail
               ? this.props.user.userDetail
               : {}
           }
@@ -1128,26 +1158,24 @@ class ProfileInfo extends Component {
         <UpdateAffiliationDialog
           open={this.state.openUpdateAffiliationDialog}
           userData={
-            this.props.user &&
-            this.props.user &&
-            this.props.user.userDetail
+            this.props.user && this.props.user && this.props.user.userDetail
               ? this.props.user.userDetail
               : {}
           }
-          departments = {this.props.user.departments ? this.props.user.departments : []}
+          departments={
+            this.props.user.departments ? this.props.user.departments : []
+          }
           close={() => this.handleUpdateAffiliationClose()}
         />
 
         <UpdateDegreeDialog
           open={this.state.openUpdateDegreeDialog}
           userData={
-            this.props.user &&
-            this.props.user &&
-            this.props.user.userDetail
+            this.props.user && this.props.user && this.props.user.userDetail
               ? this.props.user.userDetail
               : {}
           }
-          degrees = {this.props.user.degrees ? this.props.user.degrees : []}
+          degrees={this.props.user.degrees ? this.props.user.degrees : []}
           close={() => this.handleUpdateDegreeClose()}
         />
 
@@ -1155,15 +1183,31 @@ class ProfileInfo extends Component {
           open={this.state.openAddResearchDialog}
           close={() => this.handleAddResearchClose()}
           authorSuggestions={
-            this.props && this.props.user && this.props.user.authorSuggestions ? this.props.user.authorSuggestions : []
+            this.props && this.props.user && this.props.user.authorSuggestions
+              ? this.props.user.authorSuggestions
+              : []
           }
-          user = {
-            this.props && this.props.user && this.props.user.userData ? this.props.user.userData : {}
+          user={
+            this.props && this.props.user && this.props.user.userData
+              ? this.props.user.userData
+              : {}
           }
-          other = {
-            {value: this.props && this.props.user && this.props.user.userDetail && this.props.user.userDetail._id ? this.props.user.userDetail._id : "",
-            label: this.props && this.props.user && this.props.user.userDetail && this.props.user.userDetail.name ? `${this.props.user.userDetail.name} ${this.props.user.userDetail.lastname}` : ""}
-          }
+          other={{
+            value:
+              this.props &&
+              this.props.user &&
+              this.props.user.userDetail &&
+              this.props.user.userDetail._id
+                ? this.props.user.userDetail._id
+                : "",
+            label:
+              this.props &&
+              this.props.user &&
+              this.props.user.userDetail &&
+              this.props.user.userDetail.name
+                ? `${this.props.user.userDetail.name} ${this.props.user.userDetail.lastname}`
+                : ""
+          }}
         />
       </ProfileHeader>
     );

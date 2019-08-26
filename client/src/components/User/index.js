@@ -217,6 +217,9 @@ handleEditnameDialogClose = () => {
             loadingResearchCard: false
           });
         }
+      } else {
+        // TO DO: Do something when there's no user
+        this.props.history.push("/")
       }
     });
   }
