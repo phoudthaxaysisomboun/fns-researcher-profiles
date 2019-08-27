@@ -170,7 +170,7 @@ const SuggestedToFollowCard = ({
                           style={{ textDecoration: "none" }}
                         >
                           <Typography
-                            style={{ fontWeight: "bold", color: "#404040" }}
+                            style={{ fontWeight: "500", color: "#404040" }}
                             variant="inherit"
                           >
                             {followings.name} {followings.lastname}

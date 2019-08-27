@@ -281,7 +281,8 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                 fontSize: "13.5px",
                 color: "#d32f2f",
                 fontFamily: "'Roboto', sans serif",
-                display: "inline"
+                display: "inline",
+                fontWeight: "bold"
               }}
             >
               &nbsp;
@@ -317,7 +318,8 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                 fontSize: "13.5px",
                 color: "#757575",
                 fontFamily: "'Roboto', sans serif",
-                display: "inline"
+                display: "inline",
+                fontWeight: "bold"
               }}
             >
               &nbsp;
@@ -518,7 +520,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                             ellipsis="..."
                             trimRight
                             basedOn="letters"
-                            style={{ fontSize: "20px", fontWeight: "500" }}
+                            style={{ fontSize: "20px", fontWeight: "600" }}
                           />
                         </ReactLink>
                         <Grid container />
@@ -663,7 +665,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                                 <Grid item xs>
                                   <LinesEllipsis
                                     text={researches.abstract}
-                                    maxLine="5"
+                                    maxLine="9"
                                     ellipsis="..."
                                     trimRight
                                     basedOn="words"
@@ -680,7 +682,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                             ) : (
                               <LinesEllipsis
                                 text={researches.abstract}
-                                maxLine="3"
+                                maxLine="5"
                                 ellipsis="..."
                                 trimRight
                                 basedOn="words"
@@ -731,7 +733,8 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                         minWidth: "14px",
                         height: "36px",
                         borderRadius: "22px",
-                        textDecoration: "none"
+                        textDecoration: "none",
+                        
                       }}
                       onClick={() => comment(researches._id)}
                     >
@@ -742,8 +745,9 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                           style={{
                             fontSize: "13.5px",
                             color: "#757575",
-                            fontFamily: "'Roboto', sans serif",
-                            display: "inline"
+                            // fontFamily: "'Roboto', sans serif",
+                            display: "inline",
+                            fontWeight: "bold"
                           }}
                         >
                           &nbsp;
@@ -777,7 +781,8 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                             fontSize: "13.5px",
                             color: "#757575",
                             fontFamily: "'Roboto', sans serif",
-                            display: "inline"
+                            display: "inline",
+                            fontWeight: "bold",
                           }}
                         >
                           &nbsp;
@@ -805,7 +810,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                         color: "#757575",
                         fontFamily: "'Roboto', sans serif",
                         display: "inline",
-                        fontWeight: "500"
+                        fontWeight: "bold"
                       }}
                     >
                       &nbsp;

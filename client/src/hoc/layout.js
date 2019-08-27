@@ -1,6 +1,7 @@
 import React, { Component } from "react";
+import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 
-import withWidth from '@material-ui/core/withWidth';
+import withWidth from "@material-ui/core/withWidth";
 
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
@@ -14,7 +15,7 @@ import Footer from "../components/Header_footer/Footer";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import { withStyles } from "@material-ui/core/styles";
-import compose from 'recompose/compose';
+import compose from "recompose/compose";
 import {
   AppBar,
   Toolbar,
@@ -51,16 +52,12 @@ import {
   ExitToAppOutlined,
   AddOutlined,
   PersonOutlined,
-
   ExpandLessOutlined,
   ExpandMoreOutlined,
   HomeOutlined,
-
   PersonOutlineOutlined,
-
   DescriptionOutlined,
   SearchOutlined,
-
   SettingsApplicationsOutlined,
   AccountCircleOutlined,
   PollOutlined
@@ -68,33 +65,29 @@ import {
 
 import { colorPallete } from "../components/utils/misc";
 
-
-
 const styles = theme => ({
   root: {
     width: "100%"
   },
   grow: {
-   
     [theme.breakpoints.up("sm")]: {
       flexGrow: 1
     },
     [theme.breakpoints.down("xs")]: {
       flexGrow: 0
-    },
+    }
   },
   menuButtonMain: {
-
     [theme.breakpoints.up("md")]: {
       marginLeft: -12,
-    marginRight: 20,
-    display: "none"
+      marginRight: 20,
+      display: "none"
     },
     [theme.breakpoints.down("sm")]: {
       marginLeft: 0,
-    marginRight: 20,
-    display: ""
-    },
+      marginRight: 20,
+      display: ""
+    }
   },
   title: {
     fontWeight: "600",
@@ -110,7 +103,6 @@ const styles = theme => ({
     }
   },
   formSearch: {
-
     [theme.breakpoints.up("sm")]: {
       flexGrow: 0.4
     },
@@ -119,7 +111,7 @@ const styles = theme => ({
     },
     [theme.breakpoints.up("md")]: {
       flexGrow: 0.8
-    },
+    }
   },
   moreIcon: {
     [theme.breakpoints.up("sm")]: {
@@ -127,7 +119,7 @@ const styles = theme => ({
     },
     [theme.breakpoints.down("xs")]: {
       marginLeft: "20px"
-    },
+    }
   },
   search: {
     position: "relative",
@@ -239,15 +231,20 @@ const styles = theme => ({
   drawer: {
     width: drawerWidth,
     flexShrink: 0,
-    border: "'0' !importabt"
+    border: "'0' !important"
   },
   drawerPaper: {
-    [theme.breakpoints.up("md")]: {
-      width: drawerWidth
-    },
-    [theme.breakpoints.down("sm")]: {
-      width: 340
-    }
+    width: drawerWidth,
+    borderRight: 0,
+    paddingRight: 8,
+    
+  },
+  drawerPaperSmall: {
+    width: 300,
+    borderRight: 0,
+    paddingRight: 8,
+    boxShadow:
+      "rgba(0, 0, 0, 0.2) 0px 8px 10px -5px, rgba(0, 0, 0, 0.14) 0px 16px 24px 2px, rgba(0, 0, 0, 0.12) 0px 6px 30px 5px;"
   },
   drawerHeader: {
     display: "flex",
@@ -280,11 +277,11 @@ const styles = theme => ({
   },
   layout: {
     minHeight: "75vh",
-  paddingTop: "64px",
-  // marginLeft: this.state.margin,
-  [theme.breakpoints.up("xl")]: {
-    marginLeft: 0
-  },
+    paddingTop: "64px",
+    // marginLeft: this.state.margin,
+    [theme.breakpoints.up("xl")]: {
+      marginLeft: 0
+    },
     [theme.breakpoints.down("lg")]: {
       marginLeft: 60
     },
@@ -293,11 +290,11 @@ const styles = theme => ({
     },
     [theme.breakpoints.down("sm")]: {
       marginLeft: 240
-    },
-  },
+    }
+  }
 });
 
-const toColor = (str) => {
+const toColor = str => {
   var colors = colorPallete;
 
   var hash = 0;
@@ -309,7 +306,6 @@ const toColor = (str) => {
   hash = ((hash % colors.length) + colors.length) % colors.length;
   return colors[hash];
 };
-
 
 const drawerWidth = 240;
 
@@ -342,10 +338,10 @@ class Layout extends Component {
     //   this.setState({open: false })
     // } else  {
     //   this.setState({open: true })
-    // } 
+    // }
 
     // if (width === "lg" || width === "xl") {
-      
+
     //   this.setState({margin: 60 })
     // } else {
     //   this.setState({margin: 240 })
@@ -378,19 +374,18 @@ class Layout extends Component {
     }
 
     if (prevProps.width !== this.props.width) {
-      const width = this.props.width
-        if (width === "xs" || width === "sm") {
-          this.setState({open: false })
-        } else  {
-          this.setState({open: true })
-        } 
+      const width = this.props.width;
+      if (width === "xs" || width === "sm") {
+        this.setState({ open: false });
+      } else {
+        this.setState({ open: true });
+      }
 
-        if (width === "lg" || width === "xl") {
-
-          this.setState({margin: 60 })
-        } else {
-          this.setState({margin: 240 })
-        }
+      if (width === "lg" || width === "xl") {
+        this.setState({ margin: 60 });
+      } else {
+        this.setState({ margin: 240 });
+      }
     }
   }
 
@@ -486,9 +481,7 @@ class Layout extends Component {
                 this.props.user.userData.profileImage[0] &&
                 this.props.user.userData.profileImage[0].name ? (
                   <Avatar
-                    src={`${UPLOADS_SERVER}/images/${
-                      this.props.user.userData.profileImage[0].name
-                    }`}
+                    src={`${UPLOADS_SERVER}/images/${this.props.user.userData.profileImage[0].name}`}
                     style={{
                       width: "32px",
                       height: "32px",
@@ -502,9 +495,9 @@ class Layout extends Component {
                     style={{
                       width: "32px",
                       height: "32px",
-                      backgroundColor: toColor(`${this.props.user.userData.name}${
-                        this.props.user.userData.lastname
-                      }`),
+                      backgroundColor: toColor(
+                        `${this.props.user.userData.name}${this.props.user.userData.lastname}`
+                      ),
                       fontFamily: "'Noto Sans Lao UI', sans serif",
                       fontSize: "14px",
                       fontWeight: "500"
@@ -740,8 +733,26 @@ class Layout extends Component {
       }
     };
 
+    const theme2 = createMuiTheme({
+      palette: {
+        primary: {
+          main: "#1564bf",
+          light: "#5e91f2",
+          dark: "#003b8e",
+          contrastText: "#fff"
+        },
+        secondary: {
+          light: "#48a999",
+          main: "#00796b",
+          dark: "#004c40",
+          contrastText: "#fff"
+        }
+      }
+    });
+
     return (
-      <div>
+      <MuiThemeProvider theme={theme2}>
+        {console.log(theme2.palette.primary.main)}
         {
           // <Header headerclass={this.state.headerclass} />
         }
@@ -758,16 +769,18 @@ class Layout extends Component {
               })}
               style={{
                 background: "white",
-                boxShadow: "none",
+                boxShadow: "none"
                 // zIndex: 1201,
-                
               }}
             >
               <Toolbar
                 // disableGutters={!open}
                 variant="regular"
-                style={{ height: "64px", paddingLeft: "16px",
-                paddingRight: "16px" }}
+                style={{
+                  height: "64px",
+                  paddingLeft: "16px",
+                  paddingRight: "16px"
+                }}
               >
                 {!this.props.location.pathname.startsWith("/search") ? (
                   <>
@@ -810,7 +823,7 @@ class Layout extends Component {
                       color="inherit"
                       noWrap
                       style={{
-                        fontWeight: "bold",
+                        fontWeight: "bold"
                         // fontFamily: "'Roboto', sans serif"
                       }}
                     >
@@ -824,10 +837,9 @@ class Layout extends Component {
                     <form
                       style={{
                         padding: 0,
-                        margin: 0,
-                        
+                        margin: 0
                       }}
-                      className= {classes.formSearch}
+                      className={classes.formSearch}
                       onSubmit={event => this.submitSearch(event)}
                     >
                       <div className={classes.search}>
@@ -893,7 +905,7 @@ class Layout extends Component {
                               color="inherit"
                               style={{
                                 textAlign: "center",
-                                fontWeight: "bold",
+                                fontWeight: "bold"
                                 // fontFamily: "'Roboto', sans serif"
                               }}
                               noWrap
@@ -968,21 +980,62 @@ class Layout extends Component {
             </AppBar>
             <Hidden smDown>
               <Drawer
-                className={classes.drawer}
+                className=".main-side-bar"
                 variant="persistent"
                 anchor="left"
                 open={open}
                 classes={{
                   paper: classes.drawerPaper
                 }}
-                style={{
-                  border: "0 !important",
-                  transition: "1s"
-                }}
               >
                 <div className={classes.drawerHeader} />
 
-                <List>
+                <List style={{paddingTop: 0}}>
+                  <ListItem
+                    component={Link}
+                    to="/"
+                    style={{
+                      padding: 0,
+                      paddingBottom: 14,
+                      paddingLeft: 8,
+                      marginTop: "16"
+                    }}
+                  >
+                    <Fab
+                      size="large"
+                      variant="extended"
+                      color="default"
+                      style={{
+                        margin: 0,
+                        fontWeight: "500",
+                        boxShadow:
+                          "0 1px 2px 0 rgba(60,64,67,0.302), 0 1px 3px 1px rgba(60,64,67,0.149)",
+                        backgroundColor: "#fff",
+                        fontSize: "1rem",
+                        paddingRight: 24,
+                        marginTop: 14
+                      }}
+                      onClick={() => this.props.add()}
+                    >
+                    <embed
+                            height="36"
+                            width="36"
+                            style={{
+                              marginRight: "14px"
+                            }}
+                            type="image/svg+xml"
+                            src="/images/add_icon.svg"
+                          />
+                      {
+                      //   <AddOutlined
+                      //   color="primary"
+                        
+                      //   style={{ marginRight: "16", fontSize: 38 }}
+                      // />
+                      }
+                      ເພີ່ມຜົນງານ
+                    </Fab>
+                  </ListItem>
                   {this.props &&
                   this.props.user &&
                   this.props.user.userData &&
@@ -1004,7 +1057,8 @@ class Layout extends Component {
                           </ListItemIcon>
                           <ListItemText
                             primaryTypographyProps={{
-                              style: { color: "#3f51b5", fontWeight: "500" }
+                              style: { fontWeight: "500" },
+                              color: "primary"
                             }}
                             inset
                             primary="ຫນ້າຫລັກ"
@@ -1041,7 +1095,8 @@ class Layout extends Component {
                         </ListItemIcon>
                         <ListItemText
                           primaryTypographyProps={{
-                            style: { color: "#3f51b5", fontWeight: "500" }
+                            style: { fontWeight: "500" },
+                            color: "primary"
                           }}
                           inset
                           primary="ຄົ້ນຫາ"
@@ -1079,7 +1134,8 @@ class Layout extends Component {
                           inset
                           primary="ນັກຄົ້ນຄວ້າ"
                           primaryTypographyProps={{
-                            style: { color: "#3f51b5", fontWeight: "500" }
+                            style: { fontWeight: "500" },
+                            color: "primary"
                           }}
                         />
                       </>
@@ -1115,7 +1171,8 @@ class Layout extends Component {
                         <ListItemText
                           inset
                           primaryTypographyProps={{
-                            style: { color: "#3f51b5", fontWeight: "500" }
+                            style: { fontWeight: "500" },
+                            color: "primary"
                           }}
                           primary="ຜົນງານຄົ້ນຄວ້າ"
                         />
@@ -1155,7 +1212,8 @@ class Layout extends Component {
                           <ListItemText
                             inset
                             primaryTypographyProps={{
-                              style: { color: "#3f51b5", fontWeight: "500" }
+                              style: { fontWeight: "500" },
+                              color: "primary"
                             }}
                             primary="ໂປຣຟາຍລ໌ຂອງຂ້ອຍ"
                           />
@@ -1254,10 +1312,8 @@ class Layout extends Component {
                                   <ListItemText
                                     inset
                                     primaryTypographyProps={{
-                                      style: {
-                                        color: "#3f51b5",
-                                        fontWeight: "500"
-                                      }
+                                      style: { fontWeight: "500" },
+                                      color: "primary"
                                     }}
                                     primary="ນັກຄົ້ນຄວ້າ"
                                   />
@@ -1481,7 +1537,7 @@ class Layout extends Component {
                 anchor="left"
                 open={open}
                 classes={{
-                  paper: classes.drawerPaper
+                  paper: classes.drawerPaperSmall
                 }}
                 style={{
                   border: "0 !important",
@@ -1501,8 +1557,7 @@ class Layout extends Component {
                   <Grid
                     style={{
                       height: "100%",
-                      paddingTop: "22px",
-                      
+                      paddingTop: "22px"
                     }}
                     alignItems="center"
                   >
@@ -1567,7 +1622,8 @@ class Layout extends Component {
                           </ListItemIcon>
                           <ListItemText
                             primaryTypographyProps={{
-                              style: { color: "#3f51b5", fontWeight: "500" }
+                              style: { fontWeight: "500" },
+                              color: "primary"
                             }}
                             inset
                             primary="ຫນ້າຫລັກ"
@@ -1602,7 +1658,8 @@ class Layout extends Component {
                         </ListItemIcon>
                         <ListItemText
                           primaryTypographyProps={{
-                            style: { color: "#3f51b5", fontWeight: "500" }
+                            style: { fontWeight: "500" },
+                            color: "primary"
                           }}
                           inset
                           primary="ຄົ້ນຫາ"
@@ -1638,7 +1695,8 @@ class Layout extends Component {
                           inset
                           primary="ນັກຄົ້ນຄວ້າ"
                           primaryTypographyProps={{
-                            style: { color: "#3f51b5", fontWeight: "500" }
+                            style: { fontWeight: "500" },
+                            color: "primary"
                           }}
                         />
                       </>
@@ -1672,7 +1730,8 @@ class Layout extends Component {
                         <ListItemText
                           inset
                           primaryTypographyProps={{
-                            style: { color: "#3f51b5", fontWeight: "500" }
+                            style: { fontWeight: "500" },
+                            color: "primary"
                           }}
                           primary="ຜົນງານຄົ້ນຄວ້າ"
                         />
@@ -1710,7 +1769,8 @@ class Layout extends Component {
                           <ListItemText
                             inset
                             primaryTypographyProps={{
-                              style: { color: "#3f51b5", fontWeight: "500" }
+                              style: { fontWeight: "500" },
+                              color: "primary"
                             }}
                             primary="ໂປຣຟາຍລ໌ຂອງຂ້ອຍ"
                           />
@@ -1804,10 +1864,8 @@ class Layout extends Component {
                                   <ListItemText
                                     inset
                                     primaryTypographyProps={{
-                                      style: {
-                                        color: "#3f51b5",
-                                        fontWeight: "500"
-                                      }
+                                      style: { fontWeight: "500" },
+                                      color: "primary"
                                     }}
                                     primary="ນັກຄົ້ນຄວ້າ"
                                   />
@@ -1855,10 +1913,8 @@ class Layout extends Component {
                                   <ListItemText
                                     inset
                                     primaryTypographyProps={{
-                                      style: {
-                                        color: "#3f51b5",
-                                        fontWeight: "500"
-                                      }
+                                      style: { fontWeight: "500" },
+                                      color: "primary"
                                     }}
                                     primary="ຜົນງານຄົ້ນຄວ້າ"
                                   />
@@ -1922,10 +1978,8 @@ class Layout extends Component {
                                   <ListItemText
                                     inset
                                     primaryTypographyProps={{
-                                      style: {
-                                        color: "#3f51b5",
-                                        fontWeight: "500"
-                                      }
+                                      style: { fontWeight: "500" },
+                                      color: "primary"
                                     }}
                                     primary="ນັກຄົ້ນຄວ້າ"
                                   />
@@ -1962,10 +2016,8 @@ class Layout extends Component {
                                   <ListItemText
                                     inset
                                     primaryTypographyProps={{
-                                      style: {
-                                        color: "#3f51b5",
-                                        fontWeight: "500"
-                                      }
+                                      style: { fontWeight: "500" },
+                                      color: "primary"
                                     }}
                                     primary="ຜົນງານຄົ້ນຄວ້າ"
                                   />
@@ -2057,18 +2109,15 @@ class Layout extends Component {
           })}
           style={{ padding: 0 }}
         >
-        {
-
-
-          // <div className={classes.layout} style={{ marginLeft: drawerWidth }} open={this.state.open}></div>
-        }
+          {
+            // <div className={classes.layout} style={{ marginLeft: drawerWidth }} open={this.state.open}></div>
+          }
           <div className={classes.layout} open={this.state.open}>
-         
             {this.props.children}
           </div>
         </main>
         <Footer />
-      </div>
+      </MuiThemeProvider>
     );
   }
 }
@@ -2076,7 +2125,7 @@ class Layout extends Component {
 Layout.propTypes = {
   classes: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
-  width: PropTypes.string.isRequired,
+  width: PropTypes.string.isRequired
 };
 
 const mapStateToProps = state => {
@@ -2094,9 +2143,13 @@ const mapStateToProps = state => {
 const enhance = compose(
   withRouter,
   withWidth(),
+
   withStyles(styles, { withTheme: true }),
   // withWidth(),
-  connect(mapStateToProps, null),
-)
+  connect(
+    mapStateToProps,
+    null
+  )
+);
 
 export default enhance(Layout);
