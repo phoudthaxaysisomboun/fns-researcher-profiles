@@ -90,7 +90,7 @@ const styles = theme => ({
     }
   },
   title: {
-    fontWeight: "600",
+    fontWeight: "500",
     display: "none",
     [theme.breakpoints.up("sm")]: {
       display: "block"
@@ -823,7 +823,7 @@ class Layout extends Component {
                       color="inherit"
                       noWrap
                       style={{
-                        fontWeight: "bold"
+                        fontWeight: "500"
                         // fontFamily: "'Roboto', sans serif"
                       }}
                     >
@@ -905,7 +905,7 @@ class Layout extends Component {
                               color="inherit"
                               style={{
                                 textAlign: "center",
-                                fontWeight: "bold"
+                                fontWeight: "500"
                                 // fontFamily: "'Roboto', sans serif"
                               }}
                               noWrap
@@ -996,7 +996,7 @@ class Layout extends Component {
                     to="/"
                     style={{
                       padding: 0,
-                      paddingBottom: 14,
+                      paddingBottom: 16,
                       paddingLeft: 8,
                       marginTop: "16"
                     }}
@@ -1005,6 +1005,7 @@ class Layout extends Component {
                       size="large"
                       variant="extended"
                       color="default"
+                      className="add-research-button"
                       style={{
                         margin: 0,
                         fontWeight: "500",
@@ -1013,7 +1014,7 @@ class Layout extends Component {
                         backgroundColor: "#fff",
                         fontSize: "1rem",
                         paddingRight: 24,
-                        marginTop: 14
+                        marginTop: 16
                       }}
                       onClick={() => this.props.add()}
                     >
@@ -1589,10 +1590,10 @@ class Layout extends Component {
                           color="inherit"
                           noWrap
                           style={{
-                            fontWeight: "bold",
+                            fontWeight: "500",
                             // fontFamily: "'Roboto', sans serif",
                             display: "inline",
-                            paddingLeft: "36px"
+                            paddingLeft: "36px",
                           }}
                         >
                           FNS Researcher Profiles

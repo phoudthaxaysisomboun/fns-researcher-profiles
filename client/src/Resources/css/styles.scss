@@ -6,6 +6,8 @@
   }
   
   @import url(//fonts.googleapis.com/earlyaccess/phetsarath.css);
+  // @import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+  @import url('https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i&display=swap');
   
   @font-face {
     font-family: "Noto Sans Lao UI";
@@ -125,6 +127,9 @@
   
   #header {
     transition: all 0.15s linear;
+    // border-bottom: solid;
+    // border-width: 1px;
+    // border-color: rgba(0, 0, 0, 0.12)
   }
   
   #header.active {
@@ -190,5 +195,19 @@
     padding: 8px !important;
   }
   
-  
-  
+//  .add-research-button {
+//   box-shadow: 0 1px 3px 0 rgba(60,64,67,0.302), 0 4px 8px 3px rgba(60,64,67,0.149) !important;
+//  }
+ .add-research-button:hover {
+  box-shadow: 0 3px 5px -1px rgba(0,0,0,0.2), 0 6px 10px 0 rgba(0,0,0,0.14), 0 1px 18px 0 rgba(0,0,0,0.12) !important;
+ }
+ .add-research-button::before {
+  transition: opacity 15ms linear,background-color 15ms linear !important;
+ }
+
+//  .feed-research-title {
+//   overflow: hidden;
+//   display: -webkit-box;
+//   -webkit-line-clamp: 3;
+//   -webkit-box-orient: vertical;  
+//  }

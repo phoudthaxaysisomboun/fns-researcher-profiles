@@ -1,4 +1,5 @@
 @import url(//fonts.googleapis.com/earlyaccess/phetsarath.css);
+@import url("https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i&display=swap");
 @font-face {
   font-family: "Noto Sans Lao UI";
   src: url("../fonts/NotoSansLaoUI-Light.ttf");
@@ -189,5 +190,15 @@ canvas {
 
 .UpdateResearchArea-valueContainer-946 {
   padding: 8px !important;
+}
+
+.add-research-button:hover {
+  -webkit-box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12) !important;
+          box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12) !important;
+}
+
+.add-research-button::before {
+  -webkit-transition: opacity 15ms linear,background-color 15ms linear !important;
+  transition: opacity 15ms linear,background-color 15ms linear !important;
 }
 /*# sourceMappingURL=styles.css.map */

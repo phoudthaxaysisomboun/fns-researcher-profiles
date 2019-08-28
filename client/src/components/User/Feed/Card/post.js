@@ -450,7 +450,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                   }}
                 >
                   <ReactLink
-                    to={`/research/${researches._id}}`}
+                    to={`/research/${researches._id}`}
                     style={{
                       color: "inherit",
                       textDecoration: "none",
@@ -465,10 +465,9 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                       >
                         <Typography
                           style={{
-                            fontFamily: "'Roboto', sans-serif",
                             fontSize: "12px",
                             letterSpacing: "1.5 px",
-                            fontWeight: "600",
+                            fontWeight: "bold",
                             color: "#00695C"
                           }}
                         >
@@ -512,15 +511,26 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                       >
                         <ReactLink
                           to={`/research/${researches._id}`}
-                          style={{ textDecoration: "none", color: "inherit" }}
+                          style={{ textDecoration: "none", color: "inherit",fontSize: "20px", fontWeight: "600", }}
+                          
                         >
+                        
+                        
                           <LinesEllipsis
                             text={researches.title}
                             maxLine="2"
                             ellipsis="..."
                             trimRight
                             basedOn="letters"
-                            style={{ fontSize: "20px", fontWeight: "600" }}
+                            style={{ fontSize: "20px", fontWeight: "600",
+                            width: "100%",
+
+                           
+                            
+                            overflow: "hidden",
+                            
+                            textOverflow: "ellipsis",
+                          }}
                           />
                         </ReactLink>
                         <Grid container />
@@ -641,6 +651,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                                   style={{
                                     // maxWidth: "80px",
                                     maxHeight: "120px",
+                                    maxWidth: "90px",
                                     marginTop: "8px",
                                     marginBottom: "8px"
                                   }}
@@ -665,7 +676,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                                 <Grid item xs>
                                   <LinesEllipsis
                                     text={researches.abstract}
-                                    maxLine="9"
+                                    maxLine="5"
                                     ellipsis="..."
                                     trimRight
                                     basedOn="words"
@@ -674,7 +685,10 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                                       color: "#666666",
                                       fontWeight: "normal",
                                       marginTop: "4px",
-                                      marginLeft: "8px"
+                                      marginLeft: "8px",
+                                      overflow: "hidden",
+                            
+                            textOverflow: "ellipsis",
                                     }}
                                   />
                                 </Grid>
@@ -682,7 +696,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                             ) : (
                               <LinesEllipsis
                                 text={researches.abstract}
-                                maxLine="5"
+                                maxLine="6"
                                 ellipsis="..."
                                 trimRight
                                 basedOn="words"
@@ -690,7 +704,10 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                                   fontSize: "16px",
                                   color: "#666666",
                                   fontWeight: "normal",
-                                  marginTop: "4px"
+                                  marginTop: "4px",
+                                  overflow: "hidden",
+                            
+                            textOverflow: "ellipsis",
                                 }}
                               />
                             )}
@@ -810,7 +827,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                         color: "#757575",
                         fontFamily: "'Roboto', sans serif",
                         display: "inline",
-                        fontWeight: "bold"
+                        // fontWeight: "bold"
                       }}
                     >
                       &nbsp;

@@ -4,6 +4,8 @@ import AutoLinkText from "react-autolink-text2";
 import { UPLOADS_SERVER } from "../../../components/utils/misc";
 
 import moment from "moment";
+import 'moment/locale/lo'
+
 
 import {
   IconButton,
@@ -414,15 +416,13 @@ const CommentsCard = ({
                                       <div
                                         style={{
                                           display: "inline",
-                                          fontWeight: 200,
+                                          fontWeight: 400,
                                           fontSize: "13px",
                                           color: "#626262",
                                           marginLeft: "4px"
                                         }}
                                       >
-                                        {moment(value.time).format(
-                                          "HH:mm - DD/MM/YYYY"
-                                        )}
+                                      {moment(value.time).fromNow()}
                                       </div>
                                     </Typography>
                                   </Link>
@@ -779,7 +779,7 @@ const CommentsCard = ({
                                                                 style={{
                                                                   display:
                                                                     "inline",
-                                                                  fontWeight: 200,
+                                                                  fontWeight: 400,
                                                                   fontSize:
                                                                     "13px",
                                                                   color:
@@ -788,11 +788,7 @@ const CommentsCard = ({
                                                                     "4px"
                                                                 }}
                                                               >
-                                                                {moment(
-                                                                  reply.time
-                                                                ).format(
-                                                                  "HH:mm - DD/MM/YYYY"
-                                                                )}
+                                                              {moment(reply.time).fromNow()}
                                                               </div>
                                                             </Typography>
                                                           </Link>
