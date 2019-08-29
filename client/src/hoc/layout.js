@@ -37,7 +37,8 @@ import {
   Collapse,
   ListSubheader,
   Badge,
-  Hidden
+  Hidden,
+  Tooltip
 } from "@material-ui/core";
 
 import { Link } from "react-router-dom";
@@ -45,8 +46,8 @@ import { Link } from "react-router-dom";
 import MenuIcon from "@material-ui/icons/MenuOutlined";
 import SearchIcon from "@material-ui/icons/SearchOutlined";
 import AccountCircle from "@material-ui/icons/AccountCircleOutlined";
-import MoreIcon from "@material-ui/icons/MoreVertOutlined";
-import { ArrowDropDownOutlined } from "@material-ui/icons";
+// import MoreIcon from "@material-ui/icons/MoreVertOutlined";
+// import { ArrowDropDownOutlined } from "@material-ui/icons";
 import {
   SettingsOutlined,
   ExitToAppOutlined,
@@ -70,8 +71,11 @@ const styles = theme => ({
     width: "100%"
   },
   grow: {
-    [theme.breakpoints.up("md")]: {
+    [theme.breakpoints.up("lg")]: {
       flexGrow: 1
+    },
+    [theme.breakpoints.down("md")]: {
+      flexGrow: 0.3
     },
     [theme.breakpoints.down("sm")]: {
       flexGrow: 0
@@ -111,15 +115,32 @@ const styles = theme => ({
     }
   },
   formSearch: {
-    [theme.breakpoints.up("sm")]: {
-      flexGrow: 1
-    },
-    [theme.breakpoints.down("xs")]: {
+    
+    [theme.breakpoints.down("sm")]: {
       flexGrow: 1
     },
     [theme.breakpoints.up("md")]: {
-      flexGrow: 0.8
+      flexGrow: 1
     }
+  },
+  rightHeaderSection: {
+    [theme.breakpoints.up("md")]: {
+      minWidth: "226px",
+      textAlign: "right"
+    },
+    [theme.breakpoints.down("sm")]: {
+      minWidth: "unset",
+      textAlign: "right"
+    },
+  },
+  leftHeaderSection: {
+    [theme.breakpoints.up("md")]: {
+      minWidth: "226px",
+    },
+    [theme.breakpoints.down("sm")]: {
+      minWidth: "unset",
+    },
+    display: "flex"
   },
   moreIcon: {
     [theme.breakpoints.up("sm")]: {
@@ -133,19 +154,17 @@ const styles = theme => ({
     position: "relative",
     borderRadius: "8px",
     backgroundColor: "#f1f3f4",
-    maxWidth: "580px",
+    // maxWidth: "580px",
     // "&:hover": {
     //   backgroundColor: fade(theme.palette.common.black, 0.03)
     // },
-    marginRight: theme.spacing.unit * 2,
-    marginLeft: 0,
+    
     width: "100%",
     [theme.breakpoints.up("sm")]: {
-      marginLeft: theme.spacing.unit * 3,
       width: "auto"
     },
     flexGrow: "0.4",
-    height: "45px"
+    height: "48px"
   },
   searchIcon: {
     width: theme.spacing.unit * 9,
@@ -160,13 +179,13 @@ const styles = theme => ({
   inputRoot: {
     color: "inherit",
     width: "100%",
-    height: "45px"
+    height: "48px"
   },
   inputInput: {
     paddingTop: theme.spacing.unit,
     paddingRight: theme.spacing.unit,
     paddingBottom: theme.spacing.unit,
-    paddingLeft: theme.spacing.unit * 5,
+    paddingLeft: 56,
     transition: theme.transitions.create("width"),
     width: "100%",
     [theme.breakpoints.up("md")]: {
@@ -538,7 +557,20 @@ class Layout extends Component {
       } else {
         return (
           <Link to="/login" style={{ textDecoration: "none" }}>
-            <Button
+          {
+            this.props.width === "sm" || this.props.width === "xs" ?
+            <Tooltip title="ລົງຊື່ເຂົ້າໃຊ້">
+            <IconButton
+            
+            
+            style={{ margin: "8px", marginRight: 0, }}
+          >
+            <AccountCircle style={{fontSize: 28, border: "solid", borderRadius: "50%", borderWidth: 1, borderColor: "rgb(216, 216, 216)"}} color="primary"   />
+          </IconButton>
+            </Tooltip>
+            
+          :
+          <Button
               size="medium"
               variant="outlined"
               color="primary"
@@ -547,6 +579,8 @@ class Layout extends Component {
               <PersonOutlined style={{ marginRight: "8px" }} />
               ລົງຊື່ເຂົ້າໃຊ້
             </Button>
+          }
+            
           </Link>
         );
       }
@@ -793,6 +827,7 @@ class Layout extends Component {
                   paddingRight: "8px"
                 }}
               >
+                <span className={classes.leftHeaderSection}>
                 {!this.props.location.pathname.startsWith("/search") ? (
                   <>
                     <IconButton
@@ -835,7 +870,7 @@ class Layout extends Component {
                       color="default"
                       noWrap
                       style={{
-                        // fontWeight: "500",
+                        fontWeight: "normal",
                         fontFamily: "'Roboto', sans serif"
                       }}
                     >
@@ -843,10 +878,11 @@ class Layout extends Component {
                     </Typography>
                   </Link>
                 ) : null}
+                </span>
 
                 {!this.props.location.pathname.startsWith("/search") ? (
                   <>
-                  
+                   <div className={classes.grow} />
                     <form
                       style={{
                         padding: 0,
@@ -859,13 +895,12 @@ class Layout extends Component {
                         <IconButton
                           className={classes.searchIcon}
                           style={{
-                            padding: "2px",
-                            margin: 0,
-                            width: "28px",
-                            height: "28px",
-                            marginTop: "8.5px",
-                            marginBottom: "8.5px",
-                            marginLeft: "8px"
+                            padding: "8px",
+                            margin: 0,  
+                            width: "40px",
+                            height: "40px",
+                            marginLeft: 8,
+                            marginTop: 4
                           }}
                           type="submit"
                         >
@@ -878,7 +913,7 @@ class Layout extends Component {
                             input: classes.inputInput
                           }}
                           style={{
-                            fontFamily: "'Noto Sans Lao UI', sans-serif"
+                            fontFamily: "'Noto Sans Lao UI', sans-serif",
                           }}
                           value={this.state.searchText}
                           onChange={event => {
@@ -919,7 +954,9 @@ class Layout extends Component {
                               style={{
                                 textAlign: "center",
                                 // fontWeight: "500",
-                                fontFamily: "'Roboto', sans serif"
+                                fontFamily: "'Roboto', sans serif",
+                        fontWeight: "normal",
+
                               }}
                               noWrap
                             >
@@ -965,7 +1002,10 @@ class Layout extends Component {
 
                 {!this.props.location.pathname.startsWith("/search") ? (
                   <>
+                  <div className={classes.rightHeaderSection} >
+                  
                   {this.showAccountButton()}
+                  </div>
                     {
                     //   <div className={classes.sectionDesktop}>
                     //   {
@@ -1620,6 +1660,8 @@ class Layout extends Component {
                             fontFamily: "'Roboto', sans serif",
                             display: "inline",
                             paddingLeft: "36px",
+                        fontWeight: "normal",
+
                           }}
                         >
                           Researcher Profiles

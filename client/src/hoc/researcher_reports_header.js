@@ -44,6 +44,16 @@ const ResearcherReportsHeader = ({ tab, props, children, requestCount, width }) 
             textColor="primary"
             scrollButtons="auto"
             style={{ marginTop: "16px" }}
+            TabIndicatorProps={{
+              style:{
+                // backgroundColor: "red",
+                height: "3px",
+                borderTopRightRadius: "3px",
+                borderTopLeftRadius: "3px",
+                paddingLeft: "3px",
+                paddingRight: "3px"
+              }
+            }}
           >
             <Tab
               style={{ fontWeight: 500, fontSize: "14px" }}

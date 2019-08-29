@@ -1101,6 +1101,16 @@ const ResearchHeader = ({
                   textColor="primary"
                   centered
                   style={{ marginTop: "16px" }}
+                  TabIndicatorProps={{
+                    style:{
+                      // backgroundColor: "red",
+                      height: "3px",
+                      borderTopRightRadius: "3px",
+                      borderTopLeftRadius: "3px",
+                      paddingLeft: "3px",
+                      paddingRight: "3px"
+                    }
+                  }}
                 >
                   <Tab
                     style={{ fontSize: "16px", fontWeight: 500 }}

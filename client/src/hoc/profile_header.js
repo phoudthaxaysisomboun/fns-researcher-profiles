@@ -4,7 +4,6 @@ import {
   IconButton,
   Grid,
   Fab,
-
   Avatar,
   Button,
   Tabs,
@@ -27,14 +26,14 @@ import {
   EditOutlined,
   ReplyOutlined,
   CheckOutlined,
-  PublicOutlined,
+  PublicOutlined
 } from "@material-ui/icons";
 
 import { Link as ReactLink, withRouter } from "react-router-dom";
 
 import { colorPallete } from "../components/utils/misc";
 
-const toColor = (str) => {
+const toColor = str => {
   var colors = colorPallete;
 
   var hash = 0;
@@ -89,7 +88,7 @@ const ProfileHeader = ({
           variant="extended"
           color="primary"
           style={{ margin: "8px" }}
-          onClick={()=>openAddResearchDialog()}
+          onClick={() => openAddResearchDialog()}
         >
           <AddOutlined style={{ marginRight: "8px" }} />
           ເພີ່ມຜົນງານ
@@ -294,8 +293,7 @@ const ProfileHeader = ({
                     margin: "4px",
                     position: "relative"
                   }}
-
-                  onClick={()=>openEditName()}
+                  onClick={() => openEditName()}
                 >
                   <EditOutlined fontSize="small" />
                 </IconButton>
@@ -312,7 +310,10 @@ const ProfileHeader = ({
             {profile.degree.name}
             {isOwner || userData.isAdmin ? (
               <span>
-                <IconButton style={{ padding: "4px", margin: "4px" }} onClick={()=>openUpdateDegree()}>
+                <IconButton
+                  style={{ padding: "4px", margin: "4px" }}
+                  onClick={() => openUpdateDegree()}
+                >
                   <EditOutlined style={{ fontSize: "16px" }} />
                 </IconButton>
               </span>
@@ -326,109 +327,161 @@ const ProfileHeader = ({
   };
   return (
     <Grid container>
- 
       <Grid item xs={12}>
-
-
-      <Grid container>
-            <Grid item xs sm lg md />
-            <Grid item xs={11} sm={10} lg={8} md={11} style={{paddingTop: "24px",borderRadius: 0,
-            boxShadow: "none",
-            border: "1px solid #d8d8d8",
-            borderLeft: 0,
-            borderRight: 0,
-            borderTop: "0"}}>
-              <Grid container spacing={24}>
-                <Grid align="left" style={{ width: "96px", margin: "12px" }}>
-                  {profile.profileImage &&
-                  profile.profileImage[0] &&
-                  profile.profileImage[0].name ? (
-                    <Avatar
-                      src={`${UPLOADS_SERVER}/images/${
-                        profile.profileImage[0].name
-                      }`}
+        <Grid container>
+          <Grid item xs sm lg md />
+          <Grid
+            item
+            xs={11}
+            sm={10}
+            lg={8}
+            md={11}
+            style={{
+              paddingTop: "24px",
+              borderRadius: 0,
+              boxShadow: "none",
+              border: "1px solid #d8d8d8",
+              borderLeft: 0,
+              borderRight: 0,
+              borderTop: "0"
+            }}
+          >
+            <Grid container spacing={24}>
+              <Grid align="left" style={{ width: "96px", margin: "12px" }}>
+                {profile.profileImage &&
+                profile.profileImage[0] &&
+                profile.profileImage[0].name ? (
+                  <Avatar
+                    style={{
+                      width: "96px",
+                      height: "96px",
+                      borderStyle: "solid",
+                      borderColor: "#CFCECE",
+                      borderWidth: "1px",
+                      cursor: isOwner || userData.isAdmin ? "pointer" : "default"
+                    }}
+                    alt={`${profile.name} ${profile.lastname}`}
+                  >
+                  <img
+                      src={`${UPLOADS_SERVER}/images/${profile.profileImage[0].name}`}
+                      alt={`${profile.name} ${profile.lastname}`}
                       style={{
-                        width: "96px",
-                        height: "96px",
-                        borderStyle: "solid",
-                        borderColor: "#CFCECE",
-                        borderWidth: "1px"
+                        width: "100%",
+                        height: "100%",
+                        textAlign: "center",
+                        objectFit: "cover"
                       }}
-                      alt="profile image"
                     />
-                  ) : (
-                    <Avatar
-                      style={{
-                        width: "96px",
-                        height: "96px",
-                        backgroundColor: toColor(`${profile.name}${
-                          profile.lastname
-                        }`),
-                        fontWeight: "500",
-                        fontSize: "46px"
-                      }}
-                      alt="profile image"
-                    >
-                      <Typography variant="inherit">
-                        {profile.name
-                          ? `${profile.name.charAt(0)}${profile.lastname.charAt(
-                              0
-                            )}`
-                          : ""}
-                      </Typography>
-                    </Avatar>
-                  )}
-                </Grid>
-                <Grid
-                  item
-                  lg={5}
-                  md={5}
-                  sm={7}
-                  xs={12}
-                  style={{ padding: "left" }}
-                >
-                  {renderItems()}
-                </Grid>
-                <Grid item lg md sm xs={12} align="right">
-                  {props.user.userDetail ? (
-                    <Button
-                      size="medium"
-                      variant="outlined"
-                      color="primary"
-                      style={{ margin: "8px" }}
-                      onClick={() => {
-                        openShareDialog();
-                      }}
-                    >
-                      <ReplyOutlined
-                        style={{
-                          marginRight: "8px",
-                          transform: "rotateY(180deg)"
-                        }}
-                      />
-                      ແບ່ງປັນ
-                    </Button>
-                  ) : (
-                    <Button
-                      size="medium"
-                      variant="outlined"
-                      color="primary"
-                      style={{ margin: "8px" }}
-                    >
-                      <CircularProgress size={24} />
-                    </Button>
-                  )}
-                  {isAuth ? renderFollowButton() : null}
-                </Grid>
+                 {
+                  isOwner || userData.isAdmin ? 
+                    <>
+                      <div style={{
+                        backgroundColor: "rgba(32,33,36,0.6)",
+                            bottom: 0,
+                            height: "26%",
+                            left: 0,
+                            position: "absolute",
+                            right: 0,
+                      }}>
+                      <div style={{
+                        backgroundImage: "url(//www.gstatic.com/images/icons/material/system/2x/photo_camera_white_24dp.png)",
+                        backgroundPosition: "center",
+                        backgroundRepeat: "no-repeat",
+                        webkitBackgroundSize: "20px 20px",
+                        backgroundSize: "20px 20px",
+                        height: '100%',
+                        opacity: .8,
+                      }}>
+                      
+                      </div>
+                      </div>
+                      </> 
+                    : null
+                 }
+                  
+                  </Avatar>
+                ) : (
+                  <Avatar
+                    style={{
+                      width: "96px",
+                      height: "96px",
+                      backgroundColor: toColor(
+                        `${profile.name}${profile.lastname}`
+                      ),
+                      fontWeight: "500",
+                      fontSize: "46px"
+                    }}
+                    alt={`${profile.name} ${profile.lastname}`}
+                  >
+                    <Typography variant="inherit">
+                      {profile.name
+                        ? `${profile.name.charAt(0)}${profile.lastname.charAt(
+                            0
+                          )}`
+                        : ""}
+                    </Typography>
+                  </Avatar>
+                )}
               </Grid>
-              <Grid container>
+              <Grid
+                item
+                lg={5}
+                md={5}
+                sm={7}
+                xs={12}
+                style={{ padding: "left" }}
+              >
+                {renderItems()}
+              </Grid>
+              <Grid item lg md sm xs={12} align="right">
+                {props.user.userDetail ? (
+                  <Button
+                    size="medium"
+                    variant="outlined"
+                    color="primary"
+                    style={{ margin: "8px" }}
+                    onClick={() => {
+                      openShareDialog();
+                    }}
+                  >
+                    <ReplyOutlined
+                      style={{
+                        marginRight: "8px",
+                        transform: "rotateY(180deg)"
+                      }}
+                    />
+                    ແບ່ງປັນ
+                  </Button>
+                ) : (
+                  <Button
+                    size="medium"
+                    variant="outlined"
+                    color="primary"
+                    style={{ margin: "8px" }}
+                  >
+                    <CircularProgress size={24} />
+                  </Button>
+                )}
+                {isAuth ? renderFollowButton() : null}
+              </Grid>
+            </Grid>
+            <Grid container>
               <Grid item xs={12}>
                 <Tabs
                   value={tab}
                   indicatorColor="primary"
                   textColor="primary"
-                  
-            centered
+                  TabIndicatorProps={{
+                    style: {
+                      // backgroundColor: "red",f
+                      height: "3px",
+                      borderTopRightRadius: "3px",
+                      borderTopLeftRadius: "3px",
+                      paddingLeft: "3px",
+                      paddingRight: "3px"
+                    }
+                  }}
+                  centered
                   style={{ marginTop: "16px" }}
                 >
                   <Tab
@@ -437,7 +490,7 @@ const ProfileHeader = ({
                     to={`/profile/${profile._id}`}
                     component={ReactLink}
                   />
-  
+
                   <Tab
                     style={{
                       fontSize: "16px",
@@ -448,7 +501,7 @@ const ProfileHeader = ({
                     to={`/profile/${profile._id}/info`}
                     component={ReactLink}
                   />
-  
+
                   <Tab
                     style={{ fontSize: "16px", fontWeight: 500 }}
                     label="ຜົນງານຄົ້ນຄວ້າ"
@@ -462,11 +515,9 @@ const ProfileHeader = ({
                 </Tabs>
               </Grid>
             </Grid>
-            </Grid>
-            <Grid item xs sm lg md />
           </Grid>
-        
-          
+          <Grid item xs sm lg md />
+        </Grid>
       </Grid>
 
       {children}
