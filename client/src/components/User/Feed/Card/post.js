@@ -6,7 +6,7 @@ import NumberFormat from "react-number-format";
 import { PDFReader } from "reactjs-pdf-reader";
 
 import LinesEllipsis from "react-lines-ellipsis";
-import 'moment/locale/lo'
+import "moment/locale/lo";
 
 import moment from "moment";
 
@@ -25,16 +25,16 @@ import {
   ReplyOutlined,
   FavoriteOutlined,
   FavoriteBorderOutlined,
-  MoreVertOutlined,
+  MoreVertOutlined
 } from "@material-ui/icons";
 
 import { colorPallete } from "../../../../components/utils/misc";
 
 import { UPLOADS_SERVER } from "../../../../components/utils/misc";
 
-moment.locale('lo');
+moment.locale("lo");
 
-const toColor = (str) => {
+const toColor = str => {
   var colors = colorPallete;
 
   var hash = 0;
@@ -101,8 +101,6 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
     var durationWeek = moment().diff(time, "weeks");
     var durationMonth = moment().diff(time, "months");
     var durationYear = moment().diff(time, "years");
-    
-    
 
     if (durationMinutes < 60) {
       return (
@@ -116,7 +114,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
             marginBottom: "8px"
           }}
         >
-        {moment(time).fromNow()}
+          {moment(time).fromNow()}
         </Typography>
       );
     } else if (durationHours < 24) {
@@ -131,7 +129,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
             marginBottom: "8px"
           }}
         >
-        {moment(time).fromNow()}
+          {moment(time).fromNow()}
         </Typography>
       );
     } else if (durationDay === 1) {
@@ -161,7 +159,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
             marginBottom: "8px"
           }}
         >
-        {moment(time).fromNow()}
+          {moment(time).fromNow()}
         </Typography>
       );
     } else if (durationMonth === 0 || durationWeek < 4) {
@@ -176,11 +174,10 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
             marginBottom: "8px"
           }}
         >
-        {moment(time).fromNow()}
+          {moment(time).fromNow()}
         </Typography>
       );
     } else if (durationMonth >= 1 && durationYear < 1) {
-      
       return (
         <Typography
           variant="inherit"
@@ -222,7 +219,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
             marginBottom: "8px"
           }}
         >
-        {moment(time).format("DD MMMM YYYY")}
+          {moment(time).format("DD MMMM YYYY")}
         </Typography>
       );
     }
@@ -339,7 +336,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
   const renderItems = () =>
     userResearch ? (
       <Grid item xs={12}>
-        <div style={{ }}>
+        <div style={{}}>
           {userResearch.map(researches => (
             <>
               <Paper
@@ -348,10 +345,9 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                   border: "1px solid #d8d8d8",
                   marginTop: "24px",
                   padding: "16px",
-                  paddingBottom: 0,
+                  paddingBottom: 0
                   // maxWidth: "640px"
                 }}
-                
               >
                 <Grid container>
                   <Grid
@@ -378,9 +374,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                             borderWidth: "1px"
                           }}
                           alt="profile image"
-                          src={`${UPLOADS_SERVER}/images/${
-                            researches.uploader.profileImage[0].name
-                          }`}
+                          src={`${UPLOADS_SERVER}/images/${researches.uploader.profileImage[0].name}`}
                         />
                       </ReactLink>
                     ) : (
@@ -392,9 +386,9 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                           style={{
                             width: "46px",
                             height: "46px",
-                            backgroundColor: toColor(`${researches.uploader.name}${
-                              researches.uploader.lastname
-                            }`),
+                            backgroundColor: toColor(
+                              `${researches.uploader.name}${researches.uploader.lastname}`
+                            ),
                             fontFamily: "'Noto Sans Lao UI', sans serif",
                             fontWeight: "normal",
                             fontSize: "8px"
@@ -464,11 +458,12 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                         style={{ paddingTop: "8px", paddingLeft: "8px" }}
                       >
                         <Typography
+                        color="secondary"
                           style={{
                             fontSize: "12px",
                             letterSpacing: "1.5 px",
                             fontWeight: "bold",
-                            color: "#00695C"
+                            
                           }}
                         >
                           {moment(researches.date).format("DD/MM/YYYY")}
@@ -511,26 +506,26 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                       >
                         <ReactLink
                           to={`/research/${researches._id}`}
-                          style={{ textDecoration: "none", color: "inherit",fontSize: "20px", fontWeight: "600", }}
-                          
+                          style={{
+                            textDecoration: "none",
+                            color: "inherit",
+                            fontSize: "20px",
+                            fontWeight: "600"
+                          }}
                         >
-                        
-                        
                           <LinesEllipsis
                             text={researches.title}
                             maxLine="2"
                             ellipsis="..."
                             trimRight
                             basedOn="letters"
-                            style={{ fontSize: "20px", fontWeight: "600",
-                            width: "100%",
-
-                           
-                            
-                            overflow: "hidden",
-                            
-                            textOverflow: "ellipsis",
-                          }}
+                            style={{
+                              fontSize: "20px",
+                              fontWeight: "600",
+                              width: "100%",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis"
+                            }}
                           />
                         </ReactLink>
                         <Grid container />
@@ -590,18 +585,16 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                                     borderWidth: "1px"
                                   }}
                                   alt="profile image"
-                                  src={`${UPLOADS_SERVER}/images/${
-                                    value.profileImage[0].name
-                                  }`}
+                                  src={`${UPLOADS_SERVER}/images/${value.profileImage[0].name}`}
                                 />
                               ) : (
                                 <Avatar
                                   style={{
                                     width: "18px",
                                     height: "18px",
-                                    backgroundColor: toColor(`${value.name}${
-                                      value.lastname
-                                    }`),
+                                    backgroundColor: toColor(
+                                      `${value.name}${value.lastname}`
+                                    ),
                                     fontFamily:
                                       "'Noto Sans Lao UI', sans serif",
                                     fontWeight: "normal",
@@ -644,7 +637,10 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                           style={{ marginBottom: "4px", cursor: "pointer" }}
                         >
                           <Grid item>
-                            {researches.files[0] && researches.files[0].name && (researches.files[0].name.split(".").pop() === 'pdf') ? (
+                            {researches.files[0] &&
+                            researches.files[0].name &&
+                            researches.files[0].name.split(".").pop() ===
+                              "pdf" ? (
                               <Grid container spacing={8}>
                                 <Grid
                                   item
@@ -667,9 +663,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                                       width={80}
                                       page={1}
                                       withCredentials={false}
-                                      url={`${UPLOADS_SERVER}${
-                                        researches.files[0].name
-                                      }`}
+                                      url={`${UPLOADS_SERVER}${researches.files[0].name}`}
                                     />
                                   </Paper>
                                 </Grid>
@@ -687,8 +681,8 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                                       marginTop: "4px",
                                       marginLeft: "8px",
                                       overflow: "hidden",
-                            
-                            textOverflow: "ellipsis",
+
+                                      textOverflow: "ellipsis"
                                     }}
                                   />
                                 </Grid>
@@ -706,8 +700,8 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                                   fontWeight: "normal",
                                   marginTop: "4px",
                                   overflow: "hidden",
-                            
-                            textOverflow: "ellipsis",
+
+                                  textOverflow: "ellipsis"
                                 }}
                               />
                             )}
@@ -750,8 +744,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                         minWidth: "14px",
                         height: "36px",
                         borderRadius: "22px",
-                        textDecoration: "none",
-                        
+                        textDecoration: "none"
                       }}
                       onClick={() => comment(researches._id)}
                     >
@@ -799,7 +792,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                             color: "#757575",
                             fontFamily: "'Roboto', sans serif",
                             display: "inline",
-                            fontWeight: "bold",
+                            fontWeight: "bold"
                           }}
                         >
                           &nbsp;
@@ -826,7 +819,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                         fontSize: "13.5px",
                         color: "#757575",
                         fontFamily: "'Roboto', sans serif",
-                        display: "inline",
+                        display: "inline"
                         // fontWeight: "bold"
                       }}
                     >
@@ -850,7 +843,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
         </div>
       </Grid>
     ) : (
-      <div style={{ }}>
+      <div style={{}}>
         <>
           <Grid container style={{}}>
             <Paper
@@ -862,7 +855,12 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                 paddingBottom: 0
               }}
             >
-            <CircularProgress style={{color: "#909090", margin: "40px"}} thickness={5}  size={30} variant="indeterminate"/>
+              <CircularProgress
+                style={{ color: "#909090", margin: "40px" }}
+                thickness={5}
+                size={30}
+                variant="indeterminate"
+              />
             </Paper>
           </Grid>
         </>

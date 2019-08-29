@@ -1,6 +1,11 @@
 @import url(//fonts.googleapis.com/earlyaccess/phetsarath.css);
 @import url("https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i&display=swap");
 @font-face {
+  font-family: "Product Sans";
+  src: url("https://fonts.gstatic.com/s/productsans/v7/HYvgU2fE2nRJvZ5JFAumwegdm0LZdjqr5-oayXSOefg.woff2") format("woff2");
+}
+
+@font-face {
   font-family: "Noto Sans Lao UI";
   src: url("../fonts/NotoSansLaoUI-Light.ttf");
   font-weight: 300;
@@ -200,5 +205,9 @@ canvas {
 .add-research-button::before {
   -webkit-transition: opacity 15ms linear,background-color 15ms linear !important;
   transition: opacity 15ms linear,background-color 15ms linear !important;
+}
+
+.transparent {
+  background-color: transparent;
 }
 /*# sourceMappingURL=styles.css.map */

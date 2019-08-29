@@ -1,3 +1,13 @@
+@import url(//fonts.googleapis.com/earlyaccess/phetsarath.css);
+// @import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i&display=swap');
+// @import url('https://fonts.googleapis.com/css?family=Heebo:100,300,400,500,700,800,900&display=swap');
+
+@font-face {
+  font-family: "Product Sans";
+  src: url('https://fonts.gstatic.com/s/productsans/v7/HYvgU2fE2nRJvZ5JFAumwegdm0LZdjqr5-oayXSOefg.woff2') format('woff2');
+}
+
 @font-face {
     font-family: "Noto Sans Lao UI";
     src: url("../fonts/NotoSansLaoUI-Light.ttf");
@@ -5,9 +15,6 @@
     font-style: normal;
   }
   
-  @import url(//fonts.googleapis.com/earlyaccess/phetsarath.css);
-  // @import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
-  @import url('https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i&display=swap');
   
   @font-face {
     font-family: "Noto Sans Lao UI";
@@ -211,3 +218,7 @@
 //   -webkit-line-clamp: 3;
 //   -webkit-box-orient: vertical;  
 //  }
+
+.transparent {
+  background-color: transparent;
+}

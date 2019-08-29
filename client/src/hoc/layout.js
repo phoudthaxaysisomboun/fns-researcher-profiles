@@ -70,23 +70,31 @@ const styles = theme => ({
     width: "100%"
   },
   grow: {
-    [theme.breakpoints.up("sm")]: {
+    [theme.breakpoints.up("md")]: {
       flexGrow: 1
     },
-    [theme.breakpoints.down("xs")]: {
+    [theme.breakpoints.down("sm")]: {
       flexGrow: 0
     }
   },
   menuButtonMain: {
     [theme.breakpoints.up("md")]: {
-      marginLeft: -12,
-      marginRight: 20,
+      // marginLeft: -12,
+      // marginRight: 20,
       display: "none"
     },
     [theme.breakpoints.down("sm")]: {
-      marginLeft: 0,
-      marginRight: 20,
+      // marginLeft: 0,
+      // marginRight: 8,
       display: ""
+    },
+    [theme.breakpoints.up("sm")]: {
+      marginLeft: 0,
+      marginRight: 0,
+    },
+    [theme.breakpoints.down("xs")]: {
+      marginLeft: 0,
+      marginRight: 8,
     }
   },
   title: {
@@ -104,7 +112,7 @@ const styles = theme => ({
   },
   formSearch: {
     [theme.breakpoints.up("sm")]: {
-      flexGrow: 0.4
+      flexGrow: 1
     },
     [theme.breakpoints.down("xs")]: {
       flexGrow: 1
@@ -240,7 +248,7 @@ const styles = theme => ({
     
   },
   drawerPaperSmall: {
-    width: 300,
+    width: 270,
     borderRight: 0,
     paddingRight: 8,
     boxShadow:
@@ -291,6 +299,9 @@ const styles = theme => ({
     [theme.breakpoints.down("sm")]: {
       marginLeft: 240
     }
+  },
+  transparent: {
+    backgroundColor: "transparent"
   }
 });
 
@@ -464,64 +475,64 @@ class Layout extends Component {
       if (this.props.user.userData.isAuth) {
         return (
           <div>
-            <Link
-              to={`/profile/${this.props.user.userData._id}`}
-              style={{ textDecoration: "none", outline: 0 }}
-            >
-              <IconButton
-                aria-haspopup="true"
-                color="inherit"
-                style={{
-                  padding: "8px",
-                  margin: 0
-                }}
-              >
-                {this.props.user.userData &&
-                this.props.user.userData.profileImage &&
-                this.props.user.userData.profileImage[0] &&
-                this.props.user.userData.profileImage[0].name ? (
-                  <Avatar
-                    src={`${UPLOADS_SERVER}/images/${this.props.user.userData.profileImage[0].name}`}
-                    style={{
-                      width: "32px",
-                      height: "32px",
-                      borderStyle: "solid",
-                      borderColor: "#CFCECE",
-                      borderWidth: "1px"
-                    }}
-                  />
-                ) : (
-                  <Avatar
-                    style={{
-                      width: "32px",
-                      height: "32px",
-                      backgroundColor: toColor(
-                        `${this.props.user.userData.name}${this.props.user.userData.lastname}`
-                      ),
-                      fontFamily: "'Noto Sans Lao UI', sans serif",
-                      fontSize: "14px",
-                      fontWeight: "500"
-                    }}
-                  >
-                    {`${this.props.user.userData.name.charAt(
-                      0
-                    )}${this.props.user.userData.lastname.charAt(0)}`}
-                  </Avatar>
-                )}
-              </IconButton>
-            </Link>
-
-            <IconButton
-              aria-haspopup="true"
-              onClick={this.handleProfileMenuOpen}
-              color="inherit"
+          <IconButton
+          aria-haspopup="true"
+          color="inherit"
+          style={{
+            padding: "8px",
+            margin: 0,
+            marginLeft: 8
+          }}
+          onClick={this.handleProfileMenuOpen}
+        >
+          {this.props.user.userData &&
+          this.props.user.userData.profileImage &&
+          this.props.user.userData.profileImage[0] &&
+          this.props.user.userData.profileImage[0].name ? (
+            <Avatar
+              src={`${UPLOADS_SERVER}/images/${this.props.user.userData.profileImage[0].name}`}
               style={{
-                padding: "0px",
-                margin: 0
+                width: "32px",
+                height: "32px",
+                borderStyle: "solid",
+                borderColor: "#CFCECE",
+                borderWidth: "1px"
+              }}
+            />
+          ) : (
+            <Avatar
+              style={{
+                width: "32px",
+                height: "32px",
+                backgroundColor: toColor(
+                  `${this.props.user.userData.name}${this.props.user.userData.lastname}`
+                ),
+                fontFamily: "'Noto Sans Lao UI', sans serif",
+                fontSize: "14px",
+                fontWeight: "500"
               }}
             >
-              <ArrowDropDownOutlined />
-            </IconButton>
+              {`${this.props.user.userData.name.charAt(
+                0
+              )}${this.props.user.userData.lastname.charAt(0)}`}
+            </Avatar>
+          )}
+        </IconButton>
+
+{
+  //  <IconButton
+  //             aria-haspopup="true"
+  //             onClick={this.handleProfileMenuOpen}
+  //             color="inherit"
+  //             style={{
+  //               padding: "0px",
+  //               margin: 0
+  //             }}
+  //           >
+  //             <ArrowDropDownOutlined />
+  //           </IconButton>
+}
+           
           </div>
         );
       } else {
@@ -557,8 +568,8 @@ class Layout extends Component {
     const renderMenu = (
       <Menu
         anchorEl={anchorEl}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        transformOrigin={{ vertical: "top", horizontal: "right" }}
+        anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
+        transformOrigin={{ vertical: "bottom", horizontal: "right" }}
         open={isMenuOpen}
         onClose={this.handleMenuClose}
       >
@@ -778,8 +789,8 @@ class Layout extends Component {
                 variant="regular"
                 style={{
                   height: "64px",
-                  paddingLeft: "16px",
-                  paddingRight: "16px"
+                  paddingLeft: "8px",
+                  paddingRight: "8px"
                 }}
               >
                 {!this.props.location.pathname.startsWith("/search") ? (
@@ -804,7 +815,8 @@ class Layout extends Component {
                           marginBottom: "0",
                           flexGrow: 0,
                           paddingRight: "8px",
-                          paddingBottom: "6px"
+                          paddingBottom: "6px",
+                          paddingLeft: 8
                         }}
                         type="image/svg+xml"
                         src="/images/fns.svg"
@@ -820,20 +832,21 @@ class Layout extends Component {
                     <Typography
                       className={classes.title}
                       variant="h6"
-                      color="inherit"
+                      color="default"
                       noWrap
                       style={{
-                        fontWeight: "500"
-                        // fontFamily: "'Roboto', sans serif"
+                        // fontWeight: "500",
+                        fontFamily: "'Roboto', sans serif"
                       }}
                     >
-                      FNS Researcher Profiles
+                      Researcher Profiles
                     </Typography>
                   </Link>
                 ) : null}
 
                 {!this.props.location.pathname.startsWith("/search") ? (
                   <>
+                  
                     <form
                       style={{
                         padding: 0,
@@ -902,46 +915,49 @@ class Layout extends Component {
                           >
                             <Typography
                               variant="h6"
-                              color="inherit"
+                              color="default"
                               style={{
                                 textAlign: "center",
-                                fontWeight: "500"
-                                // fontFamily: "'Roboto', sans serif"
+                                // fontWeight: "500",
+                                fontFamily: "'Roboto', sans serif"
                               }}
                               noWrap
                             >
-                              FNS Researcher Profiles
+                              Researcher Profiles
                             </Typography>
                           </Link>
                         ) : null}
                       </Grid>
 
                       <Grid item xs={2} align="right">
-                        <div className={classes.sectionDesktop2}>
-                          {
-                            // <IconButton color="inherit">
-                            //   <Badge badgeContent={4} color="secondary">
-                            //     <MailIcon />
-                            //   </Badge>
-                            // </IconButton>
-                            // <IconButton color="inherit">
-                            //   <Badge badgeContent={17} color="secondary">
-                            //     <NotificationsIcon />
-                            //   </Badge>
-                            // </IconButton>
-                          }
-                          {this.showAccountButton()}
-                        </div>
-                        <div className={classes.sectionMobile2}>
-                          <IconButton
-                            aria-haspopup="true"
-                            onClick={this.handleMobileMenuOpen}
-                            color="inherit"
-                            className={classes.moreIcon}
-                          >
-                            <MoreIcon />
-                          </IconButton>
-                        </div>
+                      {this.showAccountButton()}
+                        {
+                        //   <div className={classes.sectionDesktop2}>
+                        //   {
+                        //     // <IconButton color="inherit">
+                        //     //   <Badge badgeContent={4} color="secondary">
+                        //     //     <MailIcon />
+                        //     //   </Badge>
+                        //     // </IconButton>
+                        //     // <IconButton color="inherit">
+                        //     //   <Badge badgeContent={17} color="secondary">
+                        //     //     <NotificationsIcon />
+                        //     //   </Badge>
+                        //     // </IconButton>
+                        //   }
+                        //   {this.showAccountButton()}
+                        // </div>
+                        // <div className={classes.sectionMobile2}>
+                        //   <IconButton
+                        //     aria-haspopup="true"
+                        //     onClick={this.handleMobileMenuOpen}
+                        //     color="inherit"
+                        //     className={classes.moreIcon}
+                        //   >
+                        //     <MoreIcon />
+                        //   </IconButton>
+                        // </div>
+                        }
                       </Grid>
                     </Grid>
                   </>
@@ -949,31 +965,34 @@ class Layout extends Component {
 
                 {!this.props.location.pathname.startsWith("/search") ? (
                   <>
-                    <div className={classes.sectionDesktop}>
-                      {
-                        // <IconButton color="inherit">
-                        //   <Badge badgeContent={4} color="secondary">
-                        //     <MailIcon />
-                        //   </Badge>
-                        // </IconButton>
-                        // <IconButton color="inherit">
-                        //   <Badge badgeContent={17} color="secondary">
-                        //     <NotificationsIcon />
-                        //   </Badge>
-                        // </IconButton>
-                      }
-                      {this.showAccountButton()}
-                    </div>
-                    <div className={classes.sectionMobile}>
-                      <IconButton
-                        aria-haspopup="true"
-                        onClick={this.handleMobileMenuOpen}
-                        color="inherit"
-                        className={classes.moreIcon}
-                      >
-                        <MoreIcon />
-                      </IconButton>
-                    </div>
+                  {this.showAccountButton()}
+                    {
+                    //   <div className={classes.sectionDesktop}>
+                    //   {
+                    //     // <IconButton color="inherit">
+                    //     //   <Badge badgeContent={4} color="secondary">
+                    //     //     <MailIcon />
+                    //     //   </Badge>
+                    //     // </IconButton>
+                    //     // <IconButton color="inherit">
+                    //     //   <Badge badgeContent={17} color="secondary">
+                    //     //     <NotificationsIcon />
+                    //     //   </Badge>
+                    //     // </IconButton>
+                    //   }
+                    //   {this.showAccountButton()}
+                    // </div>
+                    // <div className={classes.sectionMobile}>
+                    //   <IconButton
+                    //     aria-haspopup="true"
+                    //     onClick={this.handleMobileMenuOpen}
+                    //     color="inherit"
+                    //     className={classes.moreIcon}
+                    //   >
+                    //     <MoreIcon />
+                    //   </IconButton>
+                    // </div>
+                    }
                   </>
                 ) : null}
               </Toolbar>
@@ -998,7 +1017,7 @@ class Layout extends Component {
                       padding: 0,
                       paddingBottom: 16,
                       paddingLeft: 8,
-                      marginTop: "16"
+                      marginTop: "16",
                     }}
                   >
                     <Fab
@@ -1048,13 +1067,13 @@ class Layout extends Component {
                       selected={"/" === pathname}
                       style={{
                         borderTopRightRadius: "23px",
-                        borderBottomRightRadius: "23px"
+                        borderBottomRightRadius: "23px", height:  40
                       }}
                     >
                       {"/" === pathname ? (
                         <>
                           <ListItemIcon>
-                            <HomeOutlined color="primary" />
+                            <HomeOutlined fontSize="small" color="primary" />
                           </ListItemIcon>
                           <ListItemText
                             primaryTypographyProps={{
@@ -1068,7 +1087,7 @@ class Layout extends Component {
                       ) : (
                         <>
                           <ListItemIcon>
-                            <HomeOutlined />
+                            <HomeOutlined fontSize="small"  />
                           </ListItemIcon>
                           <ListItemText inset primary="ຫນ້າຫລັກ" />
                         </>
@@ -1085,14 +1104,14 @@ class Layout extends Component {
                     }
                     style={{
                       borderTopRightRadius: "23px",
-                      borderBottomRightRadius: "23px"
+                      borderBottomRightRadius: "23px", height:  40
                     }}
                   >
                     {pathname.startsWith("/search") &&
                     !("?q=" === this.props.location.search) ? (
                       <>
                         <ListItemIcon>
-                          <SearchOutlined color="primary" />
+                          <SearchOutlined fontSize="small"  color="primary" />
                         </ListItemIcon>
                         <ListItemText
                           primaryTypographyProps={{
@@ -1106,7 +1125,7 @@ class Layout extends Component {
                     ) : (
                       <>
                         <ListItemIcon>
-                          <SearchOutlined />
+                          <SearchOutlined fontSize="small"  />
                         </ListItemIcon>
                         <ListItemText inset primary="ຄົ້ນຫາ" />
                       </>
@@ -1115,7 +1134,7 @@ class Layout extends Component {
                   <ListItem
                     style={{
                       borderTopRightRadius: "23px",
-                      borderBottomRightRadius: "23px"
+                      borderBottomRightRadius: "23px", height:  40
                     }}
                     button
                     component={Link}
@@ -1129,7 +1148,7 @@ class Layout extends Component {
                     "?q=" === this.props.location.search ? (
                       <>
                         <ListItemIcon>
-                          <PersonOutlineOutlined color="primary" />
+                          <PersonOutlineOutlined fontSize="small"  color="primary" />
                         </ListItemIcon>
                         <ListItemText
                           inset
@@ -1143,7 +1162,7 @@ class Layout extends Component {
                     ) : (
                       <>
                         <ListItemIcon>
-                          <PersonOutlineOutlined />
+                          <PersonOutlineOutlined fontSize="small"  />
                         </ListItemIcon>
                         <ListItemText inset primary="ນັກຄົ້ນຄວ້າ" />
                       </>
@@ -1160,14 +1179,14 @@ class Layout extends Component {
                     }
                     style={{
                       borderTopRightRadius: "23px",
-                      borderBottomRightRadius: "23px"
+                      borderBottomRightRadius: "23px", height:  40
                     }}
                   >
                     {"/search/researches" === pathname &&
                     "?q=" === this.props.location.search ? (
                       <>
                         <ListItemIcon>
-                          <DescriptionOutlined color="primary" />
+                          <DescriptionOutlined fontSize="small"  color="primary" />
                         </ListItemIcon>
                         <ListItemText
                           inset
@@ -1181,7 +1200,7 @@ class Layout extends Component {
                     ) : (
                       <>
                         <ListItemIcon>
-                          <DescriptionOutlined />
+                          <DescriptionOutlined fontSize="small"  />
                         </ListItemIcon>
                         <ListItemText inset primary="ຜົນງານຄົ້ນຄວ້າ" />
                       </>
@@ -1196,7 +1215,7 @@ class Layout extends Component {
                       component={Link}
                       style={{
                         borderTopRightRadius: "23px",
-                        borderBottomRightRadius: "23px"
+                        borderBottomRightRadius: "23px", height:  40
                       }}
                       to={`/profile/${this.props.user.userData._id}`}
                       selected={pathname.startsWith(
@@ -1208,7 +1227,7 @@ class Layout extends Component {
                       ) ? (
                         <>
                           <ListItemIcon>
-                            <AccountCircleOutlined color="primary" />
+                            <AccountCircleOutlined fontSize="small"  color="primary" />
                           </ListItemIcon>
                           <ListItemText
                             inset
@@ -1222,7 +1241,7 @@ class Layout extends Component {
                       ) : (
                         <>
                           <ListItemIcon>
-                            <AccountCircleOutlined />
+                            <AccountCircleOutlined fontSize="small"  />
                           </ListItemIcon>
                           <ListItemText inset primary="ໂປຣຟາຍລ໌ຂອງຂ້ອຍ" />
                         </>
@@ -1255,19 +1274,19 @@ class Layout extends Component {
                         <ListItem
                           style={{
                             borderTopRightRadius: "23px",
-                            borderBottomRightRadius: "23px"
+                            borderBottomRightRadius: "23px", height:  40
                           }}
                           button
                           onClick={this.handleMangeListClick}
                         >
                           <ListItemIcon>
-                            <SettingsApplicationsOutlined />
+                            <SettingsApplicationsOutlined fontSize="small"  />
                           </ListItemIcon>
                           <ListItemText inset primary="ຈັດການ" />
                           {this.state.openManageToolMenu ? (
-                            <ExpandLessOutlined />
+                            <ExpandLessOutlined fontSize="small"  />
                           ) : (
-                            <ExpandMoreOutlined />
+                            <ExpandMoreOutlined fontSize="small"  />
                           )}
                         </ListItem>
                         <Collapse
@@ -1279,7 +1298,7 @@ class Layout extends Component {
                             <ListItem
                               style={{
                                 borderTopRightRadius: "23px",
-                                borderBottomRightRadius: "23px"
+                                borderBottomRightRadius: "23px", height:  40
                               }}
                               button
                               component={Link}
@@ -1304,10 +1323,10 @@ class Layout extends Component {
                                         variant="dot"
                                         color="secondary"
                                       >
-                                        <PersonOutlineOutlined color="primary" />
+                                        <PersonOutlineOutlined fontSize="small"  color="primary" />
                                       </Badge>
                                     ) : (
-                                      <PersonOutlineOutlined color="primary" />
+                                      <PersonOutlineOutlined fontSize="small"  color="primary" />
                                     )}
                                   </ListItemIcon>
                                   <ListItemText
@@ -1331,10 +1350,10 @@ class Layout extends Component {
                                         variant="dot"
                                         color="secondary"
                                       >
-                                        <PersonOutlineOutlined />
+                                        <PersonOutlineOutlined fontSize="small"  />
                                       </Badge>
                                     ) : (
-                                      <PersonOutlineOutlined />
+                                      <PersonOutlineOutlined fontSize="small"  />
                                     )}
                                   </ListItemIcon>
                                   <ListItemText inset primary="ນັກຄົ້ນຄວ້າ" />
@@ -1346,7 +1365,7 @@ class Layout extends Component {
                             <ListItem
                               style={{
                                 borderTopRightRadius: "23px",
-                                borderBottomRightRadius: "23px"
+                                borderBottomRightRadius: "23px", height:  40
                               }}
                               button
                               component={Link}
@@ -1359,7 +1378,7 @@ class Layout extends Component {
                               {pathname.startsWith("/admin/researches") ? (
                                 <>
                                   <ListItemIcon>
-                                    <DescriptionOutlined color="primary" />
+                                    <DescriptionOutlined fontSize="small"  color="primary" />
                                   </ListItemIcon>
                                   <ListItemText
                                     inset
@@ -1375,7 +1394,7 @@ class Layout extends Component {
                               ) : (
                                 <>
                                   <ListItemIcon>
-                                    <DescriptionOutlined />
+                                    <DescriptionOutlined fontSize="small"  />
                                   </ListItemIcon>
                                   <ListItemText
                                     inset
@@ -1392,19 +1411,19 @@ class Layout extends Component {
                         <ListItem
                           style={{
                             borderTopRightRadius: "23px",
-                            borderBottomRightRadius: "23px"
+                            borderBottomRightRadius: "23px", height:  40
                           }}
                           button
                           onClick={this.handleReportsClick}
                         >
                           <ListItemIcon>
-                            <PollOutlined />
+                            <PollOutlined fontSize="small"  />
                           </ListItemIcon>
                           <ListItemText inset primary="ລາຍງານ" />
                           {this.state.openReportsToolMenu ? (
-                            <ExpandLessOutlined />
+                            <ExpandLessOutlined  fontSize="small" />
                           ) : (
-                            <ExpandMoreOutlined />
+                            <ExpandMoreOutlined  fontSize="small" />
                           )}
                         </ListItem>
                         <Collapse
@@ -1418,7 +1437,7 @@ class Layout extends Component {
                               component={Link}
                               style={{
                                 borderTopRightRadius: "23px",
-                                borderBottomRightRadius: "23px"
+                                borderBottomRightRadius: "23px", height:  40
                               }}
                               to="/admin/reports/researchers/numbers"
                               selected={pathname.startsWith(
@@ -1431,7 +1450,7 @@ class Layout extends Component {
                               ) ? (
                                 <>
                                   <ListItemIcon>
-                                    <PersonOutlineOutlined color="primary" />
+                                    <PersonOutlineOutlined fontSize="small"  color="primary" />
                                   </ListItemIcon>
                                   <ListItemText
                                     inset
@@ -1447,7 +1466,7 @@ class Layout extends Component {
                               ) : (
                                 <>
                                   <ListItemIcon>
-                                    <PersonOutlineOutlined />
+                                    <PersonOutlineOutlined fontSize="small"  />
                                   </ListItemIcon>
                                   <ListItemText inset primary="ນັກຄົ້ນຄວ້າ" />
                                 </>
@@ -1458,7 +1477,7 @@ class Layout extends Component {
                             <ListItem
                               style={{
                                 borderTopRightRadius: "23px",
-                                borderBottomRightRadius: "23px"
+                                borderBottomRightRadius: "23px", height:  40
                               }}
                               button
                               component={Link}
@@ -1473,7 +1492,7 @@ class Layout extends Component {
                               ) ? (
                                 <>
                                   <ListItemIcon>
-                                    <DescriptionOutlined color="primary" />
+                                    <DescriptionOutlined color="primary" fontSize="small"  />
                                   </ListItemIcon>
                                   <ListItemText
                                     inset
@@ -1489,7 +1508,7 @@ class Layout extends Component {
                               ) : (
                                 <>
                                   <ListItemIcon>
-                                    <DescriptionOutlined />
+                                    <DescriptionOutlined  fontSize="small" />
                                   </ListItemIcon>
                                   <ListItemText
                                     inset
@@ -1531,7 +1550,7 @@ class Layout extends Component {
               </Drawer>
             </Hidden>
 
-            <Hidden mdUp>
+            <Hidden mdUp >
               <Drawer
                 className={classes.drawer}
                 variant="temporary"
@@ -1544,7 +1563,14 @@ class Layout extends Component {
                   border: "0 !important",
                   transition: "1s"
                 }}
+                BackdropProps={{
+                  classes: {
+                   root: classes.transparent
+                  }
+                 }
+                }
                 onClose={this.handleDrawerClose}
+                
               >
                 <div
                   style={{
@@ -1587,16 +1613,16 @@ class Layout extends Component {
                         </Link>
                         <Typography
                           variant="h6"
-                          color="inherit"
+                          color="default"
                           noWrap
                           style={{
-                            fontWeight: "500",
-                            // fontFamily: "'Roboto', sans serif",
+                            // fontWeight: "500",
+                            fontFamily: "'Roboto', sans serif",
                             display: "inline",
                             paddingLeft: "36px",
                           }}
                         >
-                          FNS Researcher Profiles
+                          Researcher Profiles
                         </Typography>
                       </Link>
                     </Grid>
@@ -1613,7 +1639,8 @@ class Layout extends Component {
                       component={Link}
                       to="/"
                       selected={"/" === pathname}
-                      style={{}}
+                      style={{borderTopRightRadius: "23px",
+                      borderBottomRightRadius: "23px"}}
                       onClick={this.handleDrawerClose}
                     >
                       {"/" === pathname ? (
@@ -1649,7 +1676,7 @@ class Layout extends Component {
                       pathname.startsWith("/search") &&
                       !("?q=" === this.props.location.search)
                     }
-                    style={{}}
+                    style={{borderTopRightRadius: "23px",  borderBottomRightRadius: "23px"}}
                   >
                     {pathname.startsWith("/search") &&
                     !("?q=" === this.props.location.search) ? (
@@ -1676,7 +1703,7 @@ class Layout extends Component {
                     )}
                   </ListItem>
                   <ListItem
-                    style={{}}
+                    style={{borderTopRightRadius: "23px",  borderBottomRightRadius: "23px"}}
                     onClick={this.handleDrawerClose}
                     button
                     component={Link}
@@ -1720,7 +1747,7 @@ class Layout extends Component {
                       "/search/researches" === pathname &&
                       "?q=" === this.props.location.search
                     }
-                    style={{}}
+                    style={{borderTopRightRadius: "23px",  borderBottomRightRadius: "23px"}}
                   >
                     {"/search/researches" === pathname &&
                     "?q=" === this.props.location.search ? (
@@ -1754,7 +1781,7 @@ class Layout extends Component {
                       button
                       component={Link}
                       onClick={this.handleDrawerClose}
-                      style={{}}
+                      style={{borderTopRightRadius: "23px",  borderBottomRightRadius: "23px"}}
                       to={`/profile/${this.props.user.userData._id}`}
                       selected={pathname.startsWith(
                         `/profile/${this.props.user.userData._id}`
@@ -1810,7 +1837,7 @@ class Layout extends Component {
                         className={classes.root}
                       >
                         <ListItem
-                          style={{}}
+                          style={{borderTopRightRadius: "23px",  borderBottomRightRadius: "23px"}}
                           button
                           onClick={this.handleMangeListClick}
                         >
@@ -1831,7 +1858,7 @@ class Layout extends Component {
                         >
                           <List component="div" disablePadding>
                             <ListItem
-                              style={{}}
+                              style={{borderTopRightRadius: "23px",  borderBottomRightRadius: "23px"}}
                               button
                               component={Link}
                               to="/admin/researchers"
@@ -1896,7 +1923,7 @@ class Layout extends Component {
                           </List>
                           <List component="div" disablePadding>
                             <ListItem
-                              style={{}}
+                              style={{borderTopRightRadius: "23px",  borderBottomRightRadius: "23px"}}
                               onClick={this.handleDrawerClose}
                               button
                               component={Link}
@@ -1938,7 +1965,7 @@ class Layout extends Component {
 
                       <List component="nav" className={classes.root}>
                         <ListItem
-                          style={{}}
+                          style={{borderTopRightRadius: "23px",  borderBottomRightRadius: "23px"}}
                           button
                           onClick={this.handleReportsClick}
                         >
@@ -1961,7 +1988,7 @@ class Layout extends Component {
                             <ListItem
                               button
                               component={Link}
-                              style={{}}
+                              style={{borderTopRightRadius: "23px",  borderBottomRightRadius: "23px"}}
                               onClick={this.handleDrawerClose}
                               to="/admin/reports/researchers/numbers"
                               selected={pathname.startsWith(
@@ -1997,7 +2024,7 @@ class Layout extends Component {
                           </List>
                           <List component="div" disablePadding>
                             <ListItem
-                              style={{}}
+                              style={{borderTopRightRadius: "23px",  borderBottomRightRadius: "23px"}}
                               button
                               component={Link}
                               to="/admin/reports/researches/numbers"
