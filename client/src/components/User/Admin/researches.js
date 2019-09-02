@@ -448,7 +448,25 @@ const styles = theme => ({
   },
   tableWrapper: {
     overflowX: "auto"
+  },
+  mainContainer: {
+    [theme.breakpoints.up("xl")]: {
+      // marginLeft: -12,
+      // marginRight: 20,
+      paddingLeft: 240
+    },
+    [theme.breakpoints.up("lg")]: {
+      // marginLeft: -12,
+      // marginRight: 20,
+      paddingLeft: 240
+    },
+    [theme.breakpoints.down("md")]: {
+      // marginLeft: -12,
+      // marginRight: 20,
+      paddingLeft: 0
+    },
   }
+
 });
 
 class ResearcherAdmin extends React.Component {
@@ -584,17 +602,18 @@ class ResearcherAdmin extends React.Component {
 
     return (
       <>
+<div className={classes.mainContainer}>
+
         <ManageResearchHeader
           props={this.props}
           children={this.props.children}
           tab={this.state.tabNumber}
           changeTab={tabNumber => this.changeTab(tabNumber)}
-          width={this.props.width}
         >
           <Grid
             container
             spacing={0}
-            style={{ paddingTop: "0", paddingBottom: "24px", paddingLeft: this.props.width === "xl" ? 240 : this.props.width === "lg" ? 180 : 0}}
+            style={{ paddingTop: "0", paddingBottom: "24px"}}
           >
             <Grid item xs sm lg md />
 
@@ -833,6 +852,7 @@ class ResearcherAdmin extends React.Component {
           </Grid>
         </ManageResearchHeader>
 
+       </div>
         <AddResearch
           open={this.state.openAddResearchDialog}
           close={() => this.handleAddResearchClose()}

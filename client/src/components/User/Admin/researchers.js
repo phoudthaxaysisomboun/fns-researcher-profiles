@@ -416,8 +416,26 @@ const styles = theme => ({
   },
   tableWrapper: {
     overflowX: "auto"
+  },
+  mainContainer: {
+    [theme.breakpoints.up("xl")]: {
+      // marginLeft: -12,
+      // marginRight: 20,
+      paddingLeft: 240
+    },
+    [theme.breakpoints.up("lg")]: {
+      // marginLeft: -12,
+      // marginRight: 20,
+      paddingLeft: 240
+    },
+    [theme.breakpoints.down("md")]: {
+      // marginLeft: -12,
+      // marginRight: 20,
+      paddingLeft: 0
+    },
   }
 });
+
 
 class ResearcherAdmin extends React.Component {
   state = {
@@ -553,6 +571,8 @@ class ResearcherAdmin extends React.Component {
       });
   };
 
+  
+
   render() {
     const { classes } = this.props;
     const { data, order, orderBy, selected, rowsPerPage, page } = this.state;
@@ -560,27 +580,28 @@ class ResearcherAdmin extends React.Component {
       rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
     return (
-      <>
+      <div className={classes.mainContainer}>
         <ManageUserHeader
           props={this.props}
           children={this.props.children}
           tab={this.state.tabNumber}
           changeTab={tabNumber => this.changeTab(tabNumber)}
           requestCount={this.props.user.userRegisterationCount}
-          width={this.props.width}
+          
         >
           <Grid
             container
             spacing={0}
+            
             style={{
               paddingTop: "0",
               paddingBottom: "24px",
-              paddingLeft:
-                this.props.width === "xl"
-                  ? 240
-                  : this.props.width === "lg"
-                  ? 180
-                  : 0
+              // paddingLeft:
+              //   this.props.width === "xl"
+              //     ? 240
+              //     : this.props.width === "lg"
+              //     ? 180
+              //     : 0
             }}
           >
             <Grid item xs sm lg md />
@@ -803,7 +824,7 @@ class ResearcherAdmin extends React.Component {
             this.handleAddNewUser();
           }}
         />
-      </>
+      </div>
     );
   }
 }

@@ -10,13 +10,13 @@ import {
   Divider, 
 } from "@material-ui/core";
 
-const ResearchReportsHeader = ({ tab, props, children, width }) => {
+const ResearchReportsHeader = ({ tab, props, children }) => {
   return (
     <>
       <Grid
         container
         spacing={0}
-        style={{ paddingTop: "24px" , paddingLeft: width === "xl" ? 240 : width === "lg" ? 180 : 0}}
+        style={{ paddingTop: "24px" }}
       >
         <Grid item xs sm lg md />
 

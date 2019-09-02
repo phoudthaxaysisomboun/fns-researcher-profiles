@@ -4,6 +4,11 @@ import ResearchHeader from "../../hoc/research_header";
 import { connect } from "react-redux";
 import ShareDialog from "../utils/Dialogs/share_research";
 
+import { withStyles } from "@material-ui/core/styles";
+import PropTypes from "prop-types";
+import compose from 'recompose/compose';
+
+
 import {
   Grid,
   Dialog,
@@ -45,6 +50,26 @@ import { ObjectID } from "bson";
 
 let shareUrl;
 // let commentId
+const styles = theme => ({
+  mainContainer: {
+    [theme.breakpoints.up("xl")]: {
+      // marginLeft: -12,
+      // marginRight: 20,
+      marginLeft: 0
+    },
+    [theme.breakpoints.down("lg")]: {
+      // marginLeft: -12,
+      // marginRight: 20,
+      marginLeft: 60
+    },
+    [theme.breakpoints.down("md")]: {
+      // marginLeft: -12,
+      // marginRight: 20,
+      marginLeft: 0
+    },
+  }
+});
+
 
 class ResearchComments extends Component {
   state = {
@@ -363,7 +388,9 @@ class ResearchComments extends Component {
   }
 
   render() {
+    const { classes } = this.props;
     return (
+      <div className={classes.mainContainer}>
       <ResearchHeader
         props={this.props}
         children={this.props.children}
@@ -576,7 +603,8 @@ class ResearchComments extends Component {
             : ""}
         />
       </ResearchHeader>
-    );
+   </div>
+      );
   }
 }
 
@@ -587,4 +615,14 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(ResearchComments);
+ResearchComments.propTypes = {
+  classes: PropTypes.object.isRequired,
+
+};
+
+const enhance = compose(
+  withStyles(styles),
+  connect(mapStateToProps, null),
+)
+
+export default enhance(ResearchComments);

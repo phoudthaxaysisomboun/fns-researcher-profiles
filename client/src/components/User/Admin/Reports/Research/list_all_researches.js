@@ -552,7 +552,25 @@ const styles = theme => ({
   },
   tableWrapper: {
     overflowX: "auto"
+  },mainContainer: {
+    [theme.breakpoints.up("xl")]: {
+      // marginLeft: -12,
+      // marginRight: 20,
+      paddingLeft: 240
+    },
+    [theme.breakpoints.up("lg")]: {
+      // marginLeft: -12,
+      // marginRight: 20,
+      paddingLeft: 240
+    },
+    [theme.breakpoints.down("md")]: {
+      // marginLeft: -12,
+      // marginRight: 20,
+      paddingLeft: 0
+    },
   }
+
+
 });
 
 class AllResearchesList extends React.Component {
@@ -763,6 +781,7 @@ class AllResearchesList extends React.Component {
 
     return (
       <>
+      <div className={classes.mainContainer}>
         <ResearchReportsHeader
           props={this.props}
           children={this.props.children}
@@ -776,12 +795,7 @@ class AllResearchesList extends React.Component {
             style={{
               paddingTop: "0",
               paddingBottom: "24px",
-              paddingLeft:
-                this.props.width === "xl"
-                  ? 240
-                  : this.props.width === "lg"
-                  ? 180
-                  : 0
+              
             }}
           >
             <Grid item xs sm lg md />
@@ -970,7 +984,8 @@ class AllResearchesList extends React.Component {
             <Grid item xs sm lg md />
           </Grid>
         </ResearchReportsHeader>
-      </>
+      </div>
+        </>
     );
   }
 }

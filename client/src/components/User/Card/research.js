@@ -124,12 +124,17 @@ const ResearchCard = ({ userData, userDetail, userResearch, loading, openAddRese
                 }}
               >
                 ຜົນງານການຄົ້ນຄວ້າ{" "}
-                <span
-              variant="inherit"
-              style={{ fontWeight: "normal", color: "#898989" }}
-            >
+                <div
+                  style={{
+                    fontWeight: "500",
+                    display: "inline",
+                    fontFamily: "'Roboto', sans-serif",
+                    color: "#898989",
+                    fontSize: "18px"
+                  }}
+                >
               {profile.research ? `(${profile.research.length})` : null}
-            </span>
+            </div>
               </Typography>
             </Grid>
             <Grid item xs={4} align="right">
@@ -258,7 +263,7 @@ const ResearchCard = ({ userData, userDetail, userResearch, loading, openAddRese
                                     width: "18px",
                                     height: "18px",
                                     borderStyle: "solid",
-                                    borderColor: "#CFCECE",
+                                    borderColor: "rgb(239, 239, 239)",
                                     borderWidth: "1px"
                                   }}
                                   alt="profile image"

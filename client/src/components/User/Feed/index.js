@@ -4,9 +4,15 @@ import { AddOutlined } from "@material-ui/icons";
 
 import { connect } from "react-redux";
 
+
 import { withRouter } from "react-router-dom";
+import { withStyles } from "@material-ui/core/styles";
 
 import AddResearch from "../../../components/utils/Dialogs/add_research";
+
+import compose from "recompose/compose";
+import PropTypes from "prop-types";
+
 
 import {
   getFeed,
@@ -40,6 +46,23 @@ const fabStyle = {
   position: "fixed",
   fontWeight: "500"
 };
+
+const styles = theme => ({
+  mainContainer: {
+    [theme.breakpoints.up("xl")]: {
+      marginLeft: 0
+    },
+    [theme.breakpoints.down("lg")]: {
+      marginLeft: 60
+    },
+    [theme.breakpoints.down("md")]: {
+      marginLeft: 0
+    },
+    [theme.breakpoints.down("sm")]: {
+      marginLeft: 0
+    }
+  },
+})
 
 class Feed extends Component {
   state = {
@@ -167,9 +190,11 @@ class Feed extends Component {
   };
 
   render() {
+    const {
+      classes,
+    } = this.props;
     return (
-      <div>
-      {console.log(this.props)}
+      <div className={classes.mainContainer}>
         <Grid container>
           <Grid item xs sm lg md />
           <Grid item xs={11} sm={11} lg={8} md={11}>
@@ -193,7 +218,7 @@ class Feed extends Component {
                 />
               </Grid>
               <Hidden mdDown>
-              <Grid item xs lg sm md >
+              <Grid item xs lg sm md className="right-section-feed">
                 <SuggestionsCard
                   userData={this.props.user.userData}
                   userFollower={this.props.research.followSuggestions}
@@ -266,4 +291,20 @@ const mapStateToProps = state => {
   };
 };
 
-export default withRouter(connect(mapStateToProps)(Feed));
+Feed.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+const enhance = compose(
+  withRouter,
+  withStyles(styles),
+  // withWidth(),
+  connect(
+    mapStateToProps,
+    null
+  )
+);
+
+export default enhance(Feed);
+
+// export default withRouter(connect(mapStateToProps)(Feed));

@@ -133,7 +133,7 @@ const SuggestedToFollowCard = ({
                             width: "46px",
                             height: "46px",
                             borderStyle: "solid",
-                            borderColor: "#CFCECE",
+                            borderColor: "rgb(239, 239, 239)",
                             borderWidth: "1px"
                           }}
                           src={`${UPLOADS_SERVER}/images/${

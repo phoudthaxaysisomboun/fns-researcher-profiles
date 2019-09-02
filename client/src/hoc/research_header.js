@@ -1099,7 +1099,7 @@ const ResearchHeader = ({
                   value={tabIndex}
                   indicatorColor="primary"
                   textColor="primary"
-                  centered
+                  
                   style={{ marginTop: "16px" }}
                   TabIndicatorProps={{
                     style:{

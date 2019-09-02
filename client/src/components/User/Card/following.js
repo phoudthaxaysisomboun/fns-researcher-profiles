@@ -130,7 +130,7 @@ const FollowingCard = ({
                           width: "46px",
                           height: "46px",
                           borderStyle: "solid",
-                borderColor: "#CFCECE",
+                borderColor: "rgb(239, 239, 239)",
                 borderWidth: "1px"
                         }}
                         src={`${UPLOADS_SERVER}/images/${
@@ -236,13 +236,14 @@ const FollowingCard = ({
             >
               ກໍາລັງຕິດຕາມ{" "}
               <div
-                style={{
-                  fontWeight: "normal",
-                  display: "inline",
-                  fontFamily: "'Roboto', sans-serif",
-                  color: "#898989"
-                }}
-              >
+                  style={{
+                    fontWeight: "500",
+                    display: "inline",
+                    fontFamily: "'Roboto', sans-serif",
+                    color: "#898989",
+                    fontSize: "18px"
+                  }}
+                >
                 {profile.following ? `(${profile.following.length})` : null}
               </div>
             </Typography>

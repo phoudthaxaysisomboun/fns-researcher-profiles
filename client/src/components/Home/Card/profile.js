@@ -150,7 +150,7 @@ const ProfileCard = ({ resercher, user, runFollow,runUnfollow }) => {
                         width: "46px",
                         height: "46px",
                         borderStyle: "solid",
-                borderColor: "#CFCECE",
+                borderColor: "rgb(239, 239, 239)",
                 borderWidth: "1px"
                       }}
                     >

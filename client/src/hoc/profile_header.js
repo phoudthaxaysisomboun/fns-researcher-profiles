@@ -14,6 +14,8 @@ import {
   CircularProgress
 } from "@material-ui/core";
 
+
+
 import LinesEllipsis from "react-lines-ellipsis";
 
 import { UPLOADS_SERVER } from "../components/utils/misc";
@@ -91,7 +93,7 @@ const ProfileHeader = ({
           onClick={() => openAddResearchDialog()}
         >
           <AddOutlined style={{ marginRight: "8px" }} />
-          ເພີ່ມຜົນງານ
+          ເພີ່ມຜົນງານວິໄຈ
         </Fab>
       );
     }
@@ -356,7 +358,7 @@ const ProfileHeader = ({
                       width: "96px",
                       height: "96px",
                       borderStyle: "solid",
-                      borderColor: "#CFCECE",
+                      borderColor: "rgb(239, 239, 239)",
                       borderWidth: "1px",
                       cursor: isOwner || userData.isAdmin ? "pointer" : "default"
                     }}
@@ -420,6 +422,32 @@ const ProfileHeader = ({
                           )}`
                         : ""}
                     </Typography>
+                    {
+                      isOwner || userData.isAdmin ? 
+                        <>
+                          <div style={{
+                            backgroundColor: "rgba(32,33,36,0.6)",
+                                bottom: 0,
+                                height: "26%",
+                                left: 0,
+                                position: "absolute",
+                                right: 0,
+                          }}>
+                          <div style={{
+                            backgroundImage: "url(//www.gstatic.com/images/icons/material/system/2x/photo_camera_white_24dp.png)",
+                            backgroundPosition: "center",
+                            backgroundRepeat: "no-repeat",
+                            webkitBackgroundSize: "20px 20px",
+                            backgroundSize: "20px 20px",
+                            height: '100%',
+                            opacity: .8,
+                          }}>
+                          
+                          </div>
+                          </div>
+                          </> 
+                        : null
+                     }
                   </Avatar>
                 )}
               </Grid>
@@ -481,7 +509,7 @@ const ProfileHeader = ({
                       paddingRight: "3px"
                     }
                   }}
-                  centered
+                  
                   style={{ marginTop: "16px" }}
                 >
                   <Tab

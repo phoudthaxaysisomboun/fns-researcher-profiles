@@ -338,7 +338,7 @@ const ResearchCard = ({ userData, userResearch, runLike, runUnLike }) => {
                             width: "18px",
                             height: "18px",
                             borderStyle: "solid",
-                            borderColor: "#CFCECE",
+                            borderColor: "rgb(239, 239, 239)",
                             borderWidth: "1px"
                           }}
                           alt="profile image"

@@ -221,7 +221,7 @@ class Header extends Component {
                     width: "32px",
                     height: "32px",
                     borderStyle: "solid",
-                    borderColor: "#CFCECE",
+                    borderColor: "rgb(239, 239, 239)",
                     borderWidth: "1px"
                   }}
                 >

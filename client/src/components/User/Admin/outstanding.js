@@ -372,6 +372,22 @@ const styles = theme => ({
   },
   tableWrapper: {
     overflowX: "auto"
+  },mainContainer: {
+    [theme.breakpoints.up("xl")]: {
+      // marginLeft: -12,
+      // marginRight: 20,
+      paddingLeft: 240
+    },
+    [theme.breakpoints.up("lg")]: {
+      // marginLeft: -12,
+      // marginRight: 20,
+      paddingLeft: 240
+    },
+    [theme.breakpoints.down("md")]: {
+      // marginLeft: -12,
+      // marginRight: 20,
+      paddingLeft: 0
+    },
   }
 });
 
@@ -666,6 +682,8 @@ class OutstandingResearchersAdmin extends React.Component {
 
     return (
       <>
+<div className={classes.mainContainer}>
+
         <ManageUserHeader
           props={this.props}
           children={this.props.children}
@@ -678,7 +696,7 @@ class OutstandingResearchersAdmin extends React.Component {
           <Grid
             container
             spacing={0}
-            style={{ paddingTop: "0", paddingBottom: "24px", paddingLeft: this.props.width === "xl" ? 240 : this.props.width === "lg" ? 180 : 0 }}
+            style={{ paddingTop: "0", paddingBottom: "24px" }}
           >
             <Grid item xs sm lg md />
 
@@ -882,6 +900,7 @@ class OutstandingResearchersAdmin extends React.Component {
           </Grid>
         </ManageUserHeader>
 
+        </div>
         <AddOutstandingResearcherDialog
           open={this.state.openAddUserDialog}
           close={() => this.handleAddUserDialogClose()}

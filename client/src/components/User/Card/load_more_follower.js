@@ -21,7 +21,7 @@ import {
 
 import { colorPallete } from "../../utils/misc";
 
-const toColor = (str) => {
+const toColor = str => {
   var colors = colorPallete;
 
   var hash = 0;
@@ -33,7 +33,6 @@ const toColor = (str) => {
   hash = ((hash % colors.length) + colors.length) % colors.length;
   return colors[hash];
 };
-
 
 const LoadMoreFollowerCard = ({
   userData,
@@ -108,7 +107,7 @@ const LoadMoreFollowerCard = ({
 
   const renderButton = () =>
     loading ? (
-      <CircularProgress size={24} style={{margin: "6px"}} />
+      <CircularProgress size={24} style={{ margin: "6px" }} />
     ) : (
       <Button
         color="primary"
@@ -142,8 +141,11 @@ const LoadMoreFollowerCard = ({
                       align="center"
                       style={{ marginRight: "8px", width: "54px" }}
                     >
-                      <Link to={`/profile/${followings._id}`} style={{color: "inherit", textDecoration: "none"}}>
-                      {followings.profileImage &&
+                      <Link
+                        to={`/profile/${followings._id}`}
+                        style={{ color: "inherit", textDecoration: "none" }}
+                      >
+                        {followings.profileImage &&
                         followings.profileImage[0] &&
                         followings.profileImage[0].name ? (
                           <Avatar
@@ -152,12 +154,10 @@ const LoadMoreFollowerCard = ({
                               width: "46px",
                               height: "46px",
                               borderStyle: "solid",
-                borderColor: "#CFCECE",
-                borderWidth: "1px"
+                              borderColor: "rgb(239, 239, 239)",
+                              borderWidth: "1px"
                             }}
-                            src={`${UPLOADS_SERVER}/images/${
-                              followings.profileImage[0].name
-                            }`}
+                            src={`${UPLOADS_SERVER}/images/${followings.profileImage[0].name}`}
                           />
                         ) : (
                           <Avatar
@@ -165,9 +165,9 @@ const LoadMoreFollowerCard = ({
                             style={{
                               width: "46px",
                               height: "46px",
-                              backgroundColor: toColor(`${followings.name}${
-                                followings.lastname
-                              }`),
+                              backgroundColor: toColor(
+                                `${followings.name}${followings.lastname}`
+                              ),
                               fontFamily: "'Noto Sans Lao UI', sans serif",
                               fontWeight: "500"
                             }}

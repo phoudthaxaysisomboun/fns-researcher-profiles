@@ -2,6 +2,12 @@ import React, { Component } from "react";
 import ProfileHeader from "../../hoc/profile_header";
 import { connect } from "react-redux";
 
+import { withStyles } from "@material-ui/core/styles";
+// import classNames from "classnames";
+import PropTypes from "prop-types";
+
+
+
 import AffiliationCard from "../User/Card/affiliation";
 // import MiniStatsCard from "../User/Card/mini_stats";
 import IntroductionCard from "../User/Card/introduction";
@@ -21,7 +27,6 @@ import UpdateAffiliationDialog from "../User/Dialog/update_affiliation";
 import withWidth from '@material-ui/core/withWidth';
 import compose from 'recompose/compose';
 
-import PropTypes from "prop-types";
 
 import {
   // Hidden,
@@ -60,6 +65,29 @@ import { LOCALHOST } from "../utils/misc";
 import AddResearch from "../utils/Dialogs/add_research";
 
 let shareUrl;
+
+const styles = theme => ({
+  tableWrapper: {
+    overflowX: "auto"
+  },
+  mainContainer: {
+    [theme.breakpoints.up("xl")]: {
+      // marginLeft: -12,
+      // marginRight: 20,
+      marginLeft: 0
+    },
+    [theme.breakpoints.down("lg")]: {
+      // marginLeft: -12,
+      // marginRight: 20,
+      marginLeft: 60
+    },
+    [theme.breakpoints.down("md")]: {
+      // marginLeft: -12,
+      // marginRight: 20,
+      marginLeft: 0
+    },
+  }
+});
 class ProfileOverview extends Component {
   state = {
     loadingMoreFollower: false,
@@ -506,6 +534,8 @@ handleEditnameDialogClose = () => {
 
   render() {
     const { fullScreen } = this.props;
+    const { classes } = this.props;
+
 
     if (this.props.user.userDetail) {
       document.title = `${this.props.user.userDetail.name} ${
@@ -513,6 +543,7 @@ handleEditnameDialogClose = () => {
       } - FNS Researcher Profiles`;
     }
     return (
+      <div className={classes.mainContainer}>
       <ProfileHeader
         props={this.props}
         children={this.props.children}
@@ -905,12 +936,15 @@ handleEditnameDialogClose = () => {
           }
         />
       </ProfileHeader>
+      </div>
     );
   }
 }
 
 ProfileOverview.propTypes = {
-  fullScreen: PropTypes.bool.isRequired
+  fullScreen: PropTypes.bool.isRequired,
+  classes: PropTypes.object.isRequired,
+
 };
 
 const mapStateToProps = state => {
@@ -921,10 +955,8 @@ const mapStateToProps = state => {
 };
 
 const enhance = compose(
-  // withRouter,
   withWidth(),
-  // withStyles(styles, { withTheme: true }),
-  // withWidth(),
+  withStyles(styles),
   connect(mapStateToProps, null),
 )
 

@@ -2,6 +2,11 @@ import React, { Component } from "react";
 import ProfileHeader from "../../hoc/profile_header";
 import { connect } from "react-redux";
 
+import { withStyles } from "@material-ui/core/styles";
+import PropTypes from "prop-types";
+import compose from 'recompose/compose';
+
+
 import AffiliationCard from "../User/Card/affiliation";
 import IntroductionCard from "../User/Card/introduction";
 import ResearchaAreaCard from "../User/Card/research_area";
@@ -74,6 +79,25 @@ import AddResearch from "../utils/Dialogs/add_research";
 
 let shareUrl;
 
+const styles = theme => ({
+  mainContainer: {
+    [theme.breakpoints.up("xl")]: {
+      // marginLeft: -12,
+      // marginRight: 20,
+      marginLeft: 0
+    },
+    [theme.breakpoints.down("lg")]: {
+      // marginLeft: -12,
+      // marginRight: 20,
+      marginLeft: 60
+    },
+    [theme.breakpoints.down("md")]: {
+      // marginLeft: -12,
+      // marginRight: 20,
+      marginLeft: 0
+    },
+  }
+});
 class ProfileInfo extends Component {
   state = {
     loadingMoreFollower: false,
@@ -730,11 +754,15 @@ class ProfileInfo extends Component {
 
   render() {
     const { fullScreen } = this.props;
+    const { classes } = this.props;
+
 
     if (this.props.user.userDetail) {
       document.title = ` ປະຫວັດ: ${this.props.user.userDetail.name} ${this.props.user.userDetail.lastname} - FNS Researcher Profiles`;
     }
     return (
+      <div className={classes.mainContainer}>
+      
       <ProfileHeader
         props={this.props}
         children={this.props.children}
@@ -1210,7 +1238,9 @@ class ProfileInfo extends Component {
           }}
         />
       </ProfileHeader>
-    );
+    
+      </div>
+      );
   }
 }
 
@@ -1220,4 +1250,14 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(ProfileInfo);
+ProfileInfo.propTypes = {
+  classes: PropTypes.object.isRequired,
+
+};
+
+const enhance = compose(
+  withStyles(styles),
+  connect(mapStateToProps, null),
+)
+
+export default enhance(ProfileInfo);

@@ -370,7 +370,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                             width: "46px",
                             height: "46px",
                             borderStyle: "solid",
-                            borderColor: "#CFCECE",
+                            borderColor: "rgb(239, 239, 239)",
                             borderWidth: "1px"
                           }}
                           alt="profile image"
@@ -487,7 +487,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                     </Grid>
                   </ReactLink>
                   <ReactLink
-                    to={`/research/${researches._id}}`}
+                    to={`/research/${researches._id}`}
                     style={{
                       color: "inherit",
                       textDecoration: "none",
@@ -513,20 +513,10 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                             fontWeight: "600"
                           }}
                         >
-                          <LinesEllipsis
-                            text={researches.title}
-                            maxLine="2"
-                            ellipsis="..."
-                            trimRight
-                            basedOn="letters"
-                            style={{
-                              fontSize: "20px",
-                              fontWeight: "600",
-                              width: "100%",
-                              overflow: "hidden",
-                              textOverflow: "ellipsis"
-                            }}
-                          />
+                        <div className="research-title">
+                        {researches.title}
+                        </div>
+                         
                         </ReactLink>
                         <Grid container />
                         <Grid
@@ -581,7 +571,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                                     width: "18px",
                                     height: "18px",
                                     borderStyle: "solid",
-                                    borderColor: "#CFCECE",
+                                    borderColor: "rgb(239, 239, 239)",
                                     borderWidth: "1px"
                                   }}
                                   alt="profile image"
@@ -668,23 +658,8 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                                   </Paper>
                                 </Grid>
                                 <Grid item xs>
-                                  <LinesEllipsis
-                                    text={researches.abstract}
-                                    maxLine="5"
-                                    ellipsis="..."
-                                    trimRight
-                                    basedOn="words"
-                                    style={{
-                                      fontSize: "16px",
-                                      color: "#666666",
-                                      fontWeight: "normal",
-                                      marginTop: "4px",
-                                      marginLeft: "8px",
-                                      overflow: "hidden",
-
-                                      textOverflow: "ellipsis"
-                                    }}
-                                  />
+                                <div className="description-preview">{researches.abstract}</div>
+                                  
                                 </Grid>
                               </Grid>
                             ) : (

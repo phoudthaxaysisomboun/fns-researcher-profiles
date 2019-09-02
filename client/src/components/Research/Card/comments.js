@@ -239,7 +239,7 @@ const CommentsCard = ({
                             width: "40px",
                             height: "40px",
                             borderStyle: "solid",
-                            borderColor: "#CFCECE",
+                            borderColor: "rgb(239, 239, 239)",
                             borderWidth: "1px"
                           }}
                         />
@@ -366,7 +366,7 @@ const CommentsCard = ({
                                   width: "40px",
                                   height: "40px",
                                   borderStyle: "solid",
-                                  borderColor: "#CFCECE",
+                                  borderColor: "rgb(239, 239, 239)",
                                   borderWidth: "1px"
                                 }}
                               />
@@ -515,7 +515,7 @@ const CommentsCard = ({
                                                         width: "24px",
                                                         height: "24px",
                                                         borderStyle: "solid",
-                                                        borderColor: "#CFCECE",
+                                                        borderColor: "rgb(239, 239, 239)",
                                                         borderWidth: "1px"
                                                       }}
                                                     />
@@ -710,7 +710,7 @@ const CommentsCard = ({
                                                           height: "24px",
                                                           borderStyle: "solid",
                                                           borderColor:
-                                                            "#CFCECE",
+                                                            "rgb(239, 239, 239)",
                                                           borderWidth: "1px"
                                                         }}
                                                       />

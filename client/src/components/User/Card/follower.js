@@ -132,7 +132,7 @@ const FollowerCard = ({
                             width: "46px",
                             height: "46px",
                             borderStyle: "solid",
-                            borderColor: "#CFCECE",
+                            borderColor: "rgb(239, 239, 239)",
                             borderWidth: "1px"
                           }}
                           src={`${UPLOADS_SERVER}/images/${
@@ -236,12 +236,17 @@ const FollowerCard = ({
             }}
           >
             ຜູ້ຕິດຕາມ{" "}
-            <span
-              variant="inherit"
-              style={{ fontWeight: "normal", color: "#898989" }}
-            >
+            <div
+                  style={{
+                    fontWeight: "500",
+                    display: "inline",
+                    fontFamily: "'Roboto', sans-serif",
+                    color: "#898989",
+                    fontSize: "18px"
+                  }}
+                >
               {profile.follower ? `(${profile.follower.length})` : null}
-            </span>
+            </div>
           </Typography>
         </Grid>
       </Grid>
