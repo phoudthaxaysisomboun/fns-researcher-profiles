@@ -6,6 +6,7 @@
  export const LOCALHOST= 'https://fns-researcher-profiles.edu.la'
 
  export const UPLOADS_SERVER = 'http://localhost:3002/uploads/'
+ export const TEMP_SERVER = 'http://localhost:3002/tmp/'
 
  export const RESEARCHER_PROFILES_SERVER = '/api/researcher_profiles'
  

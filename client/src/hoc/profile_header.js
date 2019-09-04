@@ -59,7 +59,8 @@ const ProfileHeader = ({
   openAddResearchDialog,
   openEditName,
   openUpdateDegree,
-  width
+  width,
+  openProfileImageEditor
 }) => {
   const userData = { ...props.user.userData };
   const profile = { ...props.user.userDetail };
@@ -363,6 +364,7 @@ const ProfileHeader = ({
                       cursor: isOwner || userData.isAdmin ? "pointer" : "default"
                     }}
                     alt={`${profile.name} ${profile.lastname}`}
+                    onClick={()=>{openProfileImageEditor()}}
                   >
                   <img
                       src={`${UPLOADS_SERVER}/images/${profile.profileImage[0].name}`}
@@ -414,6 +416,8 @@ const ProfileHeader = ({
                       fontSize: "46px"
                     }}
                     alt={`${profile.name} ${profile.lastname}`}
+                    onClick={()=>{openProfileImageEditor()}}
+
                   >
                     <Typography variant="inherit">
                       {profile.name

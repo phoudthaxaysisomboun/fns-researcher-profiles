@@ -6,9 +6,11 @@ const app = express();
 const mongoose = require("mongoose");
 require("dotenv").config();
 const _ = require("lodash");
+const uuidv4 = require('uuid/v4');
 
 const normalizeUrl = require("normalize-url");
 const moment = require("moment");
+const uniqueFilename = require('unique-filename')
 
 mongoose.Promise = global.Promise;
 mongoose.connect(process.env.DATABASE);
@@ -20,6 +22,7 @@ app.use(cookieParser());
 var cors = require("cors");
 app.use(cors());
 app.use("/uploads", express.static("uploads"));
+app.use("/tmp", express.static("tmp"));
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -90,6 +93,50 @@ app.post("/api/research/remove_publication_file", auth, (req, res) => {
     return res.json({ success: true });
   });
 });
+
+//====================================
+//             UPLOAD IMAGES
+//====================================
+
+let objectId  = ""
+var profileImageTempDir = "";
+var profileImageTempName = ""
+
+let imageStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    objectId = new  mongoose.Types.ObjectId(Date.now())
+    profileImageTempDir = 'tmp' + "/" + uuidv4()+ objectId.toHexString() + Date.now()
+    fs.mkdirSync(profileImageTempDir);
+    cb(null, profileImageTempDir);
+  },
+  filename: (req, file, cb) => {
+    let filename = `${file.originalname}`;
+    cb(null, filename);
+    profileImageTempName = filename;
+  }
+});
+
+const uploadProfileImage = multer({ storage: imageStorage }).single("file");
+
+app.post("/api/users/upload_profile_image", auth, (req, res) => {
+  uploadProfileImage(req, res, err => {
+    if (err) {
+      return res.json({ success: false, err });
+    }
+    console.log(profileImageTempDir + "/" + profileImageTempName)
+    return res.json({ success: true, filename: profileImageTempName, location: profileImageTempDir + "/" + profileImageTempName });
+  });
+});
+
+app.post("/api/users/remove_image", auth, (req, res) => {
+  // const file = "." + `/uploads/${req.query.filename}`
+  const path = "." + `/uploads/${req.query.filename}`;
+
+  fs.unlink(path, err => {
+    return res.json({ success: true });
+  });
+});
+
 
 //====================================
 //             DEPARTMENTS

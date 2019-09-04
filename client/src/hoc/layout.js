@@ -38,7 +38,7 @@ import {
   ListSubheader,
   Badge,
   Hidden,
-  Tooltip
+  Tooltip,
 } from "@material-ui/core";
 
 import { Link } from "react-router-dom";
@@ -65,6 +65,8 @@ import {
 } from "@material-ui/icons";
 
 import { colorPallete } from "../components/utils/misc";
+
+
 
 const styles = theme => ({
   root: {
@@ -365,10 +367,11 @@ const toColor = str => {
 
 const drawerWidth = 240;
 
+
+
 class Layout extends Component {
   state = {
     anchorEl: null,
-    mobileMoreAnchorEl: null,
     open: true,
     headerclass: "",
     openManageToolMenu: true,
@@ -451,15 +454,16 @@ class Layout extends Component {
 
   handleScroll = event => {
     let scroll = window.pageYOffset;
+   
+    if (scroll !== 0)  {
+      this.setState({ headerclass: "active" });
+    } else {
+      this.setState({ headerclass: "" });
+    }
     if (scroll >= 232) {
       this.setState({ showHeader: true });
     } else {
       this.setState({ showHeader: false });
-    }
-    if (scroll > 0) {
-      this.setState({ headerclass: "active" });
-    } else {
-      this.setState({ headerclass: "" });
     }
   };
 
@@ -469,7 +473,7 @@ class Layout extends Component {
 
   handleMenuClose = () => {
     this.setState({ anchorEl: null });
-    this.handleMobileMenuClose();
+    // this.handleMobileMenuClose();
   };
 
   handleSearch = event => {
@@ -495,14 +499,6 @@ class Layout extends Component {
     });
     this.setState({ anchorEl: null });
     this.handleMobileMenuClose();
-  };
-
-  handleMobileMenuOpen = event => {
-    this.setState({ mobileMoreAnchorEl: event.currentTarget });
-  };
-
-  handleMobileMenuClose = () => {
-    this.setState({ mobileMoreAnchorEl: null });
   };
 
   handleMangeListClick = () => {
@@ -643,12 +639,11 @@ class Layout extends Component {
       location: { pathname }
     } = this.props;
 
-    const { anchorEl, mobileMoreAnchorEl } = this.state;
+    const { anchorEl } = this.state;
     const isMenuOpen = Boolean(anchorEl);
-    const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
     const { open } = this.state;
     const renderMenu = (
-      this.props.user.isAuth ?
+      this.props.user.userData ?
       <Menu
           anchorEl={anchorEl}
           anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
@@ -657,7 +652,7 @@ class Layout extends Component {
           onClose={this.handleMenuClose}
           style={{ top: 38 }}
         >
-          {this.props.user.userData ? (
+          {this.props.user.userData && this.props.user.userData.isAuth ? (
             <Link
               to={`/profile/${this.props.user.userData._id}`}
               style={{ textDecoration: "none", outline: 0 }}
@@ -731,145 +726,6 @@ class Layout extends Component {
           </MenuItem>
         </Menu> : null
     );
-
-    const renderMobileMenu = () => {
-      if (this.props.user.userData) {
-        if (this.props.user.userData.isAuth) {
-          return (
-            <Menu
-              anchorEl={mobileMoreAnchorEl}
-              anchorOrigin={{ vertical: "top", horizontal: "right" }}
-              transformOrigin={{ vertical: "top", horizontal: "right" }}
-              open={isMobileMenuOpen}
-              onClose={this.handleMenuClose}
-            >
-              {
-                //   <MenuItem onClick={this.handleMobileMenuClose}>
-                //   <IconButton color="inherit">
-                //     <Badge badgeContent={4} color="secondary">
-                //       <MailIcon />
-                //     </Badge>
-                //   </IconButton>
-                //   <p>Messages</p>
-                // </MenuItem>
-                // <MenuItem onClick={this.handleMobileMenuClose}>
-                //   <IconButton color="inherit">
-                //     <Badge badgeContent={11} color="secondary">
-                //       <NotificationsIcon />
-                //     </Badge>
-                //   </IconButton>
-                //   <p>Notifications</p>
-                // </MenuItem>
-              }
-
-              <MenuItem onClick={this.handleProfileMenuOpen}>
-                <IconButton
-                  aria-owns={isMenuOpen ? "material-appbar" : undefined}
-                  aria-haspopup="true"
-                  onClick={this.handleProfileMenuOpen}
-                  color="inherit"
-                  style={{
-                    padding: "8px",
-                    margin: 0,
-                    paddingLeft: "8px",
-                    paddingRight: "8px"
-                  }}
-                >
-                  <Avatar
-                    style={{
-                      width: "32px",
-                      height: "32px",
-                      margin: 0,
-                      backgroundColor: "white",
-                      borderStyle: "solid",
-                      borderWidth: "2px",
-                      borderColor: "#e6e6e6"
-                    }}
-                  >
-                    <svg
-                      viewBox="0 0 24 24"
-                      preserveAspectRatio="xMidYMid meet"
-                      focusable="false"
-                      style={{
-                        pointerEvents: "none",
-                        display: "block",
-                        width: "100%",
-                        height: "100%",
-                        fill: "#0066cb",
-                        padding: "2px"
-                      }}
-                    >
-                      <g style={{ color: "#0066cb" }}>
-                        <path
-                          d="M12,0 C18.62375,0 24,5.37625 24,12 C24,18.62375 18.62375,24 12,24 C5.37625,24 0,18.62375 0,12 C0,5.37625 5.37625,0 12,0 Z M12,10.63625 C13.66,10.63625 15,9.29625 15,7.63625 C15,5.97625 13.66,4.63625 12,4.63625 C10.34,4.63625 9,5.97625 9,7.63625 C9,9.29625 10.34,10.63625 12,10.63625 Z M12,12.40875 C8.33375,12.40875 5.455,14.18125 5.455,15.8175 C6.84125,17.95 9.26875,19.3625 12,19.3625 C14.73125,19.3625 17.15875,17.95 18.545,15.8175 C18.545,14.18125 15.66625,12.40875 12,12.40875 Z"
-                          class="style-scope yt-icon"
-                        />
-                      </g>
-                    </svg>
-                  </Avatar>
-                </IconButton>
-                <p style={{ fontFamily: "'Noto Sans Lao UI', sans serif" }}>
-                  ບັນຊີ
-                </p>
-              </MenuItem>
-              <MenuItem onClick={this.handleProfileMenuOpen}>
-                <Fab
-                  size="medium"
-                  variant="extended"
-                  color="primary"
-                  style={{ margin: "8px", width: "100%", boxShadow: "none" }}
-                >
-                  <AddOutlined style={{ marginRight: "8px" }} />
-                  ເພີ່ມ
-                </Fab>
-              </MenuItem>
-            </Menu>
-          );
-        } else {
-          return (
-            <Menu
-              anchorEl={mobileMoreAnchorEl}
-              anchorOrigin={{ vertical: "top", horizontal: "right" }}
-              transformOrigin={{ vertical: "top", horizontal: "right" }}
-              open={isMobileMenuOpen}
-              onClose={this.handleMenuClose}
-            >
-              {
-                //   <MenuItem onClick={this.handleMobileMenuClose}>
-                //   <IconButton color="inherit">
-                //     <Badge badgeContent={4} color="secondary">
-                //       <MailIcon />
-                //     </Badge>
-                //   </IconButton>
-                //   <p>Messages</p>
-                // </MenuItem>
-                // <MenuItem onClick={this.handleMobileMenuClose}>
-                //   <IconButton color="inherit">
-                //     <Badge badgeContent={11} color="secondary">
-                //       <NotificationsIcon />
-                //     </Badge>
-                //   </IconButton>
-                //   <p>Notifications</p>
-                // </MenuItem>
-              }
-              <Link to="/login" style={{ textDecoration: "none" }}>
-                <MenuItem>
-                  <Button
-                    size="medium"
-                    variant="outlined"
-                    color="primary"
-                    style={{ margin: "8px" }}
-                  >
-                    <PersonOutlined style={{ marginRight: "8px" }} />
-                    ລົງຊື່ເຂົ້າໃຊ້
-                  </Button>
-                </MenuItem>
-              </Link>
-            </Menu>
-          );
-        }
-      }
-    };
 
     const theme2 = createMuiTheme({
       palette: {
@@ -2305,7 +2161,6 @@ class Layout extends Component {
               </Drawer>
             </Hidden>
             {renderMenu}
-            {renderMobileMenu()}
           </div>
         </>
         <main

@@ -63,6 +63,7 @@ import {
 import { CloseOutlined } from "@material-ui/icons";
 import { LOCALHOST } from "../utils/misc";
 import AddResearch from "../utils/Dialogs/add_research";
+import ProfileImageEditor from "../utils/Dialogs/profile_image_editor";
 
 let shareUrl;
 
@@ -113,7 +114,22 @@ class ProfileOverview extends Component {
 
     openEditnameDialog: false,
     openUpdateDegreeDialog: false,
-    openUpdateAffiliationDialog: false
+    openUpdateAffiliationDialog: false,
+
+    openProfileImageEditor: false
+
+  };
+
+  handleProfileImageEditorClose = () => {
+    this.setState({
+      openProfileImageEditor: false
+    });
+  };
+
+  handleProfileImageEditorOpen = () => {
+    this.setState({
+      openProfileImageEditor: true
+    });
   };
 
 
@@ -567,6 +583,10 @@ handleEditnameDialogClose = () => {
         openUpdateDegree = {()=>{
           this.handleUpdateDegreeOpen()
         }}
+        openProfileImageEditor = {()=>{
+          this.handleProfileImageEditorOpen()
+
+        }}
       >
         <Grid container style={{ paddingTop: "24px" }}>
           <Grid item xs sm lg md />
@@ -919,6 +939,16 @@ handleEditnameDialogClose = () => {
 
 
           close={() => this.handleUpdateResearchAreaDialogClose()}
+        />
+
+        <ProfileImageEditor
+          open={this.state.openProfileImageEditor}
+          close={() => this.handleProfileImageEditorClose()}
+          user={
+            this.props && this.props.user && this.props.user.userData
+              ? this.props.user.userData
+              : {}
+          }
         />
 
         <AddResearch
