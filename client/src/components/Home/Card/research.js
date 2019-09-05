@@ -31,7 +31,7 @@ import {
 
 import { colorPallete } from "../../utils/misc";
 
-import { UPLOADS_SERVER } from "../../../components/utils/misc";
+import { SERVER, UPLOADS_SERVER } from "../../../components/utils/misc";
 
 const toColor = (str) => {
   var colors = colorPallete;
@@ -332,7 +332,7 @@ const ResearchCard = ({ userData, userResearch, runLike, runUnLike }) => {
                     >
                       {value.profileImage &&
                       value.profileImage[0] &&
-                      value.profileImage[0].name ? (
+                      value.profileImage[0].location ? (
                         <Avatar
                           style={{
                             width: "18px",
@@ -342,8 +342,8 @@ const ResearchCard = ({ userData, userResearch, runLike, runUnLike }) => {
                             borderWidth: "1px"
                           }}
                           alt="profile image"
-                          src={`${UPLOADS_SERVER}/images/${
-                            value.profileImage[0].name
+                          src={`${SERVER}${
+                            value.profileImage[0].location
                           }`}
                         />
                       ) : (
@@ -418,7 +418,7 @@ const ResearchCard = ({ userData, userResearch, runLike, runUnLike }) => {
                                       width={80}
                                       page={1}
                                       withCredentials={false}
-                                      url={`${UPLOADS_SERVER}${
+                                      url={`${ UPLOADS_SERVER }${
                                         researches.files[0].name
                                       }`}
                                     />

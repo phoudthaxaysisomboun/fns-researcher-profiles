@@ -100,9 +100,11 @@ app.post("/api/research/remove_publication_file", auth, (req, res) => {
 
 let objectId  = ""
 var profileImageTempDir = "";
+
 var profileImageTempName = ""
 
-let imageStorage = multer.diskStorage({
+
+let imageTempStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     objectId = new  mongoose.Types.ObjectId(Date.now())
     profileImageTempDir = 'tmp' + "/" + uuidv4()+ objectId.toHexString() + Date.now()
@@ -116,10 +118,10 @@ let imageStorage = multer.diskStorage({
   }
 });
 
-const uploadProfileImage = multer({ storage: imageStorage }).single("file");
+const uploadTempProfileImage = multer({ storage: imageTempStorage }).single("file");
 
-app.post("/api/users/upload_profile_image", auth, (req, res) => {
-  uploadProfileImage(req, res, err => {
+app.post("/api/users/upload_tmp_profile_image", auth, (req, res) => {
+  uploadTempProfileImage(req, res, err => {
     if (err) {
       return res.json({ success: false, err });
     }
@@ -128,14 +130,64 @@ app.post("/api/users/upload_profile_image", auth, (req, res) => {
   });
 });
 
-app.post("/api/users/remove_image", auth, (req, res) => {
-  // const file = "." + `/uploads/${req.query.filename}`
-  const path = "." + `/uploads/${req.query.filename}`;
+var profileImageDir = "";
+var profileImageName = ""
+var profileImageSize = ""
 
-  fs.unlink(path, err => {
-    return res.json({ success: true });
+let imageStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    objectId = new  mongoose.Types.ObjectId(Date.now())
+    profileImageDir = 'uploads' + "/" + "images" + "/" + "profile_images" + "/" + uuidv4() + objectId.toHexString() + Date.now()
+    fs.mkdirSync(profileImageDir);
+    cb(null, profileImageDir);
+  },
+  filename: (req, file, cb) => {
+    let filename = `${file.originalname}`;
+    cb(null, filename);
+    profileImageName = filename;
+    profileImageSize = file.size;
+  }
+});
+
+const uploadProfileImage = multer({ storage: imageStorage }).single("file");
+
+app.post("/api/users/upload_profile_image", auth, (req, res) => {
+  uploadProfileImage(req, res, err => {
+    if (err) {
+      return res.json({ success: false, err });
+    }
+    let profileImage = []
+    profileImage[0] ={
+      name: profileImageName,
+      location: profileImageDir + "/" + profileImageName,
+      date: moment(),
+      uploader: req.user._id,
+      size: req.file.size
+    }
+    console.log(req.query.userId)
+    User.updateOne(
+      {
+        _id: req.query.userId
+      },
+      {
+        $set: {
+          profileImage
+        }
+      },
+      {
+        new: true
+      },
+      (err, doc) => {
+        if (err) return res.json({ success: false, err });
+        return res.json({ success: true, filename: profileImageName, location: profileImageDir + "/" + profileImageName });
+      }
+    );
+
+   
   });
 });
+
+
 
 
 //====================================

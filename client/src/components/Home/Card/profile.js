@@ -3,7 +3,7 @@ import React from "react";
 import LinesEllipsis from "react-lines-ellipsis";
 
 import NumberFormat from "react-number-format";
-import {UPLOADS_SERVER} from "../../../components/utils/misc"
+import { SERVER, UPLOADS_SERVER } from "../../../components/utils/misc"
 
 import {
   Grid,
@@ -142,9 +142,9 @@ const ProfileCard = ({ resercher, user, runFollow,runUnfollow }) => {
                       style={{ color: "inherit", textDecoration: "none" }}
                     >
                     {
-                      value.profileImage && value.profileImage[0] && value.profileImage[0].name ?
+                      value.profileImage && value.profileImage[0] && value.profileImage[0].location ?
                       <Avatar
-                      src={`${UPLOADS_SERVER}/images/${value.profileImage[0].name}`}
+                      src={`${SERVER}${value.profileImage[0].location}`}
                       alt="profile image"
                       style={{
                         width: "46px",

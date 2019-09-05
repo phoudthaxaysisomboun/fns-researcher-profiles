@@ -19,7 +19,7 @@ import {
 } from "@material-ui/icons";
 
 import { colorPallete } from "../../utils/misc";
-import { UPLOADS_SERVER } from "../../../components/utils/misc";
+import { SERVER, UPLOADS_SERVER } from "../../../components/utils/misc";
 
 const toColor = (str) => {
   var colors = colorPallete;
@@ -123,7 +123,7 @@ const FollowingCard = ({
                   >
                     {followings.profileImage &&
                     followings.profileImage[0] &&
-                    followings.profileImage[0].name ? (
+                    followings.profileImage[0].location ? (
                       <Avatar
                         alt="profile image"
                         style={{
@@ -133,8 +133,8 @@ const FollowingCard = ({
                 borderColor: "rgb(239, 239, 239)",
                 borderWidth: "1px"
                         }}
-                        src={`${UPLOADS_SERVER}/images/${
-                          followings.profileImage[0].name
+                        src={`${SERVER}${
+                          followings.profileImage[0].location
                         }`}
                       />
                     ) : (

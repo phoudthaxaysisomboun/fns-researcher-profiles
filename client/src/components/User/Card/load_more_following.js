@@ -2,7 +2,7 @@ import React from "react";
 
 import { Link, withRouter } from "react-router-dom";
 
-import { UPLOADS_SERVER } from "../../../components/utils/misc";
+import { SERVER, UPLOADS_SERVER } from "../../../components/utils/misc";
 
 import {
   Grid,
@@ -148,7 +148,7 @@ const LoadMoreFollowingCard = ({
                     <Link to={`/profile/${followings._id}`} style={{color: "inherit", textDecoration: "none"}}>
                     {followings.profileImage &&
                       followings.profileImage[0] &&
-                      followings.profileImage[0].name ? (
+                      followings.profileImage[0].location ? (
                         <Avatar
                           alt="profile image"
                           style={{
@@ -158,8 +158,8 @@ const LoadMoreFollowingCard = ({
                 borderColor: "rgb(239, 239, 239)",
                 borderWidth: "1px"
                           }}
-                          src={`${UPLOADS_SERVER}/images/${
-                            followings.profileImage[0].name
+                          src={`${SERVER}${
+                            followings.profileImage[0].location
                           }`}
                         />
                       ) : (

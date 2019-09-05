@@ -1,7 +1,7 @@
 import React from "react";
 import AutoLinkText from "react-autolink-text2";
 
-import { UPLOADS_SERVER } from "../../../components/utils/misc";
+import { SERVER, UPLOADS_SERVER } from "../../../components/utils/misc";
 
 import moment from "moment";
 import 'moment/locale/lo'
@@ -231,9 +231,9 @@ const CommentsCard = ({
                     >
                       {user.profileImage &&
                       user.profileImage[0] &&
-                      user.profileImage[0].name ? (
+                      user.profileImage[0].location ? (
                         <Avatar
-                          src={`${UPLOADS_SERVER}/images/${user.profileImage[0].name}`}
+                          src={`${SERVER}${user.profileImage[0].location}`}
                           alt="profile image"
                           style={{
                             width: "40px",
@@ -358,9 +358,9 @@ const CommentsCard = ({
                           >
                             {value.user.profileImage &&
                             value.user.profileImage[0] &&
-                            value.user.profileImage[0].name ? (
+                            value.user.profileImage[0].location ? (
                               <Avatar
-                                src={`${UPLOADS_SERVER}/images/${value.user.profileImage[0].name}`}
+                                src={`${SERVER}${value.user.profileImage[0].location}`}
                                 alt="profile image"
                                 style={{
                                   width: "40px",
@@ -507,9 +507,9 @@ const CommentsCard = ({
                                                 >
                                                   {user.profileImage &&
                                                   user.profileImage[0] &&
-                                                  user.profileImage[0].name ? (
+                                                  user.profileImage[0].location ? (
                                                     <Avatar
-                                                      src={`${UPLOADS_SERVER}/images/${user.profileImage[0].name}`}
+                                                      src={`${SERVER}${user.profileImage[0].location}`}
                                                       alt="profile image"
                                                       style={{
                                                         width: "24px",
@@ -703,7 +703,7 @@ const CommentsCard = ({
                                                     value.user.profileImage[0]
                                                       .name ? (
                                                       <Avatar
-                                                        src={`${UPLOADS_SERVER}/images/${reply.user.profileImage[0].name}`}
+                                                        src={`${SERVER}${reply.user.profileImage[0].location}`}
                                                         alt="profile image"
                                                         style={{
                                                           width: "24px",

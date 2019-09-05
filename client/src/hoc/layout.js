@@ -6,7 +6,7 @@ import withWidth from "@material-ui/core/withWidth";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { logoutUser, getRequestUserCount } from "../actions/user_actions";
-import { UPLOADS_SERVER } from "../components/utils/misc";
+import { UPLOADS_SERVER, SERVER } from "../components/utils/misc";
 
 import Footer from "../components/Header_footer/Footer";
 
@@ -51,7 +51,6 @@ import AccountCircle from "@material-ui/icons/AccountCircleOutlined";
 import {
   SettingsOutlined,
   ExitToAppOutlined,
-  AddOutlined,
   PersonOutlined,
   ExpandLessOutlined,
   ExpandMoreOutlined,
@@ -550,9 +549,9 @@ class Layout extends Component {
               {this.props.user.userData &&
               this.props.user.userData.profileImage &&
               this.props.user.userData.profileImage[0] &&
-              this.props.user.userData.profileImage[0].name ? (
+              this.props.user.userData.profileImage[0].location ? (
                 <Avatar
-                  src={`${UPLOADS_SERVER}/images/${this.props.user.userData.profileImage[0].name}`}
+                  src={`${SERVER}${this.props.user.userData.profileImage[0].location}`}
                   style={{
                     width: "32px",
                     height: "32px",
@@ -667,9 +666,9 @@ class Layout extends Component {
                 {this.props.user.userData &&
                 this.props.user.userData.profileImage &&
                 this.props.user.userData.profileImage[0] &&
-                this.props.user.userData.profileImage[0].name ? (
+                this.props.user.userData.profileImage[0].location ? (
                   <Avatar
-                    src={`${UPLOADS_SERVER}/images/${this.props.user.userData.profileImage[0].name}`}
+                  src={`${SERVER}${this.props.user.userData.profileImage[0].location}`}
                     style={{
                       width: "32px",
                       height: "32px",

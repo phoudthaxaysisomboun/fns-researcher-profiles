@@ -10,7 +10,7 @@ import {
   Button
 } from "@material-ui/core";
 
-import { UPLOADS_SERVER } from "../../../components/utils/misc";
+import { SERVER, UPLOADS_SERVER } from "../../../components/utils/misc";
 // import { Document, Page } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 
@@ -27,7 +27,7 @@ const FileViwerCard = ({
       ? research.files[0].name
       : "";
 
-  const file = `${UPLOADS_SERVER}${name}`;
+  const file = `${ UPLOADS_SERVER }${name}`;
   const type = file.split(".").pop();
 
   return research && research.files && research.files[0] ? (

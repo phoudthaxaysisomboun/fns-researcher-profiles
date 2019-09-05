@@ -30,7 +30,7 @@ import {
 
 import { colorPallete } from "../../../../components/utils/misc";
 
-import { UPLOADS_SERVER } from "../../../../components/utils/misc";
+import { SERVER, UPLOADS_SERVER } from "../../../../components/utils/misc";
 
 moment.locale("lo");
 
@@ -242,7 +242,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
   //     ? research.files[0].name
   //     : "";
 
-  // const file = `${UPLOADS_SERVER}${name}`;
+  // const file = `${ UPLOADS_SERVER }${name}`;
   // const type = file.split(".").pop();
 
   const renderLikeButton = (id, researchLike) => {
@@ -360,7 +360,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                   >
                     {researches.uploader.profileImage &&
                     researches.uploader.profileImage[0] &&
-                    researches.uploader.profileImage[0].name ? (
+                    researches.uploader.profileImage[0].location ? (
                       <ReactLink
                         to={`/profile/${researches.uploader._id}`}
                         style={{ color: "inherit", textDecoration: "none" }}
@@ -374,7 +374,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                             borderWidth: "1px"
                           }}
                           alt="profile image"
-                          src={`${UPLOADS_SERVER}/images/${researches.uploader.profileImage[0].name}`}
+                          src={`${SERVER}${researches.uploader.profileImage[0].location}`}
                         />
                       </ReactLink>
                     ) : (
@@ -565,7 +565,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                             >
                               {value.profileImage &&
                               value.profileImage[0] &&
-                              value.profileImage[0].name ? (
+                              value.profileImage[0].location ? (
                                 <Avatar
                                   style={{
                                     width: "18px",
@@ -575,7 +575,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                                     borderWidth: "1px"
                                   }}
                                   alt="profile image"
-                                  src={`${UPLOADS_SERVER}/images/${value.profileImage[0].name}`}
+                                  src={`${SERVER}${value.profileImage[0].location}`}
                                 />
                               ) : (
                                 <Avatar
@@ -653,7 +653,7 @@ const FeedCard = ({ userData, userResearch, runLike, runUnLike, comment }) => {
                                       width={80}
                                       page={1}
                                       withCredentials={false}
-                                      url={`${UPLOADS_SERVER}${researches.files[0].name}`}
+                                      url={`${ UPLOADS_SERVER }${researches.files[0].name}`}
                                     />
                                   </Paper>
                                 </Grid>

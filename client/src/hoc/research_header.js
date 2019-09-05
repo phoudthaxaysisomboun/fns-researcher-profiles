@@ -34,7 +34,7 @@ PersonAddDisabledOutlined
 
 import { Link, withRouter } from "react-router-dom";
 
-import { UPLOADS_SERVER, colorPallete } from "../components/utils/misc";
+import { SERVER, colorPallete } from "../components/utils/misc";
 
 
 const ResearchHeader = ({
@@ -491,10 +491,10 @@ const ResearchHeader = ({
                             >
                               {value.profileImage &&
                               value.profileImage[0] &&
-                              value.profileImage[0].name ? (
+                              value.profileImage[0].location ? (
                                 <Avatar
-                                  src={`${UPLOADS_SERVER}/images/${
-                                    value.profileImage[0].name
+                                  src={`${SERVER}${
+                                    value.profileImage[0].location
                                   }`}
                                   style={{
                                     width: "18px",
@@ -598,10 +598,10 @@ const ResearchHeader = ({
                                 >
                                   {value.profileImage &&
                                   value.profileImage[0] &&
-                                  value.profileImage[0].name ? (
+                                  value.profileImage[0].location ? (
                                     <Avatar
-                                      src={`${UPLOADS_SERVER}/images/${
-                                        value.profileImage[0].name
+                                      src={`${SERVER}${
+                                        value.profileImage[0].location
                                       }`}
                                       style={{
                                         width: "18px",

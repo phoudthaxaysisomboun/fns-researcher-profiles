@@ -18,7 +18,7 @@ import {
 
 import LinesEllipsis from "react-lines-ellipsis";
 
-import { UPLOADS_SERVER } from "../components/utils/misc";
+import { UPLOADS_SERVER, SERVER } from "../components/utils/misc";
 
 import {
   Mail,
@@ -353,7 +353,7 @@ const ProfileHeader = ({
               <Grid align="left" style={{ width: "96px", margin: "12px" }}>
                 {profile.profileImage &&
                 profile.profileImage[0] &&
-                profile.profileImage[0].name ? (
+                profile.profileImage[0].location ? (
                   <Avatar
                     style={{
                       width: "96px",
@@ -367,7 +367,7 @@ const ProfileHeader = ({
                     onClick={()=>{openProfileImageEditor()}}
                   >
                   <img
-                      src={`${UPLOADS_SERVER}/images/${profile.profileImage[0].name}`}
+                      src={`${SERVER}${profile.profileImage[0].location}`}
                       alt={`${profile.name} ${profile.lastname}`}
                       style={{
                         width: "100%",

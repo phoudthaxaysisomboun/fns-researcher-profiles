@@ -6,7 +6,7 @@ import { withRouter } from "react-router-dom";
 
 import { logoutUser } from "../../../actions/user_actions";
 
-import {UPLOADS_SERVER} from "../../../components/utils/misc"
+import { SERVER, UPLOADS_SERVER } from "../../../components/utils/misc"
 
 // import classNames from 'classnames';
 
@@ -214,9 +214,9 @@ class Header extends Component {
                 }}
               >
                 {
-                  this.props.user.userData && this.props.user.userData.profileImage && this.props.user.userData.profileImage[0] && this.props.user.userData.profileImage[0].name ?
+                  this.props.user.userData && this.props.user.userData.profileImage && this.props.user.userData.profileImage[0] && this.props.user.userData.profileImage[0].location ?
                   <Avatar
-                  src={`${UPLOADS_SERVER}/images/${this.props.user.userData.profileImage[0].name}`}
+                  src={`${SERVER}${this.props.user.userData.profileImage[0].location}`}
                   style={{
                     width: "32px",
                     height: "32px",

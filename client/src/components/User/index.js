@@ -945,8 +945,15 @@ handleEditnameDialogClose = () => {
           open={this.state.openProfileImageEditor}
           close={() => this.handleProfileImageEditorClose()}
           user={
-            this.props && this.props.user && this.props.user.userData
-              ? this.props.user.userData
+            this.props && this.props.user && this.props.user.userDetail
+              ? this.props.user.userDetail
+              : {}
+          }
+          userDetail={
+            this.props.user &&
+            this.props.user &&
+            this.props.user.userDetail
+              ? this.props.user.userDetail
               : {}
           }
         />
