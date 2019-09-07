@@ -18,7 +18,7 @@ import {
 
 import LinesEllipsis from "react-lines-ellipsis";
 
-import { UPLOADS_SERVER, SERVER } from "../components/utils/misc";
+import { SERVER } from "../components/utils/misc";
 
 import {
   Mail,
@@ -413,7 +413,8 @@ const ProfileHeader = ({
                         `${profile.name}${profile.lastname}`
                       ),
                       fontWeight: "500",
-                      fontSize: "46px"
+                      fontSize: "46px",
+                      cursor: isOwner || userData.isAdmin ? "pointer" : "default"
                     }}
                     alt={`${profile.name} ${profile.lastname}`}
                     onClick={()=>{openProfileImageEditor()}}

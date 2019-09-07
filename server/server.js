@@ -6,11 +6,11 @@ const app = express();
 const mongoose = require("mongoose");
 require("dotenv").config();
 const _ = require("lodash");
-const uuidv4 = require('uuid/v4');
+const uuidv4 = require("uuid/v4");
 
 const normalizeUrl = require("normalize-url");
 const moment = require("moment");
-const uniqueFilename = require('unique-filename')
+const uniqueFilename = require("unique-filename");
 
 mongoose.Promise = global.Promise;
 mongoose.connect(process.env.DATABASE);
@@ -98,16 +98,16 @@ app.post("/api/research/remove_publication_file", auth, (req, res) => {
 //             UPLOAD IMAGES
 //====================================
 
-let objectId  = ""
+let objectId = "";
 var profileImageTempDir = "";
 
-var profileImageTempName = ""
-
+var profileImageTempName = "";
 
 let imageTempStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    objectId = new  mongoose.Types.ObjectId(Date.now())
-    profileImageTempDir = 'tmp' + "/" + uuidv4()+ objectId.toHexString() + Date.now()
+    objectId = new mongoose.Types.ObjectId(Date.now());
+    profileImageTempDir =
+      "tmp" + "/" + uuidv4() + objectId.toHexString() + Date.now();
     fs.mkdirSync(profileImageTempDir);
     cb(null, profileImageTempDir);
   },
@@ -118,26 +118,39 @@ let imageTempStorage = multer.diskStorage({
   }
 });
 
-const uploadTempProfileImage = multer({ storage: imageTempStorage }).single("file");
+const uploadTempProfileImage = multer({ storage: imageTempStorage }).single(
+  "file"
+);
 
 app.post("/api/users/upload_tmp_profile_image", auth, (req, res) => {
   uploadTempProfileImage(req, res, err => {
     if (err) {
       return res.json({ success: false, err });
     }
-    console.log(profileImageTempDir + "/" + profileImageTempName)
-    return res.json({ success: true, filename: profileImageTempName, location: profileImageTempDir + "/" + profileImageTempName });
+    console.log(profileImageTempDir + "/" + profileImageTempName);
+    return res.json({
+      success: true,
+      filename: profileImageTempName,
+      location: profileImageTempDir + "/" + profileImageTempName
+    });
   });
 });
 
 var profileImageDir = "";
-var profileImageName = ""
-var profileImageSize = ""
+var profileImageName = "";
+var profileImageSize = "";
 
 let imageStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    objectId = new  mongoose.Types.ObjectId(Date.now())
-    profileImageDir = 'uploads' + "/" + "images" + "/" + "profile_images" + "/" + uuidv4() + objectId.toHexString() + Date.now()
+    objectId = new mongoose.Types.ObjectId(Date.now());
+    profileImageDir =
+      "uploads" +
+      "/" +
+      "images" +
+      "/" +
+      "profile_images" +
+      "/" +
+      uuidv4()
     fs.mkdirSync(profileImageDir);
     cb(null, profileImageDir);
   },
@@ -151,44 +164,74 @@ let imageStorage = multer.diskStorage({
 
 const uploadProfileImage = multer({ storage: imageStorage }).single("file");
 
+
+
 app.post("/api/users/upload_profile_image", auth, (req, res) => {
-  uploadProfileImage(req, res, err => {
-    if (err) {
-      return res.json({ success: false, err });
-    }
-    let profileImage = []
-    profileImage[0] ={
-      name: profileImageName,
-      location: profileImageDir + "/" + profileImageName,
-      date: moment(),
-      uploader: req.user._id,
-      size: req.file.size
-    }
-    console.log(req.query.userId)
+  if (req.query.action === "remove") {
     User.updateOne(
       {
         _id: req.query.userId
       },
       {
         $set: {
-          profileImage
+          profileImage: null
         }
       },
-      {
-        new: true
-      },
       (err, doc) => {
+        if (req.query.location) {
+          const path = "." + `/${req.query.location}`;
+
+        fs.unlink(path, err => {
+        });
+        }
         if (err) return res.json({ success: false, err });
-        return res.json({ success: true, filename: profileImageName, location: profileImageDir + "/" + profileImageName });
+        return res.json({ success: true });
       }
     );
+  } else {
+    uploadProfileImage(req, res, err => {
+      if (err) {
+        return res.json({ success: false, err });
+      }
+      let profileImage = [];
+      profileImage[0] = {
+        name: profileImageName,
+        location: profileImageDir + "/" + profileImageName,
+        date: moment(),
+        uploader: req.user._id,
+        size: req.file.size
+      };
+      console.log(req.query.userId);
+      User.updateOne(
+        {
+          _id: req.query.userId
+        },
+        {
+          $set: {
+            profileImage
+          }
+        },
+        {
+          new: true
+        },
+        (err, doc) => {
+          if (err) return res.json({ success: false, err });
+          if (req.query.location) {
+          const path = "." + `/${req.query.location}`;
 
-   
-  });
+        fs.unlink(path, err => {
+        });
+        }
+          return res.json({
+            success: true,
+            filename: profileImageName,
+            location: profileImageDir + "/" + profileImageName
+          });
+        }
+      );
+    });
+  }
 });
-
-
-
 
 //====================================
 //             DEPARTMENTS
@@ -2686,7 +2729,6 @@ app.get("/api/researchers/get_feed", auth, (req, res) => {
   });
 });
 
-
 app.get("/api/researchers/get_suggested_user", auth, (req, res) => {
   let order = req.query.order ? req.query.order : "desc";
   let sortBy = req.query.sortBy ? req.query.sortBy : "createdAt";
@@ -2705,7 +2747,7 @@ app.get("/api/researchers/get_suggested_user", auth, (req, res) => {
       followings.push(item._id);
     });
 
-    followings.push(req.user._id)
+    followings.push(req.user._id);
 
     User.find({
       _id: { $nin: followings },
@@ -2714,13 +2756,11 @@ app.get("/api/researchers/get_suggested_user", auth, (req, res) => {
       accountIsVerified: true,
       active: true
     })
-.limit(limit)
+      .limit(limit)
       .populate("gender")
       .populate("degree")
       .populate("gender")
-      .select(
-        "_id name lastname prefix affiliation profileImage"
-      )
+      .select("_id name lastname prefix affiliation profileImage")
       .populate({
         path: "affiliation.department"
       })
@@ -2772,7 +2812,7 @@ app.post("/api/researchers/update_name", auth, (req, res) => {
         success: true,
         prefix: doc.prefix,
         name: doc.name,
-        lastname: doc.lastname,
+        lastname: doc.lastname
       });
     }
   );
@@ -2791,7 +2831,7 @@ app.post("/api/researchers/update_degree", auth, (req, res) => {
       if (err) return res.json({ success: false, err });
       res.status(200).json({
         success: true,
-        degree: doc.degree,
+        degree: doc.degree
       });
     }
   );
@@ -2808,30 +2848,29 @@ app.post("/api/researchers/update_affiliation", auth, (req, res) => {
     },
     (err, doc) => {
       if (err) return res.json({ success: false, err });
-      console.log(doc.affiliation)
+      console.log(doc.affiliation);
 
       Department.populate(doc, { path: "affiliation.department" }, function(
         err,
         populatedDepartment
       ) {
-
-        Faculty.populate(populatedDepartment, { path: "affiliation.faculty" }, function(
-          err,
-          populatedFaculty
-        ) {
-          Institution.populate(doc, { path: "affiliation.institution" }, function(
-            err,
-            populatedInstitution
-          ) {
-            return res.status(200).json({
-              success: true,
-              affiliation: populatedInstitution.affiliation,
-            });
-          })
-        })
-      })
-
-     
+        Faculty.populate(
+          populatedDepartment,
+          { path: "affiliation.faculty" },
+          function(err, populatedFaculty) {
+            Institution.populate(
+              doc,
+              { path: "affiliation.institution" },
+              function(err, populatedInstitution) {
+                return res.status(200).json({
+                  success: true,
+                  affiliation: populatedInstitution.affiliation
+                });
+              }
+            );
+          }
+        );
+      });
     }
   );
 });
@@ -3982,12 +4021,12 @@ app.post("/api/research/update_research", auth, (req, res) => {
           }
           if (err) return res.json({ success: false, err });
 
-          let newIds = []
-          req.body.author.map((value)=>{
-            newIds.push(value._id)
-          })
+          let newIds = [];
+          req.body.author.map(value => {
+            newIds.push(value._id);
+          });
 
-          console.log(newIds)
+          console.log(newIds);
 
           User.updateMany(
             { _id: newIds },
@@ -4008,8 +4047,6 @@ app.post("/api/research/update_research", auth, (req, res) => {
       );
     });
   });
-
-
 
   // Research.findOneAndUpdate(
   //       {
@@ -4271,10 +4308,19 @@ app.get("/api/researchers/list_for_suggestions", (req, res) => {
     });
 });
 
+const renmoveOldTempFiles = () => {
+  var result = findRemoveSync('./tmp', {dir: '*', 
+  age: {seconds: 86400}
+})
+  console.log(result)
+}
+
+setInterval(renmoveOldTempFiles, 14400000 );
+
 const port = process.env.PORT || 3002;
 
+const findRemoveSync = require('find-remove');
 app.listen(port, () => {
   console.log(`Server Running at ${port}`);
- 
   
 });

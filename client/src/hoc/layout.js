@@ -6,7 +6,7 @@ import withWidth from "@material-ui/core/withWidth";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { logoutUser, getRequestUserCount } from "../actions/user_actions";
-import { UPLOADS_SERVER, SERVER } from "../components/utils/misc";
+import { SERVER } from "../components/utils/misc";
 
 import Footer from "../components/Header_footer/Footer";
 
@@ -38,7 +38,7 @@ import {
   ListSubheader,
   Badge,
   Hidden,
-  Tooltip,
+  Tooltip
 } from "@material-ui/core";
 
 import { Link } from "react-router-dom";
@@ -64,8 +64,6 @@ import {
 } from "@material-ui/icons";
 
 import { colorPallete } from "../components/utils/misc";
-
-
 
 const styles = theme => ({
   root: {
@@ -170,10 +168,10 @@ const styles = theme => ({
       marginLeft: "20px"
     }
   },
-  searchButton :{
+  searchButton: {
     [theme.breakpoints.up("md")]: {
       display: "none"
-    },
+    }
   },
   search: {
     position: "relative",
@@ -366,8 +364,6 @@ const toColor = str => {
 
 const drawerWidth = 240;
 
-
-
 class Layout extends Component {
   state = {
     anchorEl: null,
@@ -377,7 +373,8 @@ class Layout extends Component {
     openReportsToolMenu: true,
     showHeader: false,
     searchText: "",
-    margin: 240
+    margin: 240,
+    scroll: false
   };
 
   handleDrawerOpen = () => {
@@ -453,17 +450,22 @@ class Layout extends Component {
 
   handleScroll = event => {
     let scroll = window.pageYOffset;
-   
-    if (scroll !== 0)  {
+
+    if (scroll !== 0) {
       this.setState({ headerclass: "active" });
+      if (scroll >= 232) {
+        this.setState({ showHeader: true });
+      } else {
+        this.setState({ showHeader: false });
+      }
+      // this.setState({scroll: true})
     } else {
+      // if (this.state.scroll)  {this.setState({scroll: false})}
+
       this.setState({ headerclass: "" });
+      
     }
-    if (scroll >= 232) {
-      this.setState({ showHeader: true });
-    } else {
-      this.setState({ showHeader: false });
-    }
+    
   };
 
   handleProfileMenuOpen = event => {
@@ -511,37 +513,33 @@ class Layout extends Component {
   };
 
   showAccountButton = () => {
-    const {
-      classes,
-    } = this.props;
+    const { classes } = this.props;
     if (this.props.user.userData) {
       if (this.props.user.userData.isAuth) {
         return (
           <div>
-          {
-            !this.props.location.pathname.startsWith("/search") ? 
-            <IconButton
-              aria-haspopup="true"
-              color="inherit"
-              component={Link}
-              to="/search"
-              style={{
-                padding: "8px",
-                margin: 0,
-                marginRight: "8px",
-              }}
-              className={classes.searchButton}
-            >
-            <SearchIcon style={{color: "#5f6368"}} />
-            </IconButton>
-            : null
-          }
+            {!this.props.location.pathname.startsWith("/search") ? (
+              <IconButton
+                aria-haspopup="true"
+                color="inherit"
+                component={Link}
+                to="/search"
+                style={{
+                  padding: "8px",
+                  margin: 0,
+                  marginRight: "8px"
+                }}
+                className={classes.searchButton}
+              >
+                <SearchIcon style={{ color: "#5f6368" }} />
+              </IconButton>
+            ) : null}
             <IconButton
               aria-haspopup="true"
               color="inherit"
               style={{
                 padding: "4px",
-                
+
                 margin: 0
               }}
               onClick={this.handleProfileMenuOpen}
@@ -641,90 +639,88 @@ class Layout extends Component {
     const { anchorEl } = this.state;
     const isMenuOpen = Boolean(anchorEl);
     const { open } = this.state;
-    const renderMenu = (
-      this.props.user.userData ?
+    const renderMenu = this.props.user.userData ? (
       <Menu
-          anchorEl={anchorEl}
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-          transformOrigin={{ vertical: "bottom", horizontal: "right" }}
-          open={isMenuOpen}
-          onClose={this.handleMenuClose}
-          style={{ top: 38 }}
-        >
-          {this.props.user.userData && this.props.user.userData.isAuth ? (
-            <Link
-              to={`/profile/${this.props.user.userData._id}`}
-              style={{ textDecoration: "none", outline: 0 }}
+        anchorEl={anchorEl}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        transformOrigin={{ vertical: "bottom", horizontal: "right" }}
+        open={isMenuOpen}
+        onClose={this.handleMenuClose}
+        style={{ top: 38 }}
+      >
+        {this.props.user.userData && this.props.user.userData.isAuth ? (
+          <Link
+            to={`/profile/${this.props.user.userData._id}`}
+            style={{ textDecoration: "none", outline: 0 }}
+          >
+            <MenuItem
+              style={{
+                fontFamily: "'Noto Sans Lao UI', sans-serif",
+                fontWeight: "500"
+              }}
+              onClick={this.handleMenuClose}
             >
-              <MenuItem
-                style={{
-                  fontFamily: "'Noto Sans Lao UI', sans-serif",
-                  fontWeight: "500"
-                }}
-                onClick={this.handleMenuClose}
-              >
-                {this.props.user.userData &&
-                this.props.user.userData.profileImage &&
-                this.props.user.userData.profileImage[0] &&
-                this.props.user.userData.profileImage[0].location ? (
-                  <Avatar
+              {this.props.user.userData &&
+              this.props.user.userData.profileImage &&
+              this.props.user.userData.profileImage[0] &&
+              this.props.user.userData.profileImage[0].location ? (
+                <Avatar
                   src={`${SERVER}${this.props.user.userData.profileImage[0].location}`}
-                    style={{
-                      width: "32px",
-                      height: "32px",
-                      borderStyle: "solid",
-                      borderColor: "rgb(239, 239, 239)",
-                      borderWidth: "1px",
-                      marginRight: "16px"
-                    }}
-                  />
-                ) : (
-                  <Avatar
-                    style={{
-                      width: "32px",
-                      height: "32px",
-                      marginRight: "16px",
-                      backgroundColor: toColor(
-                        `${this.props.user.userData.name}${this.props.user.userData.lastname}`
-                      ),
-                      fontFamily: "'Noto Sans Lao UI', sans serif",
-                      fontSize: "14px",
-                      fontWeight: "500"
-                    }}
-                  >
-                    {`${this.props.user.userData.name.charAt(
-                      0
-                    )}${this.props.user.userData.lastname.charAt(0)}`}
-                  </Avatar>
-                )}
-                {this.props.user.userData.prefix}{" "}
-                {this.props.user.userData.name}{" "}
-                {this.props.user.userData.lastname}
-              </MenuItem>
-            </Link>
-          ) : null}
-          <Divider style={{ marginTop: 8 }} />
-          <MenuItem
-            style={{ fontFamily: "'Noto Sans Lao UI', sans-serif" }}
-            onClick={this.handleMenuClose}
-          >
-            <span style={{ minWidth: "50px" }}>
-              <SettingsOutlined />
-            </span>
-            ຕັ້ງຄ່າ
-          </MenuItem>
-          <MenuItem
-            style={{ fontFamily: "'Noto Sans Lao UI', sans-serif" }}
-            onClick={this.logoutHandler}
-          >
-            <span style={{ minWidth: "50px" }}>
-              {" "}
-              <ExitToAppOutlined />
-            </span>
-            ລົງຊື່ອອກ
-          </MenuItem>
-        </Menu> : null
-    );
+                  style={{
+                    width: "32px",
+                    height: "32px",
+                    borderStyle: "solid",
+                    borderColor: "rgb(239, 239, 239)",
+                    borderWidth: "1px",
+                    marginRight: "16px"
+                  }}
+                />
+              ) : (
+                <Avatar
+                  style={{
+                    width: "32px",
+                    height: "32px",
+                    marginRight: "16px",
+                    backgroundColor: toColor(
+                      `${this.props.user.userData.name}${this.props.user.userData.lastname}`
+                    ),
+                    fontFamily: "'Noto Sans Lao UI', sans serif",
+                    fontSize: "14px",
+                    fontWeight: "500"
+                  }}
+                >
+                  {`${this.props.user.userData.name.charAt(
+                    0
+                  )}${this.props.user.userData.lastname.charAt(0)}`}
+                </Avatar>
+              )}
+              {this.props.user.userData.prefix} {this.props.user.userData.name}{" "}
+              {this.props.user.userData.lastname}
+            </MenuItem>
+          </Link>
+        ) : null}
+        <Divider style={{ marginTop: 8 }} />
+        <MenuItem
+          style={{ fontFamily: "'Noto Sans Lao UI', sans-serif" }}
+          onClick={this.handleMenuClose}
+        >
+          <span style={{ minWidth: "50px" }}>
+            <SettingsOutlined />
+          </span>
+          ຕັ້ງຄ່າ
+        </MenuItem>
+        <MenuItem
+          style={{ fontFamily: "'Noto Sans Lao UI', sans-serif" }}
+          onClick={this.logoutHandler}
+        >
+          <span style={{ minWidth: "50px" }}>
+            {" "}
+            <ExitToAppOutlined />
+          </span>
+          ລົງຊື່ອອກ
+        </MenuItem>
+      </Menu>
+    ) : null;
 
     const theme2 = createMuiTheme({
       palette: {
@@ -989,6 +985,14 @@ class Layout extends Component {
                 ) : null}
               </Toolbar>
             </AppBar>
+{
+  this.state.scroll ?
+  <div class="mKShuf">
+  <div class="s0CmG"></div>
+</div>
+  : null
+}
+            
             <Hidden smDown>
               <Drawer
                 className=".main-side-bar"

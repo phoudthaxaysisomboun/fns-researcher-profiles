@@ -1,14 +1,15 @@
 import React, { Component } from "react";
 
-import { SERVER, UPLOADS_SERVER } from "../../utils/misc";
+
+
+import { SERVER } from "../../utils/misc";
 
 import PropTypes from "prop-types";
 
 import { withStyles } from "@material-ui/core/styles";
 import compose from "recompose/compose";
 
-
-import { withRouter } from "react-router-dom"
+import { withRouter } from "react-router-dom";
 
 import Dropzone from "react-dropzone";
 import axios from "axios";
@@ -117,6 +118,7 @@ class ProfileImageEditor extends Component {
 
     console.log(e.target.files[0]);
   };
+
 
   // If you setState the crop in here you should return false.
   onImageLoaded = image => {
@@ -234,6 +236,37 @@ class ProfileImageEditor extends Component {
   };
 
   componentDidMount() {}
+  
+  handleCancel() {
+    this.props.close()
+    let files = [];
+    if (
+      this.props.userDetail.profileImage &&
+      this.props.userDetail.profileImage[0] &&
+      this.props.userDetail.profileImage[0].location
+    ) {
+      files[0] = {
+        name: this.props.userDetail.profileImage[0].location,
+        location: this.props.userDetail.profileImage[0].location,
+        date: this.props.userDetail.profileImage[0].date,
+        uploader: this.props.userDetail.profileImage[0].uploader,
+        size: this.props.userDetail.profileImage[0].size
+      };
+      this.setState({
+        src:
+          this.props.userDetail.profileImage[0] &&
+          this.props.userDetail.profileImage[0].location
+            ? `${SERVER}${this.props.userDetail.profileImage[0].location}`
+            : null,
+        files:
+          this.props.userDetail.profileImage[0] &&
+          this.props.userDetail.profileImage[0].location
+            ? files
+            : {}
+      });
+    }
+  }
+  
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.croppedImageUrl !== this.state.croppedImageUrl) {
@@ -272,6 +305,14 @@ class ProfileImageEditor extends Component {
 
   updateForm = element => {};
 
+  clearImage = () => {
+    this.setState({
+      src: null,
+      croppedImageUrl: null,
+      croppedImageBlob: null,
+    });
+  }
+
   submitForm = event => {
     event.preventDefault();
     console.log(this.state);
@@ -280,25 +321,58 @@ class ProfileImageEditor extends Component {
       uploading: true
     });
 
-    var file = new File(
-      [this.state.croppedImageBlob],
-      this.state.files[0].name,
-      { type: "content-type" }
-    );
+    if (this.state.src !== null) {
+      var file = new File(
+        [this.state.croppedImageBlob],
+        this.state.files[0].name,
+        { type: "content-type" }
+      );
+  
+      let formdata = new FormData();
+      const config = {
+        header: { "content-type": "multipart/form-data" }
+      };
+      formdata.append("file", file);
+      formdata.append("userId", this.props.user._id);
+      console.log(formdata.file);
+  
+      axios
+        .post(
+          `/api/users/upload_profile_image?userId=${this.props.userDetail._id}&location=${this.props.userDetail.profileImage[0].location}`,
+          formdata,
+          config
+        )
+        .then(response => {
+          if (response.data.success) {
+            this.setState({
+              // files: [
+              //   {
+              //     name: response.data.filename,
+              //     location: response.data.location,
+              //     date: moment().toDate(),
+              //     uploader: this.props.user._id,
+              //     size: file.size
+              //   }
+              // ],
+              uploading: false
+            });
+            // this.props.history.push(`/profile/${this.props.userDetail._id}`);
+            // location.reload();
 
-    let formdata = new FormData();
-    const config = {
-      header: { "content-type": "multipart/form-data" }
-    };
-    formdata.append("file", file);
-    formdata.append("userId", this.props.user._id);
-    console.log(formdata.file);
-
-    axios
+            this.props.refreshProfileImage()
+            this.props.close()
+          }
+        });
+    } else {
+      let url = ""
+      if (this.props.userDetail.profileImage !== null) {
+        url = `/api/users/upload_profile_image?userId=${this.props.userDetail._id}&action=remove&location=${this.props.userDetail.profileImage[0].location}`
+      } else {
+        url = `/api/users/upload_profile_image?userId=${this.props.userDetail._id}&action=remove`
+      }
+      axios
       .post(
-        `/api/users/upload_profile_image?userId=${this.props.userDetail._id}`,
-        formdata,
-        config
+        url
       )
       .then(response => {
         if (response.data.success) {
@@ -314,9 +388,12 @@ class ProfileImageEditor extends Component {
             // ],
             uploading: false
           });
-          this.props.history.push(`/profile/${this.props.userDetail._id}`)
+          this.props.history.push(`/profile/${this.props.userDetail._id}`);
         }
       });
+    }
+
+    
   };
 
   render() {
@@ -345,7 +422,7 @@ class ProfileImageEditor extends Component {
             </Grid>
             <Grid item xs align="right" style={{ padding: "16px" }}>
               <IconButton
-                onClick={() => this.props.close()}
+                onClick={() => this.handleCancel()}
                 style={{ padding: 0, margin: "8px", marginBottom: 0 }}
               >
                 <CloseOutlined />
@@ -364,33 +441,36 @@ class ProfileImageEditor extends Component {
               //   <input type="file" onChange={this.onSelectFile} />
               // </div>
             }
-            {
-              !this.state.uploading ? 
+            {!this.state.uploading ? (
               <>
-              <div className="profile-image-preview">
-              
-              {src && (
-                <ReactCrop
-                  src={src}
-                  crop={crop}
-                  onImageLoaded={this.onImageLoaded}
-                  onComplete={this.onCropComplete}
-                  onChange={this.onCropChange}
-                  circularCrop={true}
-                  crossorigin="anonymous"
-                />
-                )}
+                <div className="profile-image-preview">
+                  {src && (
+                    <ReactCrop
+                      src={src}
+                      crop={crop}
+                      onImageLoaded={this.onImageLoaded}
+                      onComplete={this.onCropComplete}
+                      onChange={this.onCropChange}
+                      circularCrop={true}
+                      crossorigin="anonymous"
+                    />
+                  )}
                 </div>
-              </> : <>
-              <Grid container alignItems="center" className="profile-image-preview-uploading">
-              <Grid item xs={12}>
-              <Typography>ກໍາລັງອັພໂຫລດ...</Typography>
-              <LinearProgress />
-              </Grid>
-              </Grid>
               </>
-            }
-              
+            ) : (
+              <>
+                <Grid
+                  container
+                  alignItems="center"
+                  className="profile-image-preview-uploading"
+                >
+                  <Grid item xs={12}>
+                    <Typography>ກໍາລັງອັພໂຫລດ...</Typography>
+                    <LinearProgress />
+                  </Grid>
+                </Grid>
+              </>
+            )}
 
             {
               //   croppedImageUrl && (
@@ -448,28 +528,8 @@ class ProfileImageEditor extends Component {
               >
                 <Grid item xs={12}>
                   {this.state.uploading ? (
-                    <Button variant="outlined" color="primary" disabled>
-                    <svg
-                    style={{ marginRight: "8px" }}
-                    width="24px"
-                    height="24px"
-                    viewBox="0 0 24 24"
-                    className="upload-icon"
-                  >
-                    <path d="M4 15h2v3h12v-3h2v3c0 1.1-.9 2-2 2H6c-1.1 0-2-.9-2-2m4.41-7.59L11 7.83V16h2V7.83l2.59 2.59L17 9l-5-5-5 5 1.41 1.41z"></path>
-                  </svg>
-                  <Dropzone
-                    style={{ height: "100%", width: "100%" }}
-                    onDrop={e => this.onDrop(e)}
-                    multiple={false}
-                    accept=".jpeg,.jpg,.png"
-                  >
-                    ອັພໂຫລດຮູບ
-                  </Dropzone>
-                    </Button>
-                  ) : (
                     <>
-                      <Button variant="outlined" color="primary">
+                      <Button variant="outlined" color="primary" disabled>
                         <svg
                           style={{ marginRight: "8px" }}
                           width="24px"
@@ -488,6 +548,67 @@ class ProfileImageEditor extends Component {
                           ອັພໂຫລດຮູບ
                         </Dropzone>
                       </Button>
+                      {
+                        this.state.src ?
+                        <Button style={{ marginLeft: "8px"}} disabled>
+                        <svg
+                          style={{ marginRight: "4px" }}
+                          width="18px"
+                          height="18px"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          focusable="false"
+                          class="a-s-fa-Ha-pa"
+                        >
+                          <path d="M0 0h24v24H0z" fill="none" />
+                          <path d="M15 4V3H9v1H4v2h1v13c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V6h1V4h-5zm2 15H7V6h10v13z" />
+                          <path d="M9 8h2v9H9zm4 0h2v9h-2z" />
+                        </svg>
+                        ລຶບຮູບ
+                      </Button> : null
+                      }
+                    </>
+                  ) : (
+                    <>
+                      <Button variant="outlined" color="primary">
+                        <svg
+                          style={{ marginRight: "4px" }}
+                          width="24px"
+                          height="24px"
+                          viewBox="0 0 24 24"
+                          className="upload-icon"
+                        >
+                          <path d="M4 15h2v3h12v-3h2v3c0 1.1-.9 2-2 2H6c-1.1 0-2-.9-2-2m4.41-7.59L11 7.83V16h2V7.83l2.59 2.59L17 9l-5-5-5 5 1.41 1.41z"></path>
+                        </svg>
+                        <Dropzone
+                          style={{ height: "100%", width: "100%" }}
+                          onDrop={e => this.onDrop(e)}
+                          multiple={false}
+                          accept=".jpeg,.jpg,.png"
+                        >
+                          ອັພໂຫລດຮູບ
+                        </Dropzone>
+                      </Button>
+                      {
+                        this.state.src ?
+                        <Button style={{ marginLeft: "8px", color: "#f44336", borderColor: "#f44336" }} onClick={()=>{this.clearImage()}}>
+                        <svg
+                          style={{ marginRight: "4px" }}
+                          width="18px"
+                          height="18px"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          focusable="false"
+                          class="a-s-fa-Ha-pa"
+                        >
+                          <path d="M0 0h24v24H0z" fill="none" />
+                          <path d="M15 4V3H9v1H4v2h1v13c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V6h1V4h-5zm2 15H7V6h10v13z" />
+                          <path d="M9 8h2v9H9zm4 0h2v9h-2z" />
+                        </svg>
+                        ລຶບຮູບ
+                      </Button>
+                      : null
+                      }
                     </>
                   )}
                 </Grid>
@@ -518,7 +639,7 @@ class ProfileImageEditor extends Component {
               ມີສິດທີ່ຈະເຮັດການກະທໍາດັ່ງກ່າວ.
             </Typography>
             <Grid item align="right" style={{ marginTop: "24px" }}>
-              <Button onClick={() => this.props.close()}>ຍົກເລີກ</Button>
+              <Button onClick={() => this.handleCancel()}>ຍົກເລີກ</Button>
               {this.state.uploading ? (
                 <Button
                   variant="contained"
@@ -528,7 +649,7 @@ class ProfileImageEditor extends Component {
                   disableFocusRipple
                   disableTouchRipple
                 >
-                  <CircularProgress size={24} color="#fff"/>
+                  <CircularProgress size={24} color="#fff" />
                 </Button>
               ) : (
                 <Button

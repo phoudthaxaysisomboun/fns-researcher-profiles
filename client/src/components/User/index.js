@@ -6,8 +6,6 @@ import { withStyles } from "@material-ui/core/styles";
 // import classNames from "classnames";
 import PropTypes from "prop-types";
 
-
-
 import AffiliationCard from "../User/Card/affiliation";
 // import MiniStatsCard from "../User/Card/mini_stats";
 import IntroductionCard from "../User/Card/introduction";
@@ -52,7 +50,8 @@ import {
   clearFollowing,
   clearFollower,
   getFollowerInLoadMore,
-  getFollowingInLoadMore
+  getFollowingInLoadMore,
+  auth
 } from "../../actions/user_actions";
 
 import {
@@ -182,7 +181,13 @@ handleEditnameDialogClose = () => {
     });
   };
 
-  
+  refreshProfileImage = () => {
+    const id = this.props.match.params.id;
+
+    this.props.dispatch(getProfileDetail(id))
+    this.props.dispatch(auth())
+    
+  }
 
   componentWillMount() {
     const id = this.props.match.params.id;
@@ -956,6 +961,7 @@ handleEditnameDialogClose = () => {
               ? this.props.user.userDetail
               : {}
           }
+          refreshProfileImage = {()=>{this.refreshProfileImage()}}
         />
 
         <AddResearch

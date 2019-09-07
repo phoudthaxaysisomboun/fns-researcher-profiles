@@ -274,6 +274,20 @@ p {
           box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.302), 0 2px 6px 2px rgba(60, 64, 67, 0.149) !important;
 }
 
+.s0CmG {
+  height: 15px;
+  position: absolute;
+  top: -15px;
+  -webkit-transition: box-shadow .25s;
+  -webkit-transition: -webkit-box-shadow .25s;
+  transition: -webkit-box-shadow .25s;
+  transition: box-shadow .25s;
+  transition: box-shadow .25s, -webkit-box-shadow .25s;
+  width: 100%;
+  -webkit-box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.302), 0 2px 6px 2px rgba(60, 64, 67, 0.149);
+          box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.302), 0 2px 6px 2px rgba(60, 64, 67, 0.149);
+}
+
 .pg-viewer {
   min-width: 0;
 }
