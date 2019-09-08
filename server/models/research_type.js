@@ -6,6 +6,12 @@ const researchTypeSchema = mongoose.Schema({
         type: String,
         unique: 1,
         maxlength: 100
+    },
+    englishName: {
+        required: true,
+        type: String,
+        unique: 1,
+        maxlength: 100
     }
 })
 

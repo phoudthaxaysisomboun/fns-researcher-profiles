@@ -10,7 +10,12 @@ import { SERVER } from "../components/utils/misc";
 
 import Footer from "../components/Header_footer/Footer";
 
-// import { enableDynamicTheme, disableDynamicTheme } from "darkreader-api"
+import { getResearchType } from "../actions/research_actions";
+
+// import {
+//   enableDynamicTheme,
+//   // disableDynamicTheme
+//  } from "darkreader-api"
 
 import PropTypes from "prop-types";
 import classNames from "classnames";
@@ -367,6 +372,7 @@ const drawerWidth = 240;
 class Layout extends Component {
   state = {
     anchorEl: null,
+    anchorElCreateNew: null,
     open: true,
     headerclass: "",
     openManageToolMenu: true,
@@ -411,6 +417,9 @@ class Layout extends Component {
         open: true
       });
     }
+
+    this.props.dispatch(getResearchType());
+
     window.addEventListener("scroll", this.handleScroll);
   }
 
@@ -463,9 +472,7 @@ class Layout extends Component {
       // if (this.state.scroll)  {this.setState({scroll: false})}
 
       this.setState({ headerclass: "" });
-      
     }
-    
   };
 
   handleProfileMenuOpen = event => {
@@ -474,6 +481,14 @@ class Layout extends Component {
 
   handleMenuClose = () => {
     this.setState({ anchorEl: null });
+    // this.handleMobileMenuClose();
+  };
+  handleCreateNewMenuOpen = event => {
+    this.setState({ anchorElCreateNew: event.currentTarget });
+  };
+
+  handleCreateNewMenuClose = () => {
+    this.setState({ anchorElCreateNew: null });
     // this.handleMobileMenuClose();
   };
 
@@ -499,7 +514,7 @@ class Layout extends Component {
       }
     });
     this.setState({ anchorEl: null });
-    this.handleMobileMenuClose();
+    this.handleMenuClose();
   };
 
   handleMangeListClick = () => {
@@ -636,8 +651,9 @@ class Layout extends Component {
       location: { pathname }
     } = this.props;
 
-    const { anchorEl } = this.state;
+    const { anchorEl, anchorElCreateNew } = this.state;
     const isMenuOpen = Boolean(anchorEl);
+    const isCreateNewMenuOpen = Boolean(anchorElCreateNew);
     const { open } = this.state;
     const renderMenu = this.props.user.userData ? (
       <Menu
@@ -719,6 +735,45 @@ class Layout extends Component {
           </span>
           ລົງຊື່ອອກ
         </MenuItem>
+      </Menu>
+    ) : null;
+
+    const renderCreateNewMenu = this.props.user.userData ? (
+      <Menu
+        anchorEl={anchorElCreateNew}
+        open={isCreateNewMenuOpen}
+        onClose={this.handleCreateNewMenuClose}
+        style={{ left: 8 }}
+        PaperProps={{
+          style: { left: "'8px', !important" }
+        }}
+      >
+        {this.props.research && this.props.research.researchType ? (
+          <>
+            {this.props.research.researchType.map(item => (
+              <MenuItem
+                style={{
+                  fontFamily: "'Noto Sans Lao UI', sans-serif",
+                  padding: "8px",
+                  minWidth: 160,
+                  paddingLeft: 24,
+                  paddingRight: 24
+                }}
+                onClick={this.handleCreateNewMenuClose}
+                key={item._id}
+                value={item._id}
+                component={Link}
+                to={`/publications/create?publicationType=${encodeURIComponent(item.englishName)}`}
+              >
+              
+                {
+                  // <SettingsOutlined fontSize="small" style={{ marginRight: "16px" }}/>
+                }
+                {item.name}
+              </MenuItem>
+            ))}
+          </>
+        ) : null}
       </Menu>
     ) : null;
 
@@ -985,14 +1040,12 @@ class Layout extends Component {
                 ) : null}
               </Toolbar>
             </AppBar>
-{
-  this.state.scroll ?
-  <div class="mKShuf">
-  <div class="s0CmG"></div>
-</div>
-  : null
-}
-            
+            {this.state.scroll ? (
+              <div class="mKShuf">
+                <div class="s0CmG"></div>
+              </div>
+            ) : null}
+
             <Hidden smDown>
               <Drawer
                 className=".main-side-bar"
@@ -1011,8 +1064,6 @@ class Layout extends Component {
                   this.props.user.userData &&
                   this.props.user.userData.isAuth ? (
                     <ListItem
-                      component={Link}
-                      to="/"
                       style={{
                         padding: 0,
                         paddingBottom: 16,
@@ -1035,7 +1086,9 @@ class Layout extends Component {
                           paddingRight: 24,
                           marginTop: 16
                         }}
-                        onClick={() => this.props.add()}
+                        disableFocusRipple
+                        dis
+                        onClick={this.handleCreateNewMenuOpen}
                       >
                         <embed
                           height="36"
@@ -2164,6 +2217,7 @@ class Layout extends Component {
               </Drawer>
             </Hidden>
             {renderMenu}
+            {renderCreateNewMenu}
           </div>
         </>
         <main
@@ -2193,7 +2247,8 @@ Layout.propTypes = {
 
 const mapStateToProps = state => {
   return {
-    user: state.user
+    user: state.user,
+    research: state.research
   };
 };
 

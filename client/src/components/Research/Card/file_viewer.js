@@ -10,9 +10,13 @@ import {
   Button
 } from "@material-ui/core";
 
-import { SERVER, UPLOADS_SERVER } from "../../../components/utils/misc";
+import { UPLOADS_SERVER } from "../../../components/utils/misc";
 // import { Document, Page } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
+
+
+// import { Document, Page, pdfjs } from "react-pdf";
+//  pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 const FileViwerCard = ({
   user,
@@ -47,6 +51,8 @@ const FileViwerCard = ({
                 overflow: "auto"
               }}
             >
+
+            
               <PDFReader width={size} showAllPage withCredentials={false} url={file} />
             </Paper>
           ) : (
@@ -63,8 +69,9 @@ const FileViwerCard = ({
                   overflow: "auto"
                 }}
               >
-                {console.log(size)}
-                <PDFReader
+              
+                
+                  <PDFReader
                   width={size}
                   page={1}
                   withCredentials={false}
@@ -86,6 +93,7 @@ const FileViwerCard = ({
                     </Button>
                   </Grid>
                 </Grid>
+                
               </Paper>
             </>
           )}

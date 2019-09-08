@@ -20,7 +20,7 @@ import {
 
 import { colorPallete } from "../../utils/misc";
 
-import { SERVER, UPLOADS_SERVER } from "../../../components/utils/misc";
+import { SERVER } from "../../../components/utils/misc";
 
 const toColor = (str) => {
   var colors = colorPallete;

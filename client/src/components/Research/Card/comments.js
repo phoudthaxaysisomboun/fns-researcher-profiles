@@ -1,7 +1,7 @@
 import React from "react";
 import AutoLinkText from "react-autolink-text2";
 
-import { SERVER, UPLOADS_SERVER } from "../../../components/utils/misc";
+import { SERVER } from "../../../components/utils/misc";
 
 import moment from "moment";
 import 'moment/locale/lo'

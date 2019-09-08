@@ -107,7 +107,7 @@ let imageTempStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     objectId = new mongoose.Types.ObjectId(Date.now());
     profileImageTempDir =
-      "tmp" + "/" + uuidv4() + objectId.toHexString() + Date.now();
+      "tmp" + "/" + uuidv4() 
     fs.mkdirSync(profileImageTempDir);
     cb(null, profileImageTempDir);
   },
@@ -4315,7 +4315,7 @@ const renmoveOldTempFiles = () => {
   console.log(result)
 }
 
-setInterval(renmoveOldTempFiles, 14400000 );
+setInterval(renmoveOldTempFiles, 86400000 );
 
 const port = process.env.PORT || 3002;
 

@@ -2,7 +2,7 @@ import React from "react";
 
 import { Link, withRouter } from "react-router-dom";
 
-import { SERVER, UPLOADS_SERVER } from "../../../components/utils/misc";
+import { SERVER } from "../../../components/utils/misc";
 
 import {
   Grid,
