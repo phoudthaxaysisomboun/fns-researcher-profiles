@@ -34,6 +34,7 @@ import ResearchLikesCommentsSharesReports from './components/User/Admin/Reports/
 import ResearchReadsReports from './components/User/Admin/Reports/Research/reads'
 import ResearchDownloadsReports from './components/User/Admin/Reports/Research/downloads'
 import ResearchCitationsReports from './components/User/Admin/Reports/Research/citations'
+import CreateResearch from './components/CreateNew'
 // import research from "./components/User/Card/research";
 
 const Routes = () => {
@@ -51,6 +52,10 @@ const Routes = () => {
         <Route path="/search/researchers/" exact component={Auth(ResearcherSearch, null)} />
         <Route path="/search/researches/" exact component={Auth(ResearchSearch, null)} />
         <Route path="/" exact component={Auth(Feed, true)} />
+
+
+        <Route path="/publications/create" exact component={Auth(CreateResearch, true)} />
+
 
         <Route path="/admin/researchers" exact component={Auth(ResearcherAdmin, true, true)} />
         <Route path="/admin/researches" exact component={Auth(ResearchesAdmin, true, true)} />

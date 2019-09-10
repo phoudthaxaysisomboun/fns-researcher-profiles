@@ -449,4 +449,8 @@ canvas {
   -webkit-tap-highlight-color: transparent;
   fill: currentColor;
 }
+
+.create-new-add-file-container {
+  margin-left: 240px;
+}
 /*# sourceMappingURL=styles.css.map */

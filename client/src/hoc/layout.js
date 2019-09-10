@@ -87,13 +87,9 @@ const styles = theme => ({
   },
   menuButtonMain: {
     [theme.breakpoints.up("md")]: {
-      // marginLeft: -12,
-      // marginRight: 20,
       display: "none"
     },
     [theme.breakpoints.down("sm")]: {
-      // marginLeft: 0,
-      // marginRight: 8,
       display: ""
     },
     [theme.breakpoints.up("sm")]: {
@@ -107,7 +103,6 @@ const styles = theme => ({
   },
   title: {
     fontWeight: "500",
-    // display: "none",
     [theme.breakpoints.down("xs")]: {
       marginLeft: 8
     },
@@ -122,10 +117,10 @@ const styles = theme => ({
     }
   },
   logo: {
-    display: "none",
-    [theme.breakpoints.up("sm")]: {
-      display: "block"
-    }
+    // display: "none",
+    // [theme.breakpoints.up("sm")]: {
+    //   display: "block"
+    // }
   },
   formSearch: {
     flexGrow: 1,
@@ -408,11 +403,25 @@ class Layout extends Component {
     //   this.setState({margin: 240 })
     // }
 
+    // if (
+    //   this.props.user &&
+    //   this.props.user.userData &&
+    //   this.props.user.userData.isAdmin
+    // ) {
+    //   this.setState({
+    //     open: true
+    //   });
+    // }
+
     if (
-      this.props.user &&
-      this.props.user.userData &&
-      this.props.user.userData.isAdmin
+      this.props &&
+      this.props.location &&
+      this.props.location.pathname.startsWith("/publications/create")
     ) {
+      this.setState({
+        open: false
+      });
+    } else {
       this.setState({
         open: true
       });
@@ -424,31 +433,30 @@ class Layout extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps !== this.props) {
-      if (this.props.user.userData.isAdmin) {
-        // this.setState({
-        //   open: true
-        // });
-      }
-      if (prevProps.user.userData !== this.props.user.userData) {
-        this.props.dispatch(getRequestUserCount()).then(response => {
-          // console.log(response.data);
-        });
-      }
+    if (prevProps.user.userData !== this.props.user.userData) {
+      this.props.dispatch(getRequestUserCount()).then(response => {
+        // console.log(response.data);
+      });
     }
 
-    if (prevProps.width !== this.props.width) {
+    if ((prevProps.width !== this.props.width) || (prevProps.location.pathname !== this.props.location.pathname)) {
       const width = this.props.width;
-      if (width === "xs" || width === "sm") {
+
+      if (this.props.location.pathname.startsWith("/publications/create")) {
         this.setState({ open: false });
       } else {
         this.setState({ open: true });
-      }
+        if (width === "xs" || width === "sm") {
+          this.setState({ open: false });
+        } else {
+          this.setState({ open: true });
+        }
 
-      if (width === "lg" || width === "xl") {
-        this.setState({ margin: 60 });
-      } else {
-        this.setState({ margin: 240 });
+        if (width === "lg" || width === "xl") {
+          this.setState({ margin: 60 });
+        } else {
+          this.setState({ margin: 240 });
+        }
       }
     }
   }
@@ -533,7 +541,7 @@ class Layout extends Component {
       if (this.props.user.userData.isAuth) {
         return (
           <div>
-            {!this.props.location.pathname.startsWith("/search") ? (
+            {!this.props.location.pathname.startsWith("/search") && !this.props.location.pathname.startsWith("/publications/create") ? (
               <IconButton
                 aria-haspopup="true"
                 color="inherit"
@@ -549,49 +557,54 @@ class Layout extends Component {
                 <SearchIcon style={{ color: "#5f6368" }} />
               </IconButton>
             ) : null}
-            <IconButton
-              aria-haspopup="true"
-              color="inherit"
-              style={{
-                padding: "4px",
+            {
+              !this.props.location.pathname.startsWith("/publications/create") ?
 
-                margin: 0
-              }}
-              onClick={this.handleProfileMenuOpen}
-            >
-              {this.props.user.userData &&
-              this.props.user.userData.profileImage &&
-              this.props.user.userData.profileImage[0] &&
-              this.props.user.userData.profileImage[0].location ? (
-                <Avatar
-                  src={`${SERVER}${this.props.user.userData.profileImage[0].location}`}
-                  style={{
-                    width: "32px",
-                    height: "32px",
-                    borderStyle: "solid",
-                    borderColor: "rgb(239, 239, 239)",
-                    borderWidth: "1px"
-                  }}
-                />
-              ) : (
-                <Avatar
-                  style={{
-                    width: "32px",
-                    height: "32px",
-                    backgroundColor: toColor(
-                      `${this.props.user.userData.name}${this.props.user.userData.lastname}`
-                    ),
-                    fontFamily: "'Noto Sans Lao UI', sans serif",
-                    fontSize: "14px",
-                    fontWeight: "500"
-                  }}
-                >
-                  {`${this.props.user.userData.name.charAt(
-                    0
-                  )}${this.props.user.userData.lastname.charAt(0)}`}
-                </Avatar>
-              )}
-            </IconButton>
+              <IconButton
+                aria-haspopup="true"
+                color="inherit"
+                style={{
+                  padding: "4px",
+  
+                  margin: 0
+                }}
+                onClick={this.handleProfileMenuOpen}
+              >
+                {this.props.user.userData &&
+                this.props.user.userData.profileImage &&
+                this.props.user.userData.profileImage[0] &&
+                this.props.user.userData.profileImage[0].location ? (
+                  <Avatar
+                    src={`${SERVER}${this.props.user.userData.profileImage[0].location}`}
+                    style={{
+                      width: "32px",
+                      height: "32px",
+                      borderStyle: "solid",
+                      borderColor: "rgb(239, 239, 239)",
+                      borderWidth: "1px"
+                    }}
+                  />
+                ) : (
+                  <Avatar
+                    style={{
+                      width: "32px",
+                      height: "32px",
+                      backgroundColor: toColor(
+                        `${this.props.user.userData.name}${this.props.user.userData.lastname}`
+                      ),
+                      fontFamily: "'Noto Sans Lao UI', sans serif",
+                      fontSize: "14px",
+                      fontWeight: "500"
+                    }}
+                  >
+                    {`${this.props.user.userData.name.charAt(
+                      0
+                    )}${this.props.user.userData.lastname.charAt(0)}`}
+                  </Avatar>
+                )}
+              </IconButton>
+              : null
+            }
 
             {
               //  <IconButton
@@ -763,9 +776,10 @@ class Layout extends Component {
                 key={item._id}
                 value={item._id}
                 component={Link}
-                to={`/publications/create?publicationType=${encodeURIComponent(item.englishName)}`}
+                to={`/publications/create?publicationType=${encodeURIComponent(
+                  item.englishName
+                )}`}
               >
-              
                 {
                   // <SettingsOutlined fontSize="small" style={{ marginRight: "16px" }}/>
                 }
@@ -829,6 +843,8 @@ class Layout extends Component {
                 <span className={classes.leftHeaderSection}>
                   {!this.props.location.pathname.startsWith("/search") ? (
                     <>
+                    {
+                      !this.props.location.pathname.startsWith("/publications/create") ?
                       <IconButton
                         onClick={this.handleDrawerOpen}
                         className={classNames(classes.menuButtonMain)}
@@ -837,6 +853,9 @@ class Layout extends Component {
                       >
                         <MenuIcon />
                       </IconButton>
+                      : null
+                      
+                    }
                       <Link
                         to="/"
                         style={{ textDecoration: "none", color: "inherit" }}
@@ -884,7 +903,13 @@ class Layout extends Component {
                 {!this.props.location.pathname.startsWith("/search") ? (
                   <>
                     <div className={classes.grow} />
-                    <form
+                    {
+                      this.props.location.pathname.startsWith("/publications/create") ?
+                      <div style={{flexGrow: 1}}>
+                      
+                      </div>
+
+                      :<form
                       style={{
                         padding: 0
                         // margin: 0,
@@ -925,6 +950,9 @@ class Layout extends Component {
                         />
                       </div>
                     </form>
+                    
+                    }
+                    
                     <div className={classes.grow} />
                   </>
                 ) : (
@@ -935,6 +963,9 @@ class Layout extends Component {
                       style={{ flexGrow: "1", margin: 0 }}
                     >
                       <Grid item xs={2} align="left">
+                      {
+                        !this.props.location.pathname.startsWith("/publications/create") ?
+
                         <IconButton
                           onClick={this.handleDrawerOpen}
                           className={classNames(classes.menuButtonMain)}
@@ -943,6 +974,8 @@ class Layout extends Component {
                         >
                           <MenuIcon />
                         </IconButton>
+                        : null
+                      }
                       </Grid>
 
                       <Grid item xs={8} alignContent="center">
@@ -2252,18 +2285,10 @@ const mapStateToProps = state => {
   };
 };
 
-// export default withStyles(styles, { withTheme: true })(Layout);
-// export default withRouter(connect(mapStateToProps)(withStyles(styles)(Layout)));
-// export default withRouter(
-//   connect(mapStateToProps)(withStyles(styles, { withTheme: true })(Layout))
-// );
-
 const enhance = compose(
   withRouter,
   withWidth(),
-
   withStyles(styles, { withTheme: true }),
-  // withWidth(),
   connect(
     mapStateToProps,
     null
