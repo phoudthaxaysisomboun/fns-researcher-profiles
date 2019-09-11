@@ -16,6 +16,7 @@
     "bson": "^4.0.2",
     "classnames": "^2.2.6",
     "darkreader-api": "^0.2.0",
+    "filesize": "^4.1.2",
     "http-proxy-middleware": "^0.19.1",
     "i": "^0.3.6",
     "mui-datatables": "^2.5.1",
