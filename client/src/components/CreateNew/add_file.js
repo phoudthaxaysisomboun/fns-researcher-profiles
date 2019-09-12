@@ -11,8 +11,11 @@ import {
   FormControl,
   TextField,
   IconButton,
-  CircularProgress, 
-  Tooltip
+  CircularProgress,
+  Tooltip,
+  FormGroup,
+  FormControlLabel,
+  Checkbox
 } from "@material-ui/core";
 import Dropzone from "react-dropzone";
 import {
@@ -48,7 +51,7 @@ const styles = theme => ({
   }
 });
 
-const filesize = require("filesize")
+const filesize = require("filesize");
 class AddResearchFile extends Component {
   constructor(props) {
     super(props);
@@ -56,19 +59,18 @@ class AddResearchFile extends Component {
       uploading: false,
       files: null,
       error: false,
-      errorMessage: 'ຂໍອະໄພ, ມີບາງຢ່າງຜິດພາດ'
+      errorMessage: "ຂໍອະໄພ, ມີບາງຢ່າງຜິດພາດ"
     };
   }
-  
 
   componentDidMount() {
     //   this.props.switchPage('details')
-    
-    const size = filesize.partial({standard: "iec"});
-    console.log(size)
+
+    const size = filesize.partial({ standard: "iec" });
+    console.log(size);
   }
 
-  onDrop(files) {
+  onDrop(files, isPrivate = false) {
     this.setState({
       uploading: true
     });
@@ -81,34 +83,37 @@ class AddResearchFile extends Component {
 
     if (files[0]) {
       axios
-      .post("/api/research/upload_tmp_publication_file", formdata, config)
-      .then(response => {
-        if (response.data.success) {
-          this.setState({
-            files: [
-              {
-                name: response.data.name,
-                location: response.data.location,
-                date: response.data.date,
-                mimetype: response.data.mimetype,
-                uploader: response.data.uploader,
-                size: response.data.size
-              }
-            ],
-            error: false,
-            uploading: false
-          });
-          console.log(this.state.files);
-        } else {
-          console.log(response.data)
-          this.setState({
-            uploading: false,
-            error: true,
-            files: null,
-            errorMessage: response.data.message ? response.data.message : "ຂໍອະໄພ, ມີບາງຢ່າງຜິດພາດ"
-          });
-        }
-      });
+        .post("/api/research/upload_tmp_publication_file", formdata, config)
+        .then(response => {
+          if (response.data.success) {
+            this.setState({
+              files: [
+                {
+                  name: response.data.name,
+                  location: response.data.location,
+                  date: response.data.date,
+                  mimetype: response.data.mimetype,
+                  uploader: response.data.uploader,
+                  size: response.data.size,
+                  private: isPrivate
+                }
+              ],
+              error: false,
+              uploading: false
+            });
+            console.log(this.state.files);
+          } else {
+            console.log(response.data);
+            this.setState({
+              uploading: false,
+              error: true,
+              files: null,
+              errorMessage: response.data.message
+                ? response.data.message
+                : "ຂໍອະໄພ, ມີບາງຢ່າງຜິດພາດ"
+            });
+          }
+        });
     } else {
       this.setState({
         uploading: false,
@@ -123,9 +128,9 @@ class AddResearchFile extends Component {
     this.setState({
       uploading: false,
       error: false,
-      files: null,
+      files: null
     });
-  }
+  };
 
   render() {
     const { classes } = this.props;
@@ -199,258 +204,275 @@ class AddResearchFile extends Component {
               >
                 ທ່ານຕ້ອງການອັພໂຫລດຟາຍລ໌ເອກະສານ ຫລື ບໍ່?
               </Typography>
-              {
-                this.state.uploading ?
+              {this.state.uploading ? (
                 <Paper
-                style={{
-                  boxShadow: "none",
-                  border: "1px solid #d8d8d8",
-                  marginTop: "16px",
-                  padding: "16px"
-                }}
-              >
-                <Grid container alignItems="center" justify="center">
-                  <CircularProgress />
-                </Grid>
-              </Paper> : <>
-              
-              {!this.state.files ? (
-                <>
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    style={{
-                      width: "100%",
-                      marginTop: "24px",
-                      textTransform: "none",
-                      minHeight: "56px"
-                    }}
-                  >
-                    <svg
-                      fill="currentColor"
-                      height="35"
-                      viewBox="0 0 24 24"
-                      width="35"
-                      xmlns="https://www.w3.org/2000/svg"
-                      aria-hidden="true"
-                      focusable="false"
-                      style={{ marginRight: "16px" }}
-                    >
-                      <path d="M12,7c-2.48,0-4.5,2.02-4.5,4.5S9.52,16,12,16s4.5-2.02,4.5-4.5S14.48,7,12,7z M12,14.2c-1.49,0-2.7-1.21-2.7-2.7 c0-1.49,1.21-2.7,2.7-2.7s2.7,1.21,2.7,2.7C14.7,12.99,13.49,14.2,12,14.2z" />
-                      <path d="M12,4C7,4,2.73,7.11,1,11.5C2.73,15.89,7,19,12,19s9.27-3.11,11-7.5C21.27,7.11,17,4,12,4z M12,17 c-3.79,0-7.17-2.13-8.82-5.5C4.83,8.13,8.21,6,12,6s7.17,2.13,8.82,5.5C19.17,14.87,15.79,17,12,17z" />
-                      <path fill="none" d="M0,0h24v24H0V0z" />
-                    </svg>
-                    <Dropzone
-                      style={{ height: "100%", width: "100%" }}
-                      onDrop={e => this.onDrop(e)}
-                      multiple={false}
-                      accept=".pdf,.docx,.doc"
-                      maxSize = {1073741824}
-                    >
-                      <Grid container alignItems="center" alignContent="center">
-                        <Grid item>
-                          <Typography
-                            variant="inherit"
-                            style={{
-                              fontWeight: 500,
-                              fontSize: 16,
-                              textAlign: "left"
-                            }}
-                          >
-                            ເພີ່ມຟາຍລ໌ສາທາລະນະ
-                          </Typography>
-                          <Typography
-                            variant="inherit"
-                            style={{
-                              fontWeight: "normal",
-                              fontSize: 12,
-                              textAlign: "left"
-                            }}
-                          >
-                            ທຸກຄົນສາມາດເຂົ້າເຖິງຟາຍລ໌ຂອງທ່ານໄດ້
-                          </Typography>
-                        </Grid>
-                      </Grid>
-                    </Dropzone>
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    style={{
-                      width: "100%",
-                      marginTop: "16px",
-                      textTransform: "none",
-                      minHeight: "56px"
-                    }}
-                  >
-                    <svg
-                      fill="currentColor"
-                      height="35"
-                      viewBox="0 0 24 24"
-                      width="35"
-                      xmlns="https://www.w3.org/2000/svg"
-                      aria-hidden="true"
-                      focusable="false"
-                      style={{ marginRight: "16px" }}
-                    >
-                      <path d="M10.58,7.25l1.56,1.56c1.38,0.07,2.47,1.17,2.54,2.54l1.56,1.56C16.4,12.47,16.5,12,16.5,11.5C16.5,9.02,14.48,7,12,7 C11.5,7,11.03,7.1,10.58,7.25z" />
-                      <path d="M12,6c3.79,0,7.17,2.13,8.82,5.5c-0.64,1.32-1.56,2.44-2.66,3.33l1.42,1.42c1.51-1.26,2.7-2.89,3.43-4.74 C21.27,7.11,17,4,12,4c-1.4,0-2.73,0.25-3.98,0.7L9.63,6.3C10.4,6.12,11.19,6,12,6z" />
-                      <path d="M16.43,15.93l-1.25-1.25l-1.27-1.27l-3.82-3.82L8.82,8.32L7.57,7.07L6.09,5.59L3.31,2.81L1.89,4.22l2.53,2.53 C2.92,8.02,1.73,9.64,1,11.5C2.73,15.89,7,19,12,19c1.4,0,2.73-0.25,3.98-0.7l4.3,4.3l1.41-1.41l-3.78-3.78L16.43,15.93z M11.86,14.19c-1.38-0.07-2.47-1.17-2.54-2.54L11.86,14.19z M12,17c-3.79,0-7.17-2.13-8.82-5.5c0.64-1.32,1.56-2.44,2.66-3.33 l1.91,1.91C7.6,10.53,7.5,11,7.5,11.5c0,2.48,2.02,4.5,4.5,4.5c0.5,0,0.97-0.1,1.42-0.25l0.95,0.95C13.6,16.88,12.81,17,12,17z" />
-                    </svg>
-                    <Dropzone
-                      style={{ height: "100%", width: "100%" }}
-                      onDrop={e => this.onDrop(e)}
-                      multiple={false}
-                      accept=".pdf,.docx"
-                    >
-                      <Grid container alignItems="center" alignContent="center">
-                        <Grid item>
-                          <Typography
-                            variant="inherit"
-                            style={{
-                              fontWeight: 500,
-                              fontSize: 16,
-                              textAlign: "left"
-                            }}
-                          >
-                            ເພີ່ມຟາຍລ໌ສ່ວນຕົວ
-                          </Typography>
-                          <Typography
-                            variant="inherit"
-                            style={{
-                              fontWeight: "normal",
-                              fontSize: 12,
-                              textAlign: "left"
-                            }}
-                          >
-                            ອະນຸຍາດການເຂົ້າເຖິງຟາຍລ໌ເມື່ອມີການຮ້ອງຂໍ
-                          </Typography>
-                        </Grid>
-                      </Grid>
-                    </Dropzone>
-                  </Button>
-
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    style={{
-                      width: "100%",
-                      marginTop: "16px",
-                      textTransform: "none",
-                      minHeight: "56px"
-                    }}
-                  >
-                    <InsertLinkOutlined
-                      style={{ marginRight: 16, fontSize: 35 }}
-                    />
-                    <Dropzone
-                      style={{ height: "100%", width: "100%" }}
-                      onDrop={e => this.onDrop(e)}
-                      multiple={false}
-                      accept=".pdf,.docx"
-                    >
-                      <Grid container alignItems="center" alignContent="center">
-                        <Grid item>
-                          <Typography
-                            variant="inherit"
-                            style={{
-                              fontWeight: 500,
-                              fontSize: 16,
-                              textAlign: "left"
-                            }}
-                          >
-                            ເພີ່ມລີ້ງຜົນງານ
-                          </Typography>
-                          <Typography
-                            variant="inherit"
-                            style={{
-                              fontWeight: "normal",
-                              fontSize: 12,
-                              textAlign: "left"
-                            }}
-                          >
-                            ລີ້ງຂອງຜົນງານທີ່ທ່ານມີແລ້ວໃນເວັພໄຊທ໌ອື່ນ
-                          </Typography>
-                        </Grid>
-                      </Grid>
-                    </Dropzone>
-                  </Button>
-                </>
+                  style={{
+                    boxShadow: "none",
+                    border: "1px solid #d8d8d8",
+                    marginTop: "16px",
+                    padding: "16px"
+                  }}
+                >
+                  <Grid container alignItems="center" justify="center">
+                    <CircularProgress />
+                  </Grid>
+                </Paper>
               ) : (
                 <>
-                  <Paper
-                    style={{
-                      boxShadow: "none",
-                      border: "1px solid #d8d8d8",
-                      marginTop: "16px",
-                      padding: "16px"
-                    }}
-                  >
-                    <Grid container alignItems="center">
-                      <Grid item>
-                        <svg
-                          width="35"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 1000 1000"
-                          style={{ marginRight: 16 }}
-                        >
-                          <rect
-                            width="1000"
-                            height="1000"
-                            rx="118.7"
-                            fill="#3789da"
-                          />
-                          <g fill="#fff">
-                            <path d="M397.37 750.24l-5.57 24.12h-96.83L166.7 218.8h107.97l122.7 531.45zM833.3 218.8L705.03 774.36H597.07L725.33 218.8H833.3z" />
-                            <path d="M520.07 218.8L391.8 774.36h-66.22L453.84 218.8h66.23z" />
-                            <path d="M660.56 774.36h-66.23L466.07 218.8h66.22l128.27 555.57z" />
-                          </g>
-                        </svg>
-                      </Grid>
-                      <Grid item xs>
-                        <Typography
-                          variant="inherit"
-                          style={{ fontWeight: 500, marginBottom: 8 }}
-                        >
-                          {this.state.files[0].name}
-                        </Typography>
-                        <Typography
-                          variant="inherit"
-                          style={{ fontSize: "12px" }}
-                        >
-                        {filesize(this.state.files[0].size, { fullform: true}, {separator: ","})}
-                        </Typography>
-                      </Grid>
-
-                      <Grid item align="right">
-                      <Tooltip title="ລຶບ">
-                        <IconButton
-                          onClick={() => this.removeFile()}
-                          style={{ marginLeft: 16 }}
-                        >
-                        <svg
-
-                        width="24px"
-                        height="24px"
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
-                        focusable="false"
-                        class="a-s-fa-Ha-pa"
+                  {!this.state.files ? (
+                    <>
+                      <Button
+                        variant="outlined"
+                        color="primary"
+                        style={{
+                          width: "100%",
+                          marginTop: "24px",
+                          textTransform: "none",
+                          minHeight: "56px"
+                        }}
                       >
-                        <path d="M0 0h24v24H0z" fill="none" />
-                        <path d="M15 4V3H9v1H4v2h1v13c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V6h1V4h-5zm2 15H7V6h10v13z" />
-                        <path d="M9 8h2v9H9zm4 0h2v9h-2z" />
-                      </svg>
-                        </IconButton>
-                        </Tooltip>
+                        <svg
+                          fill="currentColor"
+                          height="35"
+                          viewBox="0 0 24 24"
+                          width="35"
+                          xmlns="https://www.w3.org/2000/svg"
+                          aria-hidden="true"
+                          focusable="false"
+                          style={{ marginRight: "16px" }}
+                        >
+                          <path d="M12,7c-2.48,0-4.5,2.02-4.5,4.5S9.52,16,12,16s4.5-2.02,4.5-4.5S14.48,7,12,7z M12,14.2c-1.49,0-2.7-1.21-2.7-2.7 c0-1.49,1.21-2.7,2.7-2.7s2.7,1.21,2.7,2.7C14.7,12.99,13.49,14.2,12,14.2z" />
+                          <path d="M12,4C7,4,2.73,7.11,1,11.5C2.73,15.89,7,19,12,19s9.27-3.11,11-7.5C21.27,7.11,17,4,12,4z M12,17 c-3.79,0-7.17-2.13-8.82-5.5C4.83,8.13,8.21,6,12,6s7.17,2.13,8.82,5.5C19.17,14.87,15.79,17,12,17z" />
+                          <path fill="none" d="M0,0h24v24H0V0z" />
+                        </svg>
+                        <Dropzone
+                          style={{ height: "100%", width: "100%" }}
+                          onDrop={e => this.onDrop(e, false)}
+                          multiple={false}
+                          accept=".pdf,.docx,.doc"
+                          maxSize={1073741824}
+                        >
+                          <Grid
+                            container
+                            alignItems="center"
+                            alignContent="center"
+                          >
+                            <Grid item>
+                              <Typography
+                                variant="inherit"
+                                style={{
+                                  fontWeight: 500,
+                                  fontSize: 16,
+                                  textAlign: "left"
+                                }}
+                              >
+                                ເພີ່ມຟາຍລ໌ສາທາລະນະ
+                              </Typography>
+                              <Typography
+                                variant="inherit"
+                                style={{
+                                  fontWeight: "normal",
+                                  fontSize: 12,
+                                  textAlign: "left"
+                                }}
+                              >
+                                ທຸກຄົນສາມາດເຂົ້າເຖິງຟາຍລ໌ຂອງທ່ານໄດ້
+                              </Typography>
+                            </Grid>
+                          </Grid>
+                        </Dropzone>
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        color="primary"
+                        style={{
+                          width: "100%",
+                          marginTop: "16px",
+                          textTransform: "none",
+                          minHeight: "56px"
+                        }}
+                      >
+                        <svg
+                          fill="currentColor"
+                          height="35"
+                          viewBox="0 0 24 24"
+                          width="35"
+                          xmlns="https://www.w3.org/2000/svg"
+                          aria-hidden="true"
+                          focusable="false"
+                          style={{ marginRight: "16px" }}
+                        >
+                          <path d="M10.58,7.25l1.56,1.56c1.38,0.07,2.47,1.17,2.54,2.54l1.56,1.56C16.4,12.47,16.5,12,16.5,11.5C16.5,9.02,14.48,7,12,7 C11.5,7,11.03,7.1,10.58,7.25z" />
+                          <path d="M12,6c3.79,0,7.17,2.13,8.82,5.5c-0.64,1.32-1.56,2.44-2.66,3.33l1.42,1.42c1.51-1.26,2.7-2.89,3.43-4.74 C21.27,7.11,17,4,12,4c-1.4,0-2.73,0.25-3.98,0.7L9.63,6.3C10.4,6.12,11.19,6,12,6z" />
+                          <path d="M16.43,15.93l-1.25-1.25l-1.27-1.27l-3.82-3.82L8.82,8.32L7.57,7.07L6.09,5.59L3.31,2.81L1.89,4.22l2.53,2.53 C2.92,8.02,1.73,9.64,1,11.5C2.73,15.89,7,19,12,19c1.4,0,2.73-0.25,3.98-0.7l4.3,4.3l1.41-1.41l-3.78-3.78L16.43,15.93z M11.86,14.19c-1.38-0.07-2.47-1.17-2.54-2.54L11.86,14.19z M12,17c-3.79,0-7.17-2.13-8.82-5.5c0.64-1.32,1.56-2.44,2.66-3.33 l1.91,1.91C7.6,10.53,7.5,11,7.5,11.5c0,2.48,2.02,4.5,4.5,4.5c0.5,0,0.97-0.1,1.42-0.25l0.95,0.95C13.6,16.88,12.81,17,12,17z" />
+                        </svg>
+                        <Dropzone
+                          style={{ height: "100%", width: "100%" }}
+                          onDrop={e => this.onDrop(e, true)}
+                          multiple={false}
+                          accept=".pdf,.docx"
+                        >
+                          <Grid
+                            container
+                            alignItems="center"
+                            alignContent="center"
+                          >
+                            <Grid item>
+                              <Typography
+                                variant="inherit"
+                                style={{
+                                  fontWeight: 500,
+                                  fontSize: 16,
+                                  textAlign: "left"
+                                }}
+                              >
+                                ເພີ່ມຟາຍລ໌ສ່ວນຕົວ
+                              </Typography>
+                              <Typography
+                                variant="inherit"
+                                style={{
+                                  fontWeight: "normal",
+                                  fontSize: 12,
+                                  textAlign: "left"
+                                }}
+                              >
+                                ອະນຸຍາດການເຂົ້າເຖິງຟາຍລ໌ເມື່ອມີການຮ້ອງຂໍ
+                              </Typography>
+                            </Grid>
+                          </Grid>
+                        </Dropzone>
+                      </Button>
+
+                      <Button
+                        variant="outlined"
+                        color="primary"
+                        style={{
+                          width: "100%",
+                          marginTop: "16px",
+                          textTransform: "none",
+                          minHeight: "56px"
+                        }}
+                      >
+                        <InsertLinkOutlined
+                          style={{ marginRight: 16, fontSize: 35 }}
+                        />
+                        <Dropzone
+                          style={{ height: "100%", width: "100%" }}
+                          onDrop={e => this.onDrop(e)}
+                          multiple={false}
+                          accept=".pdf,.docx"
+                        >
+                          <Grid
+                            container
+                            alignItems="center"
+                            alignContent="center"
+                          >
+                            <Grid item>
+                              <Typography
+                                variant="inherit"
+                                style={{
+                                  fontWeight: 500,
+                                  fontSize: 16,
+                                  textAlign: "left"
+                                }}
+                              >
+                                ເພີ່ມລີ້ງຜົນງານ
+                              </Typography>
+                              <Typography
+                                variant="inherit"
+                                style={{
+                                  fontWeight: "normal",
+                                  fontSize: 12,
+                                  textAlign: "left"
+                                }}
+                              >
+                                ລີ້ງຂອງຜົນງານທີ່ທ່ານມີແລ້ວໃນເວັພໄຊທ໌ອື່ນ
+                              </Typography>
+                            </Grid>
+                          </Grid>
+                        </Dropzone>
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Paper
+                        style={{
+                          boxShadow: "none",
+                          border: "1px solid #d8d8d8",
+                          marginTop: "16px",
+                          padding: "16px"
+                        }}
+                      >
+                        <Grid container alignItems="center">
+                          <Grid item>
+                            <svg
+                              width="35"
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 1000 1000"
+                              style={{ marginRight: 16 }}
+                            >
+                              <rect
+                                width="1000"
+                                height="1000"
+                                rx="118.7"
+                                fill="#3789da"
+                              />
+                              <g fill="#fff">
+                                <path d="M397.37 750.24l-5.57 24.12h-96.83L166.7 218.8h107.97l122.7 531.45zM833.3 218.8L705.03 774.36H597.07L725.33 218.8H833.3z" />
+                                <path d="M520.07 218.8L391.8 774.36h-66.22L453.84 218.8h66.23z" />
+                                <path d="M660.56 774.36h-66.23L466.07 218.8h66.22l128.27 555.57z" />
+                              </g>
+                            </svg>
+                          </Grid>
+                          <Grid item xs>
+                            <Typography
+                              variant="inherit"
+                              style={{ fontWeight: 500, marginBottom: 8 }}
+                            >
+                              {this.state.files[0].name}
+                            </Typography>
+                            <Typography
+                              variant="inherit"
+                              style={{ fontSize: "12px" }}
+                            >
+                              {filesize(
+                                this.state.files[0].size,
+                                { fullform: true },
+                                { separator: "," }
+                              )}
+                            </Typography>
+                          </Grid>
+
+                          <Grid item align="right">
+                            <Tooltip title="ລຶບ">
+                              <IconButton
+                                disableRipple
+                                disableTouchRipple
+                                onClick={() => this.removeFile()}
+                                style={{ marginLeft: 16, padding: 0 }}
+                              >
+                                <svg
+                                  width="24px"
+                                  height="24px"
+                                  viewBox="0 0 24 24"
+                                  fill="currentColor"
+                                  focusable="false"
+                                  class="a-s-fa-Ha-pa"
+                                >
+                                  <path d="M0 0h24v24H0z" fill="none" />
+                                  <path d="M15 4V3H9v1H4v2h1v13c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V6h1V4h-5zm2 15H7V6h10v13z" />
+                                  <path d="M9 8h2v9H9zm4 0h2v9h-2z" />
+                                </svg>
+                              </IconButton>
+                            </Tooltip>
+                          </Grid>
                         </Grid>
-                    </Grid>
-                  </Paper>
+                      </Paper>
+                    </>
+                  )}
                 </>
               )}
-              </>
-              }
-             
+
               {false ? (
                 <FormControl fullWidth>
                   <TextField
@@ -464,35 +486,49 @@ class AddResearchFile extends Component {
                   />
                 </FormControl>
               ) : null}
-
+              <FormGroup row style={{ marginTop: 8 }}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={false}
+                      // onChange={this.handleChange("checkedB")}
+                      value="checkedB"
+                      color="primary"
+                      style={{
+                        padding: 0,
+                        marginRight: 8,
+                        marginLeft: 14,
+                        alignSelf: "flex-start"
+                      }}
+                    />
+                  }
+                  label="ຂ້ອຍໄດ້ກວດເບິ່ງແລະກວດສອບແຕ່ລະເອກະສານທີ່ຂ້ອຍ ກຳ ລັງອັບໂຫລດ. ຂ້ອຍມີສິດທີ່ຈະແບ່ງປັນເອກະສານແຕ່ລະຢ່າງເປັນສາທາລະນະ, ແລະເຫັນດີ ນຳ ເງື່ອນໄຂການອັບໂຫລດ"
+                />
+              </FormGroup>
               <Grid container alignItems="center" style={{ marginTop: 16 }}>
                 <Grid
                   item
                   xs={12}
                   style={{ fontSize: 14, color: "rgba(0,0,0,0.65)" }}
                 >
-                {
-                  !this.state.error ?
-                  <>
-                  
-                  ທ່າານສາມາດເພີ່ມລາຍລະອຽດກ່ຽວກັບວຽກໃນຂັ້ນຕອນຕໍ່ໄປ
-                  </> : 
-                  <div>
-                  <Error
-                    style={{
-                      fontSize: 16,
-                      marginRight: 4,
-                      position: "relative",
-                      top: 3,
-                      color: "#d93025"
-                    }}
-                  />
-                  <span style={{ fontSize: 14, color: "#d93025" }}>{this.state.errorMessage}</span>
-                  
-                  </div>
-
-                }
-                  
+                  {!this.state.error ? (
+                    <>ທ່າານສາມາດເພີ່ມລາຍລະອຽດກ່ຽວກັບວຽກໃນຂັ້ນຕອນຕໍ່ໄປ</>
+                  ) : (
+                    <div>
+                      <Error
+                        style={{
+                          fontSize: 16,
+                          marginRight: 4,
+                          position: "relative",
+                          top: 3,
+                          color: "#d93025"
+                        }}
+                      />
+                      <span style={{ fontSize: 14, color: "#d93025" }}>
+                        {this.state.errorMessage}
+                      </span>
+                    </div>
+                  )}
                 </Grid>
                 <Grid item xs md align="right" style={{ marginTop: 34 }}>
                   <Button>ຂ້າມ</Button>
