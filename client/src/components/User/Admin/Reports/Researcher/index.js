@@ -34,8 +34,8 @@ import {
   Toolbar,
   Typography,
   Paper,
-  IconButton,
-  Tooltip,
+  // IconButton,
+  // Tooltip,
   MenuItem,
   InputLabel,
   Select,
@@ -45,15 +45,15 @@ import {
   TextField
 } from "@material-ui/core";
 
-import { SaveAltOutlined } from "@material-ui/icons";
+// import { SaveAltOutlined } from "@material-ui/icons";
 
 import { lighten } from "@material-ui/core/styles/colorManipulator";
 
-import ReactExport from "react-data-export";
+// import ReactExport from "react-data-export";
 
-const ExcelFile = ReactExport.ExcelFile;
-const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
-const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
+// const ExcelFile = ReactExport.ExcelFile;
+// const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
+// const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 // const ExcelRow = ReactExport.ExcelFile.ExcelRow;
 
 function desc(a, b, orderBy) {
@@ -253,7 +253,7 @@ class EnhancedTableToolbar extends React.Component {
       classes,
       researchersCount,
       departments,
-      data,
+      // data,
       selectedValue,
       handleDepartmentChange,
       endValue,
@@ -412,40 +412,42 @@ class EnhancedTableToolbar extends React.Component {
                   ))}
                 </Select>
               </FormControl>
-              <ExcelFile
-                filename={`ລາຍງານຈໍານວນນັກຄົ້ນຄວ້າ ຄວທ (${moment(
-                  startValue
-                ).format("DD/MM/YYYY")}-${moment(endValue).format(
-                  "DD/MM/YYYY"
-                )})`}
-                element={
-                  <Tooltip title="ດາວໂຫລດຟາຍລ໌ Excel">
-                    <IconButton style={{ marginRight: "0px", marginTop: "8px",
-                    marginBottom: "8px" }}>
-                      <SaveAltOutlined />
-                    </IconButton>
-                  </Tooltip>
-                }
-              >
-                <ExcelSheet data={data} name="ຈໍານວນນັກຄົ້ນຄວ້າ ຄວທ">
-                  <ExcelColumn name="Saysettha OT" label="ລ/ດ" value="no" />
-                  <ExcelColumn label="ພາກວິຊາ" value="deapartmentName" />
-                  <ExcelColumn label="ປະລິນຍາຕີ" value="bachelorCount" />
-                  <ExcelColumn label="ປະລິນຍາໂທ" value="masterCount" />
-                  <ExcelColumn label="ປະລິນຍາເອກ" value="doctorialCount" />
-                  <ExcelColumn label="ຍິງ" value="femaleCount" />
-                  <ExcelColumn label="ຊາຍ" value="maleCount" />
-                  <ExcelColumn label="18-30" value="age18to30Count" />
-                  <ExcelColumn label="31-45" value="age31to45Count" />
-                  <ExcelColumn label="46-65" value="age46to65Count" />
-                  <ExcelColumn label="ທັງຫມົດ" value="countByDepartment" />
-                  {
-                    // <ExcelColumn label="Marital Status"
-                    //            value={(col) => col.is_married ? "Married" : "Single"}/>
-                  }
-                </ExcelSheet>
-              </ExcelFile>
-            </div>
+{
+              // <ExcelFile
+              //   filename={`ລາຍງານຈໍານວນນັກຄົ້ນຄວ້າ ຄວທ (${moment(
+              //     startValue
+              //   ).format("DD/MM/YYYY")}-${moment(endValue).format(
+              //     "DD/MM/YYYY"
+              //   )})`}
+              //   element={
+              //     <Tooltip title="ດາວໂຫລດຟາຍລ໌ Excel">
+              //       <IconButton style={{ marginRight: "0px", marginTop: "8px",
+              //       marginBottom: "8px" }}>
+              //         <SaveAltOutlined />
+              //       </IconButton>
+              //     </Tooltip>
+              //   }
+              // >
+              //   <ExcelSheet data={data} name="ຈໍານວນນັກຄົ້ນຄວ້າ ຄວທ">
+              //     <ExcelColumn name="Saysettha OT" label="ລ/ດ" value="no" />
+              //     <ExcelColumn label="ພາກວິຊາ" value="deapartmentName" />
+              //     <ExcelColumn label="ປະລິນຍາຕີ" value="bachelorCount" />
+              //     <ExcelColumn label="ປະລິນຍາໂທ" value="masterCount" />
+              //     <ExcelColumn label="ປະລິນຍາເອກ" value="doctorialCount" />
+              //     <ExcelColumn label="ຍິງ" value="femaleCount" />
+              //     <ExcelColumn label="ຊາຍ" value="maleCount" />
+              //     <ExcelColumn label="18-30" value="age18to30Count" />
+              //     <ExcelColumn label="31-45" value="age31to45Count" />
+              //     <ExcelColumn label="46-65" value="age46to65Count" />
+              //     <ExcelColumn label="ທັງຫມົດ" value="countByDepartment" />
+              //     {
+              //       // <ExcelColumn label="Marital Status"
+              //       //            value={(col) => col.is_married ? "Married" : "Single"}/>
+              //     }
+              //   </ExcelSheet>
+              // </ExcelFile>
+                    }
+              </div>
           </Grid>
         </Grid>
       </Toolbar>

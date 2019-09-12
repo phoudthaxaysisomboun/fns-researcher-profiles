@@ -48,7 +48,12 @@ class CreateResearch extends Component {
     switch(this.state.page) {
       case 'index': {
         return (
-          <AddResearchFile switchPage={(page)=> this.switchPage(page)}/>
+          <AddResearchFile
+            switchPage={page => this.switchPage(page)}
+            user={
+              this.props.user.userData
+            }
+          />
         )
       }
       case 'details': {

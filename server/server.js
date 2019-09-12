@@ -10,7 +10,8 @@ const uuidv4 = require("uuid/v4");
 
 const normalizeUrl = require("normalize-url");
 const moment = require("moment");
-const uniqueFilename = require("unique-filename");
+
+const randomString = require("randomstring");
 
 mongoose.Promise = global.Promise;
 mongoose.connect(process.env.DATABASE);
@@ -55,6 +56,20 @@ const { Research } = require("./models/research");
 const { auth } = require("./middleware/auth");
 const { admin } = require("./middleware/admin");
 const fs = require("fs");
+
+//====================================
+//             UTILS
+//====================================
+const generateRandomString = length => {
+  var text = "";
+  var possible =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_";
+
+  for (var i = 0; i < length; i++)
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+  return text;
+};
 
 //====================================
 //             UPLOAD FILES
@@ -106,8 +121,7 @@ var profileImageTempName = "";
 let imageTempStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     objectId = new mongoose.Types.ObjectId(Date.now());
-    profileImageTempDir =
-      "tmp" + "/" + uuidv4() 
+    profileImageTempDir = "tmp" + "/" + uuidv4();
     fs.mkdirSync(profileImageTempDir);
     cb(null, profileImageTempDir);
   },
@@ -138,19 +152,12 @@ app.post("/api/users/upload_tmp_profile_image", auth, (req, res) => {
 
 var profileImageDir = "";
 var profileImageName = "";
-var profileImageSize = "";
 
 let imageStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     objectId = new mongoose.Types.ObjectId(Date.now());
     profileImageDir =
-      "uploads" +
-      "/" +
-      "images" +
-      "/" +
-      "profile_images" +
-      "/" +
-      uuidv4()
+      "uploads" + "/" + "images" + "/" + "profile_images" + "/" + uuidv4();
     fs.mkdirSync(profileImageDir);
     cb(null, profileImageDir);
   },
@@ -163,8 +170,6 @@ let imageStorage = multer.diskStorage({
 });
 
 const uploadProfileImage = multer({ storage: imageStorage }).single("file");
-
-
 
 app.post("/api/users/upload_profile_image", auth, (req, res) => {
   if (req.query.action === "remove") {
@@ -181,8 +186,7 @@ app.post("/api/users/upload_profile_image", auth, (req, res) => {
         if (req.query.location) {
           const path = "." + `/${req.query.location}`;
 
-        fs.unlink(path, err => {
-        });
+          fs.unlink(path, err => {});
         }
         if (err) return res.json({ success: false, err });
         return res.json({ success: true });
@@ -217,11 +221,10 @@ app.post("/api/users/upload_profile_image", auth, (req, res) => {
         (err, doc) => {
           if (err) return res.json({ success: false, err });
           if (req.query.location) {
-          const path = "." + `/${req.query.location}`;
+            const path = "." + `/${req.query.location}`;
 
-        fs.unlink(path, err => {
-        });
-        }
+            fs.unlink(path, err => {});
+          }
           return res.json({
             success: true,
             filename: profileImageName,
@@ -230,6 +233,49 @@ app.post("/api/users/upload_profile_image", auth, (req, res) => {
         }
       );
     });
+  }
+});
+
+var publicationFileTempDir = "";
+
+let publicationFileTempStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const randomDir = generateRandomString(100);
+
+    publicationFileTempDir = "tmp/" + randomDir;
+    fs.mkdirSync(publicationFileTempDir);
+    cb(null, publicationFileTempDir);
+  },
+  filename: (req, file, cb) => {
+    let filename = `${file.originalname}`;
+    cb(null, filename);
+  }
+});
+
+const uploadTempPublicationFile = multer({
+  storage: publicationFileTempStorage
+}).single("file");
+
+app.post("/api/research/upload_tmp_publication_file", auth, (req, res) => {
+  try {
+    uploadTempPublicationFile(req, res, err => {
+      if (err) {
+        return res.json({ success: false, err });
+      }
+
+      return res.json({
+        success: true,
+        name: req.file.originalname,
+        location: publicationFileTempDir + "/" + req.file.originalname,
+        date: moment(),
+        mimetype: req.file.mimetype,
+        uploader: req.user._id,
+        size: req.file.size
+      });
+    });
+  } catch (e) {
+    console.log(e);
+    return res.json({ success: false, e });
   }
 });
 
@@ -4309,18 +4355,15 @@ app.get("/api/researchers/list_for_suggestions", (req, res) => {
 });
 
 const renmoveOldTempFiles = () => {
-  var result = findRemoveSync('./tmp', {dir: '*', 
-  age: {seconds: 86400}
-})
-  console.log(result)
-}
+  var result = findRemoveSync("./tmp", { dir: "*", age: { seconds: 86400 } });
+  console.log(result);
+};
 
-setInterval(renmoveOldTempFiles, 86400000 );
+setInterval(renmoveOldTempFiles, 86400000);
 
 const port = process.env.PORT || 3002;
 
-const findRemoveSync = require('find-remove');
+const findRemoveSync = require("find-remove");
 app.listen(port, () => {
   console.log(`Server Running at ${port}`);
-  
 });

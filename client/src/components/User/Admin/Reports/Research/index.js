@@ -36,8 +36,8 @@ import {
   Typography,
   Paper,
   // Checkbox,
-  IconButton,
-  Tooltip,
+  // IconButton,
+  // Tooltip,
   MenuItem,
   InputLabel,
   Select,
@@ -47,15 +47,15 @@ import {
   TextField
 } from "@material-ui/core";
 
-import { SaveAltOutlined } from "@material-ui/icons";
+// import { SaveAltOutlined } from "@material-ui/icons";
 
 import { lighten } from "@material-ui/core/styles/colorManipulator";
 
-import ReactExport from "react-data-export";
+// import ReactExport from "react-data-export";
 
-const ExcelFile = ReactExport.ExcelFile;
-const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
-const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
+// const ExcelFile = ReactExport.ExcelFile;
+// const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
+// const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 // const ExcelRow = ReactExport.ExcelFile.ExcelRow;
 
 function desc(a, b, orderBy) {
@@ -187,7 +187,7 @@ class EnhancedTableToolbar extends React.Component {
       classes,
       researchersCount,
       departments,
-      data,
+      // data,
       selectedValue,
       handleDepartmentChange,
       by,
@@ -384,68 +384,70 @@ class EnhancedTableToolbar extends React.Component {
                   </MenuItem>
                 </Select>
               </FormControl>
-              {by === "researchType" ? (
-                <ExcelFile
-                  filename={`ລາຍງານຈໍານວນຜົນງານຄົ້ນຄວ້າ ຄວທ ແບ່ງຕາມປະເພດຜົນງານ (${moment(
-                    startValue
-                  ).format("DD-MM-YYYY")} - ${moment(endValue).format(
-                    "DD-MM-YYYY"
-                  )})`}
-                  element={
-                    <Tooltip title="ດາວໂຫລດຟາຍລ໌ Excel">
-                      <IconButton style={{ marginRight: "0px" }}>
-                        <SaveAltOutlined />
-                      </IconButton>
-                    </Tooltip>
-                  }
-                >
-                  <ExcelSheet
-                    data={data}
-                    name="ລາຍງານຈໍານວນຜົນງານຄົ້ນຄວ້າ ຄວທ ແບ່ງຕາມປະເພດຜົນງານ"
-                  >
-                    <ExcelColumn name="Saysettha OT" label="ລ/ດ" value="no" />
-                    <ExcelColumn label="ປະເພດຜົນງານ" value="name" />
-                    <ExcelColumn label="ຕີພິມພາຍໃນ" value="nationalCount" />
-                    <ExcelColumn
-                      label="ຕີພິມພາຍຕ່າງປະເທດ"
-                      value="internationalCount"
-                    />
-                    <ExcelColumn label="ທັງຫມົດ" value="count" />
-                    {
-                      // <ExcelColumn label="Marital Status"
-                      //            value={(col) => col.is_married ? "Married" : "Single"}/>
-                    }
-                  </ExcelSheet>
-                </ExcelFile>
-              ) : (
-                <ExcelFile
-                  filename={`ລາຍງານຈໍານວນຜົນງານຄົ້ນຄວ້າ ຄວທ ແບ່ງຕາມປະເພດການຕີພິມ (${moment(
-                    startValue
-                  ).format("DD-MM-YYYY")} - ${moment(endValue).format(
-                    "DD-MM-YYYY"
-                  )})`}
-                  element={
-                    <Tooltip title="ດາວໂຫລດຟາຍລ໌ Excel">
-                      <IconButton style={{ marginRight: "0px" }}>
-                        <SaveAltOutlined />
-                      </IconButton>
-                    </Tooltip>
-                  }
-                >
-                  <ExcelSheet
-                    data={data}
-                    name="ລາຍງານຈໍານວນຜົນງານຄົ້ນຄວ້າ ຄວທ ແບ່ງຕາມປະເພດການຕີພິມ"
-                  >
-                    <ExcelColumn name="Saysettha OT" label="ລ/ດ" value="no" />
-                    <ExcelColumn label="ປະເພດການຕີພິມ" value="name" />
-                    <ExcelColumn label="ທັງຫມົດ" value="count" />
-                    {
-                      // <ExcelColumn label="Marital Status"
-                      //            value={(col) => col.is_married ? "Married" : "Single"}/>
-                    }
-                  </ExcelSheet>
-                </ExcelFile>
-              )}
+              {
+                // {by === "researchType" ? (
+                //   <ExcelFile
+                //     filename={`ລາຍງານຈໍານວນຜົນງານຄົ້ນຄວ້າ ຄວທ ແບ່ງຕາມປະເພດຜົນງານ (${moment(
+                //       startValue
+                //     ).format("DD-MM-YYYY")} - ${moment(endValue).format(
+                //       "DD-MM-YYYY"
+                //     )})`}
+                //     element={
+                //       <Tooltip title="ດາວໂຫລດຟາຍລ໌ Excel">
+                //         <IconButton style={{ marginRight: "0px" }}>
+                //           <SaveAltOutlined />
+                //         </IconButton>
+                //       </Tooltip>
+                //     }
+                //   >
+                //     <ExcelSheet
+                //       data={data}
+                //       name="ລາຍງານຈໍານວນຜົນງານຄົ້ນຄວ້າ ຄວທ ແບ່ງຕາມປະເພດຜົນງານ"
+                //     >
+                //       <ExcelColumn name="Saysettha OT" label="ລ/ດ" value="no" />
+                //       <ExcelColumn label="ປະເພດຜົນງານ" value="name" />
+                //       <ExcelColumn label="ຕີພິມພາຍໃນ" value="nationalCount" />
+                //       <ExcelColumn
+                //         label="ຕີພິມພາຍຕ່າງປະເທດ"
+                //         value="internationalCount"
+                //       />
+                //       <ExcelColumn label="ທັງຫມົດ" value="count" />
+                //       {
+                //         // <ExcelColumn label="Marital Status"
+                //         //            value={(col) => col.is_married ? "Married" : "Single"}/>
+                //       }
+                //     </ExcelSheet>
+                //   </ExcelFile>
+                // ) : (
+                //   <ExcelFile
+                //     filename={`ລາຍງານຈໍານວນຜົນງານຄົ້ນຄວ້າ ຄວທ ແບ່ງຕາມປະເພດການຕີພິມ (${moment(
+                //       startValue
+                //     ).format("DD-MM-YYYY")} - ${moment(endValue).format(
+                //       "DD-MM-YYYY"
+                //     )})`}
+                //     element={
+                //       <Tooltip title="ດາວໂຫລດຟາຍລ໌ Excel">
+                //         <IconButton style={{ marginRight: "0px" }}>
+                //           <SaveAltOutlined />
+                //         </IconButton>
+                //       </Tooltip>
+                //     }
+                //   >
+                //     <ExcelSheet
+                //       data={data}
+                //       name="ລາຍງານຈໍານວນຜົນງານຄົ້ນຄວ້າ ຄວທ ແບ່ງຕາມປະເພດການຕີພິມ"
+                //     >
+                //       <ExcelColumn name="Saysettha OT" label="ລ/ດ" value="no" />
+                //       <ExcelColumn label="ປະເພດການຕີພິມ" value="name" />
+                //       <ExcelColumn label="ທັງຫມົດ" value="count" />
+                //       {
+                //         // <ExcelColumn label="Marital Status"
+                //         //            value={(col) => col.is_married ? "Married" : "Single"}/>
+                //       }
+                //     </ExcelSheet>
+                //   </ExcelFile>
+                // )}
+              }
             </div>
           </Grid>
         </Grid>
