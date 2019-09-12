@@ -233,6 +233,7 @@ app.post("/api/users/upload_profile_image", auth, (req, res) => {
   }
 });
 
+<<<<<<< HEAD:server/server.old.js
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -300,6 +301,8 @@ app.post("/api/research/upload_tmp_publication_file", auth, (req, res) => {
 >>>>>>> parent of 723e19d... add file upload validation and loading indicator
 =======
 >>>>>>> parent of 723e19d... add file upload validation and loading indicator
+=======
+>>>>>>> parent of 723e19d... add file upload validation and loading indicator:server/server.js
 //====================================
 //             DEPARTMENTS
 //====================================
