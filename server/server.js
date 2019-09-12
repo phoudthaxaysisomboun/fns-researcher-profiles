@@ -239,6 +239,7 @@ app.post("/api/users/upload_profile_image", auth, (req, res) => {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 var publicationFileTempDir = "";
 
 let publicationFileTempStorage = multer.diskStorage({
@@ -282,6 +283,8 @@ app.post("/api/research/upload_tmp_publication_file", auth, (req, res) => {
   }
 });
 
+=======
+>>>>>>> parent of 723e19d... add file upload validation and loading indicator
 =======
 >>>>>>> parent of 723e19d... add file upload validation and loading indicator
 =======
