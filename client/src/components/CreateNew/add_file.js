@@ -34,13 +34,8 @@ import {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
-<<<<<<< HEAD
   // InfoOutlined,
   // Cancel,
-=======
-  InfoOutlined,
-  Cancel,
->>>>>>> parent of 3c2218a... fix webpack errors and add icons and file preview and validation
 =======
   InfoOutlined,
   Cancel,
@@ -592,15 +587,12 @@ class AddResearchFile extends Component {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
-<<<<<<< HEAD
                   
 =======
 =======
 >>>>>>> parent of 723e19d... add file upload validation and loading indicator
                   <InfoOutlined
 =======
-=======
->>>>>>> parent of 3c2218a... fix webpack errors and add icons and file preview and validation
 =======
 >>>>>>> parent of 3c2218a... fix webpack errors and add icons and file preview and validation
 =======
