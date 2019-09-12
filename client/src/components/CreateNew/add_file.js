@@ -12,11 +12,15 @@ import {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   TextField,
   IconButton,
   CircularProgress, 
   LinearProgress,
   Tooltip
+=======
+  TextField
+>>>>>>> parent of 723e19d... add file upload validation and loading indicator
 =======
   TextField
 >>>>>>> parent of 723e19d... add file upload validation and loading indicator
@@ -44,6 +48,7 @@ import {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   // InfoOutlined,
   // Cancel,
 =======
@@ -59,6 +64,9 @@ import {
   Cancel,
 >>>>>>> parent of 3c2218a... fix webpack errors and add icons and file preview and validation
   Error
+=======
+  InfoOutlined
+>>>>>>> parent of 723e19d... add file upload validation and loading indicator
 =======
   InfoOutlined
 >>>>>>> parent of 723e19d... add file upload validation and loading indicator
@@ -100,6 +108,7 @@ class AddResearchFile extends Component {
     //   this.props.switchPage('details')
     console.log(this.props)
   }
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -168,6 +177,8 @@ class AddResearchFile extends Component {
 >>>>>>> parent of 723e19d... add file upload validation and loading indicator
 =======
 >>>>>>> parent of 723e19d... add file upload validation and loading indicator
+=======
+>>>>>>> parent of 723e19d... add file upload validation and loading indicator
   render() {
     const { classes } = this.props;
 
@@ -200,6 +211,7 @@ class AddResearchFile extends Component {
                   minHeight: "56px"
                 }}
               >
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -423,6 +435,8 @@ class AddResearchFile extends Component {
 >>>>>>> parent of 723e19d... add file upload validation and loading indicator
 =======
 >>>>>>> parent of 723e19d... add file upload validation and loading indicator
+=======
+>>>>>>> parent of 723e19d... add file upload validation and loading indicator
                 <svg
                   fill="currentColor"
                   height="35"
@@ -528,6 +542,9 @@ class AddResearchFile extends Component {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> parent of 723e19d... add file upload validation and loading indicator
+=======
 >>>>>>> parent of 723e19d... add file upload validation and loading indicator
 =======
 >>>>>>> parent of 723e19d... add file upload validation and loading indicator
@@ -565,6 +582,7 @@ class AddResearchFile extends Component {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                       >
                         ເພີ່ມລີ້ງຜົນງານ
                       </Typography>
@@ -576,6 +594,19 @@ class AddResearchFile extends Component {
                           textAlign: "left"
                         }}
                       >
+=======
+                      >
+                        ເພີ່ມລີ້ງຜົນງານ
+                      </Typography>
+                      <Typography
+                        variant="inherit"
+                        style={{
+                          fontWeight: "normal",
+                          fontSize: 12,
+                          textAlign: "left"
+                        }}
+                      >
+>>>>>>> parent of 723e19d... add file upload validation and loading indicator
 =======
                       >
                         ເພີ່ມລີ້ງຜົນງານ
@@ -645,6 +676,7 @@ class AddResearchFile extends Component {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                 {
                   !this.state.error ?
                   <>
@@ -665,6 +697,8 @@ class AddResearchFile extends Component {
 >>>>>>> parent of 723e19d... add file upload validation and loading indicator
 =======
 >>>>>>> parent of 723e19d... add file upload validation and loading indicator
+=======
+>>>>>>> parent of 723e19d... add file upload validation and loading indicator
                   <InfoOutlined
                     style={{
                       fontSize: 16,
@@ -674,6 +708,7 @@ class AddResearchFile extends Component {
                     }}
                   />
                   ທ່າານສາມາດເພີ່ມລາຍລະອຽດກ່ຽວກັບວຽກໃນຂັ້ນຕອນຕໍ່ໄປ
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
                   </> : 
@@ -689,6 +724,8 @@ class AddResearchFile extends Component {
                   />
 >>>>>>> parent of 723e19d... add file upload validation and loading indicator
                   ທ່າານສາມາດເພີ່ມລາຍລະອຽດກ່ຽວກັບວຽກໃນຂັ້ນຕອນຕໍ່ໄປ
+=======
+>>>>>>> parent of 723e19d... add file upload validation and loading indicator
 =======
 >>>>>>> parent of 723e19d... add file upload validation and loading indicator
 =======
