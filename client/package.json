@@ -57,7 +57,9 @@
     "recompose": "^0.30.0",
     "redux": "^4.0.0",
     "redux-promise": "^0.6.0",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "tempa-xlsx": "0.0.1",
+    "webpack": "^4.28.3"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -73,5 +75,6 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {}
 }

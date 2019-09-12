@@ -12,7 +12,7 @@ import {
   TextField,
   IconButton,
   CircularProgress, 
-  LinearProgress,
+  // LinearProgress,
   Tooltip
 } from "@material-ui/core";
 import Dropzone from "react-dropzone";
@@ -22,8 +22,8 @@ import {
   //   DescriptionOutlined,
   //   AccountCircleOutlined,
   InsertLinkOutlined,
-  InfoOutlined,
-  Cancel,
+  // InfoOutlined,
+  // Cancel,
   Error
 } from "@material-ui/icons";
 
@@ -69,7 +69,7 @@ class AddResearchFile extends Component {
     console.log(size)
   }
 
-  onDrop(files) {
+  onDrop(files, privateFile = false) {
     this.setState({
       uploading: true
     });
@@ -82,7 +82,7 @@ class AddResearchFile extends Component {
 
     if (files[0]) {
       axios
-      .post("/api/research/upload_tmp_publication_file", formdata, config)
+      .post(`/api/research/upload_tmp_publication_file`, formdata, config)
       .then(response => {
         if (response.data.success) {
           this.setState({
@@ -93,7 +93,8 @@ class AddResearchFile extends Component {
                 date: response.data.date,
                 mimetype: response.data.mimetype,
                 uploader: this.props.user._id,
-                size: response.data.size
+                size: response.data.size,
+                private: privateFile ? true : false
               }
             ],
             error: false,
@@ -239,7 +240,7 @@ class AddResearchFile extends Component {
                     </svg>
                     <Dropzone
                       style={{ height: "100%", width: "100%" }}
-                      onDrop={e => this.onDrop(e)}
+                      onDrop={e => this.onDrop(e, false)}
                       multiple={false}
                       accept=".pdf,.docx,.doc"
                       maxSize = {1073741824}
@@ -296,7 +297,7 @@ class AddResearchFile extends Component {
                     </svg>
                     <Dropzone
                       style={{ height: "100%", width: "100%" }}
-                      onDrop={e => this.onDrop(e)}
+                      onDrop={e => this.onDrop(e, true)}
                       multiple={false}
                       accept=".pdf,.docx"
                     >
@@ -470,14 +471,7 @@ class AddResearchFile extends Component {
                 {
                   !this.state.error ?
                   <>
-                  <InfoOutlined
-                    style={{
-                      fontSize: 16,
-                      marginRight: 4,
-                      position: "relative",
-                      top: 3
-                    }}
-                  />
+                  
                   ທ່າານສາມາດເພີ່ມລາຍລະອຽດກ່ຽວກັບວຽກໃນຂັ້ນຕອນຕໍ່ໄປ
                   </> : 
                   <div>

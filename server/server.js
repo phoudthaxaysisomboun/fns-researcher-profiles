@@ -270,7 +270,7 @@ app.post("/api/research/upload_tmp_publication_file", auth, (req, res) => {
         date: moment(),
         mimetype: req.file.mimetype,
         uploader: req.user._id,
-        size: req.file.size
+        size: req.file.size,
       });
     });
   } catch (e) {
