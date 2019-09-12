@@ -9,11 +9,15 @@ import {
   Button,
   FormControl,
 <<<<<<< HEAD
+<<<<<<< HEAD
   TextField,
   IconButton,
   CircularProgress, 
   // LinearProgress,
   Tooltip
+=======
+  TextField
+>>>>>>> parent of 723e19d... add file upload validation and loading indicator
 =======
   TextField
 >>>>>>> parent of 723e19d... add file upload validation and loading indicator
@@ -26,9 +30,13 @@ import {
 //   AccountCircleOutlined,
   InsertLinkOutlined,
 <<<<<<< HEAD
+<<<<<<< HEAD
   // InfoOutlined,
   // Cancel,
   Error
+=======
+  InfoOutlined
+>>>>>>> parent of 723e19d... add file upload validation and loading indicator
 =======
   InfoOutlined
 >>>>>>> parent of 723e19d... add file upload validation and loading indicator
@@ -61,6 +69,7 @@ class AddResearchFile extends Component {
     //   this.props.switchPage('details')
     console.log(this.props)
   }
+<<<<<<< HEAD
 <<<<<<< HEAD
 
   onDrop(files, privateFile = false) {
@@ -121,6 +130,8 @@ class AddResearchFile extends Component {
 
 =======
 >>>>>>> parent of 723e19d... add file upload validation and loading indicator
+=======
+>>>>>>> parent of 723e19d... add file upload validation and loading indicator
   render() {
     const { classes } = this.props;
 
@@ -153,6 +164,7 @@ class AddResearchFile extends Component {
                   minHeight: "56px"
                 }}
               >
+<<<<<<< HEAD
 <<<<<<< HEAD
                 <Grid container alignItems="center" justify="center">
                   <CircularProgress />
@@ -367,6 +379,8 @@ class AddResearchFile extends Component {
                         </Typography>
                       </Grid>
 =======
+=======
+>>>>>>> parent of 723e19d... add file upload validation and loading indicator
                 <svg
                   fill="currentColor"
                   height="35"
@@ -469,6 +483,9 @@ class AddResearchFile extends Component {
                   </Grid>
                 </Dropzone>
               </Button>
+<<<<<<< HEAD
+>>>>>>> parent of 723e19d... add file upload validation and loading indicator
+=======
 >>>>>>> parent of 723e19d... add file upload validation and loading indicator
 
               <Button
@@ -497,6 +514,7 @@ class AddResearchFile extends Component {
                           fontSize: 16,
                           textAlign: "left"
                         }}
+<<<<<<< HEAD
                       >
                         ເພີ່ມລີ້ງຜົນງານ
                       </Typography>
@@ -508,6 +526,19 @@ class AddResearchFile extends Component {
                           textAlign: "left"
                         }}
                       >
+=======
+                      >
+                        ເພີ່ມລີ້ງຜົນງານ
+                      </Typography>
+                      <Typography
+                        variant="inherit"
+                        style={{
+                          fontWeight: "normal",
+                          fontSize: 12,
+                          textAlign: "left"
+                        }}
+                      >
+>>>>>>> parent of 723e19d... add file upload validation and loading indicator
                         ລີ້ງຂອງຜົນງານທີ່ທ່ານມີແລ້ວໃນເວັພໄຊທ໌ອື່ນ
                       </Typography>
                     </Grid>
@@ -535,11 +566,14 @@ class AddResearchFile extends Component {
                   style={{ fontSize: 14, color: "rgba(0,0,0,0.65)" }}
                 >
 <<<<<<< HEAD
+<<<<<<< HEAD
                 {
                   !this.state.error ?
                   <>
                   
 =======
+=======
+>>>>>>> parent of 723e19d... add file upload validation and loading indicator
                   <InfoOutlined
                     style={{
                       fontSize: 16,
