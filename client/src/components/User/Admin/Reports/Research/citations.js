@@ -25,7 +25,7 @@ import {
   Toolbar,
   Typography,
   Paper,
-  // IconButton,
+  IconButton,
   Tooltip,
   CircularProgress,
   MenuItem,
@@ -36,7 +36,7 @@ import {
   TextField
 } from "@material-ui/core";
 
-// import { SaveAltOutlined } from "@material-ui/icons";
+import { SaveAltOutlined } from "@material-ui/icons";
 
 import { lighten } from "@material-ui/core/styles/colorManipulator";
 
@@ -56,11 +56,11 @@ import {
 //   return { id: counter, name, calories, fat, carbs, protein };
 // }
 
-// import ReactExport from "react-data-export";
+import ReactExport from "react-data-export";
 
-// const ExcelFile = ReactExport.ExcelFile;
-// const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
-// const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
+const ExcelFile = ReactExport.ExcelFile;
+const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
+const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 // const ExcelRow = ReactExport.ExcelFile.ExcelRow;
 
 // const greenData = [{ x: "A", y: 10 }, { x: "B", y: 5 }, { x: "C", y: 15 }];
@@ -252,7 +252,7 @@ class EnhancedTableToolbar extends React.Component {
       classes,
       researchersCount,
       departments,
-      // data,
+      data,
       selectedValue,
       handleDepartmentChange,
       endValue,
@@ -519,32 +519,30 @@ class EnhancedTableToolbar extends React.Component {
                   ))}
                 </Select>
               </FormControl>
-              {
-              //   <ExcelFile
-              //   filename={`ລາຍງານຈໍານວນຄັ້ງທີ່ຖືກນໍາໄປອ້າງອີງຜົນງານຄົ້ນຄວ້າ (${moment(startValue).format("DD-MM-YYYY")} - ${moment(endValue).format("DD-MM-YYYY")}) ${selectedValue} ຄວທ`}
-              //   element={
-              //     <Tooltip title="ດາວໂຫລດຟາຍລ໌ Excel">
-              //       <IconButton style={{ marginRight: "0px" }}>
-              //         <SaveAltOutlined />
-              //       </IconButton>
-              //     </Tooltip>
-              //   }
-              // >
-              //   <ExcelSheet data={data} name="ລາຍການຜົນງານຄົ້ນຄວ້າ">
-              //     <ExcelColumn label="ລ/ດ" value="no" />
-              //     <ExcelColumn label="ຫົວເລື່ອງ" value="title" />
-              //     <ExcelColumn label="ຜູ້ຮັບຜິດຊອບ" value="author" />
-              //     <ExcelColumn label="ວັນທີ" value="date" />
-              //     <ExcelColumn label="ປະເພດຜົນງານ" value="researchType" />
-              //     <ExcelColumn label="ການຕີພິມ" value="publicationType" />
-              //     <ExcelColumn label="ນໍາໄປອ້າງອີງ" value="citations" />
-              //     {
-              //       // <ExcelColumn label="Marital Status"
-              //       //            value={(col) => col.is_married ? "Married" : "Single"}/>
-              //     }
-              //   </ExcelSheet>
-              // </ExcelFile>
-              }
+              <ExcelFile
+                filename={`ລາຍງານຈໍານວນຄັ້ງທີ່ຖືກນໍາໄປອ້າງອີງຜົນງານຄົ້ນຄວ້າ (${moment(startValue).format("DD-MM-YYYY")} - ${moment(endValue).format("DD-MM-YYYY")}) ${selectedValue} ຄວທ`}
+                element={
+                  <Tooltip title="ດາວໂຫລດຟາຍລ໌ Excel">
+                    <IconButton style={{ marginRight: "0px" }}>
+                      <SaveAltOutlined />
+                    </IconButton>
+                  </Tooltip>
+                }
+              >
+                <ExcelSheet data={data} name="ລາຍການຜົນງານຄົ້ນຄວ້າ">
+                  <ExcelColumn label="ລ/ດ" value="no" />
+                  <ExcelColumn label="ຫົວເລື່ອງ" value="title" />
+                  <ExcelColumn label="ຜູ້ຮັບຜິດຊອບ" value="author" />
+                  <ExcelColumn label="ວັນທີ" value="date" />
+                  <ExcelColumn label="ປະເພດຜົນງານ" value="researchType" />
+                  <ExcelColumn label="ການຕີພິມ" value="publicationType" />
+                  <ExcelColumn label="ນໍາໄປອ້າງອີງ" value="citations" />
+                  {
+                    // <ExcelColumn label="Marital Status"
+                    //            value={(col) => col.is_married ? "Married" : "Single"}/>
+                  }
+                </ExcelSheet>
+              </ExcelFile>
             </div>
           </Grid>
         </Grid>

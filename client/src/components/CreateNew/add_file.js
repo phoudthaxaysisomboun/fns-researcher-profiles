@@ -13,7 +13,7 @@ import {
   TextField,
   IconButton,
   CircularProgress, 
-  // LinearProgress,
+  LinearProgress,
   Tooltip
 =======
   TextField
@@ -31,8 +31,13 @@ import {
   InsertLinkOutlined,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   // InfoOutlined,
   // Cancel,
+=======
+  InfoOutlined,
+  Cancel,
+>>>>>>> parent of 3c2218a... fix webpack errors and add icons and file preview and validation
   Error
 =======
   InfoOutlined
@@ -72,7 +77,7 @@ class AddResearchFile extends Component {
 <<<<<<< HEAD
 <<<<<<< HEAD
 
-  onDrop(files, privateFile = false) {
+  onDrop(files) {
     this.setState({
       uploading: true
     });
@@ -85,7 +90,7 @@ class AddResearchFile extends Component {
 
     if (files[0]) {
       axios
-      .post(`/api/research/upload_tmp_publication_file`, formdata, config)
+      .post("/api/research/upload_tmp_publication_file", formdata, config)
       .then(response => {
         if (response.data.success) {
           this.setState({
@@ -96,8 +101,7 @@ class AddResearchFile extends Component {
                 date: response.data.date,
                 mimetype: response.data.mimetype,
                 uploader: this.props.user._id,
-                size: response.data.size,
-                private: privateFile ? true : false
+                size: response.data.size
               }
             ],
             error: false,
@@ -199,7 +203,7 @@ class AddResearchFile extends Component {
                     </svg>
                     <Dropzone
                       style={{ height: "100%", width: "100%" }}
-                      onDrop={e => this.onDrop(e, false)}
+                      onDrop={e => this.onDrop(e)}
                       multiple={false}
                       accept=".pdf,.docx,.doc"
                       maxSize = {1073741824}
@@ -256,7 +260,7 @@ class AddResearchFile extends Component {
                     </svg>
                     <Dropzone
                       style={{ height: "100%", width: "100%" }}
-                      onDrop={e => this.onDrop(e, true)}
+                      onDrop={e => this.onDrop(e)}
                       multiple={false}
                       accept=".pdf,.docx"
                     >
@@ -570,11 +574,26 @@ class AddResearchFile extends Component {
                 {
                   !this.state.error ?
                   <>
+<<<<<<< HEAD
                   
 =======
 =======
 >>>>>>> parent of 723e19d... add file upload validation and loading indicator
                   <InfoOutlined
+=======
+                  <InfoOutlined
+                    style={{
+                      fontSize: 16,
+                      marginRight: 4,
+                      position: "relative",
+                      top: 3
+                    }}
+                  />
+                  ທ່າານສາມາດເພີ່ມລາຍລະອຽດກ່ຽວກັບວຽກໃນຂັ້ນຕອນຕໍ່ໄປ
+                  </> : 
+                  <div>
+                  <Error
+>>>>>>> parent of 3c2218a... fix webpack errors and add icons and file preview and validation
                     style={{
                       fontSize: 16,
                       marginRight: 4,

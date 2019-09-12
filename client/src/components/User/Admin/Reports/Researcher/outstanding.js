@@ -28,7 +28,7 @@ import {
   Toolbar,
   Typography,
   Paper,
-  // IconButton,
+  IconButton,
   Tooltip,
   CircularProgress,
   MenuItem,
@@ -39,7 +39,7 @@ import {
   TextField
 } from "@material-ui/core";
 
-// import { SaveAltOutlined } from "@material-ui/icons";
+import { SaveAltOutlined } from "@material-ui/icons";
 
 import { lighten } from "@material-ui/core/styles/colorManipulator";
 
@@ -54,11 +54,11 @@ import {
 //   return { id: counter, name, calories, fat, carbs, protein };
 // }
 
-// import ReactExport from "react-data-export";
+import ReactExport from "react-data-export";
 
-// const ExcelFile = ReactExport.ExcelFile;
-// const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
-// const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
+const ExcelFile = ReactExport.ExcelFile;
+const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
+const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
 
 function desc(a, b, orderBy) {
@@ -235,7 +235,7 @@ class EnhancedTableToolbar extends React.Component {
       classes,
       researchersCount,
       departments,
-      // data,
+      data,
       selectedValue,
       handleDepartmentChange,
       endValue,
@@ -384,33 +384,31 @@ class EnhancedTableToolbar extends React.Component {
                   ))}
                 </Select>
               </FormControl>
-              {
-              //   <ExcelFile
-              //   name="ລາຍຊື່ນັກຄົ້ນຄວ້າດີເດັ່ນ"
-              //   element={
-              //     <Tooltip title="ດາວໂຫລດຟາຍລ໌ Excel">
-              //       <IconButton style={{ marginRight: "0px" }}>
-              //         <SaveAltOutlined />
-              //       </IconButton>
-              //     </Tooltip>
-              //   }
-              // >
-              //   <ExcelSheet data={data} name="ລາຍຊື່ນັກຄົ້ນຄວ້າດີເດັ່ນ">
-              //     <ExcelColumn label="ລ/ດ" value="no" />
-              //     <ExcelColumn label="ຊື່ ແລະ ນາມສະກຸນ" value="myName" />
+              <ExcelFile
+                name="ລາຍຊື່ນັກຄົ້ນຄວ້າດີເດັ່ນ"
+                element={
+                  <Tooltip title="ດາວໂຫລດຟາຍລ໌ Excel">
+                    <IconButton style={{ marginRight: "0px" }}>
+                      <SaveAltOutlined />
+                    </IconButton>
+                  </Tooltip>
+                }
+              >
+                <ExcelSheet data={data} name="ລາຍຊື່ນັກຄົ້ນຄວ້າດີເດັ່ນ">
+                  <ExcelColumn label="ລ/ດ" value="no" />
+                  <ExcelColumn label="ຊື່ ແລະ ນາມສະກຸນ" value="myName" />
            
-              //     <ExcelColumn label="ພາກວິຊາ" value="affiliation.department" />
+                  <ExcelColumn label="ພາກວິຊາ" value="affiliation.department" />
 
-              //     <ExcelColumn label="ວຸດທິ" value="degree" />
-              //     <ExcelColumn label="ວັນໄດ້ຮັບ" value="outstandingDate" />
-              //     <ExcelColumn label="ລາຍລະອຽດ" value="outstanding.description" />
-              //     {
-              //       // <ExcelColumn label="Marital Status"
-              //       //            value={(col) => col.is_married ? "Married" : "Single"}/>
-              //     }
-              //   </ExcelSheet>
-              // </ExcelFile>
-              }
+                  <ExcelColumn label="ວຸດທິ" value="degree" />
+                  <ExcelColumn label="ວັນໄດ້ຮັບ" value="outstandingDate" />
+                  <ExcelColumn label="ລາຍລະອຽດ" value="outstanding.description" />
+                  {
+                    // <ExcelColumn label="Marital Status"
+                    //            value={(col) => col.is_married ? "Married" : "Single"}/>
+                  }
+                </ExcelSheet>
+              </ExcelFile>
             </div>
           </Grid>
         </Grid>
