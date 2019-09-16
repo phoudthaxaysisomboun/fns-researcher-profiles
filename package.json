@@ -24,6 +24,7 @@
     "express": "^4.16.4",
     "express-formidable": "^1.0.0",
     "find-remove": "^2.0.0",
+    "http-link-preview": "^0.4.4",
     "jsonwebtoken": "^8.3.0",
     "lodash": "^4.17.11",
     "moment": "^2.22.2",

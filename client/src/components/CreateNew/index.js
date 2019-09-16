@@ -2,9 +2,12 @@ import React, { Component } from "react";
 import compose from "recompose/compose";
 import { withRouter } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
+import { CircularProgress } from "@material-ui/core";
 
 import AddResearchFile from "../CreateNew/add_file";
 import AddPublicationDetails from "../CreateNew/add_details";
+
+import Grow from '@material-ui/core/Grow';
 
 const styles = theme => ({
   mainContainer: {
@@ -20,7 +23,8 @@ const styles = theme => ({
 
 class CreateResearch extends Component {
   state = {
-    page: "index"
+    page: "index",
+    loading: false
   };
 
   componentDidMount() {
@@ -28,14 +32,26 @@ class CreateResearch extends Component {
   }
 
   switchPage = page => {
-    this.setState({ page });
-    console.log(page);
+    setTimeout(() => {
+      this.setState({
+        loading: true
+    })
+  }, 2000)
+    this.setState({ page, loading: false });
   };
 
+  showLoading = () => {
+    this.setState({ loading: true });
+  }
+
+  stopLoading = () => {
+    this.setState({ loading: false });
+  }
   renderPage = () => {  
     switch (this.state.page) {
       case "index": {
         return (
+          <Grow in={this.state.page === "index"}>
           <AddResearchFile
             switchPage={page => this.switchPage(page)}
             user={
@@ -44,10 +60,14 @@ class CreateResearch extends Component {
                 : {}
             }
           />
+          </Grow>
         );
       }
       case "details": {
-        return <AddPublicationDetails />;
+        return<Grow in={this.state.page === "details"} style={{ transformOrigin: '0 0 0' }}
+        {...(this.state.page === "details" ? { timeout: 1000 } : {})}>
+         <AddPublicationDetails />
+        </Grow>
       }
       default: {
         return <AddResearchFile />;
@@ -55,10 +75,20 @@ class CreateResearch extends Component {
     }
   };
 
+  loading = () => {
+    return (
+      <div className = "loading">
+      <CircularProgress className="loader"/>
+      </div>
+    )
+  }
+
   render() {
     const { classes } = this.props;
 
-    return <div className={classes.mainContainer}>{this.renderPage()}</div>;
+    return <div className={classes.mainContainer}>
+    {this.renderPage()}
+    </div>;
   }
 }
 

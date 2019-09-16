@@ -11,10 +11,11 @@ const uuidv4 = require("uuid/v4");
 const normalizeUrl = require("normalize-url");
 const moment = require("moment");
 
-const randomString = require("randomstring");
+
 
 mongoose.Promise = global.Promise;
-mongoose.connect(process.env.DATABASE);
+mongoose.connect(process.env.DATABASE, { useNewUrlParser: true,
+  useUnifiedTopology: true,useCreateIndex: true, });
 // mongoose.set('debug', true);
 
 app.use(bodyParser.urlencoded({ extended: true }));

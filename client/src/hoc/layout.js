@@ -298,6 +298,9 @@ const styles = theme => ({
     boxShadow:
       "rgba(0, 0, 0, 0.2) 0px 8px 10px -5px, rgba(0, 0, 0, 0.14) 0px 16px 24px 2px, rgba(0, 0, 0, 0.12) 0px 6px 30px 5px;"
   },
+  menuPaper: {
+    left: 0
+  },
   drawerHeader: {
     display: "flex",
     alignItems: "center",
@@ -330,7 +333,7 @@ const styles = theme => ({
   layout: {
     minHeight: "75vh",
     paddingTop: "64px",
-    // marginLeft: this.state.margin,
+    // marginLeft: this.state.margin,e
     [theme.breakpoints.up("xl")]: {
       marginLeft: 0
     },
@@ -439,7 +442,10 @@ class Layout extends Component {
       });
     }
 
-    if ((prevProps.width !== this.props.width) || (prevProps.location.pathname !== this.props.location.pathname)) {
+    if (
+      prevProps.width !== this.props.width ||
+      prevProps.location.pathname !== this.props.location.pathname
+    ) {
       const width = this.props.width;
 
       if (this.props.location.pathname.startsWith("/publications/create")) {
@@ -541,7 +547,8 @@ class Layout extends Component {
       if (this.props.user.userData.isAuth) {
         return (
           <div>
-            {!this.props.location.pathname.startsWith("/search") && !this.props.location.pathname.startsWith("/publications/create") ? (
+            {!this.props.location.pathname.startsWith("/search") &&
+            !this.props.location.pathname.startsWith("/publications/create") ? (
               <IconButton
                 aria-haspopup="true"
                 color="inherit"
@@ -557,15 +564,15 @@ class Layout extends Component {
                 <SearchIcon style={{ color: "#5f6368" }} />
               </IconButton>
             ) : null}
-            {
-              !this.props.location.pathname.startsWith("/publications/create") ?
-
+            {!this.props.location.pathname.startsWith(
+              "/publications/create"
+            ) ? (
               <IconButton
                 aria-haspopup="true"
                 color="inherit"
                 style={{
                   padding: "4px",
-  
+
                   margin: 0
                 }}
                 onClick={this.handleProfileMenuOpen}
@@ -603,8 +610,7 @@ class Layout extends Component {
                   </Avatar>
                 )}
               </IconButton>
-              : null
-            }
+            ) : null}
 
             {
               //  <IconButton
@@ -756,10 +762,13 @@ class Layout extends Component {
         anchorEl={anchorElCreateNew}
         open={isCreateNewMenuOpen}
         onClose={this.handleCreateNewMenuClose}
-        style={{ left: 8 }}
-        PaperProps={{
-          style: { left: "'8px', !important" }
+        disableAutoFocus={true}
+        disableAutoFocusItem={true}
+        disableEnforceFocus={true}
+        classes={{
+          paper: classes.menuPaper
         }}
+        style={{ left: -1}}
       >
         {this.props.research && this.props.research.researchType ? (
           <>
@@ -843,19 +852,18 @@ class Layout extends Component {
                 <span className={classes.leftHeaderSection}>
                   {!this.props.location.pathname.startsWith("/search") ? (
                     <>
-                    {
-                      !this.props.location.pathname.startsWith("/publications/create") ?
-                      <IconButton
-                        onClick={this.handleDrawerOpen}
-                        className={classNames(classes.menuButtonMain)}
-                        color="inherit"
-                        aria-label="Open drawer"
-                      >
-                        <MenuIcon />
-                      </IconButton>
-                      : null
-                      
-                    }
+                      {!this.props.location.pathname.startsWith(
+                        "/publications/create"
+                      ) ? (
+                        <IconButton
+                          onClick={this.handleDrawerOpen}
+                          className={classNames(classes.menuButtonMain)}
+                          color="inherit"
+                          aria-label="Open drawer"
+                        >
+                          <MenuIcon />
+                        </IconButton>
+                      ) : null}
                       <Link
                         to="/"
                         style={{ textDecoration: "none", color: "inherit" }}
@@ -903,56 +911,54 @@ class Layout extends Component {
                 {!this.props.location.pathname.startsWith("/search") ? (
                   <>
                     <div className={classes.grow} />
-                    {
-                      this.props.location.pathname.startsWith("/publications/create") ?
-                      <div style={{flexGrow: 1}}>
-                      
-                      </div>
+                    {this.props.location.pathname.startsWith(
+                      "/publications/create"
+                    ) ? (
+                      <div style={{ flexGrow: 1 }}></div>
+                    ) : (
+                      <form
+                        style={{
+                          padding: 0
+                          // margin: 0,
+                          // marginLeft: 8,
+                          // marginRight: 8
+                        }}
+                        className={classes.formSearch}
+                        onSubmit={event => this.submitSearch(event)}
+                      >
+                        <div className={classes.search}>
+                          <IconButton
+                            className={classes.searchIcon}
+                            style={{
+                              padding: "8px",
+                              margin: 0,
+                              width: "40px",
+                              height: "40px",
+                              marginLeft: 8,
+                              marginTop: 4
+                            }}
+                            type="submit"
+                          >
+                            <SearchIcon />
+                          </IconButton>
+                          <InputBase
+                            placeholder="ຄົ້ນຫານັກຄົ້ນຄວ້າ, ຜົນງານ ຯລຯ"
+                            classes={{
+                              root: classes.inputRoot,
+                              input: classes.inputInput
+                            }}
+                            style={{
+                              fontFamily: "'Noto Sans Lao UI', sans-serif"
+                            }}
+                            value={this.state.searchText}
+                            onChange={event => {
+                              this.handleSearch(event);
+                            }}
+                          />
+                        </div>
+                      </form>
+                    )}
 
-                      :<form
-                      style={{
-                        padding: 0
-                        // margin: 0,
-                        // marginLeft: 8,
-                        // marginRight: 8
-                      }}
-                      className={classes.formSearch}
-                      onSubmit={event => this.submitSearch(event)}
-                    >
-                      <div className={classes.search}>
-                        <IconButton
-                          className={classes.searchIcon}
-                          style={{
-                            padding: "8px",
-                            margin: 0,
-                            width: "40px",
-                            height: "40px",
-                            marginLeft: 8,
-                            marginTop: 4
-                          }}
-                          type="submit"
-                        >
-                          <SearchIcon />
-                        </IconButton>
-                        <InputBase
-                          placeholder="ຄົ້ນຫານັກຄົ້ນຄວ້າ, ຜົນງານ ຯລຯ"
-                          classes={{
-                            root: classes.inputRoot,
-                            input: classes.inputInput
-                          }}
-                          style={{
-                            fontFamily: "'Noto Sans Lao UI', sans-serif"
-                          }}
-                          value={this.state.searchText}
-                          onChange={event => {
-                            this.handleSearch(event);
-                          }}
-                        />
-                      </div>
-                    </form>
-                    
-                    }
-                    
                     <div className={classes.grow} />
                   </>
                 ) : (
@@ -963,19 +969,18 @@ class Layout extends Component {
                       style={{ flexGrow: "1", margin: 0 }}
                     >
                       <Grid item xs={2} align="left">
-                      {
-                        !this.props.location.pathname.startsWith("/publications/create") ?
-
-                        <IconButton
-                          onClick={this.handleDrawerOpen}
-                          className={classNames(classes.menuButtonMain)}
-                          color="inherit"
-                          aria-label="Open drawer"
-                        >
-                          <MenuIcon />
-                        </IconButton>
-                        : null
-                      }
+                        {!this.props.location.pathname.startsWith(
+                          "/publications/create"
+                        ) ? (
+                          <IconButton
+                            onClick={this.handleDrawerOpen}
+                            className={classNames(classes.menuButtonMain)}
+                            color="inherit"
+                            aria-label="Open drawer"
+                          >
+                            <MenuIcon />
+                          </IconButton>
+                        ) : null}
                       </Grid>
 
                       <Grid item xs={8} alignContent="center">
@@ -1100,7 +1105,7 @@ class Layout extends Component {
                       style={{
                         padding: 0,
                         paddingBottom: 16,
-                        paddingLeft: 8,
+                        paddingLeft: 16,
                         marginTop: "16"
                       }}
                     >
