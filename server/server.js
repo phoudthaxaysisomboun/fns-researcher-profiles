@@ -2,6 +2,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 
+
+
 const app = express();
 const mongoose = require("mongoose");
 require("dotenv").config();
@@ -21,7 +23,7 @@ mongoose.connect(process.env.DATABASE, { useNewUrlParser: true,
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
-var cors = require("cors");
+const cors = require('cors');
 app.use(cors());
 app.use("/uploads", express.static("uploads"));
 app.use("/tmp", express.static("tmp"));
@@ -61,6 +63,50 @@ const fs = require("fs");
 //====================================
 //             UTILS
 //====================================
+
+
+const cheerio = require('cheerio');
+const getUrls = require('get-urls');
+const fetch = require('node-fetch');
+
+const scrapeMetatags = (text) => {
+
+    const urls = Array.from( getUrls(text) );
+
+    const requests = urls.map(async url => {
+
+        const res = await fetch(url);
+
+        const html = await res.text();
+        const $ = cheerio.load(html);
+        
+        const getMetatag = (name) =>  
+            $(`meta[name=${name}]`).attr('content') ||  
+            $(`meta[name="og:${name}"]`).attr('content') ||  
+            $(`meta[name="twitter:${name}"]`).attr('content');
+
+            
+        return { 
+            url,
+            title: $('title').first().text(),
+            favicon: $('link[rel="shortcut icon"]').attr('href'),
+            // description: $('meta[name=description]').attr('content'),
+            description: getMetatag('description'),
+            image: getMetatag('image'),
+            author: getMetatag('author'),
+        }
+    });
+    return Promise.all(requests);
+
+}
+
+app.get("/api/research/get_metatags", (req, res) => {
+  scrapeMetatags(req.query.url).then((result)=>{
+    res.status(200).json(result);
+  })
+  
+});
+
 const generateRandomString = length => {
   var text = "";
   var possible =
@@ -100,6 +146,8 @@ app.post("/api/research/upload_publication", auth, (req, res) => {
     return res.json({ success: true, filename: publicationFileName });
   });
 });
+
+
 
 app.post("/api/research/remove_publication_file", auth, (req, res) => {
   // const file = "." + `/uploads/${req.query.filename}`
@@ -4367,4 +4415,7 @@ const port = process.env.PORT || 3002;
 const findRemoveSync = require("find-remove");
 app.listen(port, () => {
   console.log(`Server Running at ${port}`);
+  scrapeMetatags("https:www.google.com").then((result)=>{
+    console.log(result)
+  })
 });
