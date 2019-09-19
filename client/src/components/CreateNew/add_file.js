@@ -6,6 +6,8 @@ import axios from "axios";
 
 import Microlink from "@microlink/react";
 
+import Shimmer from "react-js-loading-shimmer";
+
 import {
   Paper,
   Typography,
@@ -32,8 +34,11 @@ import {
   InsertLinkOutlined,
   // InfoOutlined,
   Cancel,
-  Error
+  Error,
+  PublicOutlined
 } from "@material-ui/icons";
+import { relative } from "path";
+import { extract } from "glossary";
 
 const normalizeUrl = require("normalize-url");
 
@@ -58,6 +63,7 @@ const styles = theme => ({
 });
 
 const filesize = require("filesize");
+const parse = require("url-parse");
 class AddResearchFile extends Component {
   constructor(props) {
     super(props);
@@ -70,10 +76,9 @@ class AddResearchFile extends Component {
       checkedError: false,
       insertLink: false,
       link: "",
-      linkPreview: null,
-      
+      linkPreview: null
     };
-    this.timeout = null
+    this.timeout = null;
   }
 
   componentDidMount() {
@@ -106,11 +111,12 @@ class AddResearchFile extends Component {
   }
 
   handleLinkTextFieldChange = event => {
-    
-    const link = event.target.value
-    this.setState({ link });
-// this is the search text
-    if(this.timeout) clearTimeout(this.timeout);
+    const link = event.target.value;
+
+    if (event.target.value !== this.state.link) {
+      this.setState({ link, linkPreview: null });
+
+      if(this.timeout) clearTimeout(this.timeout);
     this.timeout = setTimeout(() => {
       if (
         link.trim() !== "" &&
@@ -137,7 +143,42 @@ class AddResearchFile extends Component {
         console.log(this.state.linkPreview);
       }
       console.log("running")
-    }, 3000);
+    }, 2000);
+    }
+
+
+    
+  };
+
+  handleDisplayLinkPreview = event => {
+    console.log("abort");
+    const link = this.state.link;
+
+    if (
+      link.trim() !== "" &&
+      this.validURL(normalizeUrl(link, { forceHttps: true }))
+    ) {
+      axios
+        .get(
+          `/api/research/get_metatags?url=${normalizeUrl(link, {
+            forceHttps: true
+          })}`
+        )
+        .then(response => {
+          if (response.data !== []) {
+            this.setState({
+              linkPreview: response.data[0]
+            });
+            console.log(response.data[0]);
+          } else {
+            this.setState({
+              linkPreview: null
+            });
+          }
+        });
+
+      console.log(this.state.linkPreview);
+    }
   };
 
   onDrop(files, isPrivate = false) {
@@ -206,6 +247,46 @@ class AddResearchFile extends Component {
   };
 
   renderLinkPreview = () => {
+    let imageUrl = "";
+    let faviconUrl = "";
+
+    if (this.state.linkPreview) {
+      if (this.state.linkPreview.image) {
+        if (
+          this.state.linkPreview.image.startsWith("/") &&
+          !this.state.linkPreview.image.startsWith("//")
+        ) {
+          imageUrl =
+            normalizeUrl(parse(this.state.linkPreview.url, true).hostname, {
+              forceHttps: true
+            }) + this.state.linkPreview.image;
+        } else if (this.state.linkPreview.image.startsWith("//")) {
+          imageUrl = this.state.linkPreview.image.replace("//", "");
+        } else {
+          imageUrl = this.state.linkPreview.image;
+        }
+      }
+
+      if (this.state.linkPreview.favicon) {
+        if (
+          this.state.linkPreview.favicon.startsWith("/") &&
+          !this.state.linkPreview.favicon.startsWith("//")
+        ) {
+          faviconUrl =
+            normalizeUrl(parse(this.state.linkPreview.url, true).hostname, {
+              forceHttps: true
+            }) + this.state.linkPreview.favicon;
+        } else if (this.state.linkPreview.favicon.startsWith("//")) {
+          faviconUrl = normalizeUrl(
+            this.state.linkPreview.favicon.replace("//", ""),
+            { forceHttps: true }
+          );
+        } else {
+          faviconUrl = this.state.linkPreview.favicon;
+        }
+      }
+    }
+
     try {
       if (
         this.state.link.trim() !== "" &&
@@ -216,29 +297,85 @@ class AddResearchFile extends Component {
           <a
             className="link-preview-contianer"
             href={normalizeUrl(this.state.link, { forceHttps: true })}
-            title={this.state.linkPreview.title ? this.state.linkPreview.title : this.state.link}
+            title={
+              this.state.linkPreview.title
+                ? this.state.linkPreview.title
+                : this.state.link
+            }
             direction="rlt"
             media="image,logo"
           >
-            <div className="link-icon" style={{backgroundImage: `url(${this.state.linkPreview.image ? this.state.linkPreview.image : this.state.linkPreview.favicon})`}}></div>
+            {this.state.linkPreview.image ? (
+              <div
+                className="link-icon"
+                style={{
+                  backgroundImage: `url(${imageUrl}`,
+                  backgroundSize: "cover"
+                }}
+              ></div>
+            ) : null}
             <div className="link-preview-content">
               <header className="link-preview-header">
-                <p title="Google" className="link-preview-title">
-                  {this.state.linkPreview.title ? this.state.linkPreview.title : this.state.link}
-                </p>
-              </header>
-              <div className="link-preview-description">
                 <p
                   title={this.state.linkPreview.title}
-                  className="link-preview-description-paragraph"
+                  className="link-preview-title"
                 >
-                  {this.state.linkPreview.description ? this.state.linkPreview.description : null}
+                  {this.state.linkPreview.title
+                    ? this.state.linkPreview.title
+                    : this.state.link}
                 </p>
-              </div>
+              </header>
+              {this.state.linkPreview.description ? (
+                <div className="link-preview-description">
+                  <p
+                    title={this.state.linkPreview.description}
+                    className="link-preview-description-paragraph"
+                  >
+                    {this.state.linkPreview.description
+                      ? this.state.linkPreview.description
+                      : null}
+                  </p>
+                </div>
+              ) : null}
+
               <footer className="link-preview-footer">
-                <p title={normalizeUrl(this.state.link, { forceHttps: true })} className="link-preview-footer-text">
-                  {normalizeUrl(this.state.link, { forceHttps: true })}
-                </p>
+                <span
+                  title={normalizeUrl(this.state.linkPreview.url, {
+                    forceHttps: true
+                  })}
+                  className="link-preview-footer-text"
+                >
+                  {this.state.linkPreview.favicon ? (
+                    <span
+                      style={{
+                        width: 14,
+                        height: 14,
+                        marginRight: 4,
+                        position: "relative",
+                        top: 3
+                      }}
+                    >
+                      <img
+                        style={{ width: 14, height: 14 }}
+                        src={faviconUrl}
+                        alt=""
+                      />
+                    </span>
+                  ) : (
+                    <span
+                      style={{
+                        width: 14,
+                        height: 14,
+                        marginRight: 4,
+                        position: "relative",
+                        top: 3
+                      }}
+                    >
+                      <PublicOutlined style={{ fontSize: 14 }} />
+                    </span>
+                  )}
+                  {parse(this.state.linkPreview.url, true).hostname}
+                </span>
               </footer>
             </div>
           </a>
@@ -721,6 +858,7 @@ class AddResearchFile extends Component {
                     value={this.state.link}
                     margin="normal"
                     onChange={event => this.handleLinkTextFieldChange(event)}
+                    onBlur={event => this.handleDisplayLinkPreview(event)}
                     autoFocus
                     inputProps={{
                       maxLength: 1024,
@@ -847,9 +985,10 @@ class AddResearchFile extends Component {
                     style={{ marginLeft: 8, boxShadow: "none" }}
                     onClick={() => this.submit()}
                     disabled={
-                      this.state.uploading ||
-                      this.state.files === null ||
-                      this.state.error
+                      (this.state.uploading) ||
+                      (this.state.files) ||
+                      (this.state.error) || 
+                      (this.state.linkPreview === null)
                         ? true
                         : false
                     }

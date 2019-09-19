@@ -4415,7 +4415,5 @@ const port = process.env.PORT || 3002;
 const findRemoveSync = require("find-remove");
 app.listen(port, () => {
   console.log(`Server Running at ${port}`);
-  scrapeMetatags("https:www.google.com").then((result)=>{
-    console.log(result)
-  })
+  
 });

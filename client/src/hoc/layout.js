@@ -819,7 +819,7 @@ class Layout extends Component {
 
     return (
       <MuiThemeProvider theme={theme2}>
-        {console.log(theme2.palette.primary.main)}
+
         {
           // <Header headerclass={this.state.headerclass} />
         }
