@@ -4,8 +4,6 @@ import { withRouter } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
 import axios from "axios";
 
-import Microlink from "@microlink/react";
-
 import Shimmer from "react-js-loading-shimmer";
 
 import {
@@ -23,7 +21,8 @@ import {
   Checkbox,
   FormHelperText,
   Link,
-  InputAdornment
+  InputAdornment,
+  InputLabel
 } from "@material-ui/core";
 import Dropzone from "react-dropzone";
 import {
@@ -37,8 +36,7 @@ import {
   Error,
   PublicOutlined
 } from "@material-ui/icons";
-import { relative } from "path";
-import { extract } from "glossary";
+
 
 const normalizeUrl = require("normalize-url");
 
@@ -76,7 +74,8 @@ class AddResearchFile extends Component {
       checkedError: false,
       insertLink: false,
       link: "",
-      linkPreview: null
+      linkPreview: null,
+      loadingLink: false
     };
     this.timeout = null;
   }
@@ -111,74 +110,78 @@ class AddResearchFile extends Component {
   }
 
   handleLinkTextFieldChange = event => {
-    const link = event.target.value;
+    const link = event.target.value.replace(" ", "");
 
     if (event.target.value !== this.state.link) {
-      this.setState({ link, linkPreview: null });
+      this.setState({ link, linkPreview: null, loadingLink: true });
 
-      if(this.timeout) clearTimeout(this.timeout);
-    this.timeout = setTimeout(() => {
-      if (
-        link.trim() !== "" &&
-        this.validURL(normalizeUrl(link, { forceHttps: true }))
-      ) {
-        axios
-          .get(
-            `/api/research/get_metatags?url=${normalizeUrl(link, {
-              forceHttps: true
-            })}`
-          )
-          .then(response => {
-            if (response.data !== []) {
-              this.setState({
-                linkPreview: response.data[0]
-              });
-            } else {
-              this.setState({
-                linkPreview: null
-              });
-            }
-          });
-  
-        console.log(this.state.linkPreview);
-      }
-      console.log("running")
-    }, 2000);
+      if (this.timeout) clearTimeout(this.timeout);
+      this.timeout = setTimeout(() => {
+        if (
+          link.trim() !== "" &&
+          this.validURL(normalizeUrl(link, { forceHttps: false }))
+        ) {
+          axios
+            .get(
+              `/api/research/get_metatags?url=${normalizeUrl(link, {
+                forceHttps: false
+              })}`
+            )
+            .then(response => {
+              if (response.data !== []) {
+                this.setState({
+                  linkPreview: response.data[0],
+                  loadingLink: false
+                });
+              } else {
+                this.setState({
+                  linkPreview: null,
+                  loadingLink: false
+                });
+              }
+            });
+
+          console.log(this.state.linkPreview);
+        }
+        console.log("running");
+      }, 1000);
+    } else {
+      this.setState({ loadingLink: false });
     }
-
-
-    
   };
 
   handleDisplayLinkPreview = event => {
-    console.log("abort");
-    const link = this.state.link;
-
-    if (
-      link.trim() !== "" &&
-      this.validURL(normalizeUrl(link, { forceHttps: true }))
-    ) {
-      axios
-        .get(
-          `/api/research/get_metatags?url=${normalizeUrl(link, {
-            forceHttps: true
-          })}`
-        )
-        .then(response => {
-          if (response.data !== []) {
-            this.setState({
-              linkPreview: response.data[0]
-            });
-            console.log(response.data[0]);
-          } else {
-            this.setState({
-              linkPreview: null
-            });
-          }
-        });
-
-      console.log(this.state.linkPreview);
-    }
+    // console.log("abort");
+    // const link = this.state.link;
+    // this.setState({loadingLink: true})
+    // if (
+    //   link.trim() !== "" &&
+    //   this.validURL(normalizeUrl(link, { forceHttps: false }) && this.state)
+    // ) {
+    //   axios
+    //     .get(
+    //       `/api/research/get_metatags?url=${normalizeUrl(link, {
+    //         forceHttps: false
+    //       })}`
+    //     )
+    //     .then(response => {
+    //       if (response.data !== []) {
+    //         this.setState({
+    //           linkPreview: response.data[0],
+    //           loadingLink: false
+    //         });
+    //         console.log(response.data[0]);
+    //       } else {
+    //         this.setState({
+    //           linkPreview: null,
+    //           loadingLink: false
+    //         });
+    //       }
+    //     });
+    //   console.log(this.state.linkPreview);
+    // } else {
+    //   this.setState({loadingLink: false})
+    // }
   };
 
   onDrop(files, isPrivate = false) {
@@ -246,6 +249,56 @@ class AddResearchFile extends Component {
     });
   };
 
+  cancelInsertingLink = () => {
+    this.setState({
+      uploading: false,
+      error: false,
+      files: null,
+      checked: false,
+      checkedError: false,
+      insertLink: false,
+      link: "",
+      linkPreview: null,
+      loadingLink: false
+    });
+  }
+
+  renderLoadingLinkPreview = () => {
+    return (
+      <div
+        className="link-preview-contianer-loading"
+        direction="rlt"
+        media="image,logo"
+      >
+        <div
+          className="link-icon"
+          style={{
+            // backgroundImage: `url(${imageUrl}`,
+            // backgroundSize: "cover"
+            display: "inherit"
+          }}
+        >
+          <Shimmer className="shimmer-full-height" />
+        </div>
+
+        <div className="link-preview-content">
+          <header className="link-preview-header">
+            <Shimmer className="shimmer-w-60" />
+          </header>
+
+          <div className="link-preview-description">
+            <Shimmer className="shimmer-w-100-h-12" />
+            <Shimmer className="shimmer-w-100-h-12" />
+          </div>
+
+          <footer className="link-preview-footer">
+            <Shimmer className="shimmer-w-30-h-8 " />
+          </footer>
+        </div>
+      </div>
+    );
+  };
+
   renderLinkPreview = () => {
     let imageUrl = "";
     let faviconUrl = "";
@@ -258,7 +311,7 @@ class AddResearchFile extends Component {
         ) {
           imageUrl =
             normalizeUrl(parse(this.state.linkPreview.url, true).hostname, {
-              forceHttps: true
+              forceHttps: false
             }) + this.state.linkPreview.image;
         } else if (this.state.linkPreview.image.startsWith("//")) {
           imageUrl = this.state.linkPreview.image.replace("//", "");
@@ -274,12 +327,12 @@ class AddResearchFile extends Component {
         ) {
           faviconUrl =
             normalizeUrl(parse(this.state.linkPreview.url, true).hostname, {
-              forceHttps: true
+              forceHttps: false
             }) + this.state.linkPreview.favicon;
         } else if (this.state.linkPreview.favicon.startsWith("//")) {
           faviconUrl = normalizeUrl(
             this.state.linkPreview.favicon.replace("//", ""),
-            { forceHttps: true }
+            { forceHttps: false }
           );
         } else {
           faviconUrl = this.state.linkPreview.favicon;
@@ -287,103 +340,98 @@ class AddResearchFile extends Component {
       }
     }
 
-    try {
-      if (
-        this.state.link.trim() !== "" &&
-        this.validURL(normalizeUrl(this.state.link, { forceHttps: true })) &&
-        this.state.linkPreview
-      )
-        return (
-          <a
-            className="link-preview-contianer"
-            href={normalizeUrl(this.state.link, { forceHttps: true })}
-            title={
-              this.state.linkPreview.title
-                ? this.state.linkPreview.title
-                : this.state.link
-            }
-            direction="rlt"
-            media="image,logo"
-          >
-            {this.state.linkPreview.image ? (
-              <div
-                className="link-icon"
-                style={{
-                  backgroundImage: `url(${imageUrl}`,
-                  backgroundSize: "cover"
-                }}
-              ></div>
-            ) : null}
-            <div className="link-preview-content">
-              <header className="link-preview-header">
+    if (
+      this.state.link.trim() !== "" &&
+      this.validURL(normalizeUrl(this.state.link, { forceHttps: false })) &&
+      this.state.linkPreview
+    )
+      return (
+        <a
+          className="link-preview-contianer"
+          href={normalizeUrl(this.state.link, { forceHttps: false })}
+          title={
+            this.state.linkPreview.title
+              ? this.state.linkPreview.title
+              : this.state.link
+          }
+          direction="rlt"
+          media="image,logo"
+        >
+          {this.state.linkPreview.image ? (
+            <div
+              className="link-icon"
+              style={{
+                backgroundImage: `url(${imageUrl}`,
+                backgroundSize: "cover"
+              }}
+            ></div>
+          ) : null}
+          <div className="link-preview-content">
+            <header className="link-preview-header">
+              <p
+                title={this.state.linkPreview.title}
+                className="link-preview-title"
+              >
+                {this.state.linkPreview.title
+                  ? this.state.linkPreview.title
+                  : this.state.link}
+              </p>
+            </header>
+            {this.state.linkPreview.description ? (
+              <div className="link-preview-description">
                 <p
-                  title={this.state.linkPreview.title}
-                  className="link-preview-title"
+                  title={this.state.linkPreview.description}
+                  className="link-preview-description-paragraph"
                 >
-                  {this.state.linkPreview.title
-                    ? this.state.linkPreview.title
-                    : this.state.link}
+                  {this.state.linkPreview.description
+                    ? this.state.linkPreview.description
+                    : null}
                 </p>
-              </header>
-              {this.state.linkPreview.description ? (
-                <div className="link-preview-description">
-                  <p
-                    title={this.state.linkPreview.description}
-                    className="link-preview-description-paragraph"
-                  >
-                    {this.state.linkPreview.description
-                      ? this.state.linkPreview.description
-                      : null}
-                  </p>
-                </div>
-              ) : null}
+              </div>
+            ) : null}
 
-              <footer className="link-preview-footer">
-                <span
-                  title={normalizeUrl(this.state.linkPreview.url, {
-                    forceHttps: true
-                  })}
-                  className="link-preview-footer-text"
-                >
-                  {this.state.linkPreview.favicon ? (
-                    <span
-                      style={{
-                        width: 14,
-                        height: 14,
-                        marginRight: 4,
-                        position: "relative",
-                        top: 3
-                      }}
-                    >
-                      <img
-                        style={{ width: 14, height: 14 }}
-                        src={faviconUrl}
-                        alt=""
-                      />
-                    </span>
-                  ) : (
-                    <span
-                      style={{
-                        width: 14,
-                        height: 14,
-                        marginRight: 4,
-                        position: "relative",
-                        top: 3
-                      }}
-                    >
-                      <PublicOutlined style={{ fontSize: 14 }} />
-                    </span>
-                  )}
-                  {parse(this.state.linkPreview.url, true).hostname}
-                </span>
-              </footer>
-            </div>
-          </a>
-        );
-    } catch (error) {
-      console.log(error);
-      return null;
-    }
+            <footer className="link-preview-footer">
+              <span
+                title={normalizeUrl(this.state.linkPreview.url, {
+                  forceHttps: false
+                })}
+                className="link-preview-footer-text"
+              >
+                {this.state.linkPreview.favicon ? (
+                  <span
+                    style={{
+                      width: 14,
+                      height: 14,
+                      marginRight: 4,
+                      position: "relative",
+                      top: 3
+                    }}
+                  >
+                    <img
+                      style={{ width: 14, height: 14 }}
+                      src={faviconUrl}
+                      alt=""
+                    />
+                  </span>
+                ) : (
+                  <span
+                    style={{
+                      width: 14,
+                      height: 14,
+                      marginRight: 4,
+                      position: "relative",
+                      top: 3
+                    }}
+                  >
+                    <PublicOutlined style={{ fontSize: 14 }} />
+                  </span>
+                )}
+                {parse(this.state.linkPreview.url, true).hostname}
+              </span>
+            </footer>
+          </div>
+        </a>
+      );
   };
 
   componentDidCatch(error, errorInfo) {
@@ -557,93 +605,152 @@ class AddResearchFile extends Component {
               >
                 ທ່ານຕ້ອງການອັພໂຫລດຟາຍລ໌ເອກະສານ ຫລື ບໍ່?
               </Typography>
-              {this.state.uploading ? (
-                <Paper
-                  style={{
-                    boxShadow: "none",
-                    border: "0",
-                    marginTop: "16px",
-                    padding: "16px",
-                    background: "#f5f5f5"
-                  }}
-                >
-                  <Grid container alignItems="center" justify="center">
-                    <CircularProgress />
-                  </Grid>
-                </Paper>
-              ) : (
+              {
+                !this.state.insertLink ?
                 <>
-                  {!this.state.files ? (
-                    <>
-                      <Dropzone
-                        style={{ height: "100%", width: "100%" }}
-                        onDrop={e => this.onDrop(e, false)}
-                        multiple={false}
-                        accept=".pdf,.docx,.doc"
-                        maxSize={1073741824}
-                      >
-                        <Button
-                          variant="outlined"
-                          color="primary"
-                          style={{
-                            width: "100%",
-                            marginTop: "24px",
-                            textTransform: "none",
-                            minHeight: "56px"
-                          }}
+                {this.state.uploading ? (
+                  <Paper
+                    style={{
+                      boxShadow: "none",
+                      border: "0",
+                      marginTop: "16px",
+                      padding: "16px",
+                      background: "#f5f5f5"
+                    }}
+                  >
+                    <Grid container alignItems="center" justify="center">
+                      <CircularProgress />
+                    </Grid>
+                  </Paper>
+                ) : (
+                  <>
+                    {!this.state.files ? (
+                      <>
+                        <Dropzone
+                          style={{ height: "100%", width: "100%" }}
+                          onDrop={e => this.onDrop(e, false)}
+                          multiple={false}
+                          accept=".pdf,.docx,.doc"
+                          maxSize={1073741824}
                         >
-                          <svg
-                            fill="currentColor"
-                            height="35"
-                            viewBox="0 0 24 24"
-                            width="35"
-                            xmlns="https://www.w3.org/2000/svg"
-                            aria-hidden="true"
-                            focusable="false"
-                            style={{ marginRight: "16px" }}
+                          <Button
+                            variant="outlined"
+                            color="primary"
+                            style={{
+                              width: "100%",
+                              marginTop: "24px",
+                              textTransform: "none",
+                              minHeight: "56px"
+                            }}
                           >
-                            <path d="M12,7c-2.48,0-4.5,2.02-4.5,4.5S9.52,16,12,16s4.5-2.02,4.5-4.5S14.48,7,12,7z M12,14.2c-1.49,0-2.7-1.21-2.7-2.7 c0-1.49,1.21-2.7,2.7-2.7s2.7,1.21,2.7,2.7C14.7,12.99,13.49,14.2,12,14.2z" />
-                            <path d="M12,4C7,4,2.73,7.11,1,11.5C2.73,15.89,7,19,12,19s9.27-3.11,11-7.5C21.27,7.11,17,4,12,4z M12,17 c-3.79,0-7.17-2.13-8.82-5.5C4.83,8.13,8.21,6,12,6s7.17,2.13,8.82,5.5C19.17,14.87,15.79,17,12,17z" />
-                            <path fill="none" d="M0,0h24v24H0V0z" />
-                          </svg>
-
-                          <Grid
-                            container
-                            alignItems="center"
-                            alignContent="center"
-                          >
-                            <Grid item>
-                              <Typography
-                                variant="inherit"
-                                style={{
-                                  fontWeight: 500,
-                                  fontSize: 16,
-                                  textAlign: "left"
-                                }}
-                              >
-                                ເພີ່ມຟາຍລ໌ສາທາລະນະ
-                              </Typography>
-                              <Typography
-                                variant="inherit"
-                                style={{
-                                  fontWeight: "normal",
-                                  fontSize: 12,
-                                  textAlign: "left"
-                                }}
-                              >
-                                ທຸກຄົນສາມາດເຂົ້າເຖິງຟາຍລ໌ຂອງທ່ານໄດ້
-                              </Typography>
+                            <svg
+                              fill="currentColor"
+                              height="35"
+                              viewBox="0 0 24 24"
+                              width="35"
+                              xmlns="https://www.w3.org/2000/svg"
+                              aria-hidden="true"
+                              focusable="false"
+                              style={{ marginRight: "16px" }}
+                            >
+                              <path d="M12,7c-2.48,0-4.5,2.02-4.5,4.5S9.52,16,12,16s4.5-2.02,4.5-4.5S14.48,7,12,7z M12,14.2c-1.49,0-2.7-1.21-2.7-2.7 c0-1.49,1.21-2.7,2.7-2.7s2.7,1.21,2.7,2.7C14.7,12.99,13.49,14.2,12,14.2z" />
+                              <path d="M12,4C7,4,2.73,7.11,1,11.5C2.73,15.89,7,19,12,19s9.27-3.11,11-7.5C21.27,7.11,17,4,12,4z M12,17 c-3.79,0-7.17-2.13-8.82-5.5C4.83,8.13,8.21,6,12,6s7.17,2.13,8.82,5.5C19.17,14.87,15.79,17,12,17z" />
+                              <path fill="none" d="M0,0h24v24H0V0z" />
+                            </svg>
+  
+                            <Grid
+                              container
+                              alignItems="center"
+                              alignContent="center"
+                            >
+                              <Grid item>
+                                <Typography
+                                  variant="inherit"
+                                  style={{
+                                    fontWeight: 500,
+                                    fontSize: 16,
+                                    textAlign: "left"
+                                  }}
+                                >
+                                  ເພີ່ມຟາຍລ໌ສາທາລະນະ
+                                </Typography>
+                                <Typography
+                                  variant="inherit"
+                                  style={{
+                                    fontWeight: "normal",
+                                    fontSize: 12,
+                                    textAlign: "left"
+                                  }}
+                                >
+                                  ທຸກຄົນສາມາດເຂົ້າເຖິງຟາຍລ໌ຂອງທ່ານໄດ້
+                                </Typography>
+                              </Grid>
                             </Grid>
-                          </Grid>
-                        </Button>
-                      </Dropzone>
-                      <Dropzone
-                        style={{ height: "100%", width: "100%" }}
-                        onDrop={e => this.onDrop(e, true)}
-                        multiple={false}
-                        accept=".pdf,.docx,.doc"
-                        maxSize={1073741824}
-                      >
+                          </Button>
+                        </Dropzone>
+                        <Dropzone
+                          style={{ height: "100%", width: "100%" }}
+                          onDrop={e => this.onDrop(e, true)}
+                          multiple={false}
+                          accept=".pdf,.docx,.doc"
+                          maxSize={1073741824}
+                        >
+                          <Button
+                            variant="outlined"
+                            color="primary"
+                            style={{
+                              width: "100%",
+                              marginTop: "16px",
+                              textTransform: "none",
+                              minHeight: "56px"
+                            }}
+                          >
+                            <svg
+                              fill="currentColor"
+                              height="35"
+                              viewBox="0 0 24 24"
+                              width="35"
+                              xmlns="https://www.w3.org/2000/svg"
+                              aria-hidden="true"
+                              focusable="false"
+                              style={{ marginRight: "16px" }}
+                            >
+                              <path d="M10.58,7.25l1.56,1.56c1.38,0.07,2.47,1.17,2.54,2.54l1.56,1.56C16.4,12.47,16.5,12,16.5,11.5C16.5,9.02,14.48,7,12,7 C11.5,7,11.03,7.1,10.58,7.25z" />
+                              <path d="M12,6c3.79,0,7.17,2.13,8.82,5.5c-0.64,1.32-1.56,2.44-2.66,3.33l1.42,1.42c1.51-1.26,2.7-2.89,3.43-4.74 C21.27,7.11,17,4,12,4c-1.4,0-2.73,0.25-3.98,0.7L9.63,6.3C10.4,6.12,11.19,6,12,6z" />
+                              <path d="M16.43,15.93l-1.25-1.25l-1.27-1.27l-3.82-3.82L8.82,8.32L7.57,7.07L6.09,5.59L3.31,2.81L1.89,4.22l2.53,2.53 C2.92,8.02,1.73,9.64,1,11.5C2.73,15.89,7,19,12,19c1.4,0,2.73-0.25,3.98-0.7l4.3,4.3l1.41-1.41l-3.78-3.78L16.43,15.93z M11.86,14.19c-1.38-0.07-2.47-1.17-2.54-2.54L11.86,14.19z M12,17c-3.79,0-7.17-2.13-8.82-5.5c0.64-1.32,1.56-2.44,2.66-3.33 l1.91,1.91C7.6,10.53,7.5,11,7.5,11.5c0,2.48,2.02,4.5,4.5,4.5c0.5,0,0.97-0.1,1.42-0.25l0.95,0.95C13.6,16.88,12.81,17,12,17z" />
+                            </svg>
+  
+                            <Grid
+                              container
+                              alignItems="center"
+                              alignContent="center"
+                            >
+                              <Grid item>
+                                <Typography
+                                  variant="inherit"
+                                  style={{
+                                    fontWeight: 500,
+                                    fontSize: 16,
+                                    textAlign: "left"
+                                  }}
+                                >
+                                  ເພີ່ມຟາຍລ໌ສ່ວນຕົວ
+                                </Typography>
+                                <Typography
+                                  variant="inherit"
+                                  style={{
+                                    fontWeight: "normal",
+                                    fontSize: 12,
+                                    textAlign: "left"
+                                  }}
+                                >
+                                  ອະນຸຍາດການເຂົ້າເຖິງຟາຍລ໌ເມື່ອມີການຮ້ອງຂໍ
+                                </Typography>
+                              </Grid>
+                            </Grid>
+                          </Button>
+                        </Dropzone>
+  
                         <Button
                           variant="outlined"
                           color="primary"
@@ -653,22 +760,12 @@ class AddResearchFile extends Component {
                             textTransform: "none",
                             minHeight: "56px"
                           }}
+                          onClick={() => this.setState({ insertLink: true })}
                         >
-                          <svg
-                            fill="currentColor"
-                            height="35"
-                            viewBox="0 0 24 24"
-                            width="35"
-                            xmlns="https://www.w3.org/2000/svg"
-                            aria-hidden="true"
-                            focusable="false"
-                            style={{ marginRight: "16px" }}
-                          >
-                            <path d="M10.58,7.25l1.56,1.56c1.38,0.07,2.47,1.17,2.54,2.54l1.56,1.56C16.4,12.47,16.5,12,16.5,11.5C16.5,9.02,14.48,7,12,7 C11.5,7,11.03,7.1,10.58,7.25z" />
-                            <path d="M12,6c3.79,0,7.17,2.13,8.82,5.5c-0.64,1.32-1.56,2.44-2.66,3.33l1.42,1.42c1.51-1.26,2.7-2.89,3.43-4.74 C21.27,7.11,17,4,12,4c-1.4,0-2.73,0.25-3.98,0.7L9.63,6.3C10.4,6.12,11.19,6,12,6z" />
-                            <path d="M16.43,15.93l-1.25-1.25l-1.27-1.27l-3.82-3.82L8.82,8.32L7.57,7.07L6.09,5.59L3.31,2.81L1.89,4.22l2.53,2.53 C2.92,8.02,1.73,9.64,1,11.5C2.73,15.89,7,19,12,19c1.4,0,2.73-0.25,3.98-0.7l4.3,4.3l1.41-1.41l-3.78-3.78L16.43,15.93z M11.86,14.19c-1.38-0.07-2.47-1.17-2.54-2.54L11.86,14.19z M12,17c-3.79,0-7.17-2.13-8.82-5.5c0.64-1.32,1.56-2.44,2.66-3.33 l1.91,1.91C7.6,10.53,7.5,11,7.5,11.5c0,2.48,2.02,4.5,4.5,4.5c0.5,0,0.97-0.1,1.42-0.25l0.95,0.95C13.6,16.88,12.81,17,12,17z" />
-                          </svg>
-
+                          <InsertLinkOutlined
+                            style={{ marginRight: 16, fontSize: 35 }}
+                          />
+  
                           <Grid
                             container
                             alignItems="center"
@@ -683,7 +780,7 @@ class AddResearchFile extends Component {
                                   textAlign: "left"
                                 }}
                               >
-                                ເພີ່ມຟາຍລ໌ສ່ວນຕົວ
+                                ເພີ່ມລີ້ງຜົນງານ
                               </Typography>
                               <Typography
                                 variant="inherit"
@@ -693,189 +790,164 @@ class AddResearchFile extends Component {
                                   textAlign: "left"
                                 }}
                               >
-                                ອະນຸຍາດການເຂົ້າເຖິງຟາຍລ໌ເມື່ອມີການຮ້ອງຂໍ
+                                ລີ້ງຂອງຜົນງານທີ່ທ່ານມີແລ້ວໃນເວັພໄຊທ໌ອື່ນ
                               </Typography>
                             </Grid>
                           </Grid>
                         </Button>
-                      </Dropzone>
-
-                      <Button
-                        variant="outlined"
-                        color="primary"
-                        style={{
-                          width: "100%",
-                          marginTop: "16px",
-                          textTransform: "none",
-                          minHeight: "56px"
-                        }}
-                        onClick={() => this.setState({ insertLink: true })}
-                      >
-                        <InsertLinkOutlined
-                          style={{ marginRight: 16, fontSize: 35 }}
-                        />
-
-                        <Grid
-                          container
-                          alignItems="center"
-                          alignContent="center"
+                      </>
+                    ) : (
+                      <>
+                        <Paper
+                          style={{
+                            boxShadow: "none",
+                            border: "0",
+                            marginTop: "16px",
+                            padding: "16px",
+                            background: "#f5f5f5"
+                          }}
                         >
-                          <Grid item>
-                            <Typography
-                              variant="inherit"
-                              style={{
-                                fontWeight: 500,
-                                fontSize: 16,
-                                textAlign: "left"
-                              }}
-                            >
-                              ເພີ່ມລີ້ງຜົນງານ
-                            </Typography>
-                            <Typography
-                              variant="inherit"
-                              style={{
-                                fontWeight: "normal",
-                                fontSize: 12,
-                                textAlign: "left"
-                              }}
-                            >
-                              ລີ້ງຂອງຜົນງານທີ່ທ່ານມີແລ້ວໃນເວັພໄຊທ໌ອື່ນ
-                            </Typography>
-                          </Grid>
-                        </Grid>
-                      </Button>
-                    </>
-                  ) : (
-                    <>
-                      <Paper
-                        style={{
-                          boxShadow: "none",
-                          border: "0",
-                          marginTop: "16px",
-                          padding: "16px",
-                          background: "#f5f5f5"
-                        }}
-                      >
-                        <Grid container alignItems="center">
-                          <Grid item>
-                            {this.state.files[0].mimetype
-                              ? this.renderIcon()
-                              : null}
-                          </Grid>
-                          <Grid item xs>
-                            <Typography
-                              variant="inherit"
-                              style={{ fontWeight: 500, marginBottom: 4 }}
-                            >
-                              {this.state.files[0].name}
-                            </Typography>
-                            <Typography
-                              variant="inherit"
-                              style={{ fontSize: 14 }}
-                            >
-                              {filesize(
-                                this.state.files[0].size,
-                                { fullform: false },
-                                { separator: "," }
-                              )}{" "}
-                              {" • "}{" "}
-                              {this.state.files[0].private ? (
-                                <Typography
-                                  color="secondary"
-                                  variant="inherit"
-                                  style={{
-                                    display: "inline",
-                                    fontWeight: "500"
-                                  }}
-                                >
-                                  <span>
-                                    <svg
-                                      viewBox="0 0 24 24"
-                                      preserveAspectRatio="xMidYMid meet"
-                                      focusable="false"
-                                      fill="currentColor"
-                                      className="small-publicity-icon"
-                                    >
-                                      <g>
-                                        <path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"></path>
-                                      </g>
-                                    </svg>
-
-                                    <span style={{ fontSize: 14 }}>
-                                      ສ່ວນຕົວ
-                                    </span>
-                                  </span>
-                                </Typography>
-                              ) : (
-                                <Typography
-                                  variant="inherit"
-                                  color="secondary"
-                                  style={{ display: "inline", fontWeight: 500 }}
-                                >
-                                  <span>
-                                    {" "}
-                                    <svg
-                                      viewBox="0 0 24 24"
-                                      preserveAspectRatio="xMidYMid meet"
-                                      focusable="false"
-                                      fill="currentColor"
-                                      className="small-publicity-icon"
-                                    >
-                                      <g>
-                                        <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"></path>
-                                      </g>
-                                    </svg>
-                                  </span>
-                                  <span style={{ fontSize: 14 }}>ສາທາລະນະ</span>
-                                </Typography>
-                              )}
-                            </Typography>
-                          </Grid>
-
-                          <Grid item align="right">
-                            <Tooltip title="ລຶບ">
-                              <IconButton
-                                disableRipple
-                                disableTouchRipple
-                                onClick={() => this.removeFile()}
-                                style={{ marginLeft: 16, padding: 0 }}
+                          <Grid container alignItems="center">
+                            <Grid item>
+                              {this.state.files[0].mimetype
+                                ? this.renderIcon()
+                                : null}
+                            </Grid>
+                            <Grid item xs>
+                              <Typography
+                                variant="inherit"
+                                style={{ fontWeight: 500, marginBottom: 4 }}
                               >
-                                <Cancel />
-                              </IconButton>
-                            </Tooltip>
+                                {this.state.files[0].name}
+                              </Typography>
+                              <Typography
+                                variant="inherit"
+                                style={{ fontSize: 14 }}
+                              >
+                                {filesize(
+                                  this.state.files[0].size,
+                                  { fullform: false },
+                                  { separator: "," }
+                                )}{" "}
+                                {" • "}{" "}
+                                {this.state.files[0].private ? (
+                                  <Typography
+                                    color="secondary"
+                                    variant="inherit"
+                                    style={{
+                                      display: "inline",
+                                      fontWeight: "500"
+                                    }}
+                                  >
+                                    <span>
+                                      <svg
+                                        viewBox="0 0 24 24"
+                                        preserveAspectRatio="xMidYMid meet"
+                                        focusable="false"
+                                        fill="currentColor"
+                                        className="small-publicity-icon"
+                                      >
+                                        <g>
+                                          <path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"></path>
+                                        </g>
+                                      </svg>
+  
+                                      <span style={{ fontSize: 14 }}>
+                                        ສ່ວນຕົວ
+                                      </span>
+                                    </span>
+                                  </Typography>
+                                ) : (
+                                  <Typography
+                                    variant="inherit"
+                                    color="secondary"
+                                    style={{ display: "inline", fontWeight: 500 }}
+                                  >
+                                    <span>
+                                      {" "}
+                                      <svg
+                                        viewBox="0 0 24 24"
+                                        preserveAspectRatio="xMidYMid meet"
+                                        focusable="false"
+                                        fill="currentColor"
+                                        className="small-publicity-icon"
+                                      >
+                                        <g>
+                                          <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"></path>
+                                        </g>
+                                      </svg>
+                                    </span>
+                                    <span style={{ fontSize: 14 }}>ສາທາລະນະ</span>
+                                  </Typography>
+                                )}
+                              </Typography>
+                            </Grid>
+  
+                            <Grid item align="right">
+                              <Tooltip title="ລຶບ">
+                                <IconButton
+                                  disableRipple
+                                  disableTouchRipple
+                                  onClick={() => this.removeFile()}
+                                  style={{ marginLeft: 16, padding: 0 }}
+                                >
+                                  <Cancel />
+                                </IconButton>
+                              </Tooltip>
+                            </Grid>
                           </Grid>
-                        </Grid>
-                      </Paper>
-                    </>
-                  )}
+                        </Paper>
+                      </>
+                    )}
+                  </>
+                )}
+                </> : <>
+                {this.state.insertLink ? (
+                  <FormControl error={this.state.checked} fullWidth>
+                    <div className="insert-link-textfield-container">
+                    <InputLabel >ລີ້ງຂອງຜົນງານຄົ້ນຄວ້າ</InputLabel>
+                      <TextField
+                        // placeholder="ວາງລີ້ງຜົນງານຄົ້ນຄວ້າ"
+                        value={this.state.link}
+                        // label="ລີ້ງຂອງຜົນງານຄົ້ນຄວ້າ"
+                        margin="normal"
+                        onChange={event => this.handleLinkTextFieldChange(event)}
+                        onBlur={event => this.handleDisplayLinkPreview(event)}
+                        autoFocus
+                        inputProps={{
+                          maxLength: 1024,
+                          // shrink: true,
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <InsertLinkOutlined />
+                            </InputAdornment>
+                          )
+                        }}
+                        className="insert-link-textfield"
+                      />
+                      <div className="cancel-insert-link-button-container">
+                        <Link
+                          className="cancel-insert-link-button"
+                          color="default"
+                          onClick={()=>this.cancelInsertingLink()}
+                        >
+                          ຍົກເລີກ
+                        </Link>
+                      </div>
+                    </div>
+  
+                    {this.state.link.trim() !== ""
+                      ? this.state.loadingLink
+                        ? this.renderLoadingLinkPreview()
+                        : this.renderLinkPreview()
+                      : null}
+                  </FormControl>
+                ) : null}
                 </>
-              )}
+              }
+              
 
-              {this.state.insertLink ? (
-                <FormControl required error={this.state.checked} fullWidth>
-                  <TextField
-                    placeholder="ວາງລີ້ງຜົນງານຄົ້ນຄວ້າ"
-                    value={this.state.link}
-                    margin="normal"
-                    onChange={event => this.handleLinkTextFieldChange(event)}
-                    onBlur={event => this.handleDisplayLinkPreview(event)}
-                    autoFocus
-                    inputProps={{
-                      maxLength: 1024,
-                      shrink: true,
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <InsertLinkOutlined />
-                        </InputAdornment>
-                      )
-                    }}
-                  />
-
-                  {this.state.link.trim() !== ""
-                    ? this.renderLinkPreview()
-                    : null}
-                </FormControl>
-              ) : null}
+              
               {this.state.files ? (
                 <FormControl required error={error}>
                   <FormGroup row style={{ marginTop: 16 }}>
@@ -952,6 +1024,55 @@ class AddResearchFile extends Component {
                   </FormGroup>
                 </FormControl>
               ) : null}
+
+              {this.state.linkPreview ? (
+                <FormControl required error={error}>
+                  <FormGroup row style={{ marginTop: 16 }}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={this.state.checked}
+                          onChange={event => this.handleCheckBox(event)}
+                          value=""
+                          color="primary"
+                          style={{
+                            padding: 0,
+                            marginRight: 8,
+                            marginLeft: 14,
+                            alignSelf: "flex-start"
+                          }}
+                        />
+                      }
+                      label={
+                        <>
+                        ຂ້າພະເຈົ້າໄດ້ກວດສອບ ແລະ
+                        ຢືນຢັນວ່າເອກະສານທີ່ຂ້າພະເຈົ້າກຳລັງອັພໂຫລດນີ້
+                        ແມ່ນຂ້າພະເຈົ້າມີສິດໃນການເຜຍແພ່ ແລະ
+                        ແບ່ງປັນແຕ່ລະຟາຍລ໌ຢ່າງເປັນສາທາລະນະ, ຮວມທັງເຫັນດີນຳ{" "}
+                        <Link> ເງື່ອນໄຂການອັບໂຫລດ</Link>.
+                        {error ? (
+                          <FormHelperText
+                            style={{ fontWeight: "normal", marginTop: 0 }}
+                          >
+                            {" "}
+                            <Error
+                              style={{
+                                fontSize: 16,
+                                marginRight: 4,
+                                position: "relative",
+                                top: 3,
+                                color: "currentColor"
+                              }}
+                            />
+                            ບໍ່ສາມາດວ່າງໄດ້
+                          </FormHelperText>
+                        ) : null}
+                      </>
+                      }
+                    />
+                  </FormGroup>
+                </FormControl>
+              ) : null}
               <Grid container alignItems="center" style={{ marginTop: 16 }}>
                 <Grid
                   item
@@ -985,10 +1106,10 @@ class AddResearchFile extends Component {
                     style={{ marginLeft: 8, boxShadow: "none" }}
                     onClick={() => this.submit()}
                     disabled={
-                      (this.state.uploading) ||
-                      (this.state.files) ||
-                      (this.state.error) || 
-                      (this.state.linkPreview === null)
+                      this.state.uploading ||
+                      this.state.files ||
+                      this.state.error ||
+                      this.state.linkPreview === null
                         ? true
                         : false
                     }

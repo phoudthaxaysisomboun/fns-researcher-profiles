@@ -38,6 +38,7 @@
     "node-fetch": "^2.6.0",
     "nodemailer": "^4.6.7",
     "normalize-url": "^4.3.0",
+    "pdf-parse": "^1.1.1",
     "rimraf": "^3.0.0",
     "serve-index": "^1.9.1",
     "unique-filename": "^1.1.1",

@@ -503,7 +503,6 @@ canvas {
   border-color: #e1e8ed;
   overflow: hidden;
   color: #181919;
-  font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -518,13 +517,40 @@ canvas {
   transition-property: background,border-color;
 }
 
+.link-preview-contianer-loading {
+  max-width: 100% !important;
+  border-radius: 8px;
+  background-color: #fff;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #e1e8ed;
+  overflow: hidden;
+  color: #181919;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  text-decoration: none;
+  opacity: 1;
+  position: relative;
+  -webkit-transition-duration: 0.15s;
+          transition-duration: 0.15s;
+  -webkit-transition-timing-function: ease-in-out;
+          transition-timing-function: ease-in-out;
+  -webkit-transition-property: background,border-color;
+  transition-property: background,border-color;
+}
+
+.link-preview-contianer-loading:hover {
+  background: transparent;
+}
+
 .link-preview-contianer:hover {
   background: #f4f8fa;
+  cursor: pointer;
 }
 
 .link-icon {
   color: #181919;
-  font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
   background: transparent no-repeat center center / cover;
   display: block;
   overflow: hidden;
@@ -535,8 +561,8 @@ canvas {
   transition: flex-basis 0.25s ease-in-out;
   transition: flex-basis 0.25s ease-in-out, -webkit-flex-basis 0.25s ease-in-out, -ms-flex-preferred-size 0.25s ease-in-out;
   -webkit-box-flex: 0;
-      -ms-flex: 0 0 125px;
-          flex: 0 0 125px;
+      -ms-flex: 0 0 140px;
+          flex: 0 0 140px;
 }
 
 .link-icon::after {
@@ -561,7 +587,6 @@ canvas {
 
 .link-preview-content {
   color: #181919;
-  font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -596,7 +621,6 @@ canvas {
 }
 
 .link-preview-description {
-  font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
   color: #535353 !important;
   text-align: left;
   font-size: 14px;
@@ -677,5 +701,98 @@ canvas {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+.remove-link-button-container {
+  -webkit-box-flex: 0;
+      -ms-flex: 0 0 24px;
+          flex: 0 0 24px;
+  margin-right: 16px;
+  margin-left: 8px;
+  -ms-flex-line-pack: center;
+      align-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.remove-link-button {
+  position: relative !important;
+  top: 50%;
+  margin-left: 0;
+}
+
+.insert-link-textfield-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  margin-bottom: 16px;
+  margin-top: 24px;
+}
+
+.insert-link-textfield {
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  margin-bottom: 0 !important;
+  margin-right: 16px !important;
+}
+
+.cancel-insert-link-button-container {
+  -webkit-box-flex: 0;
+      -ms-flex: 0 0 19px;
+          flex: 0 0 19px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: end;
+      -ms-flex-align: end;
+          align-items: flex-end;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+  padding-bottom: 7px;
+}
+
+.cancel-insert-link-button {
+  font-size: 1rem;
+  cursor: pointer;
+  font-weight: normal;
+}
+
+.cancel-insert-link-button:hover {
+  text-decoration: none !important;
+  color: #606060;
+}
+
+.shimmer {
+  border-radius: 0 !important;
+}
+
+.shimmer-w-60 {
+  border-radius: 0 !important;
+  width: 60% !important;
+}
+
+.shimmer-w-100-h-12 {
+  border-radius: 0 !important;
+  height: 14px !important;
+  margin-bottom: 2px !important;
+}
+
+.shimmer-w-30-h-8 {
+  border-radius: 0 !important;
+  width: 30% !important;
+  height: 10px !important;
+  margin-bottom: 4px !important;
+}
+
+.shimmer-full-height {
+  border-radius: 0 !important;
+  width: 100%;
+  height: 100% !important;
 }
 /*# sourceMappingURL=styles.css.map */

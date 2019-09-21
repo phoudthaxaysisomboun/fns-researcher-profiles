@@ -13,6 +13,7 @@ const uuidv4 = require("uuid/v4");
 const normalizeUrl = require("normalize-url");
 const moment = require("moment");
 
+const pdf = require('pdf-parse');
 
 
 mongoose.Promise = global.Promise;
@@ -73,7 +74,8 @@ const scrapeMetatags = (text) => {
 
     const urls = Array.from( getUrls(text) );
 
-    const requests = urls.map(async url => {
+    try {
+      const requests = urls.map(async url => {
 
         const res = await fetch(url);
 
@@ -97,6 +99,10 @@ const scrapeMetatags = (text) => {
         }
     });
     return Promise.all(requests);
+    } catch (error) {
+      return console.log(error)
+    }
+    
 
 }
 
@@ -4416,4 +4422,24 @@ const findRemoveSync = require("find-remove");
 app.listen(port, () => {
   console.log(`Server Running at ${port}`);
   
+
+  let dataBuffer = fs.readFileSync('./uploads/Advice_Book_final_project2016_3.pdf');
+ 
+pdf(dataBuffer).then(function(data) {
+ 
+    // number of pages
+    console.log(data.numpages);
+    // number of rendered pages
+    console.log(data.numrender);
+    // PDF info
+    console.log(data.info);
+    // PDF metadata
+    console.log(data.metadata); 
+    // PDF.js version
+    // check https://mozilla.github.io/pdf.js/getting_started/
+    console.log(data.version);
+    // PDF text
+    // console.log(data.text); 
+        
+});
 });
