@@ -2,8 +2,6 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 
-
-
 const app = express();
 const mongoose = require("mongoose");
 require("dotenv").config();
@@ -13,18 +11,24 @@ const uuidv4 = require("uuid/v4");
 const normalizeUrl = require("normalize-url");
 const moment = require("moment");
 
-const pdf = require('pdf-parse');
+const pdf = require("pdf-parse");
+const textract = require("textract");
 
+const readChunk = require("read-chunk");
+const fileType = require("file-type");
 
 mongoose.Promise = global.Promise;
-mongoose.connect(process.env.DATABASE, { useNewUrlParser: true,
-  useUnifiedTopology: true,useCreateIndex: true, });
+mongoose.connect(process.env.DATABASE, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true
+});
 // mongoose.set('debug', true);
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
-const cors = require('cors');
+const cors = require("cors");
 app.use(cors());
 app.use("/uploads", express.static("uploads"));
 app.use("/tmp", express.static("tmp"));
@@ -65,52 +69,45 @@ const fs = require("fs");
 //             UTILS
 //====================================
 
+const cheerio = require("cheerio");
+const getUrls = require("get-urls");
+const fetch = require("node-fetch");
 
-const cheerio = require('cheerio');
-const getUrls = require('get-urls');
-const fetch = require('node-fetch');
+const scrapeMetatags = text => {
+  const urls = Array.from(getUrls(text));
+  const requests = urls.map(async url => {
+    const res = await fetch(url);
 
-const scrapeMetatags = (text) => {
+    const html = await res.text();
+    const $ = cheerio.load(html);
 
-    const urls = Array.from( getUrls(text) );
+    const getMetatag = name =>
+      $(`meta[name=${name}]`).attr("content") ||
+      $(`meta[name="og:${name}"]`).attr("content") ||
+      $(`meta[name="twitter:${name}"]`).attr("content");
 
-    try {
-      const requests = urls.map(async url => {
-
-        const res = await fetch(url);
-
-        const html = await res.text();
-        const $ = cheerio.load(html);
-        
-        const getMetatag = (name) =>  
-            $(`meta[name=${name}]`).attr('content') ||  
-            $(`meta[name="og:${name}"]`).attr('content') ||  
-            $(`meta[name="twitter:${name}"]`).attr('content');
-
-            
-        return { 
-            url,
-            title: $('title').first().text(),
-            favicon: $('link[rel="shortcut icon"]').attr('href'),
-            // description: $('meta[name=description]').attr('content'),
-            description: getMetatag('description'),
-            image: getMetatag('image'),
-            author: getMetatag('author'),
-        }
-    });
-    return Promise.all(requests);
-    } catch (error) {
-      return console.log(error)
-    }
-    
-
-}
+    return {
+      url,
+      title: $("title")
+        .first()
+        .text(),
+      favicon: $('link[rel="shortcut icon"]').attr("href"),
+      // description: $('meta[name=description]').attr('content'),
+      description: getMetatag("description"),
+      image: getMetatag("image"),
+      author: getMetatag("author")
+    };
+  });
+  return Promise.all(requests);
+};
 
 app.get("/api/research/get_metatags", (req, res) => {
-  scrapeMetatags(req.query.url).then((result)=>{
+  scrapeMetatags(req.query.url).then((result, err) => {
+    if (err) {
+      res.status(400).json(err);
+    }
     res.status(200).json(result);
-  })
-  
+  });
 });
 
 const generateRandomString = length => {
@@ -152,8 +149,6 @@ app.post("/api/research/upload_publication", auth, (req, res) => {
     return res.json({ success: true, filename: publicationFileName });
   });
 });
-
-
 
 app.post("/api/research/remove_publication_file", auth, (req, res) => {
   // const file = "." + `/uploads/${req.query.filename}`
@@ -312,21 +307,116 @@ const uploadTempPublicationFile = multer({
 }).single("file");
 
 app.post("/api/research/upload_tmp_publication_file", auth, (req, res) => {
+  let numPages = null;
+  let title = null;
+  let fileData = {};
   try {
     uploadTempPublicationFile(req, res, err => {
       if (err) {
         return res.json({ success: false, err });
       }
 
-      return res.json({
-        success: true,
-        name: req.file.originalname,
-        location: publicationFileTempDir + "/" + req.file.originalname,
-        date: moment(),
-        mimetype: req.file.mimetype,
-        uploader: req.user._id,
-        size: req.file.size
-      });
+      const fileUrl =
+        "./" + publicationFileTempDir + "/" + req.file.originalname;
+
+      const buffer = readChunk.sync(fileUrl, 0, fileType.minimumBytes);
+
+      const ft = fileType(buffer);
+
+      if (!ft) {
+        return res.json({ success: false });
+      } else if (ft.ext === "msi" || ft.ext === "docx" || ft.ext === "pdf") {
+        fileData = {
+          success: true,
+          name: req.file.originalname,
+          location: publicationFileTempDir + "/" + req.file.originalname,
+          date: moment(),
+          mimetype: req.file.mimetype,
+          uploader: req.user._id,
+          size: req.file.size
+        };
+
+        switch (ft.ext) {
+          case "pdf":
+            let dataBuffer = fs.readFileSync(fileUrl);
+
+            pdf(dataBuffer).then(function(data) {
+              // number of pages
+              numPages = data.numpages;
+              // // number of rendered pages
+              // console.log(data.numrender);
+              // // PDF info
+              // console.log(data.info);
+              // // PDF metadata
+              // console.log(data.metadata);
+              // // PDF.js version
+              // // check https://mozilla.github.io/pdf.js/getting_started/
+              // console.log(data.version);
+              // PDF text
+              const text = data.text.trim();
+
+              // title = text.split(".")[0];
+              text
+                .split("Abstract")
+                .pop()
+                .split(".\n")[0]
+                ? (fileData.abstract = text
+                    .split("Abstract")
+                    .pop()
+                    .split(".\n")[0])
+                : null;
+              text.split(".")[0] ? (fileData.title = text.split(".")[0]) : null;
+              data.numpages ? (fileData.numPages = data.numpages) : null;
+              return res.json(fileData);
+            });
+            break;
+          case "docx":
+            textract.fromFileWithPath(fileUrl, function(error, text) {
+              if (error) return null;
+              fileData.title = text.trim().split(".")[0];
+              text
+                .split("Abstract")
+                .pop()
+                .split(".")[0]
+                ? (fileData.abstract = text
+                    .split("Abstract")
+                    .pop()
+                    .split(".")[0])
+                : null;
+              return res.json(fileData);
+            });
+            break;
+          case "msi":
+            textract.fromFileWithPath(fileUrl, function(error, text) {
+              if (error) return null;
+              fileData.title = text.trim().split(".")[0];
+              text
+                .split("Abstract")
+                .pop()
+                .split(".")[0]
+                ? (fileData.abstract = text
+                    .split("Abstract")
+                    .pop()
+                    .split(".")[0])
+                : null;
+              return res.json(fileData);
+            });
+            break;
+          default:
+            // return res.json({ success: false });
+
+            break;
+        }
+
+        console.log(title);
+
+        // textract.fromFileWithPath("./uploads/Proposal-final.docx", function( error, text ) {
+        //   console.log(text.split('.')[0]),
+        //   console.log(error)
+        // })
+      } else {
+        return res.json({ success: false });
+      }
     });
   } catch (e) {
     console.log(e);
@@ -4421,25 +4511,4 @@ const port = process.env.PORT || 3002;
 const findRemoveSync = require("find-remove");
 app.listen(port, () => {
   console.log(`Server Running at ${port}`);
-  
-
-  let dataBuffer = fs.readFileSync('./uploads/Advice_Book_final_project2016_3.pdf');
- 
-pdf(dataBuffer).then(function(data) {
- 
-    // number of pages
-    console.log(data.numpages);
-    // number of rendered pages
-    console.log(data.numrender);
-    // PDF info
-    console.log(data.info);
-    // PDF metadata
-    console.log(data.metadata); 
-    // PDF.js version
-    // check https://mozilla.github.io/pdf.js/getting_started/
-    console.log(data.version);
-    // PDF text
-    // console.log(data.text); 
-        
-});
 });

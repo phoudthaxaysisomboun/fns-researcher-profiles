@@ -22,7 +22,7 @@ import {
   FormHelperText,
   Link,
   InputAdornment,
-  InputLabel
+  // InputLabel
 } from "@material-ui/core";
 import Dropzone from "react-dropzone";
 import {
@@ -47,7 +47,8 @@ const styles = theme => ({
     maxWidth: "550px",
     marginLeft: "auto",
     marginRight: "auto",
-    borderRadius: 8
+    borderRadius: 8,
+    boxShadow: "0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15)"
     // padding: 0
   },
   title: {
@@ -83,7 +84,7 @@ class AddResearchFile extends Component {
   componentDidMount() {
     //   this.props.switchPage('details')
 
-    console.log();
+    console.log("a");
   }
 
   handleCheckBox = event => {
@@ -109,7 +110,7 @@ class AddResearchFile extends Component {
     return !!pattern.test(str);
   }
 
-  handleLinkTextFieldChange = event => {
+  handleLinkTextFieldChange = async(event) => {
     const link = event.target.value.replace(" ", "");
 
     if (event.target.value !== this.state.link) {
@@ -128,7 +129,8 @@ class AddResearchFile extends Component {
               })}`
             )
             .then(response => {
-              if (response.data !== []) {
+              console.log(response.data)
+              if (response.data) {
                 this.setState({
                   linkPreview: response.data[0],
                   loadingLink: false
@@ -148,40 +150,6 @@ class AddResearchFile extends Component {
     } else {
       this.setState({ loadingLink: false });
     }
-  };
-
-  handleDisplayLinkPreview = event => {
-    // console.log("abort");
-    // const link = this.state.link;
-    // this.setState({loadingLink: true})
-    // if (
-    //   link.trim() !== "" &&
-    //   this.validURL(normalizeUrl(link, { forceHttps: false }) && this.state)
-    // ) {
-    //   axios
-    //     .get(
-    //       `/api/research/get_metatags?url=${normalizeUrl(link, {
-    //         forceHttps: false
-    //       })}`
-    //     )
-    //     .then(response => {
-    //       if (response.data !== []) {
-    //         this.setState({
-    //           linkPreview: response.data[0],
-    //           loadingLink: false
-    //         });
-    //         console.log(response.data[0]);
-    //       } else {
-    //         this.setState({
-    //           linkPreview: null,
-    //           loadingLink: false
-    //         });
-    //       }
-    //     });
-    //   console.log(this.state.linkPreview);
-    // } else {
-    //   this.setState({loadingLink: false})
-    // }
   };
 
   onDrop(files, isPrivate = false) {
@@ -210,13 +178,17 @@ class AddResearchFile extends Component {
                   mimetype: response.data.mimetype,
                   uploader: response.data.uploader,
                   size: response.data.size,
-                  private: isPrivate
+                  private: isPrivate,
+                  title : response.data.title,
+                  numPages: response.data.numPages,
+                  abstract: response.data.abstract
                 }
               ],
               error: false,
               uploading: false
             });
             console.log(this.state.files);
+            console.log(response.data);
           } else {
             console.log(response.data);
             this.setState({
@@ -437,7 +409,8 @@ class AddResearchFile extends Component {
   componentDidCatch(error, errorInfo) {
     this.setState({
       error: error,
-      errorInfo: errorInfo
+      errorInfo: errorInfo,
+      loadingLink: false
     });
   }
 
@@ -905,14 +878,15 @@ class AddResearchFile extends Component {
                 {this.state.insertLink ? (
                   <FormControl error={this.state.checked} fullWidth>
                     <div className="insert-link-textfield-container">
-                    <InputLabel >ລີ້ງຂອງຜົນງານຄົ້ນຄວ້າ</InputLabel>
+                    {
+                      // <InputLabel >ລີ້ງຂອງຜົນງານຄົ້ນຄວ້າ</InputLabel>
+                    }
                       <TextField
-                        // placeholder="ວາງລີ້ງຜົນງານຄົ້ນຄວ້າ"
+                        placeholder="ວາງລີ້ງຜົນງານຄົ້ນຄວ້າຂອງທ່ານເຊັ່ນໃນ Researchgate, Google Scholar ຯລຯ."
                         value={this.state.link}
-                        // label="ລີ້ງຂອງຜົນງານຄົ້ນຄວ້າ"
+                        label="ລີ້ງຂອງຜົນງານຄົ້ນຄວ້າ"
                         margin="normal"
                         onChange={event => this.handleLinkTextFieldChange(event)}
-                        onBlur={event => this.handleDisplayLinkPreview(event)}
                         autoFocus
                         inputProps={{
                           maxLength: 1024,
@@ -1024,6 +998,7 @@ class AddResearchFile extends Component {
                   </FormGroup>
                 </FormControl>
               ) : null}
+  
 
               {this.state.linkPreview ? (
                 <FormControl required error={error}>

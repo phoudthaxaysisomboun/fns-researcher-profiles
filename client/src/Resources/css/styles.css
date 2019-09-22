@@ -758,7 +758,7 @@ canvas {
 }
 
 .cancel-insert-link-button {
-  font-size: 1rem;
+  font-size: 0.875rem;
   cursor: pointer;
   font-weight: normal;
 }
