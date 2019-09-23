@@ -774,6 +774,7 @@ text-overflow: ellipsis;
   font-size: 0.875rem;
   cursor: pointer;
   // color: #909090;
+  font-weight: normal !important;
   font-weight: normal
   // text-decoration: none;
 
@@ -816,4 +817,9 @@ text-overflow: ellipsis;
   border-radius: 0 !important;
   width: 100%;
   height: 100% !important;
+}
+
+.cancel-insert-link-button-row {
+  display: flex;
+  justify-content: flex-end;
 }
