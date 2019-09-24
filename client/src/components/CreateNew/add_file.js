@@ -525,6 +525,8 @@ class AddResearchFile extends Component {
   submit = async () => {
     if (this.state.checked && !this.state.error) {
       this.setState({ error: false, checkedError: false });
+      if (this.state.files) {this.props.setFilesData(this.state.files)}
+      if (this.state.linkPreview) {this.props.setLinkData(this.state.linkPreview, this.state.link)}
 
       this.props.switchPage("details");
     } else if (!this.state.checked) {
@@ -533,6 +535,12 @@ class AddResearchFile extends Component {
       this.setState({ error: true, errorMessage: "ຂໍອະໄພເກີດຄວາມຜິດພາດ" });
     }
   };
+
+  handleSkip = () => {
+    if (this.state.files) {this.props.setFilesData(null)}
+    if (this.state.linkPreview) {this.props.setLinkData(null)}
+    this.props.switchPage("details");
+  }
 
   render() {
     const { classes, className } = this.props;
@@ -1111,7 +1119,7 @@ class AddResearchFile extends Component {
                 }
                 </Grid>
                 <Grid item xs md align="right" style={{ marginTop: 34 }}>
-                  <Button>ຂ້າມ</Button>
+                  <Button onClick={()=> this.handleSkip()}>ຂ້າມ</Button>
                   <Button
                     variant="contained"
                     color="primary"

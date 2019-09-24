@@ -86,7 +86,7 @@ class AddPublicationDetails extends Component {
       files: null,
       error: false,
       errorMessage: "ຂໍອະໄພ, ມີບາງຢ່າງຜິດພາດ",
-      checked: false,
+      checked: true,
       checkedError: false,
       insertLink: false,
       link: "",
@@ -99,9 +99,13 @@ class AddPublicationDetails extends Component {
   }
 
   componentDidMount() {
-    //   this.props.switchPage('details')
+    this.setState({files: this.props.files, linkPreview: this.props.linkPreview, link: this.props.link,})
 
-    console.log("a");
+    if (this.props.linkPreview) {
+      this.setState({insertLink: true})
+    }
+
+    console.log(this.props.linkPreview);
   }
 
   handleClose = (event, reason) => {
@@ -601,12 +605,10 @@ class AddPublicationDetails extends Component {
                 {this.props.publicationType ? this.props.publicationType.name : "ຜົນງານຄົ້ນຄວ້າ"}
               </Typography>
 
-              <Typography
-                variant="inherit"
-                style={{ color: "#5f6368", textAlign: "center" }}
-              >
-                ທ່ານຕ້ອງການອັພໂຫລດຟາຍລ໌ເອກະສານ ຫລື ບໍ່?
-              </Typography>
+              <form style={{marginTop: 16, width: "100%"}}>
+              
+              </form>
+
               {!this.state.insertLink ? (
                 <>
                   {this.state.uploading ? (
@@ -1111,7 +1113,7 @@ class AddPublicationDetails extends Component {
                 }
                 </Grid>
                 <Grid item xs md align="right" style={{ marginTop: 34 }}>
-                  <Button>ຂ້າມ</Button>
+                 
                   <Button
                     variant="contained"
                     color="primary"

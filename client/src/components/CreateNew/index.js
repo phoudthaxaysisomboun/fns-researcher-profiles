@@ -28,7 +28,10 @@ class CreateResearch extends Component {
   state = {
     page: "index",
     loading: false,
-    publicationType: {}
+    publicationType: {},
+    files: null,
+    linkPreview: null,
+    link :""
   };
 
   componentDidMount() {
@@ -37,19 +40,15 @@ class CreateResearch extends Component {
       const query = queryString.parse(this.props.location.search);
       const type = query.publicationType
         ? query.publicationType
-        : this.props.research.researchType[0].englishName;
+        : this.props.research.researchType[0];
+        this.setState({publicationType: this.props.research.researchType[0]})
       this.props.research.researchType.map((item, index) => {
         if (item.englishName === type) {
           console.log(item);
-           this.setState({ publicationType: item });
-           return null
+           return this.setState({ publicationType: item });
         } else {
-          console.log(this.props.research.researchType[0]);
-           this.setState({
-            publicationType: this.props.research.researchType[0]
-          });
           return null
-        }
+        } 
       });
     })
   }
@@ -62,13 +61,37 @@ class CreateResearch extends Component {
   }
 
   switchPage = page => {
-    setTimeout(() => {
-      this.setState({
-        loading: true
-      });
-    }, 2000);
+
+
+
+    this.setState({ loading: true });
+  setTimeout(()=>{
     this.setState({ page, loading: false });
+  }, 800)
+
+  
+
+    // setTimeout(() => {
+    //   this.setState({
+    //     loading: true
+    //   });
+    // }, 2000).then(()=> {
+    //   this.setState({ page, loading: false });
+    // })
+    
   };
+
+  setFilesData = files => {
+    this.setState({files})
+    console.log(files)
+
+  }
+
+  setLinkData = (linkPreview, link) => {
+    this.setState({linkPreview, link})
+    console.log(linkPreview)
+  }  
+
 
   showLoading = () => {
     this.setState({ loading: true });
@@ -84,6 +107,8 @@ class CreateResearch extends Component {
           <Grow in={this.state.page === "index"}>
             <AddResearchFile
               switchPage={page => this.switchPage(page)}
+              setFilesData={files => this.setFilesData(files)}
+              setLinkData={(linkPreview, link) => this.setLinkData(linkPreview, link)}
               user={
                 this.props && this.props.user && this.props.user.userData
                   ? this.props.user.userData
@@ -109,6 +134,9 @@ class CreateResearch extends Component {
             publicationType={
             this.state.publicationType
             }
+            linkPreview = {this.state.linkPreview}
+            files = {this.state.files}
+            link ={this.state.link}
             />
           </Grow>
         );
@@ -130,7 +158,7 @@ class CreateResearch extends Component {
   render() {
     const { classes } = this.props;
 
-    return <div className={classes.mainContainer}>{this.renderPage()}</div>;
+    return <div className={classes.mainContainer}>{this.state.loading ? this.loading() : null} {this.renderPage()}</div>;
   }
 }
 
