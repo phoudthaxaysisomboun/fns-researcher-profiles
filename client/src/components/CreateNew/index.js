@@ -31,7 +31,8 @@ class CreateResearch extends Component {
     publicationType: {},
     files: null,
     linkPreview: null,
-    link :""
+    link :"",
+    publicationTypes: []
   };
 
   componentDidMount() {
@@ -41,7 +42,10 @@ class CreateResearch extends Component {
       const type = query.publicationType
         ? query.publicationType
         : this.props.research.researchType[0];
-        this.setState({publicationType: this.props.research.researchType[0]})
+        this.setState({publicationType: this.props.research.researchType[0],
+          publicationTypes: this.props.research.researchType})
+
+        
       this.props.research.researchType.map((item, index) => {
         if (item.englishName === type) {
           console.log(item);
@@ -134,9 +138,13 @@ class CreateResearch extends Component {
             publicationType={
             this.state.publicationType
             }
+            publicationTypes={
+            this.state.publicationTypes
+            }
             linkPreview = {this.state.linkPreview}
             files = {this.state.files}
             link ={this.state.link}
+
             />
           </Grow>
         );

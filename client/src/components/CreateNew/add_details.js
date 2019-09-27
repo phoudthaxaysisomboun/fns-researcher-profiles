@@ -3,9 +3,12 @@ import compose from "recompose/compose";
 import { withRouter } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
 import axios from "axios";
-import classNames from 'classnames';
+import classNames from "classnames";
+import ReactDOM from "react-dom";
 
 import Shimmer from "react-js-loading-shimmer";
+
+import InputError from "../utils/Form/input_error";
 
 import {
   Paper,
@@ -24,7 +27,11 @@ import {
   Link,
   InputAdornment,
   Snackbar,
-  SnackbarContent
+  SnackbarContent,
+  InputLabel,
+  Select,
+  MenuItem,
+  OutlinedInput
 } from "@material-ui/core";
 import Dropzone from "react-dropzone";
 import {
@@ -61,19 +68,19 @@ const styles = theme => ({
     marginTop: 14
   },
   icon: {
-    fontSize: 20,
+    fontSize: 20
   },
   iconVariant: {
     opacity: 0.9,
-    marginRight: theme.spacing.unit,
+    marginRight: theme.spacing.unit
   },
   error: {
-    backgroundColor: theme.palette.error.dark,
+    backgroundColor: theme.palette.error.dark
   },
   message: {
-    display: 'flex',
-    alignItems: 'center',
-  },
+    display: "flex",
+    alignItems: "center"
+  }
 });
 
 const filesize = require("filesize");
@@ -93,32 +100,98 @@ class AddPublicationDetails extends Component {
       linkPreview: null,
       loadingLink: false,
       disableUploadButtom: true,
-      
+      labelWidth: 0,
+      formdata: {
+        researchType: {
+          element: "select",
+          value: "",
+          config: {
+            name: "research_type_input",
+            type: "text",
+            label: "ປະເພດຜົນງານ",
+            labelWidth: 0,
+            options: []
+          },
+          validation: {
+            required: true
+          },
+          valid: true,
+          touched: false,
+          validationMessage: ""
+        }
+      }
     };
     this.timeout = null;
   }
 
   componentDidMount() {
-    this.setState({files: this.props.files, linkPreview: this.props.linkPreview, link: this.props.link,})
+    const newFormdata = {
+      ...this.state.formdata
+    };
+    
+    newFormdata["researchType"].value = this.props.publicationType._id;
+    newFormdata["researchType"].text = this.props.publicationType.name;
+    newFormdata["researchType"].config.options = this.props.publicationTypes;
+    this.setState({
+      files: this.props.files,
+      linkPreview: this.props.linkPreview,
+      link: this.props.link,
+      formdata: newFormdata
+    });
 
     if (this.props.linkPreview) {
-      this.setState({insertLink: true})
+      this.setState({ insertLink: true });
     }
-
-    console.log(this.props.linkPreview);
   }
 
   handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
+    if (reason === "clickaway") {
       return;
     }
 
     this.setState({ error: false });
   };
 
-  componentDidUpdate (prevProps, prevState) {
-   
-  }
+  handlePublicationTypeChange = event => {
+    const newFormdata = {
+      ...this.state.formdata
+    };
+    newFormdata["researchType"].value = event.target.value;
+    newFormdata[
+      "researchType"
+    ].text = this.state.formdata.researchType.config.options.find(
+      x => x._id === event.target.value
+    )
+      ? this.state.formdata.researchType.config.options.find(
+          x => x._id === event.target.value
+        ).name
+      : "";
+    this.setState({ formdata: newFormdata });
+    if (this.state.formdata.researchType.validation.required) {
+      const newFormdata = {
+        ...this.state.formdata
+      };
+      newFormdata["researchType"].valid = this.state.formdata.researchType.value
+        ? true
+        : false;
+      this.setState({ formdata: newFormdata });
+    }
+    // this.props.publicationTypes.find(x => x._id === event.target.value)
+  };
+
+  handlePublicationTypeBlur = event => {
+    if (this.state.formdata.researchType.validation.required) {
+      const newFormdata = {
+        ...this.state.formdata
+      };
+      newFormdata["researchType"].valid = this.state.formdata.researchType.value
+        ? true
+        : false;
+      this.setState({ formdata: newFormdata });
+    }
+  };
+
+  componentDidUpdate(prevProps, prevState) {}
 
   handleCheckBox = event => {
     this.setState({ checked: event.target.checked });
@@ -552,7 +625,7 @@ class AddPublicationDetails extends Component {
         <Grid item lg md sm xs />
         <Grid item lg={8} xl={8} md={8} sm={11} xs={11}>
           <Paper className={classes.container} elevation={0}>
-            <div>
+            <form>
               <Grid container>
                 <Grid item xs={12} align="center" style={{ marginTop: 8 }}>
                   <svg
@@ -602,12 +675,80 @@ class AddPublicationDetails extends Component {
                 </Grid>
               </Grid>
               <Typography className={classes.title} variant="inherit">
-                {this.props.publicationType ? this.props.publicationType.name : "ຜົນງານຄົ້ນຄວ້າ"}
+                {this.state.formdata.researchType.text
+                  ? this.state.formdata.researchType.text + "ຂອງທ່ານ"
+                  : "ຜົນງານຄົ້ນຄວ້າຂອງທ່ານ"}
               </Typography>
 
-              <form style={{marginTop: 16, width: "100%"}}>
-              
-              </form>
+              <Grid container style={{ marginTop: 24, width: "100%" }}>
+                <InputLabel
+                  htmlFor={this.state.formdata.researchType.config.name}
+                  error={!this.state.formdata.researchType.valid}
+                  style={{fontSize: 14, fontWeight: 500, color: "#5f6368"}}
+                >
+                  {this.state.formdata.researchType.config.label}
+                </InputLabel>
+                <FormControl
+                  fullWidth
+                  variant="outlined"
+                  className={classes.formControl}
+                  style={{marginTop: 4}}
+                >
+                  <Select
+                    error={!this.state.formdata.researchType.valid}
+                    fullWidth
+                    value={this.state.formdata.researchType.value}
+                    onChange={this.handlePublicationTypeChange}
+                    onBlur={this.handlePublicationTypeBlur}
+                    style={{
+                      fontFamily: "Noto Sans Lao UI, Roboto, Arial, sans-serif"
+                    }}
+                    input={
+                      <OutlinedInput
+                        
+                        name={this.state.formdata.researchType.name}
+                      />
+                    }
+                  >
+                    <MenuItem
+                      style={{
+                        fontFamily:
+                          "Noto Sans Lao UI, Roboto, Arial, sans-serif",
+                        fontStyle: "italic"
+                      }}
+                      value=""
+                    >
+                      ກະລຸນາເລືອກ{this.state.formdata.researchType.config.label}
+                    </MenuItem>
+                    {this.state.formdata.researchType.config.options.map(
+                      item => (
+                        <MenuItem
+                          style={{
+                            fontFamily:
+                              "Noto Sans Lao UI, Roboto, Arial, sans-serif"
+                          }}
+                          key={item._id}
+                          value={item._id}
+                        >
+                          {item.name}
+                        </MenuItem>
+                      )
+                    )}
+                  </Select>
+                  {!this.state.formdata.researchType.valid ? (
+                    <InputError />
+                  ) : null}
+                </FormControl>
+
+                </Grid>
+                <div></div>
+
+                <InputLabel
+                
+                style={{fontSize: 14, fontWeight: 500, color: "#5f6368"}}
+              >
+                ຟາຍລ໌
+              </InputLabel>
 
               {!this.state.insertLink ? (
                 <>
@@ -918,7 +1059,7 @@ class AddPublicationDetails extends Component {
                         {
                           // <InputLabel >ລີ້ງຂອງຜົນງານຄົ້ນຄວ້າ</InputLabel>
                         }
-                        
+
                         <TextField
                           placeholder="ວາງລີ້ງຜົນງານຄົ້ນຄວ້າຂອງທ່ານເຊັ່ນໃນ Researchgate, Google Scholar ຯລຯ."
                           value={this.state.link}
@@ -1059,9 +1200,8 @@ class AddPublicationDetails extends Component {
                         <>
                           ຂ້າພະເຈົ້າໄດ້ກວດສອບ ແລະ
                           ຢືນຢັນວ່າລິ້ງຂ້າພະເຈົ້າກຳລັງອັພໂຫລດນີ້
-                          ແມ່ນຂ້າພະເຈົ້າມີສິດໃນການເຜຍແພ່ ແລະ
-                          ແບ່ງປັນ, ຮວມທັງເຫັນດີນຳ{" "}
-                          <Link> ເງື່ອນໄຂການອັບໂຫລດ</Link>.
+                          ແມ່ນຂ້າພະເຈົ້າມີສິດໃນການເຜຍແພ່ ແລະ ແບ່ງປັນ,
+                          ຮວມທັງເຫັນດີນຳ <Link> ເງື່ອນໄຂການອັບໂຫລດ</Link>.
                           {error ? (
                             <FormHelperText
                               style={{ fontWeight: "normal", marginTop: 0 }}
@@ -1085,76 +1225,79 @@ class AddPublicationDetails extends Component {
                   </FormGroup>
                 </FormControl>
               ) : null}
+
+              
               <Grid container alignItems="center" style={{ marginTop: 16 }}>
                 <Grid
                   item
                   xs={12}
                   style={{ fontSize: 14, color: "rgba(0,0,0,0.65)" }}
                 >
-                <>ທ່າານສາມາດເພີ່ມລາຍລະອຽດກ່ຽວກັບວຽກໃນຂັ້ນຕອນຕໍ່ໄປ</>
                   {
-                  //   !this.state.error ? (
-                  // ) : (
-                  //   <div>
-                  //     <Error
-                  //       style={{
-                  //         fontSize: 16,
-                  //         marginRight: 4,
-                  //         position: "relative",
-                  //         top: 3,
-                  //         color: "#d93025"
-                  //       }}
-                  //     />
-                  //     <span style={{ fontSize: 14, color: "#d93025" }}>
-                  //       {this.state.errorMessage}
-                  //     </span>
-                  //   </div>
-                  // )
-                }
+                    //   !this.state.error ? (
+                    // ) : (
+                    //   <div>
+                    //     <Error
+                    //       style={{
+                    //         fontSize: 16,
+                    //         marginRight: 4,
+                    //         position: "relative",
+                    //         top: 3,
+                    //         color: "#d93025"
+                    //       }}
+                    //     />
+                    //     <span style={{ fontSize: 14, color: "#d93025" }}>
+                    //       {this.state.errorMessage}
+                    //     </span>
+                    //   </div>
+                    // )
+                  }
                 </Grid>
                 <Grid item xs md align="right" style={{ marginTop: 34 }}>
-                 
                   <Button
                     variant="contained"
                     color="primary"
                     style={{ marginLeft: 8, boxShadow: "none" }}
                     onClick={() => this.submit()}
                     disabled={
-                    (this.state.files !== null || this.state.linkPreview !== null) && !this.state.error && !this.state.uploading ? false : true
+                      (this.state.files !== null ||
+                        this.state.linkPreview !== null) &&
+                      !this.state.error &&
+                      !this.state.uploading
+                        ? false
+                        : true
                     }
                   >
                     ອັພໂຫລດ
                   </Button>
                 </Grid>
               </Grid>
-            </div>
+            </form>
           </Paper>
         </Grid>
         <Grid item lg md sm xs />
         <Snackbar
           anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'left',
+            vertical: "bottom",
+            horizontal: "left"
           }}
           variant="error"
           open={this.state.error}
           autoHideDuration={3000}
-         
-          
-          
           onClose={this.handleClose}
         >
-        <SnackbarContent
-      className={classNames(classes["error"], className)}
-      aria-describedby="client-snackbar"
-      message={
-        <span id="client-snackbar" className={classes.message}>
-          <Error className={classNames(classes.icon, classes.iconVariant)} />
-          {this.state.errorMessage}
-        </span>
-      }
-      
-    />
+          <SnackbarContent
+            className={classNames(classes["error"], className)}
+            aria-describedby="client-snackbar"
+            message={
+              <span id="client-snackbar" className={classes.message}>
+                <Error
+                  className={classNames(classes.icon, classes.iconVariant)}
+                />
+                {this.state.errorMessage}
+              </span>
+            }
+          />
         </Snackbar>
       </Grid>
     );
