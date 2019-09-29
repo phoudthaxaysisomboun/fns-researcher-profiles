@@ -134,7 +134,9 @@ class CreateResearch extends Component {
                 ? this.props.user.userData
                 : {}
             }
-            
+            switchPage={page => this.switchPage(page)}
+            setFilesData={files => this.setFilesData(files)}
+            setLinkData={(linkPreview, link) => this.setLinkData(linkPreview, link)}
             publicationType={
             this.state.publicationType
             }
