@@ -4,11 +4,15 @@ import { withRouter } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
 import axios from "axios";
 import classNames from "classnames";
-import ReactDOM from "react-dom";
+import { ObjectID } from "bson";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import ReactSelect from "react-select";
 
 import Shimmer from "react-js-loading-shimmer";
 
 import InputError from "../utils/Form/input_error";
+import { SERVER } from "../utils/misc";
 
 import {
   Paper,
@@ -31,7 +35,9 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  OutlinedInput
+  OutlinedInput,
+  Chip,
+  Avatar
 } from "@material-ui/core";
 import Dropzone from "react-dropzone";
 import {
@@ -43,8 +49,12 @@ import {
   // InfoOutlined,
   Cancel,
   Error,
-  PublicOutlined
+  PublicOutlined,
+  AccountCircleOutlined,
+  AccountCircle
 } from "@material-ui/icons";
+import { emphasize } from "@material-ui/core/styles/colorManipulator";
+import NoSsr from "@material-ui/core/NoSsr";
 
 const normalizeUrl = require("normalize-url");
 
@@ -80,18 +90,285 @@ const styles = theme => ({
   message: {
     display: "flex",
     alignItems: "center"
+  },
+  root: {
+    flexGrow: 1,
+    marginTop: "16px"
+  },
+  input: {
+    display: "flex",
+    padding: "8px",
+    minHeight: 40
+  },
+  valueContainer: {
+    display: "flex",
+    flexWrap: "wrap",
+    flex: 1,
+    alignItems: "center",
+    overflow: "hidden"
+  },
+  chip: {
+    margin: `${theme.spacing.unit / 2}px ${theme.spacing.unit / 4}px`
+  },
+  chipFocused: {
+    backgroundColor: emphasize(
+      theme.palette.type === "light"
+        ? theme.palette.grey[300]
+        : theme.palette.grey[700],
+      0.08
+    )
+  },
+  noOptionsMessage: {
+    padding: `${theme.spacing.unit}px ${theme.spacing.unit * 2}px`
+  },
+  singleValue: {
+    fontSize: 16
+  },
+  placeholder: {
+    position: "absolute",
+    left: 2,
+    fontSize: 16
+  },
+  paper: {
+    position: "absolute",
+    zIndex: 20000,
+    marginTop: theme.spacing.unit,
+    left: 0,
+    right: 0
+  },
+  divider: {
+    height: theme.spacing.unit * 2
   }
 });
 
 const filesize = require("filesize");
 const parse = require("url-parse");
+
+let suggestions = [];
+let length = 0;
+
+const NoOptionsMessage = props => {
+  return (
+    <Typography
+      color="textSecondary"
+      className={props.selectProps.classes.noOptionsMessage}
+      {...props.innerProps}
+      style={{ fontFamily: "'Noto Sans Lao UI', sans serif" }}
+    >
+      ບໍ່ມີຂໍ້ມູນໃຫ້ເລືອກ, ກະລຸນາພິມສີ່ງທີ່ທ່ານຕ້ອງການຈະເພີ່ມ
+    </Typography>
+  );
+};
+
+const inputComponent = ({ inputRef, ...props }) => {
+  return <div ref={inputRef} {...props} />;
+};
+
+const handleInputChanged = event => {
+  var fullNameArr = event.target.value.split(/\s+/);
+  let name = fullNameArr.slice(0, -1).join(" ");
+  let lastname = fullNameArr.pop();
+
+  const _id = new ObjectID();
+
+  if (event.target.value.trim() !== "" || length > 0) {
+    suggestions[length] = {
+      value: { _id: _id.toHexString(), name, lastname },
+      label: event.target.value
+    };
+  }
+};
+
+const Control = props => {
+  return (
+    <TextField
+      fullWidth
+      onChange={event => {
+        handleInputChanged(event);
+      }}
+      InputProps={{
+        inputComponent,
+        inputProps: {
+          className: props.selectProps.classes.input,
+          inputRef: props.innerRef,
+          children: props.children,
+          ...props.innerProps
+        }
+      }}
+      {...props.selectProps.textFieldProps}
+    />
+  );
+};
+
+const Option = props => {
+  console.log(props);
+  return (
+    <MenuItem
+      buttonRef={props.innerRef}
+      selected={props.isFocused}
+      component="div"
+      style={{
+        fontWeight: props.isSelected ? 700 : 500
+      }}
+      {...props.innerProps}
+    >
+      <Grid container>
+        <Grid item style={{ width: 42 }}>
+          {props.data.profileImage &&
+          props.data.profileImage[0] &&
+          props.data.profileImage[0].location ? (
+            <Avatar
+              alt="profile image"
+              style={{
+                width: 30,
+                height: 30
+              }}
+              src={`${SERVER}${props.data.profileImage[0].location}`}
+            />
+          ) : (
+            <Avatar
+              style={{
+                backgroundColor: "transparent",
+                width: 30,
+                height: 30
+              }}
+            >
+              <AccountCircle style={{ width: 40, height: 40, color: "#9e9e9e", backgroundColor: "#ececec" }} />
+            </Avatar>
+          )}
+        </Grid>
+        <Grid item xs>
+          <Grid container>
+            <Grid item xs={12}>
+              <Typography style={{ fontWeight: 500 }}>
+                {props.children}
+              </Typography>
+            </Grid>
+            {
+              props.data.affiliation ?
+              <Grid item xs={12}>
+              <Typography style={{ fontWeight: "normal",color: "rgb(104, 104, 104)",fontSize: 12 }}>
+                {props.data.affiliation.department.name} {" • "} {props.data.affiliation.faculty.name} {" • "} {props.data.affiliation.institution.name}
+              </Typography>
+            </Grid> : null
+            }
+          </Grid>
+        </Grid>
+      </Grid>
+    </MenuItem>
+  );
+};
+
+const Placeholder = props => {
+  return (
+    <Typography
+      color="textSecondary"
+      className={props.selectProps.classes.placeholder}
+      {...props.innerProps}
+    >
+      {props.children}
+    </Typography>
+  );
+};
+
+const SingleValue = props => {
+  return (
+    <Typography
+      className={props.selectProps.classes.singleValue}
+      {...props.innerProps}
+    >
+      {props.children}
+    </Typography>
+  );
+};
+
+const ValueContainer = props => {
+  return (
+    <div className={props.selectProps.classes.valueContainer}>
+      {props.children}
+    </div>
+  );
+};
+
+const MultiValue = props => {
+  console.log(props);
+  return (
+    <Chip
+      tabIndex={-1}
+      avatar={
+        props.data.profileImage &&
+        props.data.profileImage[0] &&
+        props.data.profileImage[0].location ? (
+          <Avatar
+            alt="profile image"
+            style={{
+              marginLeft: 3,
+              width: 26,
+              height: 26
+            }}
+            src={`${SERVER}${props.data.profileImage[0].location}`}
+          />
+        ) : (
+          <Avatar
+            style={{
+              backgroundColor: "transparent",
+              marginLeft: 3,
+              width: 26,
+              height: 26
+            }}
+          >
+          <AccountCircle style={{ width: 26, height: 26, color: "#9e9e9e", backgroundColor: "#ececec" }} />
+          </Avatar>
+        )
+      }
+      label={props.children}
+      className={classNames(props.selectProps.classes.chip, {
+        [props.selectProps.classes.chipFocused]: props.isFocused
+      })}
+      onDelete={props.removeProps.onClick}
+      deleteIcon={<Cancel {...props.removeProps} />}
+      variant="outlined"
+    />
+  );
+};
+
+const Menu = props => {
+  return (
+    <Paper
+      square
+      style={{ position: "relative" }}
+      className={props.selectProps.classes.paper}
+      {...props.innerProps}
+    >
+      {props.children}
+    </Paper>
+  );
+};
+
+const components = {
+  Control,
+  Menu,
+  MultiValue,
+  NoOptionsMessage,
+  Option,
+  Placeholder,
+  SingleValue,
+  ValueContainer
+};
 class AddPublicationDetails extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      authorError: false,
+      authorErrorMessage: "",
+      single: null,
+      multi: null,
+      multiForAdvisor: null,
+
       uploading: false,
       files: null,
       error: false,
+      formError: false,
       errorMessage: "ຂໍອະໄພ, ມີບາງຢ່າງຜິດພາດ",
       checked: true,
       checkedError: false,
@@ -146,17 +423,44 @@ class AddPublicationDetails extends Component {
     this.timeout = null;
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    let multi = [];
+    if (
+      this.props &&
+      this.props.other &&
+      prevProps.other.value !== this.props.other
+    ) {
+      multi[0] = {
+        value: this.props.other.value,
+        label: this.props.other.label
+      };
+    } else {
+      multi[0] = {
+        value: this.props.user._id,
+        label: `${this.props.user.name} ${this.props.user.lastname}`
+      };
+    }
+
+    if (prevProps.authorSuggestions !== this.props.authorSuggestions) {
+      console.log(this.props.authorSuggestions);
+    }
+  }
+
   componentDidMount() {
     const newFormdata = {
       ...this.state.formdata
     };
+
+    let multi = [];
 
     console.log(this.props.files);
 
     newFormdata["researchType"].value = this.props.publicationType._id;
     newFormdata["title"].value = this.props.files
       ? this.props.files[0].title
-      : this.props.linkPreview ? this.props.linkPreview.title : "";
+      : this.props.linkPreview
+      ? this.props.linkPreview.title
+      : "";
 
     newFormdata["researchType"].text = this.props.publicationType.name;
     newFormdata["researchType"].config.options = this.props.publicationTypes;
@@ -170,7 +474,27 @@ class AddPublicationDetails extends Component {
     if (this.props.linkPreview) {
       this.setState({ insertLink: true });
     }
+
+    this.props.authorSuggestions.map(value => {
+      suggestions.push({
+        value: value._id,
+        label: `${value.name} ${value.lastname}`,
+        profileImage: value.profileImage ? value.profileImage : null,
+        affiliation: value.affiliation
+      });
+      return null;
+    });
+    length = multi.length;
+    this.setState({
+      multi
+    });
   }
+
+  handleChange = name => value => {
+    this.setState({
+      [name]: value
+    });
+  };
 
   handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -237,9 +561,8 @@ class AddPublicationDetails extends Component {
   };
 
   handleTitleBlur = event => {
-    
     if (this.state.formdata.title.validation.required) {
-         const newFormdata = {
+      const newFormdata = {
         ...this.state.formdata
       };
       if (
@@ -318,6 +641,13 @@ class AddPublicationDetails extends Component {
                   linkPreview: response.data[0],
                   loadingLink: false
                 });
+                if (this.state.formdata.title.value.trim() === "") {
+                  const newFormdata = {
+                    ...this.state.formdata
+                  };
+                  newFormdata["title"].value = response.data[0].title;
+                  this.setState({ formdata: newFormdata });
+                }
               } else {
                 this.setState({
                   linkPreview: null,
@@ -370,6 +700,14 @@ class AddPublicationDetails extends Component {
               error: false,
               uploading: false
             });
+            if (this.state.formdata.title.value.trim() === "") {
+              const newFormdata = {
+                ...this.state.formdata
+              };
+              newFormdata["title"].value = response.data.title;
+              this.setState({ formdata: newFormdata });
+            }
+
             console.log(this.state.files);
             console.log(response.data);
           } else {
@@ -689,8 +1027,20 @@ class AddPublicationDetails extends Component {
   };
 
   render() {
-    const { classes, className } = this.props;
+    const { classes, className, theme } = this.props;
     const error = this.state.checkedError;
+
+    const selectStyles = {
+      input: base => ({
+        ...base,
+        color: theme.palette.text.primary,
+        "& input": {
+          font: "inherit"
+        }
+
+        // padding: "16px"
+      })
+    };
 
     return (
       <Grid
@@ -1169,7 +1519,7 @@ class AddPublicationDetails extends Component {
                             onChange={event =>
                               this.handleLinkTextFieldChange(event)
                             }
-                            autoFocus
+                            autoFocus={this.state.link ? false : true}
                             inputProps={{
                               maxLength: 1024,
                               // shrink: true,
@@ -1385,6 +1735,47 @@ class AddPublicationDetails extends Component {
                 </FormControl>
               </Grid>
 
+              <div className={classes.root}>
+                <NoSsr>
+                  <ReactSelect
+                    classes={classes}
+                    styles={selectStyles}
+                    textFieldProps={{
+                      // label: "ນັກຄົ້ນຄວ້າ",
+                      // InputLabelProps: {
+                      //   shrink: true
+                      // },
+                      variant: "outlined"
+                    }}
+                    options={suggestions}
+                    components={components}
+                    value={this.state.multi}
+                    onChange={this.handleChange("multi")}
+                    placeholder=""
+                    isMulti
+                  />
+                </NoSsr>
+              </div>
+
+              {this.state.authorError ? (
+                <Grid container spacing={24}>
+                  <Grid item xs={12}>
+                    <FormHelperText
+                      style={{
+                        fontFamily: "'Noto Sans Lao UI', sans serif",
+                        fontWeight: "600",
+                        marginBottom: "8px",
+                        marginTop: "8px"
+                      }}
+                      error
+                      id="component-error-text"
+                    >
+                      {this.state.authorErrorMessage}
+                    </FormHelperText>
+                  </Grid>
+                </Grid>
+              ) : null}
+
               <Grid container alignItems="center" style={{ marginTop: 16 }}>
                 <Grid
                   item
@@ -1462,10 +1853,25 @@ class AddPublicationDetails extends Component {
   }
 }
 
+AddPublicationDetails.propTypes = {
+  classes: PropTypes.object.isRequired,
+  theme: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => {
+  return {
+    user: state.user.userData,
+    research: state.research
+  };
+};
+
 const enhance = compose(
   withRouter,
-  withStyles(styles, { withTheme: true })
-  // withWidth(),
+  withStyles(styles, { withTheme: true }),
+  connect(
+    mapStateToProps,
+    null
+  )
 );
 
 export default enhance(AddPublicationDetails);

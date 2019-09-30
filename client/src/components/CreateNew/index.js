@@ -11,6 +11,7 @@ import Grow from "@material-ui/core/Grow";
 import { getResearchType } from "../../actions/research_actions";
 import { connect } from "react-redux";
 import queryString from "query-string";
+import { getAuthorSuggestions }  from "../../actions/user_actions";
 
 const styles = theme => ({
   mainContainer: {
@@ -54,6 +55,10 @@ class CreateResearch extends Component {
           return null
         } 
       });
+    })
+
+    this.props.dispatch(getAuthorSuggestions()).then((payload)=>{
+      console.log()
     })
   }
 
@@ -146,7 +151,7 @@ class CreateResearch extends Component {
             linkPreview = {this.state.linkPreview}
             files = {this.state.files}
             link ={this.state.link}
-
+            authorSuggestions = {this.props.user.authorSuggestions ? this.props.user.authorSuggestions : null}
             />
           </Grow>
         );
