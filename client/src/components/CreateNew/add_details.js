@@ -93,7 +93,7 @@ const styles = theme => ({
   },
   root: {
     flexGrow: 1,
-    marginTop: "16px"
+    marginTop: 4
   },
   input: {
     display: "flex",
@@ -126,8 +126,10 @@ const styles = theme => ({
   },
   placeholder: {
     position: "absolute",
-    left: 2,
-    fontSize: 16
+    left: 9,
+    fontSize: 16,
+    color: "#a2a2a2",
+    
   },
   paper: {
     position: "absolute",
@@ -265,6 +267,7 @@ const Placeholder = props => {
       color="textSecondary"
       className={props.selectProps.classes.placeholder}
       {...props.innerProps}
+      style={{fontWeight: 400}}
     >
       {props.children}
     </Typography>
@@ -1734,14 +1737,26 @@ class AddPublicationDetails extends Component {
                   ) : null}
                 </FormControl>
               </Grid>
-
+              <Grid container style={{marginTop: 24}}>
+              <Grid item xs={12}>
+              <InputLabel
+              // htmlFor={this.state.formdata.title.config.name}
+              // error={!this.state.formdata.title.valid}
+              style={{ fontSize: 14, fontWeight: 500 }}
+            >
+              ຜູ້ຂຽນ
+            </InputLabel>
+              </Grid>
+              <Grid item xs={12}>
               <div className={classes.root}>
                 <NoSsr>
                   <ReactSelect
                     classes={classes}
                     styles={selectStyles}
+                    
                     textFieldProps={{
-                      // label: "ນັກຄົ້ນຄວ້າ",
+                      // placeholder: "ກະລຸນາເລືອກຜູ້ຂຽນ",
+                      
                       // InputLabelProps: {
                       //   shrink: true
                       // },
@@ -1751,11 +1766,18 @@ class AddPublicationDetails extends Component {
                     components={components}
                     value={this.state.multi}
                     onChange={this.handleChange("multi")}
-                    placeholder=""
+                    placeholder="ກະລຸນາເລືອກຜູ້ຂຽນ"
                     isMulti
                   />
                 </NoSsr>
               </div>
+              {!this.state.formdata.title.valid ? (
+                <InputError message="ຕ້ອງມີອັກສອນຢ່າງຫນ້ອຍ 6 ຕົວ ແລະ ບໍ່ຫລາຍກວ່າ 500" />
+              ) : null}
+              </Grid>
+              
+              </Grid>
+              
 
               {this.state.authorError ? (
                 <Grid container spacing={24}>
