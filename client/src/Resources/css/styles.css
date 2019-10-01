@@ -809,4 +809,14 @@ canvas {
 .css-tlfecz-indicatorContainer {
   display: none;
 }
+
+.react-select-custom-dropdown {
+  position: relative;
+  left: 7px;
+  color: #757575;
+}
+
+.react-select-custom-dropdown:hover {
+  cursor: pointer;
+}
 /*# sourceMappingURL=styles.css.map */

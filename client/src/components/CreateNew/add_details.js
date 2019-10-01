@@ -14,6 +14,10 @@ import Shimmer from "react-js-loading-shimmer";
 import InputError from "../utils/Form/input_error";
 import { SERVER } from "../utils/misc";
 
+import "moment/locale/lo";
+
+import moment from "moment";
+
 import {
   Paper,
   Typography,
@@ -37,7 +41,9 @@ import {
   MenuItem,
   OutlinedInput,
   Chip,
-  Avatar
+  Avatar,
+  InputBase,
+  Input
 } from "@material-ui/core";
 import Dropzone from "react-dropzone";
 import {
@@ -50,13 +56,16 @@ import {
   Cancel,
   Error,
   PublicOutlined,
-  AccountCircleOutlined,
-  AccountCircle
+  // AccountCircleOutlined,
+  AccountCircle,
+  ArrowDropDown
 } from "@material-ui/icons";
 import { emphasize } from "@material-ui/core/styles/colorManipulator";
 import NoSsr from "@material-ui/core/NoSsr";
 
 const normalizeUrl = require("normalize-url");
+
+moment.locale("lo");
 
 const styles = theme => ({
   container: {
@@ -98,7 +107,8 @@ const styles = theme => ({
   input: {
     display: "flex",
     padding: "8px",
-    minHeight: 40
+    minHeight: 40,
+    paddingLeft: 14
   },
   valueContainer: {
     display: "flex",
@@ -126,17 +136,19 @@ const styles = theme => ({
   },
   placeholder: {
     position: "absolute",
-    left: 9,
+    left: 16,
     fontSize: 16,
-    color: "#a2a2a2",
-    
+    color: "black",
+    opacity: 0.4
   },
   paper: {
     position: "absolute",
     zIndex: 20000,
     marginTop: theme.spacing.unit,
     left: 0,
-    right: 0
+    right: 0,
+    marginBottom: 24,
+    borderRadius: 4
   },
   divider: {
     height: theme.spacing.unit * 2
@@ -148,7 +160,17 @@ const parse = require("url-parse");
 
 let suggestions = [];
 let length = 0;
+let dates = []
+let years = []
 
+for (let index = moment().year(); index >=1940; index--) {
+  years.push(index)
+  
+}
+
+for (let index = 1; index <= 31; index++) {
+  dates.push(index)
+}
 const NoOptionsMessage = props => {
   return (
     <Typography
@@ -202,6 +224,19 @@ const Control = props => {
   );
 };
 
+const CaretDownIcon = () => {
+  return <div>asdsadsa</div>;
+};
+
+const DropdownIndicator = props => {
+  return <ArrowDropDown className="react-select-custom-dropdown" />;
+  // return (
+  //   <components.DropdownIndicator {...props}>
+  //     <InsertLinkOutlined />
+  //   </components.DropdownIndicator>
+  // );
+};
+
 const Option = props => {
   console.log(props);
   return (
@@ -235,7 +270,14 @@ const Option = props => {
                 height: 30
               }}
             >
-              <AccountCircle style={{ width: 40, height: 40, color: "#9e9e9e", backgroundColor: "#ececec" }} />
+              <AccountCircle
+                style={{
+                  width: 40,
+                  height: 40,
+                  color: "#9e9e9e",
+                  backgroundColor: "#ececec"
+                }}
+              />
             </Avatar>
           )}
         </Grid>
@@ -246,14 +288,21 @@ const Option = props => {
                 {props.children}
               </Typography>
             </Grid>
-            {
-              props.data.affiliation ?
+            {props.data.affiliation ? (
               <Grid item xs={12}>
-              <Typography style={{ fontWeight: "normal",color: "rgb(104, 104, 104)",fontSize: 12 }}>
-                {props.data.affiliation.department.name} {" • "} {props.data.affiliation.faculty.name} {" • "} {props.data.affiliation.institution.name}
-              </Typography>
-            </Grid> : null
-            }
+                <Typography
+                  style={{
+                    fontWeight: "normal",
+                    color: "rgb(104, 104, 104)",
+                    fontSize: 12
+                  }}
+                >
+                  {props.data.affiliation.department.name} {" • "}{" "}
+                  {props.data.affiliation.faculty.name} {" • "}{" "}
+                  {props.data.affiliation.institution.name}
+                </Typography>
+              </Grid>
+            ) : null}
           </Grid>
         </Grid>
       </Grid>
@@ -264,14 +313,24 @@ const Option = props => {
 const Placeholder = props => {
   return (
     <Typography
-      color="textSecondary"
+      // color="textSecondary"
       className={props.selectProps.classes.placeholder}
       {...props.innerProps}
-      style={{fontWeight: 400}}
+      style={{ fontWeight: 400, color: "" }}
+      disabled
     >
       {props.children}
     </Typography>
   );
+
+  // return (
+  //   <Input
+  //       placeholder={props.children}
+  //       disabled
+  //       className={props.selectProps.classes.placeholder}
+  //       {...props.innerProps}
+  //     />
+  // )
 };
 
 const SingleValue = props => {
@@ -320,14 +379,22 @@ const MultiValue = props => {
               height: 26
             }}
           >
-          <AccountCircle style={{ width: 26, height: 26, color: "#9e9e9e", backgroundColor: "#ececec" }} />
+            <AccountCircle
+              style={{
+                width: 30,
+                height: 30,
+                color: "#9e9e9e",
+                backgroundColor: "#ececec"
+              }}
+            />
           </Avatar>
         )
       }
-      label={props.children}
+      label={<div style={{ fontWeight: 500 }}>{props.children}</div>}
       className={classNames(props.selectProps.classes.chip, {
         [props.selectProps.classes.chipFocused]: props.isFocused
       })}
+      labelprop
       onDelete={props.removeProps.onClick}
       deleteIcon={<Cancel {...props.removeProps} />}
       variant="outlined"
@@ -339,7 +406,7 @@ const Menu = props => {
   return (
     <Paper
       square
-      style={{ position: "relative" }}
+      // style={{ position: "relative" }}
       className={props.selectProps.classes.paper}
       {...props.innerProps}
     >
@@ -356,7 +423,10 @@ const components = {
   Option,
   Placeholder,
   SingleValue,
-  ValueContainer
+  ValueContainer,
+  DropdownIndicator,
+  CaretDownIcon,
+  IndicatorSeparator: () => null
 };
 class AddPublicationDetails extends Component {
   constructor(props) {
@@ -421,6 +491,13 @@ class AddPublicationDetails extends Component {
           touched: false,
           validationMessage: ""
         }
+      },
+      date: {
+        day: moment().format('d'),
+        month: moment().format('MMMM'),
+        year: moment().year(),
+        date: moment().day() + "/" + moment().month() + "/" + moment().year(),
+        valid: true
       }
     };
     this.timeout = null;
@@ -532,6 +609,28 @@ class AddPublicationDetails extends Component {
       this.setState({ formdata: newFormdata });
     }
     // this.props.publicationTypes.find(x => x._id === event.target.value)
+  };
+
+  handleDayChange = event => {
+    const newFormdata = {
+      ...this.state.date
+    };
+    newFormdata["day"] = event.target.value;
+    this.setState({ date: newFormdata });
+  };
+  handleMonthChange = event => {
+    const newFormdata = {
+      ...this.state.date
+    };
+    newFormdata["month"] = event.target.value;
+    this.setState({ date: newFormdata });
+  };
+  handleYearChange = event => {
+    const newFormdata = {
+      ...this.state.date
+    };
+    newFormdata["year"] = event.target.value;
+    this.setState({ date: newFormdata });
   };
 
   handleTitleChange = event => {
@@ -1737,47 +1836,45 @@ class AddPublicationDetails extends Component {
                   ) : null}
                 </FormControl>
               </Grid>
-              <Grid container style={{marginTop: 24}}>
-              <Grid item xs={12}>
-              <InputLabel
-              // htmlFor={this.state.formdata.title.config.name}
-              // error={!this.state.formdata.title.valid}
-              style={{ fontSize: 14, fontWeight: 500 }}
-            >
-              ຜູ້ຂຽນ
-            </InputLabel>
+              <Grid container style={{ marginTop: 24 }}>
+                <Grid item xs={12}>
+                  <InputLabel
+                    // htmlFor={this.state.formdata.title.config.name}
+                    // error={!this.state.formdata.title.valid}
+                    style={{ fontSize: 14, fontWeight: 500 }}
+                  >
+                    ຜູ້ຂຽນ
+                  </InputLabel>
+                </Grid>
+                <Grid item xs={12}>
+                  <div className={classes.root}>
+                    <NoSsr>
+                      <ReactSelect
+                        classes={classes}
+                        styles={selectStyles}
+                        textFieldProps={{
+                          // placeholder: "ກະລຸນາເລືອກຜູ້ຂຽນ",
+
+                          // InputLabelProps: {
+                          //   shrink: true
+                          // },
+                          variant: "outlined"
+                        }}
+                        options={suggestions}
+                        components={components}
+                        value={this.state.multi}
+                        onChange={this.handleChange("multi")}
+                        placeholder="ກະລຸນາເລືອກຜູ້ຂຽນ"
+                        isMulti
+                        isClearable={false}
+                      />
+                    </NoSsr>
+                  </div>
+                  {!this.state.formdata.title.valid ? (
+                    <InputError message="ຕ້ອງມີອັກສອນຢ່າງຫນ້ອຍ 6 ຕົວ ແລະ ບໍ່ຫລາຍກວ່າ 500" />
+                  ) : null}
+                </Grid>
               </Grid>
-              <Grid item xs={12}>
-              <div className={classes.root}>
-                <NoSsr>
-                  <ReactSelect
-                    classes={classes}
-                    styles={selectStyles}
-                    
-                    textFieldProps={{
-                      // placeholder: "ກະລຸນາເລືອກຜູ້ຂຽນ",
-                      
-                      // InputLabelProps: {
-                      //   shrink: true
-                      // },
-                      variant: "outlined"
-                    }}
-                    options={suggestions}
-                    components={components}
-                    value={this.state.multi}
-                    onChange={this.handleChange("multi")}
-                    placeholder="ກະລຸນາເລືອກຜູ້ຂຽນ"
-                    isMulti
-                  />
-                </NoSsr>
-              </div>
-              {!this.state.formdata.title.valid ? (
-                <InputError message="ຕ້ອງມີອັກສອນຢ່າງຫນ້ອຍ 6 ຕົວ ແລະ ບໍ່ຫລາຍກວ່າ 500" />
-              ) : null}
-              </Grid>
-              
-              </Grid>
-              
 
               {this.state.authorError ? (
                 <Grid container spacing={24}>
@@ -1797,6 +1894,176 @@ class AddPublicationDetails extends Component {
                   </Grid>
                 </Grid>
               ) : null}
+
+              <Grid container style={{ marginTop: 24 }}>
+                <Grid item xs={12}>
+                  <InputLabel
+                    // htmlFor={this.state.formdata.title.config.name}
+                    // error={!this.state.formdata.title.valid}
+                    style={{ fontSize: 14, fontWeight: 500 }}
+                  >
+                    ວັນທີ
+                  </InputLabel>
+                </Grid>
+                <Grid item xs={12}>
+                  <Grid container spacing={16}>
+                    <Grid item xs={4}>
+                      <FormControl
+                        fullWidth
+                        variant="outlined"
+                        className={classes.formControl}
+                        style={{ marginTop: 4 }}
+                      >
+                        <Select
+                          fullWidth
+                          value={this.state.date.day}
+                          onChange={this.handleDayChange}
+                          style={{
+                            fontFamily:
+                              "Noto Sans Lao UI, Roboto, Arial, sans-serif"
+                          }}
+                          input={
+                            <OutlinedInput
+                              name="day-select"
+                            />
+                          }
+                        >
+                          <MenuItem
+                            style={{
+                              fontFamily:
+                                "Noto Sans Lao UI, Roboto, Arial, sans-serif",
+                              fontStyle: "italic"
+                            }}
+                            value=""
+                          >
+                            ວັນ(ໃສ່ກໍໄດ້)
+                          </MenuItem>
+                          { dates.map(item => (
+                            <MenuItem
+                            style={{
+                              fontFamily:
+                                "Noto Sans Lao UI, Roboto, Arial, sans-serif"
+                            }}
+                            key={item}
+                            value={item}
+                          >
+                            {item}
+                          </MenuItem>
+                          ))
+                           
+                          }
+                          
+                        </Select>
+                        {!this.state.formdata.researchType.valid ? (
+                          <InputError />
+                        ) : null}
+                      </FormControl>
+                    </Grid>
+                    <Grid item xs={4}>
+                      <FormControl
+                        fullWidth
+                        variant="outlined"
+                        className={classes.formControl}
+                        style={{ marginTop: 4 }}
+                      >
+                        <Select
+                          fullWidth
+                          value={this.state.date.month}
+                          onChange={this.handleMonthChange}
+                          style={{
+                            fontFamily:
+                              "Noto Sans Lao UI, Roboto, Arial, sans-serif"
+                          }}
+                          input={
+                            <OutlinedInput
+                              name="month_input"
+                            />
+                          }
+                        >
+                          <MenuItem
+                            style={{
+                              fontFamily:
+                                "Noto Sans Lao UI, Roboto, Arial, sans-serif",
+                              fontStyle: "italic"
+                            }}
+                            value=""
+                          >
+                            ເດືອນ(ບໍ່ໃສ່ກໍໄດ້)
+                          </MenuItem>
+                          {moment.months().map(
+                            item => (
+                              <MenuItem
+                                style={{
+                                  fontFamily:
+                                    "Noto Sans Lao UI, Roboto, Arial, sans-serif"
+                                }}
+                                key={item}
+                                value={item}
+                              >
+                                {item}
+                              </MenuItem>
+                            )
+                          )}
+                        </Select>
+                        {!this.state.formdata.researchType.valid ? (
+                          <InputError />
+                        ) : null}
+                      </FormControl>
+                    </Grid>
+                    <Grid item xs={4}>
+                      <FormControl
+                        fullWidth
+                        variant="outlined"
+                        className={classes.formControl}
+                        style={{ marginTop: 4 }}
+                      >
+                        <Select
+                          fullWidth
+                          value={this.state.date.year}
+                          onChange={this.handleYearChange}
+                          style={{
+                            fontFamily:
+                              "Noto Sans Lao UI, Roboto, Arial, sans-serif"
+                          }}
+                          input={
+                            <OutlinedInput
+                              name="year_input"
+                            />
+                          }
+                        >
+                          <MenuItem
+                            style={{
+                              fontFamily:
+                                "Noto Sans Lao UI, Roboto, Arial, sans-serif",
+                              fontStyle: "italic"
+                            }}
+                            value=""
+                          >
+                            ປີ
+                          </MenuItem>
+                          {years.map(
+                            item => (
+                              <MenuItem
+                                style={{
+                                  fontFamily:
+                                    "Noto Sans Lao UI, Roboto, Arial, sans-serif"
+                                }}
+                                key={item}
+                                value={item}
+                              >
+                                {item}
+                              </MenuItem>
+                            )
+                          )}
+                        </Select>
+                        {!this.state.formdata.researchType.valid ? (
+                          <InputError />
+                        ) : null}
+                      </FormControl>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </Grid>
 
               <Grid container alignItems="center" style={{ marginTop: 16 }}>
                 <Grid
