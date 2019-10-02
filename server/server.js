@@ -4484,7 +4484,7 @@ app.get("/api/researchers/list_for_suggestions", (req, res) => {
   findArgs.active = true;
 
   User.find(findArgs)
-    .select("_id name lastname affiliation profileImage")
+    .select("_id name lastname affiliation profileImage email")
     .populate({
       path: "affiliation.institution"
     })

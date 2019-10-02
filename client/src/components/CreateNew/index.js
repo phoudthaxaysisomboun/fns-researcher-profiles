@@ -11,7 +11,7 @@ import Grow from "@material-ui/core/Grow";
 import { getResearchType } from "../../actions/research_actions";
 import { connect } from "react-redux";
 import queryString from "query-string";
-import { getAuthorSuggestions }  from "../../actions/user_actions";
+import { getAuthorSuggestions } from "../../actions/user_actions";
 
 const styles = theme => ({
   mainContainer: {
@@ -32,53 +32,47 @@ class CreateResearch extends Component {
     publicationType: {},
     files: null,
     linkPreview: null,
-    link :"",
+    link: "",
     publicationTypes: []
   };
 
   componentDidMount() {
     document.title = "ເພີ່ມຜົນງານຄົ້ນຄວ້າ - FNS Researcher Profiles";
-    this.props.dispatch(getResearchType()).then(()=>{
+    this.props.dispatch(getResearchType()).then(() => {
       const query = queryString.parse(this.props.location.search);
       const type = query.publicationType
         ? query.publicationType
         : this.props.research.researchType[0];
-        this.setState({publicationType: this.props.research.researchType[0],
-          publicationTypes: this.props.research.researchType})
+      this.setState({
+        publicationType: this.props.research.researchType[0],
+        publicationTypes: this.props.research.researchType
+      });
 
-        
       this.props.research.researchType.map((item, index) => {
         if (item.englishName === type) {
           console.log(item);
-           return this.setState({ publicationType: item });
+          return this.setState({ publicationType: item });
         } else {
-          return null
-        } 
+          return null;
+        }
       });
-    })
+    });
 
-    this.props.dispatch(getAuthorSuggestions()).then((payload)=>{
-      console.log()
-    })
+    this.props.dispatch(getAuthorSuggestions()).then(payload => {
+      console.log();
+    });
   }
 
   componentDidUpdate(prevProps, prevState) {
-   
     if (prevProps.history !== this.props.history) {
-      
     }
   }
 
   switchPage = page => {
-
-
-
     this.setState({ loading: true });
-  setTimeout(()=>{
-    this.setState({ page, loading: false });
-  }, 800)
-
-  
+    setTimeout(() => {
+      this.setState({ page, loading: false });
+    }, 800);
 
     // setTimeout(() => {
     //   this.setState({
@@ -87,20 +81,17 @@ class CreateResearch extends Component {
     // }, 2000).then(()=> {
     //   this.setState({ page, loading: false });
     // })
-    
   };
 
   setFilesData = files => {
-    this.setState({files})
-    console.log(files)
-
-  }
+    this.setState({ files });
+    console.log(files);
+  };
 
   setLinkData = (linkPreview, link) => {
-    this.setState({linkPreview, link})
-    console.log(linkPreview)
-  }  
-
+    this.setState({ linkPreview, link });
+    console.log(linkPreview);
+  };
 
   showLoading = () => {
     this.setState({ loading: true });
@@ -117,7 +108,9 @@ class CreateResearch extends Component {
             <AddResearchFile
               switchPage={page => this.switchPage(page)}
               setFilesData={files => this.setFilesData(files)}
-              setLinkData={(linkPreview, link) => this.setLinkData(linkPreview, link)}
+              setLinkData={(linkPreview, link) =>
+                this.setLinkData(linkPreview, link)
+              }
               user={
                 this.props && this.props.user && this.props.user.userData
                   ? this.props.user.userData
@@ -134,24 +127,27 @@ class CreateResearch extends Component {
             style={{ transformOrigin: "0 0 0" }}
             {...(this.state.page === "details" ? { timeout: 1000 } : {})}
           >
-            <AddPublicationDetails user={
-              this.props && this.props.user && this.props.user.userData
-                ? this.props.user.userData
-                : {}
-            }
-            switchPage={page => this.switchPage(page)}
-            setFilesData={files => this.setFilesData(files)}
-            setLinkData={(linkPreview, link) => this.setLinkData(linkPreview, link)}
-            publicationType={
-            this.state.publicationType
-            }
-            publicationTypes={
-            this.state.publicationTypes
-            }
-            linkPreview = {this.state.linkPreview}
-            files = {this.state.files}
-            link ={this.state.link}
-            authorSuggestions = {this.props.user.authorSuggestions ? this.props.user.authorSuggestions : null}
+            <AddPublicationDetails
+              user={
+                this.props && this.props.user && this.props.user.userData
+                  ? this.props.user.userData
+                  : {}
+              }
+              switchPage={page => this.switchPage(page)}
+              setFilesData={files => this.setFilesData(files)}
+              setLinkData={(linkPreview, link) =>
+                this.setLinkData(linkPreview, link)
+              }
+              publicationType={this.state.publicationType}
+              publicationTypes={this.state.publicationTypes}
+              linkPreview={this.state.linkPreview}
+              files={this.state.files}
+              link={this.state.link}
+              authorSuggestions={
+                this.props.user.authorSuggestions
+                  ? this.props.user.authorSuggestions
+                  : null
+              }
             />
           </Grow>
         );
@@ -173,7 +169,11 @@ class CreateResearch extends Component {
   render() {
     const { classes } = this.props;
 
-    return <div className={classes.mainContainer}>{this.state.loading ? this.loading() : null} {this.renderPage()}</div>;
+    return (
+      <div className={classes.mainContainer}>
+        {this.state.loading ? this.loading() : null} {this.renderPage()}
+      </div>
+    );
   }
 }
 

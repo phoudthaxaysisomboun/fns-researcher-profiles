@@ -196,11 +196,18 @@ const handleInputChanged = event => {
 
   const _id = new ObjectID();
 
+  console.log(length)
   if (event.target.value.trim() !== "" || length > 0) {
     suggestions[length] = {
-      value: { _id: _id.toHexString(), name, lastname },
-      label: event.target.value
+      value: { _id: _id.toHexString(), name, lastname, email: null,
+        notRegister: true },
+      label: event.target.value,
+      
     };
+  } else {
+    if (suggestions) {
+      delete suggestions[length]
+    }
   }
 };
 
@@ -239,7 +246,6 @@ const DropdownIndicator = props => {
 };
 
 const Option = props => {
-  console.log(props);
   return (
     <MenuItem
       buttonRef={props.innerRef}
@@ -505,26 +511,26 @@ class AddPublicationDetails extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    let multi = [];
-    if (
-      this.props &&
-      this.props.other &&
-      prevProps.other.value !== this.props.other
-    ) {
-      multi[0] = {
-        value: this.props.other.value,
-        label: this.props.other.label
-      };
-    } else {
-      multi[0] = {
-        value: this.props.user._id,
-        label: `${this.props.user.name} ${this.props.user.lastname}`
-      };
-    }
+    // let multi = [];
+    // if (
+    //   this.props &&
+    //   this.props.other &&
+    //   prevProps.other.value !== this.props.other
+    // ) {
+    //   multi[0] = {
+    //     value: this.props.other.value,
+    //     label: this.props.other.label
+    //   };
+    // } else {
+    //   multi[0] = {
+    //     value: this.props.user._id,
+    //     label: `${this.props.user.name} ${this.props.user.lastname}`
+    //   };
+    // }
 
-    if (prevProps.authorSuggestions !== this.props.authorSuggestions) {
-      console.log(this.props.authorSuggestions);
-    }
+    // if (prevProps.authorSuggestions !== this.props.authorSuggestions) {
+    //   console.log(this.props.authorSuggestions);
+    // }
   }
 
   componentDidMount() {
@@ -566,17 +572,34 @@ class AddPublicationDetails extends Component {
         value: value._id,
         label: `${value.name} ${value.lastname}`,
         profileImage: value.profileImage ? value.profileImage : null,
-        affiliation: value.affiliation
+        affiliation: value.affiliation ? value.affiliation : null
       });
       return null;
     });
-    length = multi.length;
+    // length = multi.length;
+
+    multi.push(suggestions.find(
+      x => x.value === this.props.user._id
+    ))
+
+
+
+    
     this.setState({
       multi
-    });
+    }, 
+    // ()=>{
+    //   console.log(suggestions.find(
+    //     x => x.value === this.props.user._id
+    //   ))
+    //   console.log(this.props.user)
+    //   console.log(suggestions)
+    // }
+    );
   }
 
   handleChange = name => value => {
+    console.log(value)
     this.setState({
       [name]: value
     });
@@ -1224,7 +1247,8 @@ class AddPublicationDetails extends Component {
     if (this.state.checked && !this.state.error) {
       this.setState({ error: false, checkedError: false });
 
-      this.props.switchPage("details");
+      // this.props.switchPage("details");
+      console.log(this.state.multi)
     } else if (!this.state.checked) {
       this.setState({ checkedError: true });
     } else {
