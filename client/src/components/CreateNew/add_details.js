@@ -14,6 +14,8 @@ import Shimmer from "react-js-loading-shimmer";
 import InputError from "../utils/Form/input_error";
 import { SERVER } from "../utils/misc";
 
+// import dateExists from 'date-exists';
+
 import "moment/locale/lo";
 
 import moment from "moment";
@@ -82,9 +84,9 @@ const styles = theme => ({
     // fontFamily: "'Noto Sans Lao UI', sans-serif",
     fontWeight: "500",
     textAlign: "center",
-    fontSize: "1.5rem",
+    fontSize: "1.36rem",
     marginBottom: 8,
-    marginTop: 14
+    marginTop: 8
   },
   icon: {
     fontSize: 20
@@ -160,16 +162,15 @@ const parse = require("url-parse");
 
 let suggestions = [];
 let length = 0;
-let dates = []
-let years = []
+let dates = [];
+let years = [];
 
-for (let index = moment().year(); index >=1940; index--) {
-  years.push(index)
-  
+for (let index = moment().year(); index >= 1940; index--) {
+  years.push(index);
 }
 
 for (let index = 1; index <= 31; index++) {
-  dates.push(index)
+  dates.push(index);
 }
 const NoOptionsMessage = props => {
   return (
@@ -493,10 +494,10 @@ class AddPublicationDetails extends Component {
         }
       },
       date: {
-        day: moment().format('d'),
-        month: moment().format('MMMM'),
+        day: moment().date(),
+        month: moment().format("MMMM"),
         year: moment().year(),
-        date: moment().day() + "/" + moment().month() + "/" + moment().year(),
+        date: moment().year() + "-" + moment().month() + "-" + moment().date(),
         valid: true
       }
     };
@@ -533,7 +534,12 @@ class AddPublicationDetails extends Component {
 
     let multi = [];
 
-    console.log(this.props.files);
+    const month = moment()
+      .month(this.state.date.month)
+      .format("M");
+    const date = this.state.date.year + "-" + month + "-" + this.state.date.day;
+
+    console.log(moment(date).isValid());
 
     newFormdata["researchType"].value = this.props.publicationType._id;
     newFormdata["title"].value = this.props.files
@@ -616,21 +622,79 @@ class AddPublicationDetails extends Component {
       ...this.state.date
     };
     newFormdata["day"] = event.target.value;
-    this.setState({ date: newFormdata });
+    // this.setState({ date: newFormdata });
+    this.setState(
+      {
+        date: newFormdata
+      },
+      () => {
+       if (this.validDate(
+        this.state.date.day,
+        this.state.date.month,
+        this.state.date.year
+      )) {
+        newFormdata["valid"] = true;
+      } else {
+        newFormdata["valid"] = false; 
+      }
+      this.setState({
+        date: newFormdata
+      })
+      }
+    );
   };
   handleMonthChange = event => {
     const newFormdata = {
       ...this.state.date
     };
     newFormdata["month"] = event.target.value;
-    this.setState({ date: newFormdata });
+    // console.log(moment().month(event.target.value).format("M"))
+    // this.setState({ date: newFormdata });
+    this.setState(
+      {
+        date: newFormdata
+      },
+      () => {
+       if (this.validDate(
+        this.state.date.day,
+        this.state.date.month,
+        this.state.date.year
+      )) {
+        newFormdata["valid"] = true;
+      } else {
+        newFormdata["valid"] = false; 
+      }
+      this.setState({
+        date: newFormdata
+      })
+      }
+    );
   };
   handleYearChange = event => {
     const newFormdata = {
       ...this.state.date
     };
     newFormdata["year"] = event.target.value;
-    this.setState({ date: newFormdata });
+    // this.setState({ date: newFormdata });
+    this.setState(
+      {
+        date: newFormdata
+      },
+      () => {
+       if (this.validDate(
+        this.state.date.day,
+        this.state.date.month,
+        this.state.date.year
+      )) {
+        newFormdata["valid"] = true;
+      } else {
+        newFormdata["valid"] = false; 
+      }
+      this.setState({
+        date: newFormdata
+      })
+      }
+    );
   };
 
   handleTitleChange = event => {
@@ -1037,6 +1101,46 @@ class AddPublicationDetails extends Component {
     });
   }
 
+  daysInMonth = (m, y) => {
+    switch (m) {
+      case 1:
+        return (y % 4 == 0 && y % 100) || y % 400 == 0 ? 29 : 28;
+      case 8:
+      case 3:
+      case 5:
+      case 10:
+        return 30;
+      default:
+        return 31;
+    }
+  };
+
+  validDate = (day, month, year) => {
+    const myMonth = (
+      "0" +
+      parseInt(
+        moment()
+          .month(month)
+          .format("M")
+      )
+    ).slice(-2);
+    const myDay = ("0" + day).slice(-2);
+    const myDate = `${year}-${myMonth}-${myDay}`;
+    if (day && month && year) {
+      if (myDate === moment(myDate).format("YYYY-MM-DD")) {
+        return true;
+      } else {
+        return false;
+      }
+    } else if (!day && month && year) return true;
+    else if (day && !month && year) return false;
+    else if (!year) return false;
+    else if (!day && !month && year) return true;
+    else return false;
+  };
+
+  
+
   renderIcon = () => {
     switch (this.state.files[0].mimetype) {
       case "application/pdf": {
@@ -1158,7 +1262,7 @@ class AddPublicationDetails extends Component {
               <Grid container>
                 <Grid item xs={12} align="center" style={{ marginTop: 8 }}>
                   <svg
-                    width="54"
+                    width="46"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 657.69 854.52"
                   >
@@ -1209,7 +1313,7 @@ class AddPublicationDetails extends Component {
                   : "ຜົນງານຄົ້ນຄວ້າຂອງທ່ານ"}
               </Typography>
 
-              <Grid container style={{ marginTop: 24, width: "100%" }}>
+              <Grid container style={{ marginTop: 18, width: "100%" }}>
                 <InputLabel
                   htmlFor={this.state.formdata.researchType.config.name}
                   error={!this.state.formdata.researchType.valid}
@@ -1242,7 +1346,8 @@ class AddPublicationDetails extends Component {
                       style={{
                         fontFamily:
                           "Noto Sans Lao UI, Roboto, Arial, sans-serif",
-                        fontStyle: "italic"
+                        fontStyle: "italic",
+                        color: "#424242"
                       }}
                       value=""
                     >
@@ -1268,7 +1373,7 @@ class AddPublicationDetails extends Component {
                   ) : null}
                 </FormControl>
               </Grid>
-              <div style={{ marginTop: 24 }}>
+              <div style={{ marginTop: 18 }}>
                 <InputLabel style={{ fontSize: 14, fontWeight: 500 }}>
                   ຟາຍລ໌ (ບໍ່ໃສ່ກໍໄດ້)
                 </InputLabel>
@@ -1312,7 +1417,8 @@ class AddPublicationDetails extends Component {
                                     style={{
                                       width: "100%",
                                       textTransform: "none",
-                                      height: "100%"
+                                      height: "100%",
+                                      overflowWrap: "break-word"
                                     }}
                                   >
                                     <Grid
@@ -1384,7 +1490,8 @@ class AddPublicationDetails extends Component {
                                     style={{
                                       width: "100%",
                                       textTransform: "none",
-                                      height: "100%"
+                                      height: "100%",
+                                      overflowWrap: "break-word"
                                     }}
                                   >
                                     <Grid
@@ -1444,7 +1551,8 @@ class AddPublicationDetails extends Component {
                                   style={{
                                     width: "100%",
                                     textTransform: "none",
-                                    height: "100%"
+                                    height: "100%",
+                                    overflowWrap: "break-word"
                                   }}
                                   onClick={() =>
                                     this.setState({ insertLink: true })
@@ -1507,13 +1615,26 @@ class AddPublicationDetails extends Component {
                                     ? this.renderIcon()
                                     : null}
                                 </Grid>
-                                <Grid item xs>
-                                  <Typography
-                                    variant="inherit"
-                                    style={{ fontWeight: 500, marginBottom: 4 }}
+                                <Grid
+                                  item
+                                  xs
+                                  style={{
+                                    whiteSpace: "nowrap",
+                                    overflow: "hidden",
+                                    textOverflow: "ellipsis"
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      whiteSpace: "nowrap",
+                                      overflow: "hidden",
+                                      textOverflow: "ellipsis",
+                                      fontWeight: 500,
+                                      marginBottom: 4
+                                    }}
                                   >
                                     {this.state.files[0].name}
-                                  </Typography>
+                                  </div>
                                   <Typography
                                     variant="inherit"
                                     style={{ fontSize: 14 }}
@@ -1796,7 +1917,7 @@ class AddPublicationDetails extends Component {
                 </div>
               </div>
 
-              <Grid container style={{ marginTop: 24, width: "100%" }}>
+              <Grid container style={{ marginTop: 18, width: "100%" }}>
                 <InputLabel
                   htmlFor={this.state.formdata.title.config.name}
                   error={!this.state.formdata.title.valid}
@@ -1836,11 +1957,11 @@ class AddPublicationDetails extends Component {
                   ) : null}
                 </FormControl>
               </Grid>
-              <Grid container style={{ marginTop: 24 }}>
+              <Grid container style={{ marginTop: 18 }}>
                 <Grid item xs={12}>
                   <InputLabel
                     // htmlFor={this.state.formdata.title.config.name}
-                    // error={!this.state.formdata.title.valid}
+                    error={this.state.authorError}
                     style={{ fontSize: 14, fontWeight: 500 }}
                   >
                     ຜູ້ຂຽນ
@@ -1858,6 +1979,7 @@ class AddPublicationDetails extends Component {
                           // InputLabelProps: {
                           //   shrink: true
                           // },
+                          error: this.state.authorError,
                           variant: "outlined"
                         }}
                         options={suggestions}
@@ -1870,8 +1992,8 @@ class AddPublicationDetails extends Component {
                       />
                     </NoSsr>
                   </div>
-                  {!this.state.formdata.title.valid ? (
-                    <InputError message="ຕ້ອງມີອັກສອນຢ່າງຫນ້ອຍ 6 ຕົວ ແລະ ບໍ່ຫລາຍກວ່າ 500" />
+                  {this.state.authorError ? (
+                    <InputError message={this.state.authorErrorMessage} />
                   ) : null}
                 </Grid>
               </Grid>
@@ -1895,11 +2017,11 @@ class AddPublicationDetails extends Component {
                 </Grid>
               ) : null}
 
-              <Grid container style={{ marginTop: 24 }}>
+              <Grid container style={{ marginTop: 18 }}>
                 <Grid item xs={12}>
                   <InputLabel
                     // htmlFor={this.state.formdata.title.config.name}
-                    // error={!this.state.formdata.title.valid}
+                    error={!this.state.date.valid}
                     style={{ fontSize: 14, fontWeight: 500 }}
                   >
                     ວັນທີ
@@ -1913,6 +2035,7 @@ class AddPublicationDetails extends Component {
                         variant="outlined"
                         className={classes.formControl}
                         style={{ marginTop: 4 }}
+                        error={!this.state.date.valid}
                       >
                         <Select
                           fullWidth
@@ -1922,41 +2045,32 @@ class AddPublicationDetails extends Component {
                             fontFamily:
                               "Noto Sans Lao UI, Roboto, Arial, sans-serif"
                           }}
-                          input={
-                            <OutlinedInput
-                              name="day-select"
-                            />
-                          }
+                          input={<OutlinedInput name="day-select" />}
                         >
                           <MenuItem
                             style={{
                               fontFamily:
                                 "Noto Sans Lao UI, Roboto, Arial, sans-serif",
-                              fontStyle: "italic"
+                              fontStyle: "italic",
+                              color: "#424242"
                             }}
                             value=""
                           >
-                            ວັນ(ໃສ່ກໍໄດ້)
+                            ວັນ (ບໍ່ໃສ່ກໍໄດ້)
                           </MenuItem>
-                          { dates.map(item => (
+                          {dates.map(item => (
                             <MenuItem
-                            style={{
-                              fontFamily:
-                                "Noto Sans Lao UI, Roboto, Arial, sans-serif"
-                            }}
-                            key={item}
-                            value={item}
-                          >
-                            {item}
-                          </MenuItem>
-                          ))
-                           
-                          }
-                          
+                              style={{
+                                fontFamily:
+                                  "Noto Sans Lao UI, Roboto, Arial, sans-serif"
+                              }}
+                              key={item}
+                              value={item}
+                            >
+                              {("0" + item).slice(-2)}
+                            </MenuItem>
+                          ))}
                         </Select>
-                        {!this.state.formdata.researchType.valid ? (
-                          <InputError />
-                        ) : null}
                       </FormControl>
                     </Grid>
                     <Grid item xs={4}>
@@ -1965,6 +2079,7 @@ class AddPublicationDetails extends Component {
                         variant="outlined"
                         className={classes.formControl}
                         style={{ marginTop: 4 }}
+                        error={!this.state.date.valid}
                       >
                         <Select
                           fullWidth
@@ -1974,40 +2089,32 @@ class AddPublicationDetails extends Component {
                             fontFamily:
                               "Noto Sans Lao UI, Roboto, Arial, sans-serif"
                           }}
-                          input={
-                            <OutlinedInput
-                              name="month_input"
-                            />
-                          }
+                          input={<OutlinedInput name="month_input" />}
                         >
                           <MenuItem
                             style={{
                               fontFamily:
                                 "Noto Sans Lao UI, Roboto, Arial, sans-serif",
-                              fontStyle: "italic"
+                              fontStyle: "italic",
+                              color: "#424242"
                             }}
                             value=""
                           >
-                            ເດືອນ(ບໍ່ໃສ່ກໍໄດ້)
+                            ເດືອນ (ບໍ່ໃສ່ກໍໄດ້)
                           </MenuItem>
-                          {moment.months().map(
-                            item => (
-                              <MenuItem
-                                style={{
-                                  fontFamily:
-                                    "Noto Sans Lao UI, Roboto, Arial, sans-serif"
-                                }}
-                                key={item}
-                                value={item}
-                              >
-                                {item}
-                              </MenuItem>
-                            )
-                          )}
+                          {moment.months().map(item => (
+                            <MenuItem
+                              style={{
+                                fontFamily:
+                                  "Noto Sans Lao UI, Roboto, Arial, sans-serif"
+                              }}
+                              key={item}
+                              value={item}
+                            >
+                              {item}
+                            </MenuItem>
+                          ))}
                         </Select>
-                        {!this.state.formdata.researchType.valid ? (
-                          <InputError />
-                        ) : null}
                       </FormControl>
                     </Grid>
                     <Grid item xs={4}>
@@ -2016,6 +2123,7 @@ class AddPublicationDetails extends Component {
                         variant="outlined"
                         className={classes.formControl}
                         style={{ marginTop: 4 }}
+                        error={!this.state.date.year || !this.state.date.valid}
                       >
                         <Select
                           fullWidth
@@ -2025,44 +2133,42 @@ class AddPublicationDetails extends Component {
                             fontFamily:
                               "Noto Sans Lao UI, Roboto, Arial, sans-serif"
                           }}
-                          input={
-                            <OutlinedInput
-                              name="year_input"
-                            />
-                          }
+                          input={<OutlinedInput name="year_input" />}
                         >
                           <MenuItem
                             style={{
                               fontFamily:
                                 "Noto Sans Lao UI, Roboto, Arial, sans-serif",
-                              fontStyle: "italic"
+                              fontStyle: "italic",
+                              color: "#424242"
                             }}
                             value=""
                           >
                             ປີ
                           </MenuItem>
-                          {years.map(
-                            item => (
-                              <MenuItem
-                                style={{
-                                  fontFamily:
-                                    "Noto Sans Lao UI, Roboto, Arial, sans-serif"
-                                }}
-                                key={item}
-                                value={item}
-                              >
-                                {item}
-                              </MenuItem>
-                            )
-                          )}
+                          {years.map(item => (
+                            <MenuItem
+                              style={{
+                                fontFamily:
+                                  "Noto Sans Lao UI, Roboto, Arial, sans-serif"
+                              }}
+                              key={item}
+                              value={item}
+                            >
+                              {item}
+                            </MenuItem>
+                          ))}
                         </Select>
-                        {!this.state.formdata.researchType.valid ? (
+                        {!this.state.date.year ? (
                           <InputError />
                         ) : null}
                       </FormControl>
                     </Grid>
                   </Grid>
                 </Grid>
+                {!this.state.date.valid && this.state.date.year ? (
+                  <InputError message="ວັນທີບໍ່ຖືກຕ້ອງ"/>
+                ) : null}
               </Grid>
 
               <Grid container alignItems="center" style={{ marginTop: 16 }}>
@@ -2091,7 +2197,7 @@ class AddPublicationDetails extends Component {
                     // )
                   }
                 </Grid>
-                <Grid item xs md align="right" style={{ marginTop: 34 }}>
+                <Grid item xs md align="right" style={{ marginTop: 24 }}>
                   <Button
                     variant="contained"
                     color="primary"
