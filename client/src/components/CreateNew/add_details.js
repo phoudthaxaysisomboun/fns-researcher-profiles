@@ -43,9 +43,7 @@ import {
   MenuItem,
   OutlinedInput,
   Chip,
-  Avatar,
-  InputBase,
-  Input
+  Avatar
 } from "@material-ui/core";
 import Dropzone from "react-dropzone";
 import {
@@ -60,7 +58,8 @@ import {
   PublicOutlined,
   // AccountCircleOutlined,
   AccountCircle,
-  ArrowDropDown
+  ArrowDropDown,
+  AddCircleOutline
 } from "@material-ui/icons";
 import { emphasize } from "@material-ui/core/styles/colorManipulator";
 import NoSsr from "@material-ui/core/NoSsr";
@@ -73,7 +72,7 @@ const styles = theme => ({
   container: {
     padding: "26px",
     border: "1px solid #dadce0",
-    maxWidth: "550px",
+    maxWidth: "780px",
     marginLeft: "auto",
     marginRight: "auto",
     borderRadius: 8
@@ -157,6 +156,8 @@ const styles = theme => ({
   }
 });
 
+
+
 const filesize = require("filesize");
 const parse = require("url-parse");
 
@@ -193,21 +194,24 @@ const handleInputChanged = event => {
   var fullNameArr = event.target.value.split(/\s+/);
   let name = fullNameArr.slice(0, -1).join(" ");
   let lastname = fullNameArr.pop();
-
+  // length= this.state.multi.length
   const _id = new ObjectID();
 
-  console.log(length)
+  console.log(length);
+  console.log(suggestions);
   if (event.target.value.trim() !== "" || length > 0) {
     suggestions[length] = {
-      value: { _id: _id.toHexString(), name, lastname, email: null,
-        notRegister: true },
-      label: event.target.value,
-      
+      value: {
+        _id: _id.toHexString(),
+        name,
+        lastname,
+        email: null,
+        notRegister: true
+      },
+      label: event.target.value
     };
   } else {
-    if (suggestions) {
-      delete suggestions[length]
-    }
+    delete suggestions[length];
   }
 };
 
@@ -246,52 +250,58 @@ const DropdownIndicator = props => {
 };
 
 const Option = props => {
+  // console.log(props.isSelected)
   return (
     <MenuItem
       buttonRef={props.innerRef}
       selected={props.isFocused}
       component="div"
       style={{
-        fontWeight: props.isSelected ? 700 : 500
+        fontWeight: props.isSelected ? "600" : 500
+        // maxHeight: 220
       }}
       {...props.innerProps}
     >
-      <Grid container>
-        <Grid item style={{ width: 42 }}>
-          {props.data.profileImage &&
-          props.data.profileImage[0] &&
-          props.data.profileImage[0].location ? (
-            <Avatar
-              alt="profile image"
-              style={{
-                width: 30,
-                height: 30
-              }}
-              src={`${SERVER}${props.data.profileImage[0].location}`}
-            />
-          ) : (
-            <Avatar
-              style={{
-                backgroundColor: "transparent",
-                width: 30,
-                height: 30
-              }}
-            >
-              <AccountCircle
+      <Grid container alignItems="center">
+        {!props.data.value.notRegister ? (
+          <Grid item style={{ width: 42 }}>
+            {props.data.profileImage &&
+            props.data.profileImage[0] &&
+            props.data.profileImage[0].location ? (
+              <Avatar
+                alt="profile image"
                 style={{
-                  width: 40,
-                  height: 40,
-                  color: "#9e9e9e",
-                  backgroundColor: "#ececec"
+                  width: 30,
+                  height: 30
                 }}
+                src={`${SERVER}${props.data.profileImage[0].location}`}
               />
-            </Avatar>
-          )}
-        </Grid>
+            ) : (
+              <Avatar
+                style={{
+                  backgroundColor: "transparent",
+                  width: 30,
+                  height: 30
+                }}
+              >
+                <AccountCircle
+                  style={{
+                    width: 40,
+                    height: 40,
+                    color: "#9e9e9e",
+                    backgroundColor: "#ececec"
+                  }}
+                />
+              </Avatar>
+            )}
+          </Grid>
+        ) : null}
         <Grid item xs>
           <Grid container>
             <Grid item xs={12}>
-              <Typography style={{ fontWeight: 500 }}>
+              <Typography
+                style={{ fontWeight: props.isFocused ? 500 : "normal" }}
+              >
                 {props.children}
               </Typography>
             </Grid>
@@ -299,7 +309,7 @@ const Option = props => {
               <Grid item xs={12}>
                 <Typography
                   style={{
-                    fontWeight: "normal",
+                    fontWeight: props.isFocused ? 500 : "normal",
                     color: "rgb(104, 104, 104)",
                     fontSize: 12
                   }}
@@ -312,6 +322,21 @@ const Option = props => {
             ) : null}
           </Grid>
         </Grid>
+        {!props.data.value.notRegister ? (
+          <Grid
+            item
+            style={{
+              width: 24,
+              display: "flex",
+              alignItems: "center",
+              color: "black",
+              opacity: ".54"
+            }}
+            align="right"
+          >
+            <AddCircleOutline />
+          </Grid>
+        ) : null}
       </Grid>
     </MenuItem>
   );
@@ -360,7 +385,7 @@ const ValueContainer = props => {
 };
 
 const MultiValue = props => {
-  console.log(props);
+  // console.log(props);
   return (
     <Chip
       tabIndex={-1}
@@ -402,7 +427,7 @@ const MultiValue = props => {
         [props.selectProps.classes.chipFocused]: props.isFocused
       })}
       labelprop
-      onDelete={props.removeProps.onClick}
+      onDelete={!props.data.isFixed ? props.removeProps.onClick : null}
       deleteIcon={<Cancel {...props.removeProps} />}
       variant="outlined"
     />
@@ -416,6 +441,7 @@ const Menu = props => {
       // style={{ position: "relative" }}
       className={props.selectProps.classes.paper}
       {...props.innerProps}
+      // style={{maxHeight: 220}}
     >
       {props.children}
     </Paper>
@@ -527,7 +553,6 @@ class AddPublicationDetails extends Component {
     //     label: `${this.props.user.name} ${this.props.user.lastname}`
     //   };
     // }
-
     // if (prevProps.authorSuggestions !== this.props.authorSuggestions) {
     //   console.log(this.props.authorSuggestions);
     // }
@@ -539,13 +564,6 @@ class AddPublicationDetails extends Component {
     };
 
     let multi = [];
-
-    const month = moment()
-      .month(this.state.date.month)
-      .format("M");
-    const date = this.state.date.year + "-" + month + "-" + this.state.date.day;
-
-    console.log(moment(date).isValid());
 
     newFormdata["researchType"].value = this.props.publicationType._id;
     newFormdata["title"].value = this.props.files
@@ -576,33 +594,61 @@ class AddPublicationDetails extends Component {
       });
       return null;
     });
-    // length = multi.length;
+    length = suggestions.length;
 
-    multi.push(suggestions.find(
-      x => x.value === this.props.user._id
-    ))
+    multi.push(suggestions.find(x => x.value === this.props.user._id));
+    multi[0].isFixed = this.props.user.isAdmin ? false : true
 
+    // isFixed
 
-
-    
-    this.setState({
-      multi
-    }, 
-    // ()=>{
-    //   console.log(suggestions.find(
-    //     x => x.value === this.props.user._id
-    //   ))
-    //   console.log(this.props.user)
-    //   console.log(suggestions)
-    // }
+    this.setState(
+      {
+        multi
+      }
+      // ()=>{
+      //   console.log(suggestions.find(
+      //     x => x.value === this.props.user._id
+      //   ))
+      //   console.log(this.props.user)
+      //   console.log(suggestions)
+      // }
     );
   }
 
-  handleChange = name => value => {
-    console.log(value)
-    this.setState({
-      [name]: value
-    });
+  handleChange = name => (value, { action, removedValue }) => {
+    console.log(removedValue)
+    console.log(action)
+
+    switch (action) {
+      case 'remove-value':
+      case 'pop-value':
+        if (removedValue.isFixed) {
+          return;
+        }
+        break;
+      default: break
+    }
+
+    // if (value.find(x => x.isFixed === true)) return
+    this.setState(
+      {
+        [name]: value
+      },
+      () => {
+        if (!this.state.multi) {
+          this.setState({
+            authorError: true,
+            authorErrorMessage: "ຊ່ອງຜູ້ຂຽນວ່າງບໍ່ໄດ້"
+          });
+        } else {
+          this.setState(
+            {
+              authorError: false
+            },
+          );
+        }
+      }
+    );
   };
 
   handleClose = (event, reason) => {
@@ -651,18 +697,20 @@ class AddPublicationDetails extends Component {
         date: newFormdata
       },
       () => {
-       if (this.validDate(
-        this.state.date.day,
-        this.state.date.month,
-        this.state.date.year
-      )) {
-        newFormdata["valid"] = true;
-      } else {
-        newFormdata["valid"] = false; 
-      }
-      this.setState({
-        date: newFormdata
-      })
+        if (
+          this.validDate(
+            this.state.date.day,
+            this.state.date.month,
+            this.state.date.year
+          )
+        ) {
+          newFormdata["valid"] = true;
+        } else {
+          newFormdata["valid"] = false;
+        }
+        this.setState({
+          date: newFormdata
+        });
       }
     );
   };
@@ -678,18 +726,20 @@ class AddPublicationDetails extends Component {
         date: newFormdata
       },
       () => {
-       if (this.validDate(
-        this.state.date.day,
-        this.state.date.month,
-        this.state.date.year
-      )) {
-        newFormdata["valid"] = true;
-      } else {
-        newFormdata["valid"] = false; 
-      }
-      this.setState({
-        date: newFormdata
-      })
+        if (
+          this.validDate(
+            this.state.date.day,
+            this.state.date.month,
+            this.state.date.year
+          )
+        ) {
+          newFormdata["valid"] = true;
+        } else {
+          newFormdata["valid"] = false;
+        }
+        this.setState({
+          date: newFormdata
+        });
       }
     );
   };
@@ -704,18 +754,20 @@ class AddPublicationDetails extends Component {
         date: newFormdata
       },
       () => {
-       if (this.validDate(
-        this.state.date.day,
-        this.state.date.month,
-        this.state.date.year
-      )) {
-        newFormdata["valid"] = true;
-      } else {
-        newFormdata["valid"] = false; 
-      }
-      this.setState({
-        date: newFormdata
-      })
+        if (
+          this.validDate(
+            this.state.date.day,
+            this.state.date.month,
+            this.state.date.year
+          )
+        ) {
+          newFormdata["valid"] = true;
+        } else {
+          newFormdata["valid"] = false;
+        }
+        this.setState({
+          date: newFormdata
+        });
       }
     );
   };
@@ -1124,20 +1176,6 @@ class AddPublicationDetails extends Component {
     });
   }
 
-  daysInMonth = (m, y) => {
-    switch (m) {
-      case 1:
-        return (y % 4 == 0 && y % 100) || y % 400 == 0 ? 29 : 28;
-      case 8:
-      case 3:
-      case 5:
-      case 10:
-        return 30;
-      default:
-        return 31;
-    }
-  };
-
   validDate = (day, month, year) => {
     const myMonth = (
       "0" +
@@ -1161,8 +1199,6 @@ class AddPublicationDetails extends Component {
     else if (!day && !month && year) return true;
     else return false;
   };
-
-  
 
   renderIcon = () => {
     switch (this.state.files[0].mimetype) {
@@ -1248,7 +1284,7 @@ class AddPublicationDetails extends Component {
       this.setState({ error: false, checkedError: false });
 
       // this.props.switchPage("details");
-      console.log(this.state.multi)
+      console.log(this.state.multi);
     } else if (!this.state.checked) {
       this.setState({ checkedError: true });
     } else {
@@ -1266,9 +1302,14 @@ class AddPublicationDetails extends Component {
         color: theme.palette.text.primary,
         "& input": {
           font: "inherit"
-        }
+        },
 
-        // padding: "16px"
+        // maxHeight: 220
+      }),
+      menuList: base => ({
+        ...base,
+
+        maxHeight: 200
       })
     };
 
@@ -2013,6 +2054,7 @@ class AddPublicationDetails extends Component {
                         placeholder="ກະລຸນາເລືອກຜູ້ຂຽນ"
                         isMulti
                         isClearable={false}
+                        // styles={{control: customControlStyles}}
                       />
                     </NoSsr>
                   </div>
@@ -2021,25 +2063,6 @@ class AddPublicationDetails extends Component {
                   ) : null}
                 </Grid>
               </Grid>
-
-              {this.state.authorError ? (
-                <Grid container spacing={24}>
-                  <Grid item xs={12}>
-                    <FormHelperText
-                      style={{
-                        fontFamily: "'Noto Sans Lao UI', sans serif",
-                        fontWeight: "600",
-                        marginBottom: "8px",
-                        marginTop: "8px"
-                      }}
-                      error
-                      id="component-error-text"
-                    >
-                      {this.state.authorErrorMessage}
-                    </FormHelperText>
-                  </Grid>
-                </Grid>
-              ) : null}
 
               <Grid container style={{ marginTop: 18 }}>
                 <Grid item xs={12}>
@@ -2183,15 +2206,13 @@ class AddPublicationDetails extends Component {
                             </MenuItem>
                           ))}
                         </Select>
-                        {!this.state.date.year ? (
-                          <InputError />
-                        ) : null}
+                        {!this.state.date.year ? <InputError /> : null}
                       </FormControl>
                     </Grid>
                   </Grid>
                 </Grid>
                 {!this.state.date.valid && this.state.date.year ? (
-                  <InputError message="ວັນທີບໍ່ຖືກຕ້ອງ"/>
+                  <InputError message="ວັນທີບໍ່ຖືກຕ້ອງ" />
                 ) : null}
               </Grid>
 

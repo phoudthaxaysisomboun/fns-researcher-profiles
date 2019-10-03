@@ -2947,6 +2947,7 @@ app.get("/api/researchers/get_suggested_user", auth, (req, res) => {
       accountIsVerified: true,
       active: true
     })
+    .sort([["name", "asc"]])
       .limit(limit)
       .populate("gender")
       .populate("degree")

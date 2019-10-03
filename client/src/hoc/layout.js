@@ -757,7 +757,7 @@ class Layout extends Component {
       </Menu>
     ) : null;
 
-    const renderCreateNewMenu = this.props.user.userData ? (
+    const renderCreateNewMenu = this.props.user.userData && this.props.research && this.props.research.researchType ? (
       <Menu
         anchorEl={anchorElCreateNew}
         open={isCreateNewMenuOpen}

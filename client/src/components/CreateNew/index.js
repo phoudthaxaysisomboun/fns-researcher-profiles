@@ -72,7 +72,7 @@ class CreateResearch extends Component {
     this.setState({ loading: true });
     setTimeout(() => {
       this.setState({ page, loading: false });
-    }, 800);
+    }, 400);
 
     // setTimeout(() => {
     //   this.setState({
@@ -104,7 +104,10 @@ class CreateResearch extends Component {
     switch (this.state.page) {
       case "index": {
         return (
-          <Grow in={this.state.page === "index"}>
+          <Grow in={this.state.loading} 
+          style={{ transitionDelay: "5000ms" }}
+          
+          >
             <AddResearchFile
               switchPage={page => this.switchPage(page)}
               setFilesData={files => this.setFilesData(files)}
@@ -123,9 +126,9 @@ class CreateResearch extends Component {
       case "details": {
         return (
           <Grow
-            in={this.state.page === "details"}
-            style={{ transformOrigin: "0 0 0" }}
-            {...(this.state.page === "details" ? { timeout: 1000 } : {})}
+            in={this.state.page !== "index"}
+            
+            style={{ transitionDelay: "5000ms" }}
           >
             <AddPublicationDetails
               user={
@@ -171,7 +174,10 @@ class CreateResearch extends Component {
 
     return (
       <div className={classes.mainContainer}>
-        {this.state.loading ? this.loading() : null} {this.renderPage()}
+        {
+          this.state.loading ? this.loading() : null
+        } 
+        {this.renderPage()}
       </div>
     );
   }

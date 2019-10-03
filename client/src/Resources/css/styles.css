@@ -819,4 +819,8 @@ canvas {
 .react-select-custom-dropdown:hover {
   cursor: pointer;
 }
+
+.Select__menu-list {
+  max-height: 120px !important;
+}
 /*# sourceMappingURL=styles.css.map */
