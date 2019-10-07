@@ -2947,7 +2947,6 @@ app.get("/api/researchers/get_suggested_user", auth, (req, res) => {
       accountIsVerified: true,
       active: true
     })
-    .sort([["name", "asc"]])
       .limit(limit)
       .populate("gender")
       .populate("degree")
@@ -4495,6 +4494,7 @@ app.get("/api/researchers/list_for_suggestions", (req, res) => {
     .populate({
       path: "affiliation.faculty"
     })
+    .sort([["name", "asc"]])
     .exec((err, result) => {
       return res.status(200).send(result);
     });

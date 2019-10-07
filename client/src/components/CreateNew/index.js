@@ -8,7 +8,7 @@ import AddResearchFile from "../CreateNew/add_file";
 import AddPublicationDetails from "../CreateNew/add_details";
 
 import Grow from "@material-ui/core/Grow";
-import { getResearchType } from "../../actions/research_actions";
+import { getResearchType, getPublicationType } from "../../actions/research_actions";
 import { connect } from "react-redux";
 import queryString from "query-string";
 import { getAuthorSuggestions } from "../../actions/user_actions";
@@ -57,6 +57,8 @@ class CreateResearch extends Component {
         }
       });
     });
+
+    this.props.dispatch(getPublicationType())
 
     this.props.dispatch(getAuthorSuggestions()).then(payload => {
       console.log();
@@ -143,6 +145,7 @@ class CreateResearch extends Component {
               }
               publicationType={this.state.publicationType}
               publicationTypes={this.state.publicationTypes}
+              publishType={this.props.research.publicationType}
               linkPreview={this.state.linkPreview}
               files={this.state.files}
               link={this.state.link}

@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import compose from "recompose/compose";
-import { withRouter } from "react-router-dom";
+import { withRouter, 
+  // Link as ReactLink
+ } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
 import axios from "axios";
 import classNames from "classnames";
@@ -13,6 +15,11 @@ import Shimmer from "react-js-loading-shimmer";
 
 import InputError from "../utils/Form/input_error";
 import { SERVER } from "../utils/misc";
+
+import {
+  generateData,
+  isFormValid,
+} from "../utils/Form/formActions"
 
 // import dateExists from 'date-exists';
 
@@ -43,7 +50,9 @@ import {
   MenuItem,
   OutlinedInput,
   Chip,
-  Avatar
+  Avatar,
+  // RadioGroup,
+  // Radio
 } from "@material-ui/core";
 import Dropzone from "react-dropzone";
 import {
@@ -107,9 +116,14 @@ const styles = theme => ({
   },
   input: {
     display: "flex",
-    padding: "8px",
+    padding: 3.5,
+    paddingRight: 8,
     minHeight: 40,
     paddingLeft: 14
+  },
+  selectOutlineInput: {
+    paddingTop: 14,
+    paddingBottom: 14
   },
   valueContainer: {
     display: "flex",
@@ -153,10 +167,28 @@ const styles = theme => ({
   },
   divider: {
     height: theme.spacing.unit * 2
-  }
+  },
+  radioButtonLabel: {
+    fontSize: 16
+  },
+  fileContainer: {
+    [theme.breakpoints.down("xs")]: {
+      marginTop: 18
+    },
+    [theme.breakpoints.up("sm")]: {
+      marginTop: 18
+    },
+  },
+  publishTypeContainer: {
+    [theme.breakpoints.down("xs")]: {
+      marginTop: 2
+    },
+    [theme.breakpoints.up("sm")]: {
+      marginTop: 0
+    },
+  }  
+
 });
-
-
 
 const filesize = require("filesize");
 const parse = require("url-parse");
@@ -211,7 +243,7 @@ const handleInputChanged = event => {
       label: event.target.value
     };
   } else {
-    delete suggestions[length];
+    delete suggestions[length - 1];
   }
 };
 
@@ -250,7 +282,7 @@ const DropdownIndicator = props => {
 };
 
 const Option = props => {
-  // console.log(props.isSelected)
+  console.log(props);
   return (
     <MenuItem
       buttonRef={props.innerRef}
@@ -502,6 +534,23 @@ class AddPublicationDetails extends Component {
           touched: false,
           validationMessage: ""
         },
+        publishType: {
+          element: "radio",
+          value: "",
+          config: {
+            name: "publish_type_input",
+            type: "text",
+            label: "ຕີພິມ",
+            // labelWidth: 0,
+            // options: []
+          },
+          validation: {
+            required: true
+          },
+          valid: true,
+          touched: false,
+          validationMessage: ""
+        },
         title: {
           element: "input",
           value: "",
@@ -563,9 +612,12 @@ class AddPublicationDetails extends Component {
       ...this.state.formdata
     };
 
+    console.log(this.props.publishType)
+
     let multi = [];
 
     newFormdata["researchType"].value = this.props.publicationType._id;
+    newFormdata["publishType"].value = this.props.publishType[0]._id;
     newFormdata["title"].value = this.props.files
       ? this.props.files[0].title
       : this.props.linkPreview
@@ -597,7 +649,7 @@ class AddPublicationDetails extends Component {
     length = suggestions.length;
 
     multi.push(suggestions.find(x => x.value === this.props.user._id));
-    multi[0].isFixed = this.props.user.isAdmin ? false : true
+    multi[0].isFixed = this.props.user.isAdmin ? false : true;
 
     // isFixed
 
@@ -616,17 +668,18 @@ class AddPublicationDetails extends Component {
   }
 
   handleChange = name => (value, { action, removedValue }) => {
-    console.log(removedValue)
-    console.log(action)
+    console.log(removedValue);
+    console.log(action);
 
     switch (action) {
-      case 'remove-value':
-      case 'pop-value':
+      case "remove-value":
+      case "pop-value":
         if (removedValue.isFixed) {
           return;
         }
         break;
-      default: break
+      default:
+        break;
     }
 
     // if (value.find(x => x.isFixed === true)) return
@@ -641,11 +694,9 @@ class AddPublicationDetails extends Component {
             authorErrorMessage: "ຊ່ອງຜູ້ຂຽນວ່າງບໍ່ໄດ້"
           });
         } else {
-          this.setState(
-            {
-              authorError: false
-            },
-          );
+          this.setState({
+            authorError: false
+          });
         }
       }
     );
@@ -832,6 +883,19 @@ class AddPublicationDetails extends Component {
         : false;
       this.setState({ formdata: newFormdata });
     }
+  };
+
+  handleChangePublishTypeChange = (event) => {
+    const newFormdata = {
+      ...this.state.formdata
+    };
+    if (this.state.formdata.publishType.validation.required) {
+      newFormdata["publishType"].valid = this.state.formdata.researchType.value
+        ? true
+        : false;
+      }
+      newFormdata["publishType"].value = event.target.value
+      this.setState({ formdata: newFormdata });
   };
 
   handleCheckBox = event => {
@@ -1090,6 +1154,8 @@ class AddPublicationDetails extends Component {
           }
           direction="rlt"
           media="image,logo"
+          target="_blank"
+          rel="noopener noreferrer"
         >
           {this.state.linkPreview.image ? (
             <div
@@ -1279,15 +1345,32 @@ class AddPublicationDetails extends Component {
     }
   };
 
-  submit = async () => {
-    if (this.state.checked && !this.state.error) {
+  submit = async (event) => {
+    
+   
+    if (!this.state.error) {
+
+      if (this.state.files || this.state.linkPreview) {
+        if (!this.state.checked) {
+          this.setState({ checkedError: true });
+        } 
+      }
+
+      let formIsValid = isFormValid(this.state.formdata, "addResearchDetails");
+
+      let dataToSubmit = generateData(this.state.formdata, "addResearchDetails");
+
+      const newDataToSubmit = { ...dataToSubmit };
+      console.log(newDataToSubmit)
+      
       this.setState({ error: false, checkedError: false });
 
       // this.props.switchPage("details");
-      console.log(this.state.multi);
-    } else if (!this.state.checked) {
-      this.setState({ checkedError: true });
-    } else {
+      const author = this.state.multi.map(item => {
+        return item.value
+      })
+      console.log(author);
+    }  else {
       this.setState({ error: true, errorMessage: "ຂໍອະໄພເກີດຄວາມຜິດພາດ" });
     }
   };
@@ -1302,7 +1385,7 @@ class AddPublicationDetails extends Component {
         color: theme.palette.text.primary,
         "& input": {
           font: "inherit"
-        },
+        }
 
         // maxHeight: 220
       }),
@@ -1378,67 +1461,174 @@ class AddPublicationDetails extends Component {
                   : "ຜົນງານຄົ້ນຄວ້າຂອງທ່ານ"}
               </Typography>
 
-              <Grid container style={{ marginTop: 18, width: "100%" }}>
-                <InputLabel
-                  htmlFor={this.state.formdata.researchType.config.name}
-                  error={!this.state.formdata.researchType.valid}
-                  style={{ fontSize: 14, fontWeight: 500 }}
-                >
-                  {this.state.formdata.researchType.config.label}
-                </InputLabel>
-                <FormControl
-                  fullWidth
-                  variant="outlined"
-                  className={classes.formControl}
-                  style={{ marginTop: 4 }}
-                >
-                  <Select
+              <Grid container style={{ marginTop: 18 }} spacing={16}>
+                <Grid item xs={12} sm={6}>
+                  <InputLabel
+                    htmlFor={this.state.formdata.researchType.config.name}
                     error={!this.state.formdata.researchType.valid}
-                    fullWidth
-                    value={this.state.formdata.researchType.value}
-                    onChange={this.handlePublicationTypeChange}
-                    onBlur={this.handlePublicationTypeBlur}
-                    style={{
-                      fontFamily: "Noto Sans Lao UI, Roboto, Arial, sans-serif"
-                    }}
-                    input={
-                      <OutlinedInput
-                        name={this.state.formdata.researchType.name}
-                      />
-                    }
+                    style={{ fontSize: 14, fontWeight: 500 }}
                   >
-                    <MenuItem
+                    {this.state.formdata.researchType.config.label}
+                  </InputLabel>
+                  <FormControl
+                    fullWidth
+                    variant="outlined"
+                    className={classes.formControl}
+                    style={{ marginTop: 4 }}
+                  >
+                    <Select
+                      error={!this.state.formdata.researchType.valid}
+                      fullWidth
+                      value={this.state.formdata.researchType.value}
+                      onChange={this.handlePublicationTypeChange}
+                      onBlur={this.handlePublicationTypeBlur}
                       style={{
                         fontFamily:
                           "Noto Sans Lao UI, Roboto, Arial, sans-serif",
-                        fontStyle: "italic",
-                        color: "#424242"
+                          
                       }}
-                      value=""
+                      
+
+                      input={
+                        <OutlinedInput
+                          name={this.state.formdata.researchType.name}
+                          
+                          inputProps= {{
+                            className: classes.selectOutlineInput,
+                          }
+                          }
+                          
+                        />
+                      }
                     >
-                      ກະລຸນາເລືອກ{this.state.formdata.researchType.config.label}
-                    </MenuItem>
-                    {this.state.formdata.researchType.config.options.map(
-                      item => (
-                        <MenuItem
-                          style={{
-                            fontFamily:
-                              "Noto Sans Lao UI, Roboto, Arial, sans-serif"
-                          }}
-                          key={item._id}
-                          value={item._id}
-                        >
-                          {item.name}
-                        </MenuItem>
-                      )
-                    )}
-                  </Select>
-                  {!this.state.formdata.researchType.valid ? (
-                    <InputError />
-                  ) : null}
-                </FormControl>
+                      <MenuItem
+                        style={{
+                          fontFamily:
+                            "Noto Sans Lao UI, Roboto, Arial, sans-serif",
+                          fontStyle: "italic",
+                          color: "#424242"
+                        }}
+                        value=""
+                      >
+                        ກະລຸນາເລືອກ
+                        {this.state.formdata.researchType.config.label}
+                      </MenuItem>
+                      {this.state.formdata.researchType.config.options.map(
+                        item => (
+                          <MenuItem
+                            style={{
+                              fontFamily:
+                                "Noto Sans Lao UI, Roboto, Arial, sans-serif"
+                            }}
+                            key={item._id}
+                            value={item._id}
+                          >
+                            {item.name}
+                          </MenuItem>
+                        )
+                      )}
+                    </Select>
+                    {!this.state.formdata.researchType.valid ? (
+                      <InputError />
+                    ) : null}
+                  </FormControl>
+                </Grid>
+
+                <Grid item xs={12} sm={6} className={classes.publishTypeContainer}>
+                  <InputLabel
+                    htmlFor={this.state.formdata.publishType.config.name}
+                    error={!this.state.formdata.publishType.valid}
+                    style={{ fontSize: 14, fontWeight: 500 }}
+                  >
+                    {this.state.formdata.publishType.config.label}
+                  </InputLabel>
+                  <FormControl
+                    fullWidth
+                    variant="outlined"
+                    className={classes.formControl}
+                    style={{ marginTop: 4 }}
+                  >
+                    <Select
+                      error={!this.state.formdata.publishType.valid}
+                      fullWidth
+                      value={this.state.formdata.publishType.value}
+                      onChange={this.handleChangePublishTypeChange}
+                      style={{
+                        fontFamily:
+                          "Noto Sans Lao UI, Roboto, Arial, sans-serif",
+                          
+                      }}
+                      
+
+                      input={
+                        <OutlinedInput
+                          name={this.state.formdata.publishType.name}
+                          
+                          inputProps= {{
+                            className: classes.selectOutlineInput,
+                          }
+                          }
+                          
+                        />
+                      }
+                    >
+                      {this.props.publishType.map(
+                        item => (
+                          <MenuItem
+                            style={{
+                              fontFamily:
+                                "Noto Sans Lao UI, Roboto, Arial, sans-serif"
+                            }}
+                            key={item._id}
+                            value={item._id}
+                          >
+                            {item.name}
+                          </MenuItem>
+                        )
+                      )}
+                    </Select>
+                    {!this.state.formdata.publishType.valid ? (
+                      <InputError />
+                    ) : null}
+                  </FormControl>
+                  {
+                  // <FormControl
+                  //   fullWidth
+                  //   variant="outlined"
+                  //   className={classes.formControl}
+                  //   style={{ marginTop: 4 , }}
+                  // >
+                  //   <FormGroup row style={{height: 47}}>
+                  //     <RadioGroup
+                  //     aria-label="publish type"
+                  //     name="publish_type"
+                  //     className={classes.group}
+                  //     value={this.state.formdata.publishType.value}
+                  //     onChange={this.handleChangePublishTypeChange}
+                  //     row
+                  //   >
+                  //   {
+                  //     this.props.publishType.map(item => (
+                  //       <FormControlLabel
+                  //       value={item._id}
+                  //       control={<Radio color="primary" />}
+                        
+                  //       label={<span style={{fontSize: 16}}>{item.name}</span>}
+                  //     />
+                  //     ))
+                  //   }
+                     
+                  //   </RadioGroup>
+                  //   </FormGroup>
+                  //   {!this.state.formdata.publishType.valid ? (
+                  //     <InputError />
+                  //   ) : null}
+                  // </FormControl>
+                   
+                }
+                  </Grid>
               </Grid>
-              <div style={{ marginTop: 18 }}>
+              <div className={classes.fileContainer}>
                 <InputLabel style={{ fontSize: 14, fontWeight: 500 }}>
                   ຟາຍລ໌ (ບໍ່ໃສ່ກໍໄດ້)
                 </InputLabel>
@@ -1491,12 +1681,12 @@ class AddPublicationDetails extends Component {
                                       alignContent="center"
                                       alignItems="flex-start"
                                     >
-                                      <Grid item xs={12} style={{ height: 35 }}>
+                                      <Grid item xs={12} style={{ height: 28 }}>
                                         <svg
                                           fill="currentColor"
-                                          height="35"
+                                          height="28"
                                           viewBox="0 0 24 24"
-                                          width="35"
+                                          width="28"
                                           xmlns="https://www.w3.org/2000/svg"
                                           aria-hidden="true"
                                           focusable="false"
@@ -1564,12 +1754,12 @@ class AddPublicationDetails extends Component {
                                       alignContent="center"
                                       alignItems="flex-start"
                                     >
-                                      <Grid item xs={12} style={{ height: 35 }}>
+                                      <Grid item xs={12} style={{ height: 28 }}>
                                         <svg
                                           fill="currentColor"
-                                          height="35"
+                                          height="28"
                                           viewBox="0 0 24 24"
-                                          width="35"
+                                          width="28"
                                           xmlns="https://www.w3.org/2000/svg"
                                           aria-hidden="true"
                                           focusable="false"
@@ -1628,9 +1818,9 @@ class AddPublicationDetails extends Component {
                                     alignContent="center"
                                     alignItems="flex-start"
                                   >
-                                    <Grid item xs={12} style={{ height: 35 }}>
+                                    <Grid item xs={12} style={{ height: 28 }}>
                                       <InsertLinkOutlined
-                                        style={{ fontSize: 35 }}
+                                        style={{ fontSize: 28 }}
                                       />
                                     </Grid>
 
@@ -2013,9 +2203,21 @@ class AddPublicationDetails extends Component {
                     // onChange={event => change({ event, id })}
                     margin="none"
                     variant="outlined"
+                    input={
+                      <OutlinedInput inputProps= {{
+                        className: classes.selectOutlineInput,
+                      }
+                      } />
+                    }
+                    style={{padding: 0}}
                     inputProps={{
-                      maxLength: this.state.formdata.title.config.maxLength
+                      maxLength: this.state.formdata.title.config.maxLength,
+                      style: {
+                        marginTop: -4.5,
+                        marginBottom: -4.5
+                      }
                     }}
+                    
                   />
                   {!this.state.formdata.title.valid ? (
                     <InputError message="ຕ້ອງມີອັກສອນຢ່າງຫນ້ອຍ 6 ຕົວ ແລະ ບໍ່ຫລາຍກວ່າ 500" />
@@ -2092,7 +2294,10 @@ class AddPublicationDetails extends Component {
                             fontFamily:
                               "Noto Sans Lao UI, Roboto, Arial, sans-serif"
                           }}
-                          input={<OutlinedInput name="day-select" />}
+                          input={<OutlinedInput inputProps= {{
+                            className: classes.selectOutlineInput,
+                          }
+                          } name="day-select" />}
                         >
                           <MenuItem
                             style={{
@@ -2136,7 +2341,10 @@ class AddPublicationDetails extends Component {
                             fontFamily:
                               "Noto Sans Lao UI, Roboto, Arial, sans-serif"
                           }}
-                          input={<OutlinedInput name="month_input" />}
+                          input={<OutlinedInput inputProps= {{
+                            className: classes.selectOutlineInput,
+                          }
+                          } name="month_input" />}
                         >
                           <MenuItem
                             style={{
@@ -2180,7 +2388,10 @@ class AddPublicationDetails extends Component {
                             fontFamily:
                               "Noto Sans Lao UI, Roboto, Arial, sans-serif"
                           }}
-                          input={<OutlinedInput name="year_input" />}
+                          input={<OutlinedInput inputProps= {{
+                            className: classes.selectOutlineInput,
+                          }
+                          } name="year_input" />}
                         >
                           <MenuItem
                             style={{
@@ -2249,8 +2460,8 @@ class AddPublicationDetails extends Component {
                     style={{ marginLeft: 8, boxShadow: "none" }}
                     onClick={() => this.submit()}
                     disabled={
-                      (this.state.files !== null ||
-                        this.state.linkPreview !== null) &&
+                      // (this.state.files !== null ||
+                      //   this.state.linkPreview !== null) &&
                       !this.state.error &&
                       !this.state.uploading
                         ? false

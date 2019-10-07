@@ -3,9 +3,14 @@ import compose from "recompose/compose";
 import { withRouter } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
 import axios from "axios";
-import classNames from 'classnames';
+import classNames from "classnames";
 
 import Shimmer from "react-js-loading-shimmer";
+
+import {
+  generateData,
+  isFormValid,
+} from "../utils/Form/formActions"
 
 import {
   Paper,
@@ -61,19 +66,19 @@ const styles = theme => ({
     marginTop: 14
   },
   icon: {
-    fontSize: 20,
+    fontSize: 20
   },
   iconVariant: {
     opacity: 0.9,
-    marginRight: theme.spacing.unit,
+    marginRight: theme.spacing.unit
   },
   error: {
-    backgroundColor: theme.palette.error.dark,
+    backgroundColor: theme.palette.error.dark
   },
   message: {
-    display: 'flex',
-    alignItems: 'center',
-  },
+    display: "flex",
+    alignItems: "center"
+  }
 });
 
 const filesize = require("filesize");
@@ -92,8 +97,7 @@ class AddResearchFile extends Component {
       link: "",
       linkPreview: null,
       loadingLink: false,
-      disableUploadButtom: true,
-      
+      disableUploadButtom: true
     };
     this.timeout = null;
   }
@@ -105,16 +109,14 @@ class AddResearchFile extends Component {
   }
 
   handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
+    if (reason === "clickaway") {
       return;
     }
 
     this.setState({ error: false });
   };
 
-  componentDidUpdate (prevProps, prevState) {
-   
-  }
+  componentDidUpdate(prevProps, prevState) {}
 
   handleCheckBox = event => {
     this.setState({ checked: event.target.checked });
@@ -348,6 +350,8 @@ class AddResearchFile extends Component {
     )
       return (
         <a
+          target="_blank"
+          rel="noopener noreferrer"
           className="link-preview-contianer"
           href={normalizeUrl(this.state.link, { forceHttps: false })}
           title={
@@ -522,11 +526,25 @@ class AddResearchFile extends Component {
     }
   };
 
-  submit = async () => {
+  submit = async event => {
+    event.preventDefault();
+
     if (this.state.checked && !this.state.error) {
       this.setState({ error: false, checkedError: false });
-      if (this.state.files) {this.props.setFilesData(this.state.files)}
-      if (this.state.linkPreview) {this.props.setLinkData(this.state.linkPreview, this.state.link)}
+
+      let formIsValid = isFormValid(this.state.formdata, "addResearchDialog");
+
+      let dataToSubmit = generateData(this.state.formdata, "addResearchDialog");
+
+      const newDataToSubmit = { ...dataToSubmit };
+      console.log(newDataToSubmit)
+
+      if (this.state.files) {
+        this.props.setFilesData(this.state.files);
+      }
+      if (this.state.linkPreview) {
+        this.props.setLinkData(this.state.linkPreview, this.state.link);
+      }
 
       this.props.switchPage("details");
     } else if (!this.state.checked) {
@@ -537,10 +555,14 @@ class AddResearchFile extends Component {
   };
 
   handleSkip = () => {
-    if (this.state.files) {this.props.setFilesData(null)}
-    if (this.state.linkPreview) {this.props.setLinkData(null)}
+    if (this.state.files) {
+      this.props.setFilesData(null);
+    }
+    if (this.state.linkPreview) {
+      this.props.setLinkData(null);
+    }
     this.props.switchPage("details");
-  }
+  };
 
   render() {
     const { classes, className } = this.props;
@@ -924,7 +946,7 @@ class AddResearchFile extends Component {
                         {
                           // <InputLabel >ລີ້ງຂອງຜົນງານຄົ້ນຄວ້າ</InputLabel>
                         }
-                        
+
                         <TextField
                           placeholder="ວາງລີ້ງຜົນງານຄົ້ນຄວ້າຂອງທ່ານເຊັ່ນໃນ Researchgate, Google Scholar ຯລຯ."
                           value={this.state.link}
@@ -1065,9 +1087,8 @@ class AddResearchFile extends Component {
                         <>
                           ຂ້າພະເຈົ້າໄດ້ກວດສອບ ແລະ
                           ຢືນຢັນວ່າລິ້ງຂ້າພະເຈົ້າກຳລັງອັພໂຫລດນີ້
-                          ແມ່ນຂ້າພະເຈົ້າມີສິດໃນການເຜຍແພ່ ແລະ
-                          ແບ່ງປັນ, ຮວມທັງເຫັນດີນຳ{" "}
-                          <Link> ເງື່ອນໄຂການອັບໂຫລດ</Link>.
+                          ແມ່ນຂ້າພະເຈົ້າມີສິດໃນການເຜຍແພ່ ແລະ ແບ່ງປັນ,
+                          ຮວມທັງເຫັນດີນຳ <Link> ເງື່ອນໄຂການອັບໂຫລດ</Link>.
                           {error ? (
                             <FormHelperText
                               style={{ fontWeight: "normal", marginTop: 0 }}
@@ -1097,36 +1118,41 @@ class AddResearchFile extends Component {
                   xs={12}
                   style={{ fontSize: 14, color: "rgba(0,0,0,0.65)" }}
                 >
-                <>ທ່າານສາມາດເພີ່ມລາຍລະອຽດກ່ຽວກັບວຽກໃນຂັ້ນຕອນຕໍ່ໄປ</>
+                  <>ທ່າານສາມາດເພີ່ມລາຍລະອຽດກ່ຽວກັບວຽກໃນຂັ້ນຕອນຕໍ່ໄປ</>
                   {
-                  //   !this.state.error ? (
-                  // ) : (
-                  //   <div>
-                  //     <Error
-                  //       style={{
-                  //         fontSize: 16,
-                  //         marginRight: 4,
-                  //         position: "relative",
-                  //         top: 3,
-                  //         color: "#d93025"
-                  //       }}
-                  //     />
-                  //     <span style={{ fontSize: 14, color: "#d93025" }}>
-                  //       {this.state.errorMessage}
-                  //     </span>
-                  //   </div>
-                  // )
-                }
+                    //   !this.state.error ? (
+                    // ) : (
+                    //   <div>
+                    //     <Error
+                    //       style={{
+                    //         fontSize: 16,
+                    //         marginRight: 4,
+                    //         position: "relative",
+                    //         top: 3,
+                    //         color: "#d93025"
+                    //       }}
+                    //     />
+                    //     <span style={{ fontSize: 14, color: "#d93025" }}>
+                    //       {this.state.errorMessage}
+                    //     </span>
+                    //   </div>
+                    // )
+                  }
                 </Grid>
                 <Grid item xs md align="right" style={{ marginTop: 34 }}>
-                  <Button onClick={()=> this.handleSkip()}>ຂ້າມ</Button>
+                  <Button onClick={() => this.handleSkip()}>ຂ້າມ</Button>
                   <Button
                     variant="contained"
                     color="primary"
                     style={{ marginLeft: 8, boxShadow: "none" }}
                     onClick={() => this.submit()}
                     disabled={
-                    (this.state.files !== null || this.state.linkPreview !== null) && !this.state.error && !this.state.uploading ? false : true
+                      // (this.state.files !== null ||
+                      //   this.state.linkPreview !== null) &&
+                      !this.state.error &&
+                      !this.state.uploading
+                        ? false
+                        : true
                     }
                   >
                     ອັພໂຫລດ
@@ -1139,28 +1165,26 @@ class AddResearchFile extends Component {
         <Grid item lg md sm xs />
         <Snackbar
           anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'left',
+            vertical: "bottom",
+            horizontal: "left"
           }}
           variant="error"
           open={this.state.error}
           autoHideDuration={3000}
-         
-          
-          
           onClose={this.handleClose}
         >
-        <SnackbarContent
-      className={classNames(classes["error"], className)}
-      aria-describedby="client-snackbar"
-      message={
-        <span id="client-snackbar" className={classes.message}>
-          <Error className={classNames(classes.icon, classes.iconVariant)} />
-          {this.state.errorMessage}
-        </span>
-      }
-      
-    />
+          <SnackbarContent
+            className={classNames(classes["error"], className)}
+            aria-describedby="client-snackbar"
+            message={
+              <span id="client-snackbar" className={classes.message}>
+                <Error
+                  className={classNames(classes.icon, classes.iconVariant)}
+                />
+                {this.state.errorMessage}
+              </span>
+            }
+          />
         </Snackbar>
       </Grid>
     );
