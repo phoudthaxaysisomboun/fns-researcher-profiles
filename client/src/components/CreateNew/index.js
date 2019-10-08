@@ -6,6 +6,7 @@ import { CircularProgress } from "@material-ui/core";
 
 import AddResearchFile from "../CreateNew/add_file";
 import AddPublicationDetails from "../CreateNew/add_details";
+import AddPublicationAdditionaDetails from "../CreateNew/add_additional_details";
 
 import Grow from "@material-ui/core/Grow";
 import { getResearchType, getPublicationType } from "../../actions/research_actions";
@@ -29,11 +30,14 @@ class CreateResearch extends Component {
   state = {
     page: "index",
     loading: false,
-    publicationType: {},
+    researchType: "",
+    publicationType: "",
+    title: "",
     files: null,
+    author: "",
     linkPreview: null,
     link: "",
-    publicationTypes: []
+    publicationTypes: [],
   };
 
   componentDidMount() {
@@ -44,14 +48,14 @@ class CreateResearch extends Component {
         ? query.publicationType
         : this.props.research.researchType[0];
       this.setState({
-        publicationType: this.props.research.researchType[0],
+        researchType: this.props.research.researchType[0],
         publicationTypes: this.props.research.researchType
       });
 
       this.props.research.researchType.map((item, index) => {
         if (item.englishName === type) {
           console.log(item);
-          return this.setState({ publicationType: item });
+          return this.setState({ researchType: item });
         } else {
           return null;
         }
@@ -88,6 +92,14 @@ class CreateResearch extends Component {
   setFilesData = files => {
     this.setState({ files });
     console.log(files);
+  };
+
+  setPublicationDetails = data => {
+    const newData = {...data}
+    this.setState(newData, () => {
+
+      console.log(this.state);
+    });
   };
 
   setLinkData = (linkPreview, link) => {
@@ -135,7 +147,7 @@ class CreateResearch extends Component {
             <AddPublicationDetails
               user={
                 this.props && this.props.user && this.props.user.userData
-                  ? this.props.user.userData
+                  ? this.props.user.userData  
                   : {}
               }
               switchPage={page => this.switchPage(page)}
@@ -143,7 +155,7 @@ class CreateResearch extends Component {
               setLinkData={(linkPreview, link) =>
                 this.setLinkData(linkPreview, link)
               }
-              publicationType={this.state.publicationType}
+              researchType={this.state.researchType}
               publicationTypes={this.state.publicationTypes}
               publishType={this.props.research.publicationType}
               linkPreview={this.state.linkPreview}
@@ -154,6 +166,26 @@ class CreateResearch extends Component {
                   ? this.props.user.authorSuggestions
                   : null
               }
+              setPublicationDetails = {data => this.setPublicationDetails(data)}
+            />
+          </Grow>
+        );
+      }
+      case "additionalDetails": {
+        return (
+          <Grow
+            in={this.state.page !== "index"}
+            
+            style={{ transitionDelay: "5000ms" }}
+          >
+            <AddPublicationAdditionaDetails
+              user={
+                this.props && this.props.user && this.props.user.userData
+                  ? this.props.user.userData  
+                  : {}
+              }
+              switchPage={page => this.switchPage(page)}
+              researchType={this.state.researchType}
             />
           </Grow>
         );

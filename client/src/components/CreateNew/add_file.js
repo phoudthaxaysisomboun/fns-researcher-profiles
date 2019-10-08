@@ -8,11 +8,6 @@ import classNames from "classnames";
 import Shimmer from "react-js-loading-shimmer";
 
 import {
-  generateData,
-  isFormValid,
-} from "../utils/Form/formActions"
-
-import {
   Paper,
   Typography,
   Grid,
@@ -531,13 +526,6 @@ class AddResearchFile extends Component {
 
     if (this.state.checked && !this.state.error) {
       this.setState({ error: false, checkedError: false });
-
-      let formIsValid = isFormValid(this.state.formdata, "addResearchDialog");
-
-      let dataToSubmit = generateData(this.state.formdata, "addResearchDialog");
-
-      const newDataToSubmit = { ...dataToSubmit };
-      console.log(newDataToSubmit)
 
       if (this.state.files) {
         this.props.setFilesData(this.state.files);
@@ -1147,8 +1135,8 @@ class AddResearchFile extends Component {
                     style={{ marginLeft: 8, boxShadow: "none" }}
                     onClick={() => this.submit()}
                     disabled={
-                      // (this.state.files !== null ||
-                      //   this.state.linkPreview !== null) &&
+                      (this.state.files !== null ||
+                        this.state.linkPreview !== null) &&
                       !this.state.error &&
                       !this.state.uploading
                         ? false
