@@ -186,6 +186,11 @@ class CreateResearch extends Component {
               }
               switchPage={page => this.switchPage(page)}
               researchType={this.state.researchType}
+              authorSuggestions={
+                this.props.user.authorSuggestions
+                  ? this.props.user.authorSuggestions
+                  : null
+              }
             />
           </Grow>
         );

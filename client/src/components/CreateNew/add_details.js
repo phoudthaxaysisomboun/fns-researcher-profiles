@@ -556,7 +556,7 @@ class AddPublicationDetails extends Component {
             name: "title_input",
             type: "text",
             // label: "ຫົວຂໍ້",
-            // autoFocus: true,
+            autoFocus: true,
             // placeholder: "ຊື່ຜົນງານ",
             multiline: true,
             rows: 2,

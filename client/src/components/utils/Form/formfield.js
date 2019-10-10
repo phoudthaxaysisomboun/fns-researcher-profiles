@@ -8,6 +8,7 @@ import {
   InputLabel,
   MenuItem
 } from "@material-ui/core";
+import InputError from "../Form/input_error"
 
 const FormField = ({ formdata, change, id, labelWidth, maxlength = null }) => {
   const showError = () => {
@@ -72,6 +73,41 @@ const FormField = ({ formdata, change, id, labelWidth, maxlength = null }) => {
           </div>
         );
         break;
+      case "input_secondary":
+        formTemplate = (
+          <>
+            <InputLabel
+              htmlFor={formdata.config.name}
+              error={!formdata.valid}
+              style={{ fontSize: 14, fontWeight: 500 }}
+            >
+              {formdata.label}
+            </InputLabel>
+            <FormControl fullWidth variant="outlined" style={{ marginTop: 4 }}>
+              <TextField
+                {...formdata.config}
+                value={formdata.value}
+                error={!formdata.valid}
+                onBlur={event => change({ event, id, blur: true })}
+                onChange={event => change({ event, id })}
+                margin="none"
+                variant="outlined"
+                style={{ padding: 0 }}
+                inputProps={{
+                  style: {
+                    marginTop: -4.5,
+                    marginBottom: -4.5
+                  },
+                  maxLength: formdata.config.maxLength
+                }}
+              />
+              {!formdata.valid ? (
+                <InputError message={formdata.validationMessage} />
+              ) : null}
+            </FormControl>
+          </>
+        );
+        break;
       case "year":
         formTemplate = (
           <div>
@@ -88,8 +124,7 @@ const FormField = ({ formdata, change, id, labelWidth, maxlength = null }) => {
                   inputProps={{
                     maxLength: 4,
                     min: "1900",
-                    max: "9999",
-           
+                    max: "9999"
                   }}
                 />
               ) : (
@@ -103,8 +138,7 @@ const FormField = ({ formdata, change, id, labelWidth, maxlength = null }) => {
                   inputProps={{
                     maxLength: 4,
                     min: "1900",
-                    max: "9999",
-            
+                    max: "9999"
                   }}
                 />
               )}

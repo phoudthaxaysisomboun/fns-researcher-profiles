@@ -9,6 +9,14 @@
  export const SERVER = 'http://localhost:3002/'
 
  export const RESEARCHER_PROFILES_SERVER = '/api/researcher_profiles'
+
+ export const abstractList = [
+   '5cdb82bb27ba7c4214ef5776',
+   '5cdb830827ba7c4214ef5777',
+   '5cdb83a127ba7c4214ef5779',
+   '5cff4df337bc3545e892f950',
+   '5d0516e447c496528476ec94',
+ ]
  
  export const colorPallete= [
     '#944336',

@@ -5,21 +5,20 @@ import {
   // Link as ReactLink
 } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
-import axios from "axios";
 import classNames from "classnames";
 import { ObjectID } from "bson";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import ReactSelect from "react-select";
-
-import Shimmer from "react-js-loading-shimmer";
 
 import InputError from "../utils/Form/input_error";
+import FormField from "../utils/Form/formfield";
 import { SERVER } from "../utils/misc";
 
-import { generateData, isFormValid } from "../utils/Form/formActions";
+import { generateData, isFormValid, update } from "../utils/Form/formActions";
+import { abstractList } from "../utils/misc";
 
-// import dateExists from 'date-exists';
+import ReactSelect from "react-select";
+import NoSsr from "@material-ui/core/NoSsr";
 
 import "moment/locale/lo";
 
@@ -30,50 +29,28 @@ import {
   Typography,
   Grid,
   Button,
-  FormControl,
+  // FormControl,
   TextField,
-  IconButton,
-  CircularProgress,
-  Tooltip,
-  FormGroup,
-  FormControlLabel,
-  Checkbox,
-  FormHelperText,
-  Link,
-  InputAdornment,
   Snackbar,
   SnackbarContent,
   InputLabel,
-  Select,
   MenuItem,
-  OutlinedInput,
+  // OutlinedInput,
   Chip,
   Avatar
-  // RadioGroup,
-  // Radio
 } from "@material-ui/core";
-import Dropzone from "react-dropzone";
+
 import {
-  //   CloseOutlined,
-  //   Cancel,
-  //   DescriptionOutlined,
-  //   AccountCircleOutlined,
-  InsertLinkOutlined,
-  // InfoOutlined,
   Cancel,
   Error,
-  PublicOutlined,
-  // AccountCircleOutlined,
   AccountCircle,
   ArrowDropDown,
   AddCircleOutline
 } from "@material-ui/icons";
 import { emphasize } from "@material-ui/core/styles/colorManipulator";
-import NoSsr from "@material-ui/core/NoSsr";
-
-const normalizeUrl = require("normalize-url");
 
 moment.locale("lo");
+
 
 const styles = theme => ({
   container: {
@@ -187,21 +164,9 @@ const styles = theme => ({
   }
 });
 
-const filesize = require("filesize");
-const parse = require("url-parse");
-
 let suggestions = [];
 let length = 0;
-let dates = [];
-let years = [];
 
-for (let index = moment().year(); index >= 1940; index--) {
-  years.push(index);
-}
-
-for (let index = 1; index <= 31; index++) {
-  dates.push(index);
-}
 const NoOptionsMessage = props => {
   return (
     <Typography
@@ -226,8 +191,6 @@ const handleInputChanged = event => {
   // length= this.state.multi.length
   const _id = new ObjectID();
 
-  console.log(length);
-  console.log(suggestions);
   if (event.target.value.trim() !== "" || length > 0) {
     suggestions[length] = {
       value: {
@@ -279,7 +242,6 @@ const DropdownIndicator = props => {
 };
 
 const Option = props => {
-  console.log(props);
   return (
     <MenuItem
       buttonRef={props.innerRef}
@@ -383,15 +345,6 @@ const Placeholder = props => {
       {props.children}
     </Typography>
   );
-
-  // return (
-  //   <Input
-  //       placeholder={props.children}
-  //       disabled
-  //       className={props.selectProps.classes.placeholder}
-  //       {...props.innerProps}
-  //     />
-  // )
 };
 
 const SingleValue = props => {
@@ -414,7 +367,6 @@ const ValueContainer = props => {
 };
 
 const MultiValue = props => {
-  // console.log(props);
   return (
     <Chip
       tabIndex={-1}
@@ -494,148 +446,266 @@ class AddPublicationAdditionaDetails extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      publicationTypeName: "",
       authorError: false,
       authorErrorMessage: "",
       single: null,
       multi: null,
-      multiForAdvisor: null,
-
-      uploading: false,
-      files: null,
       error: false,
       formError: false,
       errorMessage: "ຂໍອະໄພ, ມີບາງຢ່າງຜິດພາດ",
-      checked: false,
-      checkedError: false,
-      insertLink: false,
-      link: "",
-      linkPreview: null,
-      loadingLink: false,
-      disableUploadButtom: true,
-      labelWidth: 0,
+      hasSomeValue: false,
       formdata: {
-        researchType: {
-          element: "select",
+        abstract: {
+          element: "input_secondary",
           value: "",
+          label: "ບົດຄັດຫຍໍ້",
           config: {
-            name: "research_type_input",
+            name: "abstract_input",
             type: "text",
-            label: "ປະເພດຜົນງານ",
-            labelWidth: 0,
-            options: []
-          },
-          validation: {
-            required: true
-          },
-          valid: true,
-          touched: false,
-          validationMessage: ""
-        },
-        publicationType: {
-          element: "radio",
-          value: "",
-          config: {
-            name: "publish_type_input",
-            type: "text",
-            label: "ຕີພິມ"
-            // labelWidth: 0,
-            // options: []
-          },
-          validation: {
-            required: true
-          },
-          valid: true,
-          touched: false,
-          validationMessage: ""
-        },
-        title: {
-          element: "input",
-          value: "",
-          label: "ຫົວຂໍ້",
-          config: {
-            name: "title_input",
-            type: "text",
-            // label: "ຫົວຂໍ້",
-            // autoFocus: true,
-            // placeholder: "ຊື່ຜົນງານ",
+            placeholder: "ອະທິບາຍກ່ຽວກັບບົດຄົ້ນຄວ້າຂອງທ່ານ",
+            autoFocus: true,
             multiline: true,
-            rows: 2,
-            maxLength: 500,
-            minLength: 6
+            rows: 5,
           },
           validation: {
-            required: true
+            required: false
+          },
+          valid: true,
+          touched: false,
+          validationMessage: ""
+        },
+        conferenceTitle: {
+          element: "input_secondary",
+          value: "",
+          label: "ຊື່ງານປະຊຸມ",
+          config: {
+            name: "conference_title_input",
+            type: "text",
+            placeholder: "ຫົວຂໍ້ ຫລື ຊື່ຂອງງານປະຊຸມ",
+            autoFocus: false
+          },
+          validation: {
+            required: false
+          },
+          valid: true,
+          touched: false,
+          validationMessage: ""
+        },
+        conferenceName: {
+          element: "input_secondary",
+          value: "",
+          label: "ຊື່ງານ",
+          config: {
+            name: "conference_title_input",
+            type: "text",
+            placeholder: "ຫົວຂໍ້ ຫລື ຊື່ຂອງງານທີ່ທ່ານນໍາເອົາບົດນີ້ໄປນໍາສະເຫນີ"
+          },
+          validation: {
+            required: false
+          },
+          valid: true,
+          touched: false,
+          validationMessage: ""
+        },
+        location: {
+          element: "input_secondary",
+          value: "",
+          label: "ສະຖານທີ່",
+          config: {
+            name: "location_input",
+            type: "text",
+            placeholder: "ທີ່ຕັ້ງຂອງສະຖານທີ່ຈັດງານ"
+          },
+          validation: {
+            required: false
+          },
+          valid: true,
+          touched: false,
+          validationMessage: ""
+        },
+        journalName: {
+          element: "input_secondary",
+          value: "",
+          label: "ຊື່ວາລະສານ",
+          config: {
+            name: "journal_input",
+            type: "text",
+            placeholder: "ພິມຊື່ວາລະສານ"
+          },
+          validation: {
+            required: false
+          },
+          valid: true,
+          touched: false,
+          validationMessage: ""
+        },
+
+        volume: {
+          element: "input_secondary",
+          value: "",
+          label: "ເຫລັ້ມ",
+          config: {
+            name: "volume_input",
+            type: "text",
+            placeholder: "ພິມເຫລັ້ມ"
+          },
+          validation: {
+            required: false
+          },
+          valid: true,
+          touched: false,
+          validationMessage: ""
+        },
+        issue: {
+          element: "input_secondary",
+          value: "",
+          label: "ສະບັບ",
+          config: {
+            name: "issue_input",
+            type: "text",
+            placeholder: "ພິມສະບັບ"
+          },
+          validation: {
+            required: false
+          },
+          valid: true,
+          touched: false,
+          validationMessage: ""
+        },
+        page: {
+          element: "input_secondary",
+          value: "",
+          label: "ຫນ້າ",
+          config: {
+            name: "page_input",
+            type: "text",
+            placeholder: "ພິມຫນ້າ"
+          },
+          validation: {
+            required: false
+          },
+          valid: true,
+          touched: false,
+          validationMessage: ""
+        },
+        publisher: {
+          element: "input_secondary",
+          value: "",
+          label: "",
+          config: {
+            name: "publisher_input",
+            type: "text",
+            placeholder: "ພິມສໍານັກພິມ"
+          },
+          validation: {
+            required: false
+          },
+          valid: true,
+          touched: false,
+          validationMessage: ""
+        },
+        editor: {
+          element: "input_secondary",
+          label: "ບັນນາທິການ",
+          value: "",
+          config: {
+            name: "editor_input",
+            type: "text",
+            placeholder: "ພິມບັນນາທິການ"
+          },
+          validation: {
+            required: false
+          },
+          valid: true,
+          touched: false,
+          validationMessage: ""
+        },
+        edition: {
+          element: "input_secondary",
+          value: "",
+          label: "ສະບັບ",
+          config: {
+            name: "edition_input",
+            type: "text",
+            placeholder: "ພິມສະບັບ"
+          },
+          validation: {
+            required: false
+          },
+          valid: true,
+          touched: false,
+          validationMessage: ""
+        },
+        institution: {
+          element: "input_secondary",
+          value: "",
+          label: "ສະຖາບັນ",
+          config: {
+            name: "institution_input",
+            type: "text",
+            placeholder: "ພິມສະຖາບັນ"
+          },
+          validation: {
+            required: false
+          },
+          valid: true,
+          touched: false,
+          validationMessage: ""
+        },
+        degree: {
+          element: "input_secondary",
+          value: "",
+          label: "ລະດັບການສຶກສາ",
+          config: {
+            name: "degree_input",
+            type: "text",
+            placeholder: "ພິມລະດັບການສຶກສ"
+          },
+          validation: {
+            required: false
           },
           valid: true,
           touched: false,
           validationMessage: ""
         }
-      },
-      date: {
-        day: moment().date(),
-        month: moment().format("MMMM"),
-        year: moment().year(),
-        date: moment().year() + "-" + moment().month() + "-" + moment().date(),
-        valid: true
       }
     };
-    this.timeout = null;
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    // let multi = [];
-    // if (
-    //   this.props &&
-    //   this.props.other &&
-    //   prevProps.other.value !== this.props.other
-    // ) {
-    //   multi[0] = {
-    //     value: this.props.other.value,
-    //     label: this.props.other.label
-    //   };
-    // } else {
-    //   multi[0] = {
-    //     value: this.props.user._id,
-    //     label: `${this.props.user.name} ${this.props.user.lastname}`
-    //   };
-    // }
-    // if (prevProps.authorSuggestions !== this.props.authorSuggestions) {
-    //   console.log(this.props.authorSuggestions);
-    // }
-  }
+  updateForm = element => {
+    const newFormdata = update(
+      element,
+      this.state.formdata,
+      "addAdditionalDetails"
+    );
+    this.setState({
+      formError: false,
+      formdata: newFormdata
+    });
+  };
 
   componentDidMount() {
+    let multi = [];
+
+    const publicationTypeName = this.props.research.researchType.filter(
+      item => {
+        return item._id === this.props.researchType;
+      }
+    );
+
     const newFormdata = {
       ...this.state.formdata
     };
+    this.setState({ publicationTypeName: publicationTypeName[0].name }, () => {
+      newFormdata["abstract"].config.placeholder = this.state.publicationTypeName ? `ອະທິບາຍກ່ຽວກັບ${this.state.publicationTypeName}ຂອງທ່ານ` : `ອະທິບາຍກ່ຽວກັບບົດຄົ້ນຄວ້າຂອງທ່ານ`;
+      const isAbstract = abstractList.some((item) => {
+        return item === this.props.researchType
+      })
 
-    console.log(this.props.publishType);
-
-    let multi = [];
-
-    newFormdata["researchType"].value = this.props.researchType._id;
-    newFormdata["publicationType"].value = this.props.publishType[0]._id;
-    newFormdata["title"].value = this.props.files
-      ? this.props.files[0].title
-      : this.props.linkPreview
-      ? this.props.linkPreview.title
-      : "";
-
-    newFormdata["researchType"].text = this.props.researchType.name;
-    newFormdata["researchType"].config.options = this.props.publicationTypes;
-    this.setState({
-      files: this.props.files,
-      linkPreview: this.props.linkPreview,
-      link: this.props.link,
-      formdata: newFormdata
+      newFormdata["abstract"].label = isAbstract ? "ບົດຄັດຫຍໍ້" : "ຄໍາອະທິບາຍ"
     });
-
-    if (this.props.linkPreview) {
-      this.setState({ insertLink: true, checked: true });
-    }
-    if (this.props.files) {
-      this.setState({ checked: true });
-    }
+    this.setState({ formdata: newFormdata });
 
     this.props.authorSuggestions.map(value => {
       suggestions.push({
@@ -653,24 +723,12 @@ class AddPublicationAdditionaDetails extends Component {
 
     // isFixed
 
-    this.setState(
-      {
-        multi
-      }
-      // ()=>{
-      //   console.log(suggestions.find(
-      //     x => x.value === this.props.user._id
-      //   ))
-      //   console.log(this.props.user)
-      //   console.log(suggestions)
-      // }
-    );
+    this.setState({
+      multi
+    });
   }
 
   handleChange = name => (value, { action, removedValue }) => {
-    console.log(removedValue);
-    console.log(action);
-
     switch (action) {
       case "remove-value":
       case "pop-value":
@@ -710,557 +768,6 @@ class AddPublicationAdditionaDetails extends Component {
     this.setState({ error: false });
   };
 
-  handlePublicationTypeChange = event => {
-    const newFormdata = {
-      ...this.state.formdata
-    };
-    newFormdata["researchType"].value = event.target.value;
-    newFormdata[
-      "researchType"
-    ].text = this.state.formdata.researchType.config.options.find(
-      x => x._id === event.target.value
-    )
-      ? this.state.formdata.researchType.config.options.find(
-          x => x._id === event.target.value
-        ).name
-      : "";
-    this.setState({ formdata: newFormdata });
-    if (this.state.formdata.researchType.validation.required) {
-      const newFormdata = {
-        ...this.state.formdata
-      };
-      newFormdata["researchType"].valid = this.state.formdata.researchType.value
-        ? true
-        : false;
-      this.setState({ formdata: newFormdata });
-    }
-    // this.props.publicationTypes.find(x => x._id === event.target.value)
-  };
-
-  handleDayChange = event => {
-    const newFormdata = {
-      ...this.state.date
-    };
-    newFormdata["day"] = event.target.value;
-    // this.setState({ date: newFormdata });
-    this.setState(
-      {
-        date: newFormdata
-      },
-      () => {
-        if (
-          this.validDate(
-            this.state.date.day,
-            this.state.date.month,
-            this.state.date.year
-          )
-        ) {
-          newFormdata["valid"] = true;
-        } else {
-          newFormdata["valid"] = false;
-        }
-        this.setState({
-          date: newFormdata
-        });
-      }
-    );
-  };
-  handleMonthChange = event => {
-    const newFormdata = {
-      ...this.state.date
-    };
-    newFormdata["month"] = event.target.value;
-    // console.log(moment().month(event.target.value).format("M"))
-    // this.setState({ date: newFormdata });
-    this.setState(
-      {
-        date: newFormdata
-      },
-      () => {
-        if (
-          this.validDate(
-            this.state.date.day,
-            this.state.date.month,
-            this.state.date.year
-          )
-        ) {
-          newFormdata["valid"] = true;
-        } else {
-          newFormdata["valid"] = false;
-        }
-        this.setState({
-          date: newFormdata
-        });
-      }
-    );
-  };
-  handleYearChange = event => {
-    const newFormdata = {
-      ...this.state.date
-    };
-    newFormdata["year"] = event.target.value;
-    // this.setState({ date: newFormdata });
-    this.setState(
-      {
-        date: newFormdata
-      },
-      () => {
-        if (
-          this.validDate(
-            this.state.date.day,
-            this.state.date.month,
-            this.state.date.year
-          )
-        ) {
-          newFormdata["valid"] = true;
-        } else {
-          newFormdata["valid"] = false;
-        }
-        this.setState({
-          date: newFormdata
-        });
-      }
-    );
-  };
-
-  handleTitleChange = event => {
-    const newFormdata = {
-      ...this.state.formdata
-    };
-    newFormdata["title"].value = event.target.value;
-
-    this.setState({ formdata: newFormdata });
-    if (this.state.formdata.title.validation.required) {
-      const newFormdata = {
-        ...this.state.formdata
-      };
-      if (
-        this.state.formdata.title.value.trim().length <
-          this.state.formdata.title.config.minLength ||
-        this.state.formdata.title.value.trim().length >
-          this.state.formdata.title.config.maxLength
-      ) {
-        newFormdata["title"].valid = false;
-      } else {
-        newFormdata["title"].valid = true;
-      }
-      // newFormdata["researchType"].valid = this.state.formdata.researchType.value
-      //   ? true
-      //   : false;
-      this.setState({ formdata: newFormdata });
-    }
-    // this.props.publicationTypes.find(x => x._id === event.target.value)
-  };
-
-  handleTitleBlur = event => {
-    if (this.state.formdata.title.validation.required) {
-      const newFormdata = {
-        ...this.state.formdata
-      };
-      if (
-        this.state.formdata.title.value.trim().length <
-          this.state.formdata.title.config.minLength ||
-        this.state.formdata.title.value.trim().length >
-          this.state.formdata.title.config.maxLength
-      ) {
-        newFormdata["title"].valid = false;
-      } else {
-        newFormdata["title"].valid = true;
-      }
-      // newFormdata["researchType"].valid = this.state.formdata.researchType.value
-      //   ? true
-      //   : false;
-      this.setState({ formdata: newFormdata });
-    }
-  };
-  handlePublicationTypeBlur = event => {
-    if (this.state.formdata.researchType.validation.required) {
-      const newFormdata = {
-        ...this.state.formdata
-      };
-      newFormdata["researchType"].valid = this.state.formdata.researchType.value
-        ? true
-        : false;
-      this.setState({ formdata: newFormdata });
-    }
-  };
-
-  handleChangePublishTypeChange = event => {
-    const newFormdata = {
-      ...this.state.formdata
-    };
-    if (this.state.formdata.publicationType.validation.required) {
-      newFormdata["publicationType"].valid = this.state.formdata.researchType.value
-        ? true
-        : false;
-    }
-    newFormdata["publicationType"].value = event.target.value;
-    this.setState({ formdata: newFormdata });
-  };
-
-  handleCheckBox = event => {
-    this.setState({ checked: event.target.checked });
-
-    if (event.target.checked) {
-      this.setState({ checkedError: false });
-    } else {
-      this.setState({ checkedError: true });
-    }
-  };
-
-  validURL(str) {
-    var pattern = new RegExp(
-      "^(https?:\\/\\/)?" + // protocol
-      "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
-      "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
-      "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
-      "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
-        "(\\#[-a-z\\d_]*)?$",
-      "i"
-    ); // fragment locator
-    return !!pattern.test(str);
-  }
-
-  handleLinkTextFieldChange = async event => {
-    const link = event.target.value.trim().replace(" ", "");
-
-    if (event.target.value !== this.state.link) {
-      this.setState({ link, linkPreview: null, loadingLink: true });
-
-      if (this.timeout) clearTimeout(this.timeout);
-      this.timeout = setTimeout(() => {
-        if (
-          link.trim() !== "" &&
-          this.validURL(normalizeUrl(link, { forceHttps: false }))
-        ) {
-          axios
-            .get(
-              `/api/research/get_metatags?url=${normalizeUrl(link, {
-                forceHttps: false
-              })}`
-            )
-            .then(response => {
-              console.log(response.data);
-              if (response.data) {
-                this.setState({
-                  linkPreview: response.data[0],
-                  loadingLink: false
-                });
-                if (this.state.formdata.title.value.trim() === "") {
-                  const newFormdata = {
-                    ...this.state.formdata
-                  };
-                  newFormdata["title"].value = response.data[0].title;
-                  this.setState({ formdata: newFormdata }, () => {
-                    if (response.data[0].title) {
-                      if (
-                        this.state.formdata.title.value.trim().length <
-                          this.state.formdata.title.config.minLength ||
-                        this.state.formdata.title.value.trim().length >
-                          this.state.formdata.title.config.maxLength
-                      ) {
-                        newFormdata["title"].valid = false;
-                      } else {
-                        newFormdata["title"].valid = true;
-                      }
-                      this.setState({ formdata: newFormdata });
-                    }
-                  });
-                }
-              } else {
-                this.setState({
-                  linkPreview: null,
-                  loadingLink: false
-                });
-              }
-            });
-
-          console.log(this.state.linkPreview);
-        }
-        console.log("running");
-      }, 1000);
-    } else {
-      this.setState({ loadingLink: false });
-    }
-  };
-
-  onDrop(files, isPrivate = false) {
-    this.setState({
-      uploading: true,
-      checked: false
-    });
-
-    let formdata = new FormData();
-    const config = {
-      header: { "content-type": "multipart/form-data" }
-    };
-    formdata.append("file", files[0]);
-
-    if (files[0]) {
-      axios
-        .post("/api/research/upload_tmp_publication_file", formdata, config)
-        .then(response => {
-          if (response.data.success) {
-            this.setState({
-              files: [
-                {
-                  name: response.data.name,
-                  location: response.data.location,
-                  date: response.data.date,
-                  mimetype: response.data.mimetype,
-                  uploader: response.data.uploader,
-                  size: response.data.size,
-                  private: isPrivate,
-                  title: response.data.title,
-                  numPages: response.data.numPages,
-                  abstract: response.data.abstract
-                }
-              ],
-              error: false,
-              uploading: false
-            });
-            if (this.state.formdata.title.value.trim() === "") {
-              const newFormdata = {
-                ...this.state.formdata
-              };
-              newFormdata["title"].value = response.data.title;
-              this.setState({ formdata: newFormdata }, () => {
-                if (response.data.title) {
-                  if (
-                    this.state.formdata.title.value.trim().length <
-                      this.state.formdata.title.config.minLength ||
-                    this.state.formdata.title.value.trim().length >
-                      this.state.formdata.title.config.maxLength
-                  ) {
-                    newFormdata["title"].valid = false;
-                  } else {
-                    newFormdata["title"].valid = true;
-                  }
-                  this.setState({ formdata: newFormdata });
-                }
-              });
-            }
-
-            console.log(this.state.files);
-            console.log(response.data);
-          } else {
-            console.log(response.data);
-            this.setState({
-              uploading: false,
-              error: true,
-              files: null,
-              errorMessage: response.data.message
-                ? response.data.message
-                : "ຂໍອະໄພ, ມີບາງຢ່າງຜິດພາດ"
-            });
-          }
-        });
-    } else {
-      this.setState({
-        uploading: false,
-        error: true,
-        files: null,
-        errorMessage: "ບໍ່ສາມາດອັພໂຫລດຟາຍລ໌ນີ້ໄດ້"
-      });
-    }
-  }
-
-  removeFile = () => {
-    this.setState({
-      uploading: false,
-      error: false,
-      files: null,
-      checked: false,
-      checkedError: false
-    });
-  };
-
-  cancelInsertingLink = () => {
-    this.setState({
-      uploading: false,
-      error: false,
-      files: null,
-      checked: false,
-      checkedError: false,
-      insertLink: false,
-      link: "",
-      linkPreview: null,
-      loadingLink: false
-    });
-  };
-
-  renderLoadingLinkPreview = () => {
-    return (
-      <div
-        className="link-preview-contianer-loading"
-        direction="rlt"
-        media="image,logo"
-      >
-        <div
-          className="link-icon"
-          style={{
-            // backgroundImage: `url(${imageUrl}`,
-            // backgroundSize: "cover"
-            display: "inherit"
-          }}
-        >
-          <Shimmer className="shimmer-full-height" />
-        </div>
-
-        <div className="link-preview-content">
-          <header className="link-preview-header">
-            <Shimmer className="shimmer-w-60" />
-          </header>
-
-          <div className="link-preview-description">
-            <Shimmer className="shimmer-w-100-h-12" />
-            <Shimmer className="shimmer-w-100-h-12" />
-          </div>
-
-          <footer className="link-preview-footer">
-            <Shimmer className="shimmer-w-30-h-8 " />
-          </footer>
-        </div>
-      </div>
-    );
-  };
-
-  renderLinkPreview = () => {
-    let imageUrl = "";
-    let faviconUrl = "";
-
-    if (this.state.linkPreview) {
-      if (this.state.linkPreview.image) {
-        if (
-          this.state.linkPreview.image.startsWith("/") &&
-          !this.state.linkPreview.image.startsWith("//")
-        ) {
-          imageUrl =
-            normalizeUrl(parse(this.state.linkPreview.url, true).hostname, {
-              forceHttps: false
-            }) + this.state.linkPreview.image;
-        } else if (this.state.linkPreview.image.startsWith("//")) {
-          imageUrl = this.state.linkPreview.image.replace("//", "");
-        } else {
-          imageUrl = this.state.linkPreview.image;
-        }
-      }
-
-      if (this.state.linkPreview.favicon) {
-        if (
-          this.state.linkPreview.favicon.startsWith("/") &&
-          !this.state.linkPreview.favicon.startsWith("//")
-        ) {
-          faviconUrl =
-            normalizeUrl(parse(this.state.linkPreview.url, true).hostname, {
-              forceHttps: false
-            }) + this.state.linkPreview.favicon;
-        } else if (this.state.linkPreview.favicon.startsWith("//")) {
-          faviconUrl = normalizeUrl(
-            this.state.linkPreview.favicon.replace("//", ""),
-            { forceHttps: false }
-          );
-        } else {
-          faviconUrl = this.state.linkPreview.favicon;
-        }
-      }
-    }
-
-    if (
-      this.state.link.trim() !== "" &&
-      this.validURL(normalizeUrl(this.state.link, { forceHttps: false })) &&
-      this.state.linkPreview
-    )
-      return (
-        <a
-          className="link-preview-contianer"
-          href={normalizeUrl(this.state.link, { forceHttps: false })}
-          title={
-            this.state.linkPreview.title
-              ? this.state.linkPreview.title
-              : this.state.link
-          }
-          direction="rlt"
-          media="image,logo"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {this.state.linkPreview.image ? (
-            <div
-              className="link-icon"
-              style={{
-                backgroundImage: `url(${imageUrl}`,
-                backgroundSize: "cover"
-              }}
-            ></div>
-          ) : null}
-          <div className="link-preview-content">
-            <header className="link-preview-header">
-              <p
-                title={this.state.linkPreview.title}
-                className="link-preview-title"
-              >
-                {this.state.linkPreview.title
-                  ? this.state.linkPreview.title
-                  : this.state.link}
-              </p>
-            </header>
-            {this.state.linkPreview.description ? (
-              <div className="link-preview-description">
-                <p
-                  title={this.state.linkPreview.description}
-                  className="link-preview-description-paragraph"
-                >
-                  {this.state.linkPreview.description
-                    ? this.state.linkPreview.description
-                    : null}
-                </p>
-              </div>
-            ) : null}
-
-            <footer className="link-preview-footer">
-              <span
-                title={normalizeUrl(this.state.linkPreview.url, {
-                  forceHttps: false
-                })}
-                className="link-preview-footer-text"
-              >
-                {this.state.linkPreview.favicon ? (
-                  <span
-                    style={{
-                      width: 14,
-                      height: 14,
-                      marginRight: 4,
-                      position: "relative",
-                      top: 3
-                    }}
-                  >
-                    <img
-                      style={{ width: 14, height: 14 }}
-                      src={faviconUrl}
-                      alt=""
-                    />
-                  </span>
-                ) : (
-                  <span
-                    style={{
-                      width: 14,
-                      height: 14,
-                      marginRight: 4,
-                      position: "relative",
-                      top: 3
-                    }}
-                  >
-                    <PublicOutlined style={{ fontSize: 14 }} />
-                  </span>
-                )}
-                {parse(this.state.linkPreview.url, true).hostname}
-              </span>
-            </footer>
-          </div>
-        </a>
-      );
-  };
 
   componentDidCatch(error, errorInfo) {
     this.setState({
@@ -1270,112 +777,32 @@ class AddPublicationAdditionaDetails extends Component {
     });
   }
 
-  validDate = (day, month, year) => {
-    const myMonth = (
-      "0" +
-      parseInt(
-        moment()
-          .month(month)
-          .format("M")
-      )
-    ).slice(-2);
-    const myDay = ("0" + day).slice(-2);
-    const myDate = `${year}-${myMonth}-${myDay}`;
-    if (day && month && year) {
-      if (myDate === moment(myDate).format("YYYY-MM-DD")) {
-        return true;
-      } else {
-        return false;
-      }
-    } else if (!day && month && year) return true;
-    else if (day && !month && year) return false;
-    else if (!year) return false;
-    else if (!day && !month && year) return true;
-    else return false;
-  };
-
-  renderIcon = () => {
-    switch (this.state.files[0].mimetype) {
-      case "application/pdf": {
-        return (
-          <svg
-            style={{ marginRight: "16px" }}
-            fill="currentColor"
-            height="35"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 1000 1000"
-          >
-            <rect width="1000" height="1000" rx="118.4" fill="#f8393f" />
-            <g fill="#fff">
-              <path d="M517.36 334.8H390.6v330.4h126.76c49.78 0 90.5-40.74 90.5-90.53V425.33c0-49.8-40.73-90.53-90.5-90.53zm9.08 233.87a18.71 18.71 0 0 1-18.64 18.65H472V412.68h35.8a18.71 18.71 0 0 1 18.64 18.65zM255.66 334.8H111.8v217.3h143.87a73.62 73.62 0 0 0 73.4-73.41v-70.46a73.63 73.63 0 0 0-73.4-73.42zm-4.47 118.62a20.86 20.86 0 0 1-20.79 20.8h-40.74v-61.54h40.74a20.85 20.85 0 0 1 20.79 20.79z" />
-              <path d="M111.8 529.36H194V665.2h-82.2zM665.68 334.8h82.2v330.4h-82.2z" />
-              <path d="M665.7 417.02v-82.2h222.53v82.2zm-.02 135.08v-82.2H832.3v82.2z" />
-            </g>
-          </svg>
-        );
-      }
-      case "application/msword": {
-        return (
-          <svg
-            style={{ marginRight: "16px" }}
-            xmlns="http://www.w3.org/2000/svg"
-            fill="currentColor"
-            height="35"
-            viewBox="0 0 1000 1000"
-          >
-            <rect width="1000" height="1000" rx="118.7" fill="#3789da" />
-            <g fill="#fff">
-              <path d="M397.37 750.24l-5.57 24.12h-96.83L166.7 218.8h107.97l122.7 531.45zM833.3 218.8L705.03 774.36H597.07L725.33 218.8H833.3z" />
-              <path d="M520.07 218.8L391.8 774.36h-66.22L453.84 218.8h66.23z" />
-              <path d="M660.56 774.36h-66.23L466.07 218.8h66.22l128.27 555.57z" />
-            </g>
-          </svg>
-        );
-      }
-      case "application/vnd.openxmlformats-officedocument.wordprocessingml.document": {
-        return (
-          <svg
-            style={{ marginRight: "16px" }}
-            xmlns="http://www.w3.org/2000/svg"
-            fill="currentColor"
-            height="35"
-            viewBox="0 0 1000 1000"
-          >
-            <rect width="1000" height="1000" rx="118.7" fill="#3789da" />
-            <g fill="#fff">
-              <path d="M397.37 750.24l-5.57 24.12h-96.83L166.7 218.8h107.97l122.7 531.45zM833.3 218.8L705.03 774.36H597.07L725.33 218.8H833.3z" />
-              <path d="M520.07 218.8L391.8 774.36h-66.22L453.84 218.8h66.23z" />
-              <path d="M660.56 774.36h-66.23L466.07 218.8h66.22l128.27 555.57z" />
-            </g>
-          </svg>
-        );
-      }
-      default: {
-        return (
-          <svg
-            style={{ marginRight: "16px" }}
-            fill="currentColor"
-            height="35"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 796.6 1000"
-          >
-            <path
-              d="M492.3 0H102.65C46.2 0 0 46.2 0 102.65v794.7C0 953.8 46.2 1000 102.65 1000H694c56.46 0 102.65-46.2 102.65-102.65v-593zm224.64 353.1H445.8V81.94h.68L716.94 352.4z"
-              fill="#07d"
-            />
-            <path
-              d="M716.94 352.4v.68H445.8V81.94h.68L716.94 352.4z"
-              fill="#fff"
-            />
-          </svg>
-        );
+  componentDidUpdate = (prevProps, prevState) => {
+    if (prevState.formdata !== this.state.formdata) {
+      let dataToSubmit = generateData(
+        this.state.formdata,
+        "addAdditionalPublicationDetails"
+      );
+      let hasSomeValue = ""
+      const newDataToSubmit = { ...dataToSubmit };
+      for (let key in newDataToSubmit) {
+        hasSomeValue += newDataToSubmit[key].trim() 
+        if (hasSomeValue) {
+          this.setState({hasSomeValue: true})
+        } else {
+          this.setState({hasSomeValue: false})
+        }
       }
     }
-  };
+  }
+
+
+  handleSkip = () => {
+
+  }
 
   submit = () => {
     // event.preventDefault();
-    console.log(this.state.error);
     if (this.state.linkPreview || this.state.files) {
       if (!this.state.checked) {
         this.setState({ checkedError: true });
@@ -1384,30 +811,13 @@ class AddPublicationAdditionaDetails extends Component {
       }
     }
 
-    if (this.state.formdata.title.validation.required) {
-      const newFormdata = {
-        ...this.state.formdata
-      };
-      if (
-        this.state.formdata.title.value.trim().length <
-          this.state.formdata.title.config.minLength ||
-        this.state.formdata.title.value.trim().length >
-          this.state.formdata.title.config.maxLength
-      ) {
-        newFormdata["title"].valid = false;
-      } else {
-        newFormdata["title"].valid = true;
-      }
-      this.setState({ formdata: newFormdata });
-    }
-    let author = []
+    let author = [];
 
     if (this.state.multi) {
       this.setState({ authorError: false });
       author = this.state.multi.map(item => {
         return item.value;
       });
-      console.log(author);
     } else {
       this.setState({ authorError: true });
     }
@@ -1423,13 +833,12 @@ class AddPublicationAdditionaDetails extends Component {
     ) {
       let dataToSubmit = generateData(
         this.state.formdata,
-        "addResearchDetails"
+        "addAdditionalPublicationDetails"
       );
 
       const newDataToSubmit = { ...dataToSubmit };
       newDataToSubmit.date = { ...this.state.date };
       if (newDataToSubmit.date.month) {
-
         newDataToSubmit.date.month = parseInt(
           moment()
             .month(newDataToSubmit.date.month)
@@ -1438,21 +847,18 @@ class AddPublicationAdditionaDetails extends Component {
       }
       delete newDataToSubmit.date.valid;
       delete newDataToSubmit.date.date;
-      newDataToSubmit.author = author
+      newDataToSubmit.author = author;
       if (this.state.files) {
-        newDataToSubmit.files = {...this.state.files}
+        newDataToSubmit.files = { ...this.state.files };
       }
       if (this.state.linkPreview) {
-        newDataToSubmit.linkPreview = {...this.state.linkPreview}
+        newDataToSubmit.linkPreview = { ...this.state.linkPreview };
       }
-      console.log(newDataToSubmit);
 
       // this.setState({ error: false, checkedError: false });
-      this.props.setPublicationDetails(newDataToSubmit, ()=> {
-
+      this.props.setPublicationDetails(newDataToSubmit, () => {
         this.props.switchPage("details");
-      })
-
+      });
     } else {
       this.setState({
         error: true,
@@ -1462,9 +868,173 @@ class AddPublicationAdditionaDetails extends Component {
     }
   };
 
+  renderFields = () => {
+    switch (this.props.researchType) {
+      // ບົດຄວາມ
+      case "5cdb82bb27ba7c4214ef5776": {
+        return (
+          <>
+          
+          <Grid container s>
+              <Grid item xs={12} style={{ marginTop: 18}}>
+                <FormField
+                  id={"journalName"}
+                  formdata={this.state.formdata.journalName}
+                  change={element => this.updateForm(element)}
+                />
+              </Grid>
+              <Grid item xs={12} style={{ marginTop: 18}}>
+                <FormField
+                  id={"volume"}
+                  formdata={this.state.formdata.volume}
+                  change={element => this.updateForm(element)}
+                 
+                />
+              </Grid>
+              <Grid item xs={12} style={{ marginTop: 18}}>
+                <FormField
+                  id={"page"}
+                  formdata={this.state.formdata.page}
+                  change={element => this.updateForm(element)}
+                  maxlength={500}
+                />
+              </Grid>
+            </Grid>
+          </>
+        );
+      }
+      // ເອກະສານການປະຊຸມທາງວິຊາການ
+      case "5d0516e447c496528476ec94": {
+        return (
+          <Grid container>
+          <Grid item xs={12} style={{ marginTop: 18}}>
+            <FormField
+              id={"conferenceTitle"}
+              formdata={this.state.formdata.conferenceTitle}
+              change={element => this.updateForm(element)}
+              maxlength={500}
+            /></Grid>
+            <Grid item xs={12} style={{ marginTop: 18}}>
+            <FormField
+              id={"location"}
+              formdata={this.state.formdata.location}
+              change={element => this.updateForm(element)}
+              maxlength={500}
+            /></Grid>
+          </Grid>
+        );
+      }
+      // ເອກະສານການປະຊຸມທາງວິຊາການ
+      case "5d035867f7c01c535c182950": {
+        return (
+          <Grid container >
+          <Grid item xs={12} style={{ marginTop: 18}}>
+            <FormField
+              id={"conferenceName"}
+              formdata={this.state.formdata.conferenceName}
+              change={element => this.updateForm(element)}
+              maxlength={500}
+            /></Grid>
+            <Grid item xs={12} style={{ marginTop: 18}}>
+            <FormField
+              id={"location"}
+              formdata={this.state.formdata.location}
+              change={element => this.updateForm(element)}
+              maxlength={500}
+            /></Grid>
+            <Grid item xs={12} style={{ marginTop: 18}}>
+            <FormField
+              id={"institution"}
+              formdata={this.state.formdata.institution}
+              change={element => this.updateForm(element)}
+              maxlength={500}
+            /></Grid>
+          </Grid>
+        );
+      }
+      // ປື້ມ
+      case "5cdb830827ba7c4214ef5777": {
+        return (
+          <>
+          <Grid container>
+          <Grid item xs={12} style={{ marginTop: 18}}>
+                <FormField
+                  id={"publisher"}
+                  formdata={this.state.formdata.publisher}
+                  change={element => this.updateForm(element)}
+                />
+              </Grid>
+              <Grid item xs={12} style={{ marginTop: 18}}>
+                <FormField
+                  id={"editor"}
+                  formdata={this.state.formdata.editor}
+                  change={element => this.updateForm(element)}
+                  maxlength={500}
+                />
+              </Grid>
+              <Grid item xs={12} style={{ marginTop: 18}}>
+                <FormField
+                  id={"edition"}
+                  formdata={this.state.formdata.edition}
+                  change={element => this.updateForm(element)}
+                  maxlength={500}
+                />
+              </Grid>
+            </Grid>
+          </>
+        );
+      }
+      // ບົດສະເໜີໂຄງການ
+      case "5cdb835b27ba7c4214ef5778": {
+        return (
+          <Grid container style={{ marginTop: 18 }}>
+            <FormField
+              id={"researchProposal"}
+              formdata={this.state.formdata.institution}
+              change={element => this.updateForm(element)}
+              maxlength={500}
+            />
+            {
+              //   <FormField
+              //   id={"location"}
+              //   formdata={this.state.formdata.location}
+              //   change={element => this.updateForm(element)}
+              //   maxlength={500}
+              // />
+            }
+          </Grid>
+        );
+      }
+      // ບົດໂຄງການຈົບຊັ້ນ
+      case "5cdb83a127ba7c4214ef5779": {
+        return (
+          <Grid container style={{ marginTop: 18 }}>
+            <FormField
+              id={"degree"}
+              formdata={this.state.formdata.degree}
+              change={element => this.updateForm(element)}
+              maxlength={500}
+            />
+
+            {
+              //   <FormField
+              //   id={"location"}
+              //   formdata={this.state.formdata.location}
+              //   change={element => this.updateForm(element)}
+              //   maxlength={500}
+              // />
+            }
+          </Grid>
+        );
+      }
+      default: {
+        break;
+      }
+    }
+  }
+
   render() {
     const { classes, className, theme } = this.props;
-    const error = this.state.checkedError;
 
     const selectStyles = {
       input: base => ({
@@ -1493,7 +1063,7 @@ class AddPublicationAdditionaDetails extends Component {
         <Grid item lg md sm xs />
         <Grid item lg={8} xl={8} md={8} sm={11} xs={11}>
           <Paper className={classes.container} elevation={0}>
-            <form>
+            <form onSubmit={event => this.submit(event)}>
               <Grid container>
                 <Grid item xs={12} align="center" style={{ marginTop: 8 }}>
                   <svg
@@ -1543,65 +1113,75 @@ class AddPublicationAdditionaDetails extends Component {
                 </Grid>
               </Grid>
               <Typography className={classes.title} variant="inherit">
-                {this.state.formdata.researchType.text
-                  ? this.state.formdata.researchType.text + "ຂອງທ່ານ"
+                {this.state.publicationTypeName
+                  ? this.state.publicationTypeName + "ຂອງທ່ານ"
                   : "ຜົນງານຄົ້ນຄວ້າຂອງທ່ານ"}
               </Typography>
+              <Typography
+                variant="inherit"
+                style={{ color: "#5f6368", textAlign: "center" }}
+              >
+              {this.state.publicationTypeName
+                ? "ເຮັດໃຫ້" + this.state.publicationTypeName + "ຂອງທ່ານສາມາດຄົ້ນພົບໄດ້ງ່າຍໂດຍການໃສ່ຂໍ້ມູນເພີ່ມຕື່ມ"
+                : "ເຮັດໃຫ້ຜົນງານຄົ້ນຄວ້າຂອງທ່ານສາມາດຄົ້ນພົບໄດ້ງ່າຍໂດຍການໃສ່ຂໍ້ມູນເພີ່ມຕື່ມ"}
+              </Typography>
 
-              <Grid container style={{ marginTop: 18, width: "100%" }}>
-                <InputLabel
-                  htmlFor={this.state.formdata.title.config.name}
-                  error={!this.state.formdata.title.valid}
-                  style={{ fontSize: 14, fontWeight: 500 }}
-                >
-                  {this.state.formdata.title.label}
-                </InputLabel>
-                <FormControl
-                  fullWidth
-                  variant="outlined"
-                  className={classes.formControl}
-                  style={{ marginTop: 4 }}
-                >
-                  <TextField
-                    {...this.state.formdata.title.config}
-                    value={this.state.formdata.title.value}
-                    placeholder={
-                      this.state.formdata.researchType.text
-                        ? "ພິມຫົວຂໍ້" +
-                          this.state.formdata.researchType.text +
-                          "ຂອງທ່ານ"
-                        : "ພິມຫົວຂໍ້ຜົນງານຄົ້ນຄວ້າຂອງທ່ານ"
-                    }
-                    error={!this.state.formdata.title.valid}
-                    onChange={this.handleTitleChange}
-                    onBlur={this.handleTitleBlur}
-                    // onBlur={event => change({ event, id, blur: true })}
-                    // onChange={event => change({ event, id })}
-                    margin="none"
-                    variant="outlined"
-                    input={
-                      <OutlinedInput
-                        inputProps={{
-                          className: classes.selectOutlineInput
-                        }}
-                      />
-                    }
-                    style={{ padding: 0 }}
-                    inputProps={{
-                      maxLength: this.state.formdata.title.config.maxLength,
-                      style: {
-                        marginTop: -4.5,
-                        marginBottom: -4.5
-                      }
-                    }}
+              <Grid container style={{ marginTop: 18 }}>
+                <Grid item xs={12}>
+                  <FormField
+                    id={"abstract"}
+                    formdata={this.state.formdata.abstract}
+                    change={element => this.updateForm(element)}
                   />
-                  {!this.state.formdata.title.valid ? (
-                    <InputError message="ຕ້ອງມີອັກສອນຢ່າງຫນ້ອຍ 6 ຕົວ ແລະ ບໍ່ຫລາຍກວ່າ 500" />
-                  ) : null}
-                </FormControl>
+                </Grid>
               </Grid>
-             
               
+              {this.renderFields()}
+
+              {
+                this.props.researchType === "5cdb83a127ba7c4214ef5779" ?
+                <Grid container style={{ marginTop: 18 }}>
+                <Grid item xs={12}>
+                  <InputLabel
+                    error={this.state.authorError}
+                    style={{ fontSize: 14, fontWeight: 500 }}
+                  >
+                    ທີ່ປຶກສາ
+                  </InputLabel>
+                </Grid>
+                <Grid item xs={12}>
+                  <div className={classes.root}>
+                    <NoSsr>
+                      <ReactSelect
+                        classes={classes}
+                        styles={selectStyles}
+                        textFieldProps={{
+                          // placeholder: "ກະລຸນາເລືອກຜູ້ຂຽນ",
+
+                          // InputLabelProps: {
+                          //   shrink: true
+                          // },
+                          error: this.state.authorError,
+                          variant: "outlined"
+                        }}
+                        options={suggestions}
+                        components={components}
+                        value={this.state.multi}
+                        onChange={this.handleChange("multi")}
+                        placeholder="ກະລຸນາເລືອກທີ່ປຶກສາ"
+                        isMulti
+                        isClearable={false}
+                        // styles={{control: customControlStyles}}
+                      />
+                    </NoSsr>
+                  </div>
+                  {this.state.authorError ? (
+                    <InputError message={this.state.authorErrorMessage} />
+                  ) : null}
+                </Grid>
+              </Grid> : null
+              }
+
               <Grid container alignItems="center" style={{ marginTop: 16 }}>
                 <Grid
                   item
@@ -1629,18 +1209,17 @@ class AddPublicationAdditionaDetails extends Component {
                   }
                 </Grid>
                 <Grid item xs md align="right" style={{ marginTop: 24 }}>
+                <Button onClick={() => this.handleSkip()}>ຂ້າມ</Button>
                   <Button
                     variant="contained"
                     color="primary"
                     style={{ marginLeft: 8, boxShadow: "none" }}
                     onClick={() => this.submit()}
                     disabled={
-                      // (this.state.files !== null ||
-                      //   this.state.linkPreview !== null) &&
-                      !this.state.error && !this.state.uploading ? false : true
+                      this.state.hasSomeValue ? false : true
                     }
                   >
-                    ອັພໂຫລດ
+                    ເພີ່ມ
                   </Button>
                 </Grid>
               </Grid>
