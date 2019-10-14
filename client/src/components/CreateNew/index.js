@@ -7,6 +7,7 @@ import { CircularProgress } from "@material-ui/core";
 import AddResearchFile from "../CreateNew/add_file";
 import AddPublicationDetails from "../CreateNew/add_details";
 import AddPublicationAdditionaDetails from "../CreateNew/add_additional_details";
+import AddPublicationToProject from "../CreateNew/add_project";
 
 import Grow from "@material-ui/core/Grow";
 import { getResearchType, getPublicationType } from "../../actions/research_actions";
@@ -54,7 +55,6 @@ class CreateResearch extends Component {
 
       this.props.research.researchType.map((item, index) => {
         if (item.englishName === type) {
-          console.log(item);
           return this.setState({ researchType: item });
         } else {
           return null;
@@ -65,7 +65,6 @@ class CreateResearch extends Component {
     this.props.dispatch(getPublicationType())
 
     this.props.dispatch(getAuthorSuggestions()).then(payload => {
-      console.log();
     });
   }
 
@@ -91,20 +90,18 @@ class CreateResearch extends Component {
 
   setFilesData = files => {
     this.setState({ files });
-    console.log(files);
   };
 
   setPublicationDetails = data => {
     const newData = {...data}
     this.setState(newData, () => {
-
-      console.log(this.state);
+      console.log(this.state)
     });
   };
 
   setLinkData = (linkPreview, link) => {
     this.setState({ linkPreview, link });
-    console.log(linkPreview);
+ 
   };
 
   showLoading = () => {
@@ -179,6 +176,32 @@ class CreateResearch extends Component {
             style={{ transitionDelay: "5000ms" }}
           >
             <AddPublicationAdditionaDetails
+              user={
+                this.props && this.props.user && this.props.user.userData
+                  ? this.props.user.userData  
+                  : {}
+              }
+              switchPage={page => this.switchPage(page)}
+              researchType={this.state.researchType}
+              authorSuggestions={
+                this.props.user.authorSuggestions
+                  ? this.props.user.authorSuggestions
+                  : null
+              }
+              setPublicationDetails = {data => this.setPublicationDetails(data)}
+
+            />
+          </Grow>
+        );
+      }
+      case "project": {
+        return (
+          <Grow
+            in={this.state.page !== "index"}
+            
+            style={{ transitionDelay: "5000ms" }}
+          >
+            <AddPublicationToProject
               user={
                 this.props && this.props.user && this.props.user.userData
                   ? this.props.user.userData  

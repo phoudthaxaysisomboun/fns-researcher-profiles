@@ -51,7 +51,6 @@ import { emphasize } from "@material-ui/core/styles/colorManipulator";
 
 moment.locale("lo");
 
-
 const styles = theme => ({
   container: {
     padding: "26px",
@@ -466,7 +465,7 @@ class AddPublicationAdditionaDetails extends Component {
             placeholder: "ອະທິບາຍກ່ຽວກັບບົດຄົ້ນຄວ້າຂອງທ່ານ",
             autoFocus: true,
             multiline: true,
-            rows: 5,
+            rows: 5
           },
           validation: {
             required: false
@@ -647,7 +646,7 @@ class AddPublicationAdditionaDetails extends Component {
             placeholder: "ພິມສະຖາບັນ"
           },
           validation: {
-            required: false
+            required: true
           },
           valid: true,
           touched: false,
@@ -660,7 +659,7 @@ class AddPublicationAdditionaDetails extends Component {
           config: {
             name: "degree_input",
             type: "text",
-            placeholder: "ພິມລະດັບການສຶກສ"
+            placeholder: "ພິມລະດັບການສຶກສາ"
           },
           validation: {
             required: false
@@ -698,12 +697,15 @@ class AddPublicationAdditionaDetails extends Component {
       ...this.state.formdata
     };
     this.setState({ publicationTypeName: publicationTypeName[0].name }, () => {
-      newFormdata["abstract"].config.placeholder = this.state.publicationTypeName ? `ອະທິບາຍກ່ຽວກັບ${this.state.publicationTypeName}ຂອງທ່ານ` : `ອະທິບາຍກ່ຽວກັບບົດຄົ້ນຄວ້າຂອງທ່ານ`;
-      const isAbstract = abstractList.some((item) => {
-        return item === this.props.researchType
-      })
+      newFormdata["abstract"].config.placeholder = this.state
+        .publicationTypeName
+        ? `ອະທິບາຍກ່ຽວກັບ${this.state.publicationTypeName}ຂອງທ່ານ`
+        : `ອະທິບາຍກ່ຽວກັບບົດຄົ້ນຄວ້າຂອງທ່ານ`;
+      const isAbstract = abstractList.some(item => {
+        return item === this.props.researchType;
+      });
 
-      newFormdata["abstract"].label = isAbstract ? "ບົດຄັດຫຍໍ້" : "ຄໍາອະທິບາຍ"
+      newFormdata["abstract"].label = isAbstract ? "ບົດຄັດຫຍໍ້" : "ຄໍາອະທິບາຍ";
     });
     this.setState({ formdata: newFormdata });
 
@@ -718,8 +720,8 @@ class AddPublicationAdditionaDetails extends Component {
     });
     length = suggestions.length;
 
-    multi.push(suggestions.find(x => x.value === this.props.user._id));
-    multi[0].isFixed = this.props.user.isAdmin ? false : true;
+    // multi.push(suggestions.find(x => x.value === this.props.user._id));
+    // multi[0].isFixed = this.props.user.isAdmin ? false : true;
 
     // isFixed
 
@@ -768,7 +770,6 @@ class AddPublicationAdditionaDetails extends Component {
     this.setState({ error: false });
   };
 
-
   componentDidCatch(error, errorInfo) {
     this.setState({
       error: error,
@@ -783,23 +784,22 @@ class AddPublicationAdditionaDetails extends Component {
         this.state.formdata,
         "addAdditionalPublicationDetails"
       );
-      let hasSomeValue = ""
+      let hasSomeValue = "";
       const newDataToSubmit = { ...dataToSubmit };
       for (let key in newDataToSubmit) {
-        hasSomeValue += newDataToSubmit[key].trim() 
+        hasSomeValue += newDataToSubmit[key].trim();
         if (hasSomeValue) {
-          this.setState({hasSomeValue: true})
+          this.setState({ hasSomeValue: true });
         } else {
-          this.setState({hasSomeValue: false})
+          this.setState({ hasSomeValue: false });
         }
       }
     }
-  }
-
+  };
 
   handleSkip = () => {
-
-  }
+    this.props.switchPage("project");
+  };
 
   submit = () => {
     // event.preventDefault();
@@ -810,6 +810,8 @@ class AddPublicationAdditionaDetails extends Component {
         this.setState({ checkedError: false });
       }
     }
+
+    this.props.switchPage("project");
 
     let author = [];
 
@@ -822,14 +824,12 @@ class AddPublicationAdditionaDetails extends Component {
       this.setState({ authorError: true });
     }
 
-    let formIsValid = isFormValid(this.state.formdata, "addResearchDetails");
+    let formIsValid = isFormValid(this.state.formdata, "addAdditionalPublicationDetails");
 
     if (
       !this.state.error &&
       formIsValid &&
-      !this.state.checkedError &&
-      !this.state.authorError &&
-      this.state.date.valid
+      !this.state.authorError
     ) {
       let dataToSubmit = generateData(
         this.state.formdata,
@@ -837,27 +837,15 @@ class AddPublicationAdditionaDetails extends Component {
       );
 
       const newDataToSubmit = { ...dataToSubmit };
-      newDataToSubmit.date = { ...this.state.date };
-      if (newDataToSubmit.date.month) {
-        newDataToSubmit.date.month = parseInt(
-          moment()
-            .month(newDataToSubmit.date.month)
-            .format("M")
-        );
-      }
-      delete newDataToSubmit.date.valid;
-      delete newDataToSubmit.date.date;
-      newDataToSubmit.author = author;
-      if (this.state.files) {
-        newDataToSubmit.files = { ...this.state.files };
-      }
-      if (this.state.linkPreview) {
-        newDataToSubmit.linkPreview = { ...this.state.linkPreview };
-      }
+     
 
+      if (author) {
+        newDataToSubmit.advisor = author;
+      }
+      console.log(newDataToSubmit)
       // this.setState({ error: false, checkedError: false });
       this.props.setPublicationDetails(newDataToSubmit, () => {
-        this.props.switchPage("details");
+        this.props.switchPage("project");
       });
     } else {
       this.setState({
@@ -874,24 +862,22 @@ class AddPublicationAdditionaDetails extends Component {
       case "5cdb82bb27ba7c4214ef5776": {
         return (
           <>
-          
-          <Grid container s>
-              <Grid item xs={12} style={{ marginTop: 18}}>
+            <Grid container s>
+              <Grid item xs={12} style={{ marginTop: 18 }}>
                 <FormField
                   id={"journalName"}
                   formdata={this.state.formdata.journalName}
                   change={element => this.updateForm(element)}
                 />
               </Grid>
-              <Grid item xs={12} style={{ marginTop: 18}}>
+              <Grid item xs={12} style={{ marginTop: 18 }}>
                 <FormField
                   id={"volume"}
                   formdata={this.state.formdata.volume}
                   change={element => this.updateForm(element)}
-                 
                 />
               </Grid>
-              <Grid item xs={12} style={{ marginTop: 18}}>
+              <Grid item xs={12} style={{ marginTop: 18 }}>
                 <FormField
                   id={"page"}
                   formdata={this.state.formdata.page}
@@ -907,48 +893,53 @@ class AddPublicationAdditionaDetails extends Component {
       case "5d0516e447c496528476ec94": {
         return (
           <Grid container>
-          <Grid item xs={12} style={{ marginTop: 18}}>
-            <FormField
-              id={"conferenceTitle"}
-              formdata={this.state.formdata.conferenceTitle}
-              change={element => this.updateForm(element)}
-              maxlength={500}
-            /></Grid>
-            <Grid item xs={12} style={{ marginTop: 18}}>
-            <FormField
-              id={"location"}
-              formdata={this.state.formdata.location}
-              change={element => this.updateForm(element)}
-              maxlength={500}
-            /></Grid>
+            <Grid item xs={12} style={{ marginTop: 18 }}>
+              <FormField
+                id={"conferenceTitle"}
+                formdata={this.state.formdata.conferenceTitle}
+                change={element => this.updateForm(element)}
+                maxlength={500}
+              />
+            </Grid>
+            <Grid item xs={12} style={{ marginTop: 18 }}>
+              <FormField
+                id={"location"}
+                formdata={this.state.formdata.location}
+                change={element => this.updateForm(element)}
+                maxlength={500}
+              />
+            </Grid>
           </Grid>
         );
       }
       // ເອກະສານການປະຊຸມທາງວິຊາການ
       case "5d035867f7c01c535c182950": {
         return (
-          <Grid container >
-          <Grid item xs={12} style={{ marginTop: 18}}>
-            <FormField
-              id={"conferenceName"}
-              formdata={this.state.formdata.conferenceName}
-              change={element => this.updateForm(element)}
-              maxlength={500}
-            /></Grid>
-            <Grid item xs={12} style={{ marginTop: 18}}>
-            <FormField
-              id={"location"}
-              formdata={this.state.formdata.location}
-              change={element => this.updateForm(element)}
-              maxlength={500}
-            /></Grid>
-            <Grid item xs={12} style={{ marginTop: 18}}>
-            <FormField
-              id={"institution"}
-              formdata={this.state.formdata.institution}
-              change={element => this.updateForm(element)}
-              maxlength={500}
-            /></Grid>
+          <Grid container>
+            <Grid item xs={12} style={{ marginTop: 18 }}>
+              <FormField
+                id={"conferenceName"}
+                formdata={this.state.formdata.conferenceName}
+                change={element => this.updateForm(element)}
+                maxlength={500}
+              />
+            </Grid>
+            <Grid item xs={12} style={{ marginTop: 18 }}>
+              <FormField
+                id={"location"}
+                formdata={this.state.formdata.location}
+                change={element => this.updateForm(element)}
+                maxlength={500}
+              />
+            </Grid>
+            <Grid item xs={12} style={{ marginTop: 18 }}>
+              <FormField
+                id={"institution"}
+                formdata={this.state.formdata.institution}
+                change={element => this.updateForm(element)}
+                maxlength={500}
+              />
+            </Grid>
           </Grid>
         );
       }
@@ -956,15 +947,15 @@ class AddPublicationAdditionaDetails extends Component {
       case "5cdb830827ba7c4214ef5777": {
         return (
           <>
-          <Grid container>
-          <Grid item xs={12} style={{ marginTop: 18}}>
+            <Grid container>
+              <Grid item xs={12} style={{ marginTop: 18 }}>
                 <FormField
                   id={"publisher"}
                   formdata={this.state.formdata.publisher}
                   change={element => this.updateForm(element)}
                 />
               </Grid>
-              <Grid item xs={12} style={{ marginTop: 18}}>
+              <Grid item xs={12} style={{ marginTop: 18 }}>
                 <FormField
                   id={"editor"}
                   formdata={this.state.formdata.editor}
@@ -972,7 +963,7 @@ class AddPublicationAdditionaDetails extends Component {
                   maxlength={500}
                 />
               </Grid>
-              <Grid item xs={12} style={{ marginTop: 18}}>
+              <Grid item xs={12} style={{ marginTop: 18 }}>
                 <FormField
                   id={"edition"}
                   formdata={this.state.formdata.edition}
@@ -988,12 +979,15 @@ class AddPublicationAdditionaDetails extends Component {
       case "5cdb835b27ba7c4214ef5778": {
         return (
           <Grid container style={{ marginTop: 18 }}>
-            <FormField
-              id={"researchProposal"}
-              formdata={this.state.formdata.institution}
-              change={element => this.updateForm(element)}
-              maxlength={500}
-            />
+
+            <Grid item xs={12}>
+              <FormField
+                id={"institution"}
+                formdata={this.state.formdata.institution}
+                change={element => this.updateForm(element)}
+                maxlength={500}
+              />
+            </Grid>
             {
               //   <FormField
               //   id={"location"}
@@ -1009,13 +1003,15 @@ class AddPublicationAdditionaDetails extends Component {
       case "5cdb83a127ba7c4214ef5779": {
         return (
           <Grid container style={{ marginTop: 18 }}>
+          <Grid item xs={12}>
             <FormField
-              id={"degree"}
-              formdata={this.state.formdata.degree}
-              change={element => this.updateForm(element)}
-              maxlength={500}
-            />
-
+                id={"degree"}
+                formdata={this.state.formdata.degree}
+                change={element => this.updateForm(element)}
+                maxlength={500}
+              />
+          </Grid>
+           
             {
               //   <FormField
               //   id={"location"}
@@ -1031,7 +1027,7 @@ class AddPublicationAdditionaDetails extends Component {
         break;
       }
     }
-  }
+  };
 
   render() {
     const { classes, className, theme } = this.props;
@@ -1121,9 +1117,11 @@ class AddPublicationAdditionaDetails extends Component {
                 variant="inherit"
                 style={{ color: "#5f6368", textAlign: "center" }}
               >
-              {this.state.publicationTypeName
-                ? "ເຮັດໃຫ້" + this.state.publicationTypeName + "ຂອງທ່ານສາມາດຄົ້ນພົບໄດ້ງ່າຍໂດຍການໃສ່ຂໍ້ມູນເພີ່ມຕື່ມ"
-                : "ເຮັດໃຫ້ຜົນງານຄົ້ນຄວ້າຂອງທ່ານສາມາດຄົ້ນພົບໄດ້ງ່າຍໂດຍການໃສ່ຂໍ້ມູນເພີ່ມຕື່ມ"}
+                {this.state.publicationTypeName
+                  ? "ເຮັດໃຫ້" +
+                    this.state.publicationTypeName +
+                    "ຂອງທ່ານສາມາດຄົ້ນພົບໄດ້ງ່າຍໂດຍການໃສ່ຂໍ້ມູນເພີ່ມຕື່ມ"
+                  : "ເຮັດໃຫ້ຜົນງານຄົ້ນຄວ້າຂອງທ່ານສາມາດຄົ້ນພົບໄດ້ງ່າຍໂດຍການໃສ່ຂໍ້ມູນເພີ່ມຕື່ມ"}
               </Typography>
 
               <Grid container style={{ marginTop: 18 }}>
@@ -1135,52 +1133,51 @@ class AddPublicationAdditionaDetails extends Component {
                   />
                 </Grid>
               </Grid>
-              
+
               {this.renderFields()}
 
-              {
-                this.props.researchType === "5cdb83a127ba7c4214ef5779" ?
+              {this.props.researchType === "5cdb83a127ba7c4214ef5779" ? (
                 <Grid container style={{ marginTop: 18 }}>
-                <Grid item xs={12}>
-                  <InputLabel
-                    error={this.state.authorError}
-                    style={{ fontSize: 14, fontWeight: 500 }}
-                  >
-                    ທີ່ປຶກສາ
-                  </InputLabel>
-                </Grid>
-                <Grid item xs={12}>
-                  <div className={classes.root}>
-                    <NoSsr>
-                      <ReactSelect
-                        classes={classes}
-                        styles={selectStyles}
-                        textFieldProps={{
-                          // placeholder: "ກະລຸນາເລືອກຜູ້ຂຽນ",
+                  <Grid item xs={12}>
+                    <InputLabel
+                      error={this.state.authorError}
+                      style={{ fontSize: 14, fontWeight: 500 }}
+                    >
+                      ທີ່ປຶກສາ
+                    </InputLabel>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <div className={classes.root}>
+                      <NoSsr>
+                        <ReactSelect
+                          classes={classes}
+                          styles={selectStyles}
+                          textFieldProps={{
+                            // placeholder: "ກະລຸນາເລືອກຜູ້ຂຽນ",
 
-                          // InputLabelProps: {
-                          //   shrink: true
-                          // },
-                          error: this.state.authorError,
-                          variant: "outlined"
-                        }}
-                        options={suggestions}
-                        components={components}
-                        value={this.state.multi}
-                        onChange={this.handleChange("multi")}
-                        placeholder="ກະລຸນາເລືອກທີ່ປຶກສາ"
-                        isMulti
-                        isClearable={false}
-                        // styles={{control: customControlStyles}}
-                      />
-                    </NoSsr>
-                  </div>
-                  {this.state.authorError ? (
-                    <InputError message={this.state.authorErrorMessage} />
-                  ) : null}
+                            // InputLabelProps: {
+                            //   shrink: true
+                            // },
+                            error: this.state.authorError,
+                            variant: "outlined"
+                          }}
+                          options={suggestions}
+                          components={components}
+                          value={this.state.multi}
+                          onChange={this.handleChange("multi")}
+                          placeholder="ກະລຸນາເລືອກທີ່ປຶກສາ"
+                          isMulti
+                          isClearable={false}
+                          // styles={{control: customControlStyles}}
+                        />
+                      </NoSsr>
+                    </div>
+                    {this.state.authorError ? (
+                      <InputError message={this.state.authorErrorMessage} />
+                    ) : null}
+                  </Grid>
                 </Grid>
-              </Grid> : null
-              }
+              ) : null}
 
               <Grid container alignItems="center" style={{ marginTop: 16 }}>
                 <Grid
@@ -1209,15 +1206,13 @@ class AddPublicationAdditionaDetails extends Component {
                   }
                 </Grid>
                 <Grid item xs md align="right" style={{ marginTop: 24 }}>
-                <Button onClick={() => this.handleSkip()}>ຂ້າມ</Button>
+                  <Button onClick={() => this.handleSkip()}>ຂ້າມ</Button>
                   <Button
                     variant="contained"
                     color="primary"
                     style={{ marginLeft: 8, boxShadow: "none" }}
                     onClick={() => this.submit()}
-                    disabled={
-                      this.state.hasSomeValue ? false : true
-                    }
+                    disabled={this.state.hasSomeValue ? false : true}
                   >
                     ເພີ່ມ
                   </Button>

@@ -55,7 +55,10 @@ export const generateData = (formdata, formName) => {
 
   for (let key in formdata) {
     if (key !== "confirmPassword") {
-      dataToSubmit[key] = formdata[key].value.trim();
+    if ((formdata[key].value.trim() !== "") && (formdata[key].value.trim() !== []) && (formdata[key].value.trim() !== {})) {
+        dataToSubmit[key] = formdata[key].value.trim();
+      }
+      
     }
   }
 
@@ -70,7 +73,6 @@ export const isFormValid = (formdata, formName) => {
     if (key === "gender") {
       formIsValid = true;
     }
-    console.log(key + " " + formdata[key].valid);
   }
 
   return formIsValid;

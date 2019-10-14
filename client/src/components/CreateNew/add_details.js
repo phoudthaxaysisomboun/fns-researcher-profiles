@@ -1436,6 +1436,7 @@ class AddPublicationDetails extends Component {
             .format("M")
         );
       }
+      
       delete newDataToSubmit.date.valid;
       delete newDataToSubmit.date.date;
       newDataToSubmit.author = author
@@ -1443,7 +1444,7 @@ class AddPublicationDetails extends Component {
         newDataToSubmit.files = {...this.state.files}
       }
       if (this.state.linkPreview) {
-        newDataToSubmit.linkPreview = {...this.state.linkPreview}
+        newDataToSubmit.link = {...this.state.linkPreview}
       }
       console.log(newDataToSubmit);
 
