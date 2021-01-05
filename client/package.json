@@ -13,7 +13,7 @@
     "@microlink/react": "^4.2.2",
     "apexcharts": "^3.8.1",
     "array-merge-by-key": "^1.0.1",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "bson": "^4.0.2",
     "classnames": "^2.2.6",
     "darkreader-api": "^0.2.0",
