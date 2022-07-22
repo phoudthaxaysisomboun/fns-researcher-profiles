@@ -24,7 +24,7 @@
     "dotenv": "^6.0.0",
     "express": "^4.16.4",
     "express-formidable": "^1.0.0",
-    "file-type": "^12.3.0",
+    "file-type": "^16.5.4",
     "find-remove": "^2.0.0",
     "get-urls": "^9.1.0",
     "http-link-preview": "^0.4.4",
