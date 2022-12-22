@@ -28,7 +28,7 @@
     "find-remove": "^2.0.0",
     "get-urls": "^9.1.0",
     "http-link-preview": "^0.4.4",
-    "jsonwebtoken": "^8.3.0",
+    "jsonwebtoken": "^9.0.0",
     "lodash": "^4.17.11",
     "moment": "^2.22.2",
     "mongoose": "^5.1.6",
